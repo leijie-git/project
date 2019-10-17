@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>物联-设备-设备类型弹窗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/loginRecord.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+</head>
+<body>
+<!--<div class="layer_headerTit">-->
+    <!--<div class="headerTitText fontSize18">上海跨国采购中心办公楼&#45;&#45;灭火系统更多接口数据</div>-->
+    <!--<div class="btn_layer_close"></div>-->
+<!--</div>-->
+
+<div class="layer_mainContent">
+    <div class="table_header fontSize16">
+        <table>
+            <colgroup>
+                <col width="10%">
+                <col width="10%">
+                <col width="20%">
+                <col width="20%">
+                <col width="10%">
+                <col width="10%">
+
+            </colgroup>
+            <thead>
+            <tr>
+                <th>单位名称</th>
+                <th>建筑名称</th>
+                <th>区域名称</th>
+                <th>设备名称</th>
+                <th>部位号</th>
+                <th>真实地址</th>
+
+
+
+               <!--  <th>操作</th> -->
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="table_content fontSize14 scrollbar-inner">
+        <table>
+            <colgroup>
+                <col width="10%">
+                <col width="10%">
+                <col width="20%">
+                <col width="20%">
+                <col width="10%">
+                <col width="10%">
+
+            </colgroup>
+            <tbody id="mainContentTbody">
+                <!--<tr>-->
+                    <!--<td>1</td>-->
+                    <!--<td>通用</td>-->
+                    <!--<td>消火栓管网压力</td>-->
+                    <!--<td>模拟量</td>-->
+                    <!--<td>1</td>-->
+                    <!--<td>3</td>-->
+                    <!--<td>0.20-0.80</td>-->
+                    <!--<td>Mp</td>-->
+                    <!--<td>0.277</td>-->
+                    <!--<td>&#45;&#45;</td>-->
+                    <!--<td><img src="../../../Content/images/NetInfoStatistic/chakan.png"><span class="underline openImg">查看</span></td>-->
+                <!--</tr>-->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="wrap_page">
+    <div id="demo7"></div>
+   <!-- <img src="../../Content/images/Public/exportBT.png" class="btn_export">-->
+</div>
+
+
+</body>
+<script>
+    var _unitId = GetQuery('unitId'); //单位
+    var _buildId = GetQuery('areaid'); //区域
+    var _type = GetQuery('type'); //系统
+    var _id=GetQuery('id');//主机一行id
+    var _ifUsed=0;
+    var _data = {
+        pageNumber: 1,
+        pageSize: 20,
+        startDate:'',
+        endDate:'',
+        type: _type,
+        unitId: _unitId,
+        buildId: _buildId,
+        id:_id
+    };
+
+    $(function(){
+
+        getSysMoreListData();
+        //domEvelement();
+    });
+
+    function getSysMoreListData(){
+
+        var isAsync = true,
+                lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/webHttp/getPointByEqid",
+            data: _data,
+            success: function(data) {
+                var total=data.obj.total;
+                if (_ifUsed == 0) {
+                    layerPage(total);
+                    _ifUsed = 1;
+                }
+                showListContent(data);
+            },
+            complete: function() {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        })
+    }
+
+    function showListContent(msg){
+        var data = msg.obj.list;
+        var html = "";
+        //console.log(msg);
+        for(var i = 0 ; i < data.length ; i++){
+            //$('#unitName').text(data[0].unitName||"-");
+            html +='<tr>' +
+                        '<td>'+data[i].unitName+'</td>' +
+                        '<td>'+data[i].buildingName+'</td>' +
+                        '<td>'+data[i].buildAreaName+'</td>' +
+                        '<td>'+data[i].name+'</td>' +
+                        '<td>'+data[i].partcode+'</td>' +
+                        '<td>'+data[i].adress+'</td>' +
+                        '</tr>'
+        }
+
+        $('#mainContentTbody').html(html||"<tr><td colspan='12'>暂无数据...</td></tr>")
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                       // alert( obj.curr);
+                        //alert( obj.limit);
+                        getSysMoreListData(); //调用接口获取数据
+                    }
+
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+   /* function domEvelement(){
+        //导出
+        $('.btn_export').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1)
+                return;
+            var url = _serverIp + "/front/couplet/exportWaterMoreList?"
+                    + "unitId=" + _unitId
+                    + "&buildId=" + _buildId
+                    + "&type=" + _type;
+
+            postExport(url)
+        });
+    }*/
+</script>
+</html>

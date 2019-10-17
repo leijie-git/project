@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UTInspectBaseRelMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UTInspectBaseRel">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="SiteID" property="SiteID" jdbcType="BIGINT"/>
+        <result column="SiteClassDetialID" property="SiteClassDetialID" jdbcType="BIGINT"/>
+        <result column="SiteClassID" property="SiteClassID" jdbcType="BIGINT"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="lastupdate" property="lastupdate" jdbcType="TIMESTAMP"/>
+        <result column="descriBe" property="Describe" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getList" resultType="com.gw.inspect.data.UTInspectBaseRelOutData"
+            parameterType="com.gw.inspect.data.InspectBaseRelInData">
+        SELECT
+        a.ID id,
+        b.NFCCode,
+        b.qrCode,
+        b.ID siteId,
+        c.ID siteClassId,
+        d.ID siteClassDetialId,
+        b.SiteName siteName,
+        b.InspectCycleType inspectCycle,
+        b.InspectCount inspectCount,
+        b.executorID,
+        b.TaskStart taskStart,
+        b.TaskEnd taskEnd,
+        c.SiteClassName siteClassName,
+        c.UnitID unitId,
+        unit.UnitName unitName,
+        d.CheckInfo checkInfo,
+        d.CheckMethod checkMethod,
+        build.BuildingName buildName,
+        build.ID buildId ,
+        area.ID buildAreaId,
+        area.BuildAreaName buildAreaName
+        FROM
+        UT_Inspect_Base_Rel a
+        LEFT JOIN UT_Inspect_Site b ON a.SiteID = b.ID
+        LEFT JOIN UT_Base_SiteClass c ON a.SiteClassID = c.ID
+        LEFT JOIN UT_Base_SiteClassDetial d ON a.SiteClassDetialID = d.ID
+        LEFT JOIN UT_Unit_Build build ON b.buildID = build.ID
+        LEFT JOIN UT_Unit_BuildArea area ON b.buildAreaID = area.ID
+        LEFT JOIN UT_Unit_BaseInfo unit on c.UnitID = unit.ID
+        <where>
+            1=1
+            <if test="lastUpdate!=null and lastUpdate!=''">
+                and CONVERT (VARCHAR(100), a.Lastupdate
+                , 23)=#{lastUpdate}
+            </if>
+            <if test="inspectCycle!=null and inspectCycle!=''">
+                and b.InspectCycleType=#{inspectCycle}
+            </if>
+            <if test="siteId!=null and siteId!=''">
+                and b.ID=#{siteId}
+            </if>
+            <if test="siteClassId!=null and siteClassId!=''">
+                and c.ID=#{siteClassId}
+            </if>
+            <if test="siteClassDetialId!=null and siteClassDetialId!=''">
+                and d.ID=#{siteClassDetialId}
+            </if>
+            <if test="inspectCount!=null and inspectCount!=''">
+                and b.InspectCount=#{inspectCount}
+            </if>
+            <if test="unitName!=null and unitName!=''">
+                and unit.unitName like '%${unitName}%'
+            </if>
+            <if test="buildName!=null and buildName!=''">
+                and build.BuildingName like '%${buildName}%'
+            </if>
+            <if test="buildAreaName!=null and buildAreaName!=''">
+                and area.BuildAreaName like '%${buildAreaName}%'
+            </if>
+            <if test='unitId!=1'>
+                and c.UnitID = #{unitId}
+            </if>
+        </where>
+        ORDER BY c.UnitID DESC
+    </select>
+
+    <select id="getSiteAndSiteCalssList" resultType="com.gw.inspect.data.InspectTaskInListData"
+            parameterType="com.gw.inspect.data.InspectBaseRelInData">
+        SELECT
+        b.ID siteid,
+        c.ID siteClassid,
+        d.ID siteClassDetailid,
+        unit.ID unitId
+        FROM
+        UT_Inspect_Base_Rel a
+        LEFT JOIN UT_Inspect_Site b ON a.SiteID = b.ID
+        LEFT JOIN UT_Base_SiteClass c ON a.SiteClassID = c.ID
+        LEFT JOIN UT_Base_SiteClassDetial d ON a.SiteClassDetialID = d.ID
+        LEFT JOIN UT_Unit_BaseInfo unit on c.UnitID = unit.ID
+        <where>
+            1=1
+            <if test="siteid!=null and siteid!=''">
+                and b.ID=#{siteid}
+            </if>
+            <if test="siteClassid!=null and siteClassid!=''">
+                and c.ID=#{siteClassid}
+            </if>
+            <if test="unitId!=null and unitId!=''">
+                and c.UnitID = #{unitId}
+            </if>
+        </where>
+    </select>
+</mapper>

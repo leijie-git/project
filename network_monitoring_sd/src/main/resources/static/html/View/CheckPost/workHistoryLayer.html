@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/CheckPost/workHistoryLayer.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="table_header">
+            <table>
+                <colgroup>
+                    <col width="5%">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="10%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="15%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>公司名称</th>
+                    <th>地址</th>
+                    <th>职务</th>
+                    <th>入职时间</th>
+                    <th>离职时间</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table_content scrollbar-inner">
+            <table cellpadding="0" cellspacing="0" class="tbody">
+                <colgroup>
+                    <col width="5%">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="10%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="15%">
+                </colgroup>
+                <tbody id="mianTbody">
+                <!--  <tr>
+                     <td>1</td>
+                     <td>xx2131x股份有限公司</td>
+                     <td>下路xxx号xx巷</td>
+                     <td>前端工程师</td>
+                     <td>2017-02-03</td>
+                     <td>2018-02-03</td>
+                     <td>赛风戳萨哈王鹏辉</td>
+                 </tr> -->
+                </tbody>
+            </table>
+        </div>
+        <div class="wrap_page">
+            <div id="demo7"></div>
+            <img src="../../Content/images/Public/exportBT.png" class="btn_export">
+            <img class="print_btn" src="../../Content/images/Public/printBT.png">
+        </div>
+     </div>
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<script>
+	var infoId = GetQuery('infoId');
+	$(function() {
+	    jQuery('.scrollbar-inner').scrollbar({});
+	    //绑定事件
+	    getUserExperience();
+	});
+	
+	function getUserExperience(){
+	    $.ajax({
+	        type: "get",
+	        url: _serverIp + "/front/lookup/getUserExperience",
+	        data:{
+	        	infoId:infoId
+	        },
+	        success: function (data) {
+	            //console.log(data);
+	            showUserExperience(data);
+	        },
+	        complete: function () {
+	        }
+	    });
+	}
+	
+	function showUserExperience(msg){
+		var data = msg.obj;
+		var html = "";
+	    for(var i = 0 ; i < data.length;i++){
+	        html += '<tr>'+
+	                '<td>'+parseInt(i+1)+'</td>'+
+	                '<td>'+data[i].companyName+'</td>'+
+	                '<td>'+data[i].companyAddr+'</td>'+
+	                '<td>'+data[i].job+'</td>'+
+	                '<td>'+data[i].entryDate+'</td>'+
+	                '<td>'+data[i].quitDate+'</td>'+
+	                '<td>'+data[i].remark+'</td>'+
+	                '</tr>'
+	    }
+	    $('#mianTbody').html(html||"<tr><td colspan='12'>暂无数据...</td></tr>");
+	    //$('#mianTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+	}
+	$('.btn_export').unbind('click').click(function(){
+	    if( $('#mianTbody tr:first-child>td').length == 1)
+	        return;
+	    var url = _serverIp + "/front/lookup/exportUserExperience?infoId="+ infoId
+	    postExport(url)
+	});
+	$(".print_btn").click(function(){
+		window.print();
+	});
+</script>
+
+</html>

@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtEqEquipmentdetialgwMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtEqEquipmentdetialgw">
+        <!--
+          WARNING - @mbg.generated
+        -->
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="DetialName" property="detialname" jdbcType="NVARCHAR" />
+		<result column="IOType" property="iotype" jdbcType="INTEGER" />
+		<result column="IOPort" property="ioport" jdbcType="INTEGER" />
+		<result column="AnalogUp" property="analogup" jdbcType="DECIMAL" />
+		<result column="AnalogDown" property="analogwarningdown" jdbcType="DECIMAL" />
+		<result column="AnalogWarningUp" property="analogup" jdbcType="DECIMAL" />
+		<result column="AnalogWarningDown" property="analogwarningdown" jdbcType="DECIMAL" />
+		<result column="AnalogUnit" property="analogunit" jdbcType="NVARCHAR" />
+		<result column="AnalogK" property="analogk" jdbcType="DECIMAL" />
+		<result column="AnalogB" property="analogb" jdbcType="DECIMAL" />
+		<result column="DigitalNormal" property="digitalnormal" jdbcType="INTEGER" />
+		<result column="GoodName" property="goodname" jdbcType="NVARCHAR" />
+		<result column="BadName" property="badname" jdbcType="NVARCHAR" />
+		<result column="Remark" property="remark" jdbcType="NVARCHAR" />
+		<result column="EQID" property="eqid" jdbcType="BIGINT" />
+		<result column="NetDeviceID" property="netdeviceid" jdbcType="BIGINT" />
+		<result column="reserve" property="reserve" jdbcType="NVARCHAR" />
+		<result column="isUploadA" jdbcType="INTEGER" property="isuploada" />
+		<result column="isUploadB" jdbcType="INTEGER" property="isuploadb" />
+	<result column="isUploadB" jdbcType="INTEGER" property="isuploadb" />
+		<result column="deviceindex" jdbcType="NVARCHAR" property="deviceindex" />
+
+	</resultMap>
+	<select id="getInterfaceValueList" resultType="com.gw.front.couplet.data.FrontInterFaceStatusOutData" parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+		SELECT DISTINCT
+		'D'+b.OwnerCode tableName,f.id interfaceId,
+		convert(FLOAT ,f.AnalogUp) analogup,
+		convert(FLOAT ,f.AnalogDown) analogdown,
+		a.CurrentValue currentValue,
+		f.DetialName detialName,
+		c.EqName eqName,
+		c.id id,
+		f.DigitalNormal  digitalNormal,
+		cl.ClassCode classCode,
+		cl.ClassName className,
+		c.Lastupdate lastupdate,
+		e.BuildAreaName buildareaname,
+		b.id netDeviceId,
+		g.EqSystemName eqSystemName,
+		case when f.IOType=1 then '模拟量' else '数字量' end ioType,
+		f.IOType IOType1,f.IOPort ioPort,
+		b.DeviceNo deviceNo,
+		CONVERT(VARCHAR,convert(FLOAT ,f.AnalogDown))+'-'+CONVERT(VARCHAR,convert(FLOAT ,f.AnalogUp)) scope,
+		f.AnalogUnit analogUnit,
+		f.GoodName goodName,
+		f.BadName badName,
+		unit.UnitName unitName,
+		unit.UnitCode unitCode,
+		convert(FLOAT ,f.AnalogWarningUp) analogWarningUp,
+		convert(FLOAT ,f.AnalogWarningDown) analogWarningDown,
+		ISNULL(f.reserve,f.DetialName) reserve,
+		f.isUploadA isuploada,
+		f.isUploadB isuploadb,
+		c.UnitID unitID,
+		b.OwnerCode ownercode,
+		c.InstallPosition installposition,
+		c.BuildImgbg buildImgbg,
+		c.pointVideoId,
+		CASE WHEN (
+		f.IOType = 1	/*模拟量*/
+		and (convert(FLOAT,a.CurrentValue) &gt; convert(FLOAT,f.AnalogWarningUp) or convert(FLOAT,a.CurrentValue) &lt; convert(FLOAT, f.AnalogWarningDown))
+		)
+		or (
+		f.IOType = 2	/*数字量*/
+		and a.CurrentValue != f.DigitalNormal)
+		THEN 1 else 0 end isNormal	/*0正常 1异常*/
+		FROM
+		UT_EQ_EquipmentDetialGW f
+		LEFT JOIN UT_EQ_Equipment c ON f.EQID = c.ID
+		LEFT JOIN UT_Unit_NetDevice b ON b.ID = c.NetDeviceID
+		LEFT JOIN ${database}.dbo.sd_interfaces a ON b.OwnerCode = a.OwnerCode
+		AND b.DeviceNo = a.DeviceNo
+		AND f.IOType = a.IOType
+		AND f.IOPort = a.IOPort
+		LEFT JOIN UT_Base_EqSystem g ON g.ID = c.EqSystemID
+		LEFT JOIN UT_Base_EqClass cl ON c.EqClassID = cl.ID
+		LEFT JOIN UT_Unit_BuildArea e ON c.BuildAreaID = e.ID
+		LEFT JOIN UT_Unit_BaseInfo unit ON unit.id = c.UnitID
+		WHERE
+		b.DeviceIndex = 3
+		and (c.isDelete = 0 or c.isDelete is null)
+		and (b.isDelete = 0 or b.isDelete is null)
+		<if test="IOType != null and IOType != ''">
+            and f.IOType=#{IOType}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            and CONVERT (VARCHAR(100), a.Lastupdate
+            , 20)>=#{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and CONVERT (VARCHAR(100), a.Lastupdate
+            , 20)>=#{endDate}
+        </if>
+        <if test="buildId != null and buildId != ''">
+			AND e.ID = #{buildId}
+		</if>
+		<if test="netDeviceId != null and netDeviceId != ''">
+			AND b.ID = #{netDeviceId}
+		</if>
+		<if test="deviceId != null and deviceId != ''">
+			AND c.ID = #{deviceId}
+		</if>
+		<if test="eqIds != null">
+			AND
+			<foreach collection="eqIds" item="item" index="index" open="(" close=")" separator=" OR ">
+				c.ID = #{item}
+			</foreach>
+		</if>
+		<if test="unitId!=null and unitId!=''">
+			AND b.UnitID = #{unitId} AND e.UnitID = #{unitId}
+		</if>
+		<if test="type!=null and type!=''">
+			AND c.EqSystemID = #{type}
+		</if>
+		<if test="pointID!=null and pointID!=''">
+			AND f.id = #{pointID}
+		</if>
+		order by isNormal desc</select>
+    <select id="getGasAlarmList" resultType="com.gw.front.couplet.data.FrontInterFaceStatusOutData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+    SELECT
+    a.id,
+    a.BuildImgbg buildImgbg,
+    a.EqName eqName,
+    b1.ClassName,
+    b1.ClassCode classCode,
+    b2.BuildAreaName buildareaname
+    FROM
+        UT_EQ_Equipment a
+    LEFT JOIN UT_Base_EqClass b1 ON a.EqClassID = b1.ID
+    left join UT_Unit_BuildArea b2 on a.BuildAreaID=b2.ID
+    WHERE
+    b1.ClassCode=21
+    AND a.isDelete = 0
+    <if test="type!=null and type!=''">
+        AND a.EqSystemID = #{type} AND b1.EqSystemID=#{type}
+    </if>
+    <if test="unitId!=null and unitId!=''">
+        AND a.UnitID = #{unitId}
+    </if>
+	</select>
+	<!--   <select id="getInterfaceInfoByBuildArea" resultType="com.gw.front.couplet.data.FrontRTUHistoryInData"> -->
+	<!-- 	SELECT DISTINCT -->
+	<!-- 		'D' + f.OwnerCode tableName, -->
+	<!-- 		f.DeviceNo deviceNo, -->
+	<!-- 		a.IOPort ioport, -->
+	<!-- 		a.IOType iotype, -->
+	<!-- 		a.DetialName detialName -->
+	<!-- 	FROM -->
+	<!-- 		UT_EQ_EquipmentDetialGW a -->
+	<!-- 	LEFT JOIN UT_EQ_Equipment b ON b.ID = a.EQID -->
+	<!-- 	LEFT JOIN UT_Unit_BuildArea c ON b.BuildAreaID = c.ID -->
+	<!-- 	LEFT JOIN UT_Base_EqSystem e ON e.ID = b.EqSystemID -->
+	<!-- 	LEFT JOIN UT_Unit_NetDevice f ON f.ID = b.NetDeviceID -->
+	<!-- 	WHERE -->
+	<!-- 	<if test="BuildAreaIds != null"> -->
+	<!-- 		c.ID IN  -->
+	<!-- 		<foreach collection="BuildAreaIds" item="item" index="index" -->
+	<!-- 						open="(" close=")" separator=","> -->
+	<!-- 						#{item} -->
+	<!-- 		</foreach> -->
+	<!-- 	</if> -->
+	<!-- 	<if test="deviceType != null"> -->
+	<!-- 		AND a.reserve = #{deviceType} -->
+	<!-- 	</if> -->
+	<!-- 	<if test="buildId != null and buildId != ''"> -->
+	<!-- 		and c.BuildID = #{buildId} -->
+	<!-- 	</if> -->
+	<!-- 	AND e.EqSystemCode = #{type} -->
+	<!--   </select> -->
+
+    <select id="getWaterSystemHistory" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData"
+            parameterType="com.gw.front.couplet.data.FrontRTUHistoryInData">
+        SELECT
+        coupletKey,
+        coupletValue
+        FROM
+        (
+        SELECT
+        CONVERT(VARCHAR,Lastupdate,120) coupletKey,
+        [RTU_Analog] coupletValue,
+        row = ROW_NUMBER () OVER (ORDER BY lastupdate ASC)
+        FROM
+        ${tableName}
+        WHERE
+        [DeviceIndex] = 3
+        AND [DeviceNo] = #{deviceNo}
+        and Alarm_WhereDesc = ''
+        <if test="startDate != null and startDate != ''">
+            AND Lastupdate &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND Lastupdate &lt;= #{endDate}
+        </if>
+        ) A
+        WHERE
+        ((row - 1) % #{interval}) = 0
+        ORDER BY
+        coupletKey ASC
+    </select>
+    <select id="getWaterSystemHistory1" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData"
+            parameterType="com.gw.front.couplet.data.FrontRTUHistoryInData">
+        SELECT
+        coupletKey,
+        coupletValue
+        FROM
+        (
+        SELECT
+        CONVERT(VARCHAR,Lastupdate,120) coupletKey,
+        [RTU_Digital] coupletValue,
+        row = ROW_NUMBER () OVER (ORDER BY lastupdate ASC)
+        FROM
+        ${tableName}
+        WHERE
+        [DeviceIndex] = 3
+        AND [DeviceNo] = #{deviceNo}
+        and Alarm_WhereDesc = ''
+        <if test="startDate != null and startDate != ''">
+            AND Lastupdate &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND Lastupdate &lt;= #{endDate}
+        </if>
+        ) A
+        WHERE
+        ((row - 1) % #{interval}) = 0
+        ORDER BY
+        coupletKey ASC
+    </select>
+
+    <select id="getPortList" resultType="com.gw.equipment.data.EquipmentDetailOutData">
+        SELECT
+        a.id,
+        a.detialname,
+        a.iotype,
+        a.ioport,
+        convert(FLOAT ,a.AnalogUp) analogup,
+        convert(FLOAT ,a.analogdown) analogdown,
+        a.analogunit,
+        convert(FLOAT ,a.AnalogK) analogk,
+        convert(FLOAT ,a.analogb) analogb,
+        a.digitalnormal,
+        a.goodname,
+        a.badname,
+        a.remark,
+        convert(FLOAT ,a.AnalogWarningUp) maxValue,
+        convert(FLOAT ,a.AnalogWarningDown) minValue,
+        a.eqid,
+        b.EqSystemID eqSystemID,
+        a.reserve,
+        c.ClassCode classCode
+        FROM
+        UT_EQ_EquipmentDetialGW a
+        LEFT JOIN UT_EQ_Equipment b ON a.EQID = b.ID
+        LEFT JOIN UT_Base_EqClass c ON b.EqClassID = c.ID
+        <where>
+            <if test="id!=null">
+                eqid = #{id}
+            </if>
+        </where>
+    </select>
+    <delete id="remove">
+        delete
+        from
+        UT_EQ_EquipmentDetialGW
+        <where>
+            <if test="id!=null">
+                EQID = #{id};
+            </if>
+        </where>
+    </delete>
+    <select id="selectDetailList" resultType="com.gw.equipment.data.EquipmentFacInData">
+        SELECT
+        DetialName,
+        IOType,
+        IOPort,
+        convert(FLOAT ,AnalogUp) AnalogUp,
+        convert(FLOAT ,analogdown) AnalogDown,
+        AnalogUnit,
+        convert(FLOAT ,AnalogK) AnalogK,
+        convert(FLOAT ,analogb) AnalogB,
+        DigitalNormal,
+        GoodName,
+        BadName,
+        Remark,
+        NetDeviceID,
+        reserve
+        FROM
+        UT_EQ_EquipmentDetialGW
+        <where>
+            <if test="id!=null">
+                EQID = #{id}
+            </if>
+        </where>
+    </select>
+    <select id="getInterfaceInfoByDevice" resultType="com.gw.front.couplet.data.FrontRTUHistoryInData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+        SELECT
+        a.IOPort ioport,
+        a.IOType iotype,
+        'D'+c.OwnerCode tableName,
+        c.DeviceNo deviceNo,
+        a.DetialName detialName,
+        convert(FLOAT ,a.AnalogWarningUp) analogWarningUp,
+        convert(FLOAT ,a.AnalogWarningDown) analogWarningDown,
+        a.AnalogUnit analogUnit,
+        convert(FLOAT ,a.AnalogUp) analogup,
+        convert(FLOAT ,a.analogdown) analogdown,
+        a.GoodName goodName,
+        a.BadName badName,
+        a.DigitalNormal normalValue
+        FROM
+        UT_EQ_EquipmentDetialGW a
+        LEFT JOIN UT_EQ_Equipment b ON a.EQID = b.ID
+        LEFT JOIN UT_Unit_NetDevice c ON b.NetDeviceID = c.ID
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        and (b.isDelete = 0 OR b.isDelete is NULL)
+        <if test="deviceId != null and deviceId != ''">
+            and b.ID = #{deviceId}
+        </if>
+        <if test="netDeviceId != null and netDeviceId != ''">
+            and c.ID = #{netDeviceId}
+        </if>
+        <if test="unitId != null and unitId != ''">
+            AND b.UnitID = #{unitId}
+        </if>
+    </select>
+    <select id="getListByNetDeviceid" resultType="com.gw.equipment.data.EquipmentDetailOutData">
+        SELECT
+        a.id,
+        a.detialname,
+        a.iotype,
+        a.ioport,
+        convert(FLOAT ,a.AnalogUp) analogup,
+        convert(FLOAT ,a.analogdown) analogdown,
+        a.analogunit,
+        convert(FLOAT ,a.AnalogK) analogk,
+        convert(FLOAT ,a.analogb) analogb,
+        a.digitalnormal,
+        a.goodname,
+        a.badname,
+        a.remark,
+        a.eqid,
+        a.reserve
+        FROM
+        UT_EQ_EquipmentDetialGW a
+        LEFT JOIN UT_EQ_Equipment b ON a.EQID = b.ID
+        LEFT JOIN UT_Unit_NetDevice c ON b.NetDeviceID = c.ID
+        where
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        and (b.isDelete = 0 OR b.isDelete is NULL)
+        <if test="netdeviceid!=null and netdeviceid!=''">
+            and a.NetDeviceID = #{netdeviceid}
+        </if>
+    </select>
+
+    <select id="selectWaterHistoryCount" resultType="java.lang.Integer"
+            parameterType="com.gw.front.couplet.data.FrontRTUHistoryInData">
+        SELECT
+        count(*)
+        FROM
+        ${tableName}
+        WHERE
+        [DeviceIndex] = 3
+        AND [DeviceNo] = #{deviceNo}
+        and Alarm_WhereDesc = ''
+        <if test="startDate != null and startDate != ''">
+            AND Lastupdate &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND Lastupdate &lt;= #{endDate}
+        </if>
+    </select>
+    <select id="getInterfaceOutData" parameterType="com.gw.front.couplet.data.FrontCoupletInData"
+            resultType="com.gw.device.data.InterfaceOutData">
+        SELECT
+        id,
+        a.OwnerCode ownerCode,
+        a.DeviceNo deviceNo,
+        a.IOPort ioPort,
+        a.IOName ioName,
+        a.DigitalNormal digitalNormal,
+        a.GoodName goodName,
+        a.BadName badName,
+        a.Reserve reserve,
+        CONVERT(VARCHAR,a.lastupdate,120) lastupdate,
+        a.OrderType orderType
+        FROM
+        ${database}.dbo.sd_interfaces_out a
+        INNER JOIN (
+        SELECT DISTINCT
+        b.OwnerCode
+        FROM
+        UT_EQ_Equipment c
+        LEFT JOIN UT_Unit_NetDevice b ON b.ID = c.NetDeviceID
+        WHERE b.DeviceIndex = 3
+        <if test="buildId != null and buildId != ''">
+            and c.BuildAreaID = #{buildId}
+        </if>
+        <if test="unitId != null and unitId != ''">
+            AND b.UnitID = #{unitId}
+        </if>
+        ) m ON m.OwnerCode = a.OwnerCode
+        where m.OwnerCode is not null
+    </select>
+    <select id="getDetialgwList" parameterType="com.gw.front.couplet.data.FrontCoupletInData"
+            resultType="com.gw.device.data.InterfaceOutData">
+        SELECT
+        c.OwnerCode ownerCode,
+        c.DeviceNo deviceNo,
+        a.IOPort ioPort,
+        convert(FLOAT ,d.CurrentValue) currentValue,
+        convert(FLOAT ,a.DigitalNormal) digitalNormal,
+        a.GoodName goodName,
+        a.BadName badName,
+        e.BuildAreaName buildAreaName
+        FROM
+        UT_EQ_EquipmentDetialGW a
+        LEFT JOIN UT_EQ_Equipment b ON a.EQID = b.ID
+        LEFT JOIN UT_Unit_NetDevice c ON c.ID = b.NetDeviceID
+        LEFT JOIN ${database}.dbo.sd_interfaces d ON c.OwnerCode = d.OwnerCode
+        AND c.DeviceNo = d.DeviceNo
+        AND a.IOPort = d.IOPort
+        LEFT JOIN UT_Unit_BuildArea e ON e.ID=b.BuildAreaID
+        WHERE d.SysType=0 and a.IOType=2 and d.IOType = 2
+        <if test="buildId != null and buildId != ''">
+            and c.BuildAreaID = #{buildId}
+        </if>
+        <if test="unitId != null and unitId != ''">
+            AND c.UnitID = #{unitId}
+        </if>
+    </select>
+    <select id="getDeviceId" resultType="java.lang.String">
+		SELECT
+			c.id
+		FROM
+			${database}.dbo.sd_interfaces_out a
+		LEFT JOIN ${database}.dbo.sd_devices c ON c.OwnerCode = a.OwnerCode
+		AND c.DeviceIndex = 3
+		AND a.DeviceNo = c.DeviceNo
+		WHERE
+		  a.ID = #{id}
+	</select>
+    <select id="currentInterfaceStatus" resultType="java.lang.String">
+		SELECT
+			TOP 1 RTU_Digitalout
+		FROM
+			${database}.dbo.${tableName}
+		WHERE
+			DeviceIndex = 3
+		AND DeviceNo = #{deviceNo}
+		AND RTU_Digitalout IS NOT NULL
+		ORDER BY
+			Lastupdate DESC
+	</select>
+
+    <delete id="removePortByEqId">
+	 delete from UT_EQ_EquipmentDetialGW
+	 where
+	 EQID = #{eqId}
+	</delete>
+    <select id="getUploadEquipment" resultType="com.gw.upload.data.UploadEquipmentOutData">
+		SELECT
+			a.ID,
+			a.DetialName name,
+			a.IOType,
+			a.IOPort,
+			'' partcode,
+			'' adress,
+			1 isRTU,
+			a.isUploadA,
+			a.isUploadB
+		FROM
+			UT_EQ_EquipmentDetialGW a
+		LEFT JOIN UT_EQ_Equipment b ON a.EQID = b.ID
+		LEFT JOIN UT_Unit_BuildArea c ON b.BuildAreaID = c.ID
+		LEFT JOIN UT_Unit_Build d ON c.BuildID = d.ID
+		LEFT JOIN UT_Unit_BaseInfo e ON e.ID = d.UnitID
+		WHERE e.ID = #{unitId}
+		UNION ALL
+		SELECT
+			a.ID,
+			a.name name,
+			'' iotype,
+			'' ioport,
+			a.partcode,
+			a.adress,
+			0 isRTU,
+			a.isUploadA,
+			a.isUploadB
+		FROM
+			Ut_EQ_address_rel a
+		LEFT JOIN UT_Unit_BuildArea b ON a.BuildAreaID = b.ID
+		LEFT JOIN UT_Unit_Build c ON b.BuildID = c.ID
+		LEFT JOIN UT_Unit_BaseInfo d ON d.ID = c.UnitID
+		WHERE d.ID = #{unitId}
+	</select>
+
+    <select id="getDetailCountByUnitId" resultType="integer">
+        SELECT
+        COUNT(a.ID) count
+        FROM
+        UT_EQ_EquipmentDetialGW a
+        LEFT JOIN UT_EQ_Equipment b ON a.EQID = b.ID
+        WHERE
+        1=1
+        <if test="unitId != null and unitId != ''">
+            and b.UnitID = #{unitId}
+        </if>
+        <if test="eqSystemId != null and eqSystemId != ''">
+            and b.EqSystemID=#{eqSystemId}
+        </if>
+    </select>
+</mapper>

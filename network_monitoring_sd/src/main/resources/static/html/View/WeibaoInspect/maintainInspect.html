@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>维保巡查</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/WeibaoInspect/maintainInspect.css" rel="stylesheet" type="text/css" />
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="chart_wrap">
+            <div class="chart_box annihilator active">
+                <span class="title">灭火器到期</span>
+                <div class="textbox textbox1">
+                    <span class="num" id="scrapCount">-</span>
+                    <span class="text">即将到期</span>
+                </div>
+                <div class="textbox textbox2">
+                    <span class="num" id="toDateCount">-</span>
+                    <span class="text">即将报废</span>
+                </div>
+                <div class="textbox textbox3">
+                    <span class="num" id="totalCount">-</span>
+                    <span class="text">灭火器总数</span>
+                </div>
+            </div>
+            <div class="chart_box">
+                <span class="title">维保进度</span>
+                <div class="chart" id="maintenanceProgressChart"></div>
+                <ul class="legend_box">
+                    <li>未处理<span id="wbNodeal">-</span></li>
+                    <!--<li>处理中<span id="wbdealing">-</span></li>-->
+                    <li>已处理<span id="wbdealed">-</span></li>
+                </ul>
+            </div>
+            <div class="chart_box">
+                <span class="title">巡查进度</span>
+                <div class="chart" id="inspectProgressChart"></div>
+                <ul class="legend_box">
+                    <li>未巡查<span id="xcNodeal">-</span></li>
+                    <!-- <li>处理中<span>3</span></li> -->
+                    <li>已巡查<span id="xcdealed">-</span></li>
+                    <li class="expireTime" >即将到期<span id="expireTaskCount" class="">-</span></li>
+                </ul>
+            </div>
+            <div class="bar">
+                <div class="finger" id="finger"></div>
+            </div>
+        </div>
+        <!-- 第一个表格-->
+        <div id="extinguisher" class="box_h">
+            <div class="top-search">
+                <form class="layui-form" action="">
+                    <div class="layui-inline layui-bg-cyan" id="ExtinguisherStatus">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="" selected="selected">--选择到期状态--</option>
+                                <option value="0">已到期</option>
+                                <option value="1">已报废</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline layui-bg-cyan" id="timeType">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="" selected>--选择时间类型--</option>
+                                <option value="1">出厂时间</option>
+                                <option value="2">检测时间</option>
+                                <option value="3">充装时间</option>
+                                <option value="4">药剂到期时间</option>
+                                <option value="5">报废时间</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input class="selectTime timeStart" id="sData1" onfocus="var d5222 = $dp.$('eData1'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); } })" autocomplete="off"/> -
+                    <input class="selectTime timeEnd" id="eData1" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData1\')}'})" autocomplete="off"/>
+                    <input class="selectB" id="keywords1" type="search" placeholder="请输入关键字搜索">
+                    <input class="submitBtn"   type="button" labelnum="0" value="查询">
+                </form>
+            </div>
+            <!--table start-->
+            <div class="table_box">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="10%">
+                                <col width="12%">
+                                <col width="15%">
+                                <col width="12%">
+                                <col width="13%">
+                                <col width="12%">
+                                <col width="13%">
+                                <col width="13%">
+                            </colgroup>
+                            <thead class="fontSize16">
+                                <tr>
+                                    <th>序号</th>
+                                    <th>药剂类型</th>
+                                    <th>放置位置</th>
+                                    <th>出厂时间</th>
+                                    <th>检测时间</th>
+                                    <th>充装时间</th>
+                                    <th>药剂到期时间</th>
+                                    <th>报废时间</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="12%">
+                                <col width="15%">
+                                <col width="12%">
+                                <col width="13%">
+                                <col width="12%">
+                                <col width="13%">
+                                <col width="13%">
+                            </colgroup>
+                            <tbody class="fontSize14">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div id="demo0"></div>
+                    <img class="exportBtn" id="exportBtn0" labelnum="0" src="../../Content/images/Public/exportBT.png">
+                </div>
+            </div>
+            <!--table end-->
+        </div>
+
+        <!-- 第二个表格-->
+        <div id="maintenanceProgress" class="box_h" style="display:none">
+            <div class="top-search">
+                <form class="layui-form" action="">
+                    <div class="layui-inline layui-bg-cyan" id="dealStatus">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="" selected="selected">--选择处理状态--</option>
+                                <option value="0">未处理</option>
+                                <option value="3">已处理</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" /> -
+                    <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" />
+                    <input class="selectB" id="keywords2" type="search" placeholder="请输入关键字搜索">
+                    <input class="submitBtn" type="button" labelnum="1" value="查询">
+                    <input class="downReport btn_repaire"   type="button"  value="维保报告">
+                </form>
+            </div>
+            <!--table start-->
+            <div class="table_box">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="5%">
+                                <col width="8%">
+                                <col width="15%">
+                                <col width="7%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="8%">
+                                <col width="9%">
+                                <col width="9%">
+                                <col width="9%">
+                            </colgroup>
+                            <thead class="fontSize16">
+                                <tr>
+                                    <th>序号</th>
+	                                <th>单位编号</th>
+	                                <th>单位名称</th>
+	                                <th>上报人员</th>
+	                                <th>维保内容</th>
+	                                <th>位置</th>
+	                                <th>处理状态</th>
+	                                <th>上报时间</th>
+	                                <th>处理时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="8%">
+                                <col width="15%">
+                                <col width="7%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="8%">
+                                <col width="9%">
+                                <col width="9%">
+                                <col width="9%">
+                            </colgroup>
+                            <tbody class="fontSize14">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div id="demo1"></div>
+                    <img class="exportBtn" id="exportBtn1" labelnum="1" src="../../Content/images/Public/exportBT.png">
+                </div>
+            </div>
+            <!--table end-->
+        </div>
+
+        <!-- 第三个表格-->
+        <div id="inspectProgress" class="box_h" style="display:none">
+            <div class="top-search">
+                <form class="layui-form" action="">
+                    <input class="selectTime timeStart" id="sData3" onfocus="var d5222 = $dp.$('eData3'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData3\')||\'%y-%M-%d\'}' })" /> -
+                    <input class="selectTime timeEnd" id="eData3" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData3\')}', maxDate: '%y-%M-%d' })" />
+                    <div class="layui-inline layui-bg-cyan" id="xcDealStatus">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="" selected="selected">--选择巡查状态--</option>
+	                            <option value="0">未巡查</option>
+	                            <option value="1">已巡查</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input class="selectB" id="keywords3" type="search" placeholder="请输入关键字搜索">
+                    <input class="submitBtn" type="button" labelnum="2"  value="查询">
+                    <input class="downReport btn_inspect"   type="button"  value="巡查报告">
+                </form>
+            </div>
+            <!--table start-->
+            <div class="table_box">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="5%">
+                                <col width="8%">
+                                <col width="12%">
+                                <col width="8%">
+                                <col width="10%">
+                                <col width="13%">
+                                <col width="6%">
+                                <col width="10%">
+                                <col width="7%">
+                                <col width="13%">
+                                <col width="8%">
+                            </colgroup>
+                            <thead class="fontSize16">
+                                <tr>
+                                    <th>序号</th>
+									<th>单位编号</th>
+									<th>单位名称</th>
+									<th>巡查人员</th>
+									<th>计划名称</th>
+									<th>任务时间</th>
+									<th>巡查周期</th>
+									<th>位置</th>
+									<th>巡查状态</th>
+									<th>巡查时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="5%">
+								<col width="8%">
+								<col width="12%">
+								<col width="8%">
+								<col width="10%">
+								<col width="13%">
+								<col width="6%">
+								<col width="10%">
+								<col width="7%">
+								<col width="13%">
+								<col width="8%">
+                            </colgroup>
+                            <tbody class="fontSize14">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div id="demo2"></div>
+                    <img class="exportBtn" id="exportBtn2" labelnum="2" src="../../Content/images/Public/exportBT.png">
+                </div>
+            </div>
+            <!--table end-->
+        </div>
+    </div>
+
+<div class="wrap_month">
+    <input class="selectTime timeEnd" id="monthDate" onfocus="WdatePicker({ skin: 'whyGreen', maxDate: '%y-%M',dateFmt:'yyyy-MM' })"  autocomplete="off"/>
+    <input class="btn_downReport" type="button" labelnum="2"  value="导出">
+</div>
+
+</body>
+<script type="text/javascript">
+    var _unitId = GetQuery('unitid');
+    var tableId = ['extinguisher', 'maintenanceProgress', 'inspectProgress'];
+    var tableIndex = 0;
+    var _MHQData={
+        pageNumber:1,
+        pageSize:20,
+        status:$('#ExtinguisherStatus').find('dd.layui-this').attr('lay-value')||"",
+        dateType:$('#timeType').find('dd.layui-this').attr('lay-value')||"",
+        startDate:$('#sData1').val(),
+        endDate:$('#eData1').val(),
+        keyword:$('#keywords1').val(),
+        unitId:_unitId
+    };
+    var _WBData={
+        pageNumber:1,
+        pageSize:20,
+        status:$('#dealStatus').find('dd.layui-this').attr('lay-value')||"",
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#keywords2').val(),
+        unitId:_unitId
+    };
+    var _XCData={
+        pageNumber:1,
+        pageSize:20,
+        status:$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"",
+        startDate:$('#sData3').val(),
+        endDate:$('#eData3').val(),
+        keyword:$('#keywords3').val(),
+        unitId:_unitId
+    };
+    var _ifMHQUsed = 0,_ifWBUsed = 0,_ifXCUsed = 0;
+$(function() {
+    loadLayuiForm();//调用layui form组件，方法写在public
+    getStatisticData();//获取统计数据
+
+    getMHQListData();//获取灭火器列表数据
+
+    getWBListData();//获取维保列表数据
+
+    getXCListData();//获取巡查列表数据
+
+    //绑定事件
+    bindEvent();
+});
+
+    ///////////////获取统计数据
+    function getStatisticData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getMaintenanceStat",
+            data:'unitId='+_unitId,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    showMieHuoQiData(msg);//显示灭火器到期数据
+
+                    showWeiBaoProgress(msg);//显示维保进度数据
+
+                    showInspectProgress(msg);//显示巡查进度数据
+                    //showUnitListContent(msg);
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //显示灭火器数据
+    function showMieHuoQiData(msg){
+        $('#toDateCount').text(msg.toDateCount||0);
+        $('#scrapCount').text(msg.scrapCount||0);
+        $('#totalCount').text(msg.totalCount||0);
+    }
+    //显示维保进度数据
+    function showWeiBaoProgress(msg){
+//        $('#wbdealing').text(msg.wbdealing||0);
+        $('#wbdealed').text(msg.wbdealed||0);
+        $('#wbNodeal').text(msg.wbNodeal||0);
+        //维保进度-图表
+        pieChart({
+            id: 'maintenanceProgressChart',
+            lenged: [ '已处理', '未处理'],
+            value: [ { name: '已处理', value: msg.wbdealed||0 }, { name: '未处理', value: msg.wbNodeal||0 }]
+        });
+    }
+    //显示巡查进度数据
+    function showInspectProgress(msg){
+        $('#xcdealed').text(msg.xcdealed||0);
+        $('#xcNodeal').text(msg.xcNodeal||0);
+        $('#expireTaskCount').text(msg.xcExpire || 0).addClass(msg.xcExpire > 0 ?"underline":"");
+        //巡查进度-图表
+        pieChart({
+            id: 'inspectProgressChart',
+            lenged: ['已巡查', '未巡查'],
+            value: [{ name: '已巡查', value: msg.xcdealed||0 }, { name: '未巡查', value: msg.xcNodeal||0 }]
+        });
+    }
+
+    ///////////////获取灭火器记录
+    function getMHQListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getFireExtinguisherList",
+            data:_MHQData,
+            success: function (data) {
+                //console.log(data);
+                if (_ifMHQUsed == 0) {
+                    layerPage(data.total,0);
+                    _ifMHQUsed = 1;
+                }
+                getMHQTable(data,0); //获取灭火器表格数据
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //获取灭火器表格数据
+    function getMHQTable(msg,tableIndex) {
+        var data = msg.list;
+        var html = '';
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].extinguisherType+'</td>'+
+                    '<td>'+data[i].extinguisherPosition+'</td>'+
+                    '<td>'+data[i].productDate+'</td>'+
+                    '<td>'+data[i].jcDate+'</td>'+
+                    '<td>'+data[i].fullDate+'</td>'+
+                    '<td>'+data[i].eqChangeDate+'</td>'+
+                    '<td>'+data[i].validityDate+'</td>'+
+                    '</tr>'
+        }
+        $('#' + tableId[tableIndex]).find('tbody').html(html||"<tr class='nodata'><td colspan='8'>暂无数据...</td></tr>");
+        $('#' + tableId[tableIndex]+' tbody td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    ///////////////获取维保列表数据
+    function getWBListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getRepairList",
+            data:_WBData,
+            success: function (data) {
+                //console.log(data);
+                if (_ifWBUsed == 0) {
+                    layerPage(data.total,1);
+                    _ifWBUsed = 1;
+                }
+                getWBTable(data,1); //获取维保表格数据
+
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //获取维保表格数据
+    function getWBTable(msg,tableIndex) {
+        var data = msg.list;
+        var html = '';
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].unitCode+'</td>' +
+                    '<td>'+data[i].unitName+'</td>' +
+                    '<td>'+data[i].wbclr+'</td>' +
+                    '<td>'+data[i].checkInfo+'</td>' +
+                    '<td>'+data[i].repairSite+'</td>' +
+                    '<td class="'+(data[i].dealStatus == "未处理"?"red":"")+'">'+data[i].dealStatus+'</td>'+
+                    '<td>'+data[i].createtime+'</td>' +
+                    '<td>'+data[i].dealDate+'</td>' +
+                    '<td class="underline '+(data[i].executorID ? "weibaoInfo" : "weibaohandle")+'")'+'" repairid="'+data[i].id+'" unitid="'+ data[i].unitID +'">'+(data[i].dealStatus == "待分配" ? "分配任务" : "查看")+'</td>'+
+                    '</tr>'
+        }
+        $('#' + tableId[tableIndex]).find('tbody').html(html||"<tr class='nodata'><td colspan='10'>暂无数据...</td></tr>");
+        $('#' + tableId[tableIndex]+' tbody td').each(function(){$(this).attr('title',$(this).text())})
+
+        // option +='<option  value="'+msg[i].unitId+'" '+(i == 0?"select":"")+'>'+msg[i].unitName+'</option>'
+    }
+
+    ///////////////获取巡查列表数据
+    function getXCListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getInspectTaskList",
+            data:_XCData,
+            success: function (data) {
+                //console.log(data);
+                if (_ifXCUsed == 0) {
+                    layerPage(data.total,2);
+                    _ifXCUsed = 1;
+                }
+
+                getXCTable(data,2); //获取巡查表格数据
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getXCTable(msg,tableIndex){
+        if( tableIndex == 2){
+
+        }
+        var data = msg.list;
+        var html = '';
+        for(var i = 0 ; i < data.length;i++){
+        	var inspectCycleType="";
+        	if(data[i].inspectCycleType=='0'){
+        		inspectCycleType = '日检';
+        	}else if(data[i].inspectCycleType=='1'){
+        		inspectCycleType = '周检';
+        	}else if(data[i].inspectCycleType=='2'){
+        		inspectCycleType = '月检';
+            }else if(data[i].inspectCycleType=='3'){
+            	inspectCycleType = '年检';
+            }
+            html += '<tr>'+
+                    '<td>'+(msg.startRow++)+'</td>'
+                    + '<td>' + data[i].unitCode + '</td>' 
+				     + '<td>'+ data[i].unitName + '</td>'
+				     + '<td>' + data[i].inspectUser+ '</td>' 
+				     + '<td>' + data[i].planName + '</td>' 
+				     + '<td>' + data[i].taskStart+'~'+data[i].taskEnd + '</td>' 
+				     + '<td>'+ inspectCycleType + '</td>' 
+				     + '<td>'+ data[i].siteName + '</td>' 
+				     + '<td class="'+(data[i].isInspect == "已巡查"?"":"red")+'">'+data[i].isInspect+'</td>'
+				     + '<td>'+ data[i].inspectTime + '</td>' +
+                    '<td class="'+(data[i].isOK == "否"?"underline xunchaInfo":"")+'" taskid="'+data[i].taskID+'">'+(data[i].isOK == "否"?"查看":"")+'</td>'+
+
+                    '</tr>'
+        }
+        $('#' + tableId[tableIndex]).find('tbody').html(html||"<tr class='nodata'><td colspan='11'>暂无数据...</td></tr>");
+        $('#' + tableId[tableIndex]+' tbody td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    //处理状态
+    function getDealStatus(status){
+        var statusTxt = "";
+        if(status == 0){
+            statusTxt = "待分配"
+        }else if(status == 1){
+            statusTxt = "已分配"
+        }else if(status == 2){
+            statusTxt = "巡查人员确认"
+        }else if(status == 3){
+            statusTxt = "最终确认"
+        }
+        return statusTxt
+    }
+
+    function layerPage(count,index){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo'+index
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                	if(!isNew){
+//                      console.log(obj)
+                        if(index == 0){
+                            _MHQData.pageNumber = obj.curr;
+                            _MHQData.pageSize = obj.limit;
+                            _MHQData.dateType=$('#timeType').find('dd.layui-this').attr('lay-value')||"";
+                            _MHQData.startDate=$('#sData1').val();
+                            _MHQData.endDate=$('#eData1').val();
+                            _MHQData.keyword=$('#keywords1').val();
+                            getMHQListData();
+                           
+                        }
+                        else if(index == 1){
+                            _WBData.pageNumber = obj.curr;
+                            _WBData.pageSize = obj.limit;
+                           
+                            _WBData.status=$('#dealStatus').find('dd.layui-this').attr('lay-value')||"";
+                            _WBData.startDate=$('#sData2').val();
+                            _WBData.endDate=$('#eData2').val();
+                            _WBData.keyword=$('#keywords2').val();
+                            getWBListData();
+                        }
+                        else if(index == 2){
+                            _XCData.pageNumber = obj.curr;
+                            _XCData.pageSize = obj.limit;
+                            _XCData.status=$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+                            _XCData.startDate=$('#sData3').val();
+                            _XCData.endDate=$('#eData3').val();
+                            _XCData.keyword=$('#keywords3').val();
+                            getXCListData();
+                            
+                        }
+                	}
+                }
+            });
+        });
+    }
+
+
+//绑定事件
+function bindEvent() {
+    //图表选择
+    $('.chart_box').unbind('click').click(function() {
+        var leftCoord = ['calc(16.6666% - 4px)', 'calc(49.9998% - 4px)', 'calc(83.333% - 4px)'];
+        $('#' + tableId[tableIndex]).hide();
+        tableIndex = $(this).index();
+        $('.chart_box.active').removeClass('active');
+        $(this).addClass('active');
+        $('#finger').css("left", leftCoord[tableIndex]);
+        $('#' + tableId[tableIndex]).show();
+
+        if(tableIndex == 0){
+            $('.chart_wrap').css('background-image','url(../../Content/images/AggregateAnalysis/box4_1.png)');
+        }else if(tableIndex == 1){
+            $('.chart_wrap').css('background-image','url(../../Content/images/AggregateAnalysis/box4_2.png)');
+        }else if(tableIndex == 2){
+            $('.chart_wrap').css('background-image','url(../../Content/images/AggregateAnalysis/box4_3.png)');
+        }else{
+            return false;
+        }
+        //getTable();
+    });
+
+    var tableInterval = setInterval(function(){
+        var firstTable = $('#extinguisher').find('tbody>tr');
+        var secondTable = $('#maintenanceProgress').find('tbody>tr');
+        var thirdTable = $('#inspectProgress').find('tbody>tr');
+        if(firstTable.length>0&&secondTable.length>0&&thirdTable.length>0){
+            clearInterval(tableInterval);
+            if(firstTable.not('.nodata').length==0){
+                if(secondTable.not('.nodata').length>0){
+                    $('.chart_box').eq(1).click();
+                }else{
+                    if(thirdTable.not('.nodata').length>0){
+                        $('.chart_box').eq(2).click()
+                    }
+                }
+            }
+        }
+    },100);
+
+    $('.exportBtn').unbind('click').click(function(){
+        var different = "";
+        var index = $(this).attr('labelnum');
+        if( $('#'+tableId[index] +' tr:first-child>td').length == 1)
+            return;
+        var url = "";
+        if(index == 0){
+            different = "dateType="+$('#timeType').find('dd.layui-this').attr('lay-value')||"";
+            url = _serverIp + "/front/maintenance/exportFireExtinguisherList?"
+                + different
+                + "&startDate=" +$('#sData'+(index-0+1)+'').val()
+                + "&endDate=" + $('#eData'+(index-0+1)+'').val()
+                + "&unitId=" +_unitId
+                + "&keyword=" + $('#keywords'+(index-0+1)+'').val();
+        }else if(index == 1){
+            different = "status="+$('#dealStatus').find('dd.layui-this').attr('lay-value')||"";
+            url = _serverIp + "/front/maintenance/exportRepairList?"
+                + "&startDate=" +$('#sData'+(index-0+1)+'').val()
+                + "&endDate=" + $('#eData'+(index-0+1)+'').val()
+                + "&unitId=" +_unitId
+                + "&keyword=" + $('#keywords'+(index-0+1)+'').val()
+                + "&status="+$('#dealStatus').find('dd.layui-this').attr('lay-value')||"";
+        }else if(index == 2){
+            different = "status="+$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+            url = _serverIp + "/front/maintenance/exportInspectTaskList?"
+                + "&startDate=" +$('#sData'+(index-0+1)+'').val()
+                + "&endDate=" + $('#eData'+(index-0+1)+'').val()
+                + "&unitId=" +_unitId
+                + "&keyword=" + $('#keywords'+(index-0+1)+'').val()
+                + "&status="+$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+        }
+        postExport(url)
+    });
+
+    $(".submitBtn").unbind('click').click(function(){
+    	var index = $(this).attr('labelnum');
+        if(index == 0){
+        	_ifMHQUsed = 0
+        	 _MHQData.status=$('#ExtinguisherStatus').find('dd.layui-this').attr('lay-value')||"",
+            _MHQData.dateType=$('#timeType').find('dd.layui-this').attr('lay-value')||"";
+            _MHQData.startDate=$('#sData1').val();
+            _MHQData.endDate=$('#eData1').val();
+            _MHQData.keyword=$('#keywords1').val();
+            /* if(_MHQData.dateType==""){
+            	layer.msg("请选择时间类型！")
+            	return;
+            } */
+            getMHQListData();
+           
+        }
+        else if(index == 1){
+        	_ifWBUsed = 0  
+            _WBData.status=$('#dealStatus').find('dd.layui-this').attr('lay-value')||"";
+            _WBData.startDate=$('#sData2').val();
+            _WBData.endDate=$('#eData2').val();
+            _WBData.keyword=$('#keywords2').val();
+            getWBListData();
+        }
+        else if(index == 2){
+        	_ifXCUsed = 0
+            _XCData.status=$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+            _XCData.startDate=$('#sData3').val();
+            _XCData.endDate=$('#eData3').val();
+            _XCData.keyword=$('#keywords3').val();
+            getXCListData();
+            
+        }
+  });
+
+    //分配任务 - 维保
+    $('tbody').delegate('tr>td.weibaohandle','click',function(){
+        var unitId = $(this).attr('unitid');
+        var id = $(this).attr('repairid');
+        layer.open({
+            type: 2,
+            title: '分配任务',
+            area: ['800px', '200px'],
+            closeBtn: 1,
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+//            shadeClose: true,
+            content: 'addExecutor.html?unitId='+ unitId +'&id='+ id
+        });
+    });
+    
+    //查看详情 - 维保
+    $('tbody').delegate('tr>td.weibaoInfo','click',function(){
+        var id = $(this).parent('tr').attr('id');
+        layer.open({
+            type: 2,
+            title: '维保详情',
+            area: ['600px', '400px'],
+            closeBtn: 1,
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+//            shadeClose: true,
+            content: 'detailLayer.html?id='+id
+        });
+    });
+
+    //查看详情 - 巡查
+    $('tbody').delegate('tr>td.xunchaInfo','click',function(){
+        var id = $(this).attr('taskid');
+        layer.open({
+            type: 2,
+            title: '巡查详情',
+            closeBtn: 1,
+            area: ['90%', '500px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'inspectDetail.html?id='+id
+        });
+    });
+
+    //巡查即将过期
+    $('#expireTaskCount').unbind('click').click(function(e){
+        if(!$(this).hasClass('underline'))return;
+        e.stopPropagation();  //阻止事件冒泡
+        layer.open({
+            type: 2,
+            title: '巡查即将过期',
+            closeBtn: 1,
+            area: ['90%', '500px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'inspectEpirationTaskPage.html?unitid='+_unitId
+        });
+    });
+
+    //巡查、维保报告下载 - 弹窗
+    $('.downReport').unbind('click').click(function(){
+        $('.downReport').removeClass('active');
+        $(this).addClass('active');
+        $('#monthDate').val('');
+        layer.open({
+            type: 1,
+            title: '选择时间',
+            closeBtn: 1,
+            area: ['300px', '150px'],
+            shade: 0.1,
+            shadeClose:true,
+            skin: 'layui-layer-confirm',
+            content: $('.wrap_month')
+        });
+    });
+    //巡查、维保报告下载 - 导出按钮
+    $('.btn_downReport').unbind('click').click(function(){
+        if($('.downReport.active').hasClass('btn_repaire')){//维保报告
+            window.location.href = _serverIp + "/front/maintenance/exportMaintenanceReport?nowDate="+$('#monthDate').val()+"&unitId="+_unitId;
+        }
+        else if($('.downReport.active').hasClass('btn_inspect')){//巡查报告
+            window.location.href = _serverIp + "/front/maintenance/exportInspectMouthReport?nowDate="+$('#monthDate').val()+"&unitId="+_unitId;
+        }
+    })
+}
+
+//环形图表
+function pieChart(data) {
+    var dom = document.getElementById(data.id);
+    var myChart = echarts.init(dom);
+    var labelFromatter = { //环内样式
+        normal: { //默认样式
+            label: { //标签
+                formatter: function(a, b, c) { return a },
+                // labelLine.length：30,  //线长，从外边缘起计算，可为负值
+                textStyle: { //标签文本样式
+                    color: 'black',
+                    align: 'center',
+                    baseline: 'top' //垂直对其方式
+                }
+            }
+        },
+    };
+    option = {
+        title: {
+            show: false,
+        },
+        color: [ '#46D7E4', '#EB6067'],
+        legend: {
+            show: false
+        },
+        animation: true,
+        tooltip: { // 提示框. Can be overwrited by series or data
+            trigger: 'item',
+            formatter: "{b}: {c} ({d}%)"
+        },
+        series: [{
+                name: '告警问题类型',
+                type: 'pie',
+                center: ['50%', '50%'], //圆心坐标（div中的%比例）
+                radius: ['36%', '52%'], //半径
+                itemStyle: labelFromatter, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                label: {
+                    normal: {
+                        formatter: '{per|{d}%}\n{hr|}\n{b|{b}}',
+                        rich: {
+                            hr: {
+                                borderColor: '#20A2FB',
+                                width: '100%',
+                                borderWidth: 0.5,
+                                height: 0
+                            },
+                            b: {
+                                fontSize: 12,
+                                lineHeight: 15,
+                                color: '#D4EDFF',
+                                align: 'center',
+                            },
+                            per: {
+                                padding: [2, 0],
+                                fontWeight: 900,
+                                fontSize: 14,
+                                height: 15,
+                                color: '#D4EDFF',
+                                align: 'center',
+                            }
+                        },
+                    },
+                },
+                labelLine: {
+                    normal: {
+                        length: 10,
+                        length2: 8
+                    }
+                },
+
+                data: data.value,
+            },
+            {
+                name: '',
+                type: 'pie',
+                center: ['50%', '50%'], //圆心坐标（div中的%比例）
+                radius: ['60%', '62%'], //半径
+                itemStyle: { //环内样式
+                    normal: { //默认样式
+                        label: { //标签
+                            show: false,
+                        },
+                        labelLine: {
+                            show: false,
+                        },
+                    },
+                }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                animation: false,
+                data: [{
+                    name: '',
+                    value: 100,
+                    itemStyle: {
+                        normal: {
+                            color: '#316DB6'
+                        },
+                        emphasis: {
+                            color: '#316DB6'
+                        }
+                    },
+                    tooltip: {
+                        show: false,
+                    },
+                    cursor: 'default',
+                }],
+            }
+        ]
+    };
+    myChart.setOption(option, true);
+    $(window).resize(function() {
+        myChart.resize();
+    });
+}
+</script>
+
+</html>

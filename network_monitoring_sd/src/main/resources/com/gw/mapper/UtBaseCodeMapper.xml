@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseCode" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="CodeID" property="codeid" jdbcType="BIGINT" />
+    <result column="CodeGroupCode" property="codegroupcode" jdbcType="NVARCHAR" />
+    <result column="PCodeValue" property="pcodevalue" jdbcType="NVARCHAR" />
+    <result column="CodeName" property="codename" jdbcType="NVARCHAR" />
+    <result column="CodeValue" property="codevalue" jdbcType="NVARCHAR" />
+    <result column="Memo" property="memo" jdbcType="NVARCHAR" />
+    <result column="SortOrder" property="sortorder" jdbcType="INTEGER" />
+    <result column="IsDeleted" property="isdeleted" jdbcType="BIT" />
+    <result column="Adder" property="adder" jdbcType="NVARCHAR" />
+    <result column="AddDate" property="adddate" jdbcType="TIMESTAMP" />
+    <result column="Updater" property="updater" jdbcType="NVARCHAR" />
+    <result column="UpdateDate" property="updatedate" jdbcType="TIMESTAMP" />
+    <result column="CodeGroupID" property="codegroupid" jdbcType="BIGINT" />
+  </resultMap>
+  
+  
+  <select id="getAllList" resultType="com.gw.systemManager.data.CodeOutData" parameterType="com.gw.systemManager.data.CodeInData">
+  	SELECT
+		c.CodeName,
+		c.CodeValue,
+		c.CodeGroupCode,
+		c.PCodeValue,
+		c.Memo,
+		c.SortOrder,
+		c.CodeID,
+		c.CodeGroupID,
+		g.CodeGroupName,
+		g.CodeGroupKey
+	FROM
+		UT_Base_Code c
+	LEFT OUTER JOIN
+		UT_Base_CodeGroup g ON c.CodeGroupID = g.CodeGroupID
+	WHERE
+		c.IsDeleted = 0
+	<if test="codename != null and codename != ''">
+	 	AND c.CodeName like '%${codename}%'
+	</if>
+	<if test="codevalue != null and codevalue != ''">
+		AND c.CodeValue like '%${codevalue}%'
+	</if>
+	<if test="codegroupkey != null and codegroupkey != ''">
+		AND g.CodeGroupKey like '%${codegroupkey}%'
+	</if>
+	ORDER BY c.CodeID DESC
+  </select>
+  <select id="getCodeListByCodeGroupId" resultType="com.gw.systemManager.data.CodeOutData">
+  	SELECT
+		CodeName,
+		CodeID
+	FROM
+		UT_Base_Code
+	WHERE
+		IsDeleted = 0
+	AND CodeGroupID = #{codeGroupId}
+  </select>
+  <select id="getImportDatas" resultType="com.gw.systemManager.data.CodeOutData">
+  	SELECT
+			a.DeviceCode+'('+b.name+')' codename,
+			a.DeviceCode codevalue
+	FROM
+		${database}.dbo.sd_transfer_device a
+		left join ${database}.dbo.sd_manufacturers b on code = a.ManufacturerCode
+  </select>
+</mapper>

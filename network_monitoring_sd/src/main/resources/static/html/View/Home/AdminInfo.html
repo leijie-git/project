@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/AdminInfo.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+<body>
+<div class="header fontSize14">
+    <img src="../../Content/images/Home/icon_admin.png" class="ico_login">
+    <div class="user_name"><span id="username">-</span>，您好！</div>
+    <img src="../../Content/images/Home/icon_admin_close.png" class="ico_close" onclick="closeLayer();">
+</div>
+
+<div class="login_content fontSize14">
+    <div>您上次登陆的地点：<span class="con loginInfo" id="loginAddr">-</span></div>
+    <div>登录时间：<span class="con loginInfo" id="loginDate">-</span></div>
+    <div><span class="con">设备：<span class="con loginInfo" id="dataFrom">-</span></span></div>
+</div>
+
+</body>
+<script>
+    $(function(){
+        $('#username').text(_loginInfo.username);
+        $('.loginInfo').each(function(){
+            var id = $(this).attr('id');
+            $(this).text(_loginInfo.log[id]);
+        })
+    })
+
+    function closeLayer(){
+        _loginInfo.AdminInfoLyerTime = 1;
+        localStorage.setItem("LoginInfo", JSON.stringify(_loginInfo));
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    };
+</script>
+</html>

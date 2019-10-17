@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzRepairdetialMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzRepairdetial" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="DealType" property="dealtype" jdbcType="INTEGER" />
+    <result column="DealDate" property="dealdate" jdbcType="TIMESTAMP" />
+    <result column="DealInfo" property="dealinfo" jdbcType="NVARCHAR" />
+    <result column="OperateInfo" property="operateinfo" jdbcType="NVARCHAR" />
+    <result column="OperateTime" property="operatetime" jdbcType="TIMESTAMP" />
+    <result column="OperateUserName" property="operateusername" jdbcType="NVARCHAR" />
+    <result column="RepairID" property="repairid" jdbcType="BIGINT" />
+    <result column="DealUserID" property="dealuserid" jdbcType="BIGINT" />
+    <result column="OperateUserID" property="operateuserid" jdbcType="BIGINT" />
+    <result column="picPath" property="picpath" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="NVARCHAR" />
+    <result column="latitude" property="latitude" jdbcType="NVARCHAR" />
+    <result column="location" property="location" jdbcType="NVARCHAR" />
+  </resultMap>
+  <select id="getRepairDetail" resultType="com.gw.front.maintenance.data.FrontMaintenanceOutData">
+  	SELECT
+        a.ID id,
+      a.RepairCode repairCode,
+        CONVERT (VARCHAR, a.CreateTime,120) createtime,
+        a.WBCLR wBCLR,
+        a.RepairSite repairSite,
+        CASE WHEN a.dealStatus=0 THEN '未处理' ELSE '已处理' END dealStatus,
+        CASE WHEN b.ID!=NULL THEN b.Alarm_Status END alarmstatus,
+        CONVERT (VARCHAR, a.dealDate,120) dealDate,
+        a.wBCLSJ wBCLSJ,
+        a.picUrl repairPic,
+        CASE WHEN a.DataFrom=0 or a.DataFrom=1 THEN '告警生成' ELSE '巡查生成' END dateFrom,
+        a.BadDesc checkInfo,
+        unit.unitCode unitCode,
+        unit.unitName unitName,
+        e.DealInfo dealInfo,
+        e.OperateUserName dealName,
+        e.picPath repairDetailPic
+    FROM
+        UT_LZ_Repair a
+    LEFT JOIN UT_LZ_BJZJAlarm b ON a.BaseID = b.ID
+    LEFT JOIN UT_Inspect_Task c ON a.BaseID = c.ID
+    LEFT JOIN UT_Unit_BaseInfo unit ON a.UnitID = unit.ID
+    LEFT JOIN UT_LZ_RepairDetial e ON a.ID = e.RepairID
+    <where>
+        <if test="repairId!=null and repairId!=''">
+            a.ID = #{repairId}
+        </if>
+    </where>
+  </select>
+  <select id="getMaintenanceDetail" resultType="com.gw.wechat.data.FrontRepairDetailOutData" parameterType="java.lang.String">
+	SELECT
+	    TOP (1) 
+	    a.OperateUserName dealUser,
+	    a.DealDate dealDate,
+	    b.RepairSite siteName,
+	    b.BadDesc questionInfo,
+	    b.picUrl quetionUrl,
+	    a.DealInfo checkInfo,
+	    a.picPath checkUrl
+    FROM
+        UT_LZ_Repair b
+    LEFT JOIN UT_LZ_RepairDetial a ON a.RepairID = b.ID
+    WHERE
+       a.RepairID = #{id}
+    ORDER BY
+        a.DealDate DESC
+  </select>
+</mapper>

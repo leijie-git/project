@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>报警信息</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <script src="../../Script/upload/ajaxfileupload.js"></script>
+
+    <style>
+        .weui-switch-cp__input:checked~.weui-switch-cp__box,
+        .weui-switch:checked,
+        .weui-btn_primary {
+            border-color: #3287cf;
+            background-color: #3287cf;
+        }
+        
+        .weui-uploader__file {
+            margin-right: 8%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell weui-cell_switch">
+            <div class="weui-cell__bd">误报</div>
+            <div class="weui-cell__ft">
+                <label for="switchCP" class="weui-switch-cp">
+                <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked" onclick="gett(this);">
+                <div class="weui-switch-cp__box"></div>
+              </label>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入现场描述" rows="3" id="describe1"></textarea>
+                <div class="weui-textarea" placeholder="请输入现场描述" rows="3"></div>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell weui-cell_switch">
+            <div class="weui-cell__bd">是否维修</div>
+            <div class="weui-cell__ft">
+                <label for="switchCPs" class="weui-switch-cp">
+                    <input id="switchCPs" class="weui-switch-cp__input" type="checkbox" onclick="getw(this);">
+                    <div class="weui-switch-cp__box"></div>
+                  </label>
+            </div>
+        </div>
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入现场描述" rows="3" id="describe2"></textarea>
+                <div class="weui-textarea" placeholder="请输入现场描述" rows="3"></div>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells weui-cells_form" id="imagesList">
+        <div class="weui-cell" style="flex-wrap: wrap;justify-content: flex-start;">
+            <!-- <div class="weui-uploader__file" style="background-image:url(../../Content/images/WeChat/center/bg_userCenter.jpg);position: relative;width: 25%;" realname="1">
+                <div style='position:absolute;right:-7px;top:-9px;' onclick='deleteImg(this);'><img src='../../Content/images/WeChat/sq-delete.png' style='width:22px;'></div>
+            </div>
+            <div class="weui-uploader__file" style="background-image:url(../../Content/images/WeChat/center/bg_userCenter.jpg);position: relative;width: 25%;" realname="2">
+                <div style='position:absolute;right:-7px;top:-9px;' onclick='deleteImg(this);'><img src='../../Content/images/WeChat/sq-delete.png' style='width:22px;'></div>
+            </div>
+            <div class="weui-uploader__file" style="background-image:url(../../Content/images/WeChat/center/bg_userCenter.jpg);position: relative;width: 25%;">
+                <div style='position:absolute;right:-7px;top:-9px;' onclick='deleteImg(this);'><img src='../../Content/images/WeChat/sq-delete.png' style='width:22px;'></div>
+            </div>
+            <div class="weui-uploader__file" style="background-image:url(/Content/images/WeChat/center/bg_userCenter.jpg);position: relative;width: 25%;">
+                <div style='position:absolute;right:-7px;top:-9px;' onclick='deleteImg(this);'><img src='../../Content/images/WeChat/sq-delete.png' style='width:22px;'></div>
+            </div> -->
+
+            <div class="weui-uploader__input-box">
+                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="" onchange="sendFormData();" name="uploadFile">
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips" onclick="sendData();">确定</a>
+    </div>
+</body>
+
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    var alarmId = GetQuery('id');
+    var alarmtype = GetQuery('alarmtype');
+    var isDeals = GetQuery('isdeals');
+    var openId = GetQuery('openId');
+    var hostAddDetail = hostAdd + '/dealAlarm';
+    var alarmInfo = hostAdd + '/getAlarmInfo';
+    var isPushWb, pushDesc, dealResult, dealInfo; //是否推送维保,维保现场描述,误报开关,误报现场描述
+    //var fileArray=[];//上传过的文件名
+    var picUrl = ''; //返回的文件名
+    dealResult = 1;
+    isPushWb = 0;
+
+    $(function() {
+
+        if (alarmtype == 1) {
+            hostAddDetail = hostAdd + '/dealRTUAlarm';
+            alarmInfo = hostAdd + '/getRTUAlarmInfo';
+        }
+
+        showDealInfo();
+        if (isDeals == 1) {
+            //已处理的 隐藏提交按钮
+            $('.weui-btn-area').hide();
+            //查数据
+            // showDealInfo();
+            $('#describe1').hide(); //隐藏文本输入
+            $('#describe2').hide(); //隐藏文本输入
+            $('#describe1').next().show();
+            $('#describe2').next().show();
+        } else {
+            $('#describe1').show();
+            $('#describe2').show();
+
+            //移动设备系统判断
+            var u = navigator.userAgent;
+            var device = ""; //当前设备信息
+            if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) { //安卓手机
+                device = "Android";
+                $("#uploaderInput").attr("capture", "camera");
+            } else if (u.indexOf('iPhone') > -1) { //苹果手机
+                device = "iPhone";
+            } else if (u.indexOf('Windows Phone') > -1) { //winphone手机
+                device = "WindowsPhone";
+            }
+        }
+
+    });
+
+    //function getFile(obj){
+    //var _val = $(obj).val();  //获取值
+    //var _val = $("#uploaderInput")[0].files[0].name;
+    //var pos = _val.lastIndexOf("\\");
+    //var _newfilename = _val.substring(pos + 1); //处理后的文件名
+
+    //alert(fileArray.length);
+    //alert(_newfilename);
+    //console.log(fileArray);
+
+    //if(fileArray.length == 0){ //第一张直接上传
+    //     sendFormData(_newfilename);
+    // }else{ //判断是否重复上传
+    //     for (var i = 0; i < fileArray.length; i++) {
+    //         if (_newfilename == fileArray[i]) {
+    //             $.toast("您已添加过此文件!","cancel");
+    //             return false;
+    //         }else{
+    //             fileArray.push(_newfilename);
+    //             sendFormData(_newfilename);
+    //         }
+    //     }
+    // }
+    //}
+
+    //上传
+    function sendFormData() {
+        //var formData = new FormData($("#uploaderInput")[0]);
+        //formData.append("Filedata", $("#uploaderInput")[0].files[0]);
+        if ($('.weui-uploader__file').length > 2) {
+            $.toast("上传的文件不多于3张!", "cancel");
+            $('.weui-uploader__input-box').hide();
+        } else {
+            $.showLoading("照片上传中");
+            $.ajaxFileUpload({
+                url: hostAddFile + "/upload/upLoadFile",
+                fileElementId: "uploaderInput",
+                type: "post",
+                dataType: "json",
+                //data: formData,
+                //processData: false,  // 不处理数据
+                //contentType: false,   // 不设置内容类型
+                success: function(msg) {
+                    console.log('success', msg)
+                    if (msg.success == true) {
+                        var _div =
+                            "<div class='weui-uploader__file' style='background-image:url(" + msg.obj + ");position: relative;width: 25%;' realname='" + msg.obj + "'>" +
+                            "<div style='position:absolute;right:-7px;top:-9px;' onclick='deleteImg(this);'><img src='../../Content/images/WeChat/sq-delete.png' style='width:22px;'></div>" +
+                            "</div>";
+                        $('.weui-uploader__input-box').before(_div);
+                    } else {
+                        $.toast("添加失败!", "cancel");
+                    }
+                    setTimeout(function() {
+                        $.hideLoading();
+                    }, 500);
+                },
+                error: function(data) {
+                    console.log('fail', data);
+                    setTimeout(function() {
+                        $.hideLoading();
+                    }, 500);
+                }
+            });
+        }
+
+        //清除file的value
+        // var objFile = $("#uploaderInput")[0];
+        // objFile.outerHTML = objFile.outerHTML.replace(/(value=\").+\"/i, "$1\"");
+    }
+
+    //删除图片
+    function deleteImg(obj) {
+        //从数组里删除上传名
+        // var updatename = $(obj).parent().attr('updatename');
+        // fileArray.remove(updatename);
+
+        //console.log(fileArray);
+
+        //删除此元素
+        $(obj).parent().remove();
+        $('.weui-uploader__input-box').show();
+        //清除file的value
+        // var objFile = $("#uploaderInput")[0];
+        // objFile.outerHTML = objFile.outerHTML.replace(/(value=\").+\"/i, "$1\"");
+
+    }
+
+    //确定提交
+    function sendData() {
+        var imgDivArray = $('#imagesList').find('.weui-cell').find('.weui-uploader__file');
+        if (imgDivArray.length == 1) {
+            picUrl = $('.weui-uploader__file').attr('realname');
+        } else {
+            for (var i = 0; i < imgDivArray.length; i++) {
+                picUrl += $(imgDivArray[i]).attr('realname') + ',';
+            }
+        }
+
+        dealInfo = $('#describe1').val(); //误报现场描述
+        pushDesc = $('#describe2').val(); //维保现场描述
+
+        console.log('图片名:' + picUrl, dealInfo, pushDesc, dealResult, isPushWb);
+
+        $.confirm({
+            title: '提示',
+            text: '请确认是否提交，提交后不可修改!',
+            onOK: function() {
+                $.ajax({
+                    url: hostAddDetail,
+                    //url: 'http://192.168.1.112:8085/wechat/dealAlarm',
+                    type: 'post',
+                    data: 'id=' + alarmId + '&picUrl=' + picUrl + '&isPushWb=' + isPushWb + '&pushDesc=' + pushDesc + '&dealResult=' + dealResult + '&dealInfo=' + dealInfo + '&openId=' + openId,
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data);
+
+                        if (data.success == true) {
+                            $.toast("已发送!", 1500, function() {
+                                if (openId != undefined && openId != "") {
+                                    closeWXPage();
+                                    return false;
+                                }
+                                history.back(-2);
+                            });
+                        } else {
+                            $.toast("发送失败!", "cancel")
+                        }
+
+                    },
+                    error: function(data) {
+                        $.toast("发送出错!", "cancel");
+                    }
+                });
+            },
+            onCancel: function() {}
+        });
+    }
+
+    Array.prototype.indexOf = function(val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+
+    Array.prototype.remove = function(val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+
+    //误报开关
+    function gett(obj) {
+        if ($(obj).is(":checked")) {
+            dealResult = 1; //是
+        } else {
+            dealResult = 0; //否
+        }
+    }
+
+    //维保推送开关
+    function getw(obj) {
+        if ($(obj).is(":checked")) {
+            isPushWb = 1; //开
+        } else {
+            isPushWb = 0; //关
+        }
+    }
+
+
+    //已处理工单，获取处理结果，显示
+    function showDealInfo() {
+        $.ajax({
+            url: alarmInfo,
+            type: 'GET',
+            data: 'id=' + alarmId,
+            async: false,
+            dataType: 'json',
+            success: function(data) {
+                console.log('已处理', data);
+
+                //微信推送消判断工单是否已处理
+                if (data.obj.isdeal == "0") {
+                    return false;
+                } else {
+                    isDeals = 1;
+                }
+                $('#describe1').next('.weui-textarea').text(data.obj.dealInfo);
+                $('#describe2').next('.weui-textarea').text(data.obj.badDesc);
+
+                if (data.obj.dealResult != '1') {
+                    $('#switchCP').click();
+                }
+                if (data.obj.isNeedMaintain == '1') {
+                    $('#switchCPs').click();
+                }
+                if (data.obj.picUrl == '') {
+                    $('#imagesList').hide();
+                } else {
+                    $('.weui-uploader__input-box').hide(); //隐藏图片添加
+                    var imgUrlArray = data.obj.picUrl.split(',');
+                    for (var i = 0; i < imgUrlArray.length; i++) {
+                        if (imgUrlArray[i] == '') {
+                            continue;
+                        }
+                        $('#imagesList').find('.weui-cell').append(
+                            '<div onclick="wechatShowImgs(this)" class="weui-uploader__file" imgurl="' + hostAddFile + imgUrlArray[i] + '" style="background-image:url(' + hostAddFile + imgUrlArray[i] + ');position: relative;width: 25%;"></div>'
+
+                        );
+
+                    }
+
+                }
+            },
+            error: function(data) {
+                $.toast("发送出错!", "cancel");
+            }
+        });
+    }
+
+    function wechatShowImgs(ele) {
+        var urls = new Array();
+        var current = $(ele).attr('imgurl');
+        $('#imagesList').find('.weui-cell').find('.weui-uploader__file').each(function() {
+            urls.push($(this).attr('imgurl'));
+        });
+        WeixinJSBridge.invoke("imagePreview", {
+            "urls": urls,
+            "current": current
+        });
+    }
+</script>
+
+</html>

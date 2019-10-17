@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="60">  <!--每隔60秒自动刷新页面-->
+    <title>各系统监测-气体系统</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail1.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail5.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <style type="text/css">
+        /*.topBox{
+            height: 30%;
+        }*/
+        .table_box {
+            width: 100%;
+            height: calc(65% - 76px);
+        }
+        .t_Div:last-child {
+            justify-content: flex-start;
+        }
+        .t_cont{
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            background-color: rgba(13, 74, 128, .9);
+            cursor: pointer;
+        }
+        .buildImgbg{
+            color: #5BC9FF;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+	<div class="wrapper">
+        <div class="top-search btn_more">
+            <form class="layui-form" action="" autocomplete="off">
+                <span class="more_btn" id="moreBtn">更多<i class="layui-icon">&#xe65b</i></span>
+            </form>
+        </div>
+
+        <div class="scrollbar-inner topBox">
+            <div  id="topBoxContent" style="width: 100%;padding-left: 2%">
+
+            </div>
+            <!--<div class="t_boxb">-->
+                <!--<div class="t_word">南区9号楼</div>-->
+                <!--<div class="t_cont">-->
+                    <!--<div class="t_cont_title">二氧化碳称重</div>-->
+                    <!--<div class="t_cont_cont normal"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="t_boxb">-->
+                <!--<div class="t_word">南区5号楼</div>-->
+                <!--<div class="t_cont">-->
+                    <!--<div class="t_cont_title">七氟丙烷压力值</div>-->
+                    <!--<div class="t_cont_cont" id="chart1"></div>-->
+                    <!--<div class="t_cont_bottom">压力参考值:0.60-1.00Mpa</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+
+        <div class="lineStyle">
+            <img src="../../../Content/images/NetInfoStatistic/wuxian_line.png"><!--分割线-->
+        </div>
+        
+        <div class="top-search">
+            <form class="layui-form" action="">
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off" />
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" autocomplete="off" />
+                <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索" autocomplete="off">
+                <input class="submitBtn" type="button" id="btnSearch" value="查询">
+            </form>
+        </div>
+
+        <!--table start-->
+            <div class="table_box">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="5%">
+                                <col width="7%">
+                                <col width="8%">
+                                <col width="15%">
+                                <col width="8%">
+                                <col width="10%">
+                                <col width="20%">
+                                <col width="12%">
+                                <col width="15%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>处理</th>
+                                <th>设备</th>
+                                <th>时间</th>
+                                <th>测试</th>
+                                <th>报警类型</th>
+                                <th>节点</th>
+                                <th>报警分类</th>
+                                <th>报警地点</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="7%">
+                                <col width="8%">
+                                <col width="15%">
+                                <col width="8%">
+                                <col width="10%">
+                                <col width="20%">
+                                <col width="12%">
+                                <col width="15%">
+                            </colgroup>
+                            <tbody id="mainContentTbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div id="demo7"></div>
+                    <img class="dealBt" id="dealBtn" src="../../../Content/images/Public/piliang.png">
+                    <img class="exportBtn" id="exportBtn" src="../../../Content/images/Public/exportBT.png">
+                </div>
+
+            </div>
+            <!--table end-->
+    </div>
+</body>
+
+<script type="text/javascript">
+    var _unitId = GetQuery('unitId'); //单位
+    var _buildId = GetQuery('areaid'); //区域
+    var _type = GetQuery('systemID'); //系统
+    var _unitname = GetQuery('unitname'); //单位名称
+    var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+
+    var _ifUsed = 0; //调用page方法的判断
+    var _data = {
+        pageSize:20,
+        pageNumber:1,
+        keyword:$('#keyWords').val(),
+        unitId:_unitId,
+        buildId:_buildId,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        alarmStatus:"",
+        type:_type,
+        userId:loginInfo.id
+    };
+
+    $(function(){
+
+//        getCO2Chart('chart1');
+//        getHFCChart('chart1');
+//        getHFCChart('chart2');
+//        getHFCChart('chart3');
+
+        getElectFireData(); ////上方的图
+
+        getAlarmSysListData(); //获取报警列表
+        clickevent();
+    });
+    window.addEventListener('resize', function () { //宽度自适应
+        $('.t_boxb').height($('.topBox').height() - 5);
+    });
+    ////上方的图
+    function getElectFireData(){
+        var data = {
+            type: _type,
+            unitId: _unitId,
+            buildId: _buildId
+        };
+
+        var isAsync = true,
+                lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getInterfaceValueList",
+            data: data,
+            success: function(data) {
+                //console.log(data);
+                if (data.success == true) {
+                    loadDeviceContent(data.obj);
+                }
+            },
+            complete: function() {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        })
+    }
+
+    function loadDeviceContent(data){
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            var isNormal = getCurrentStatus(data[i].interfaceList[0]);
+
+            var colorStatus = "";
+            if (getCurrentStatus(data)) {
+                colorStatus = "yaliword2"
+            } else {
+                colorStatus = "yaliword1"
+            }
+
+            if(data[i].classCode == 20){
+                var buildImg = data[i].buildImgbg ? "buildImgbg": "";
+                html += '<div class="t_boxb" deviceid="'+ data[i].id +'">' +
+                            '<div class="title fontSize16 '+ buildImg +'">'+data[i].buildareaname+'</div>' +
+                            '<div class="boxcontent ">' +
+                                '<div class="eqName">' + data[i].eqName + '</div>' +
+                                '<div class="chartDiv '+(isNormal?"normal":"abnormal")+'"></div>' +
+                                '<div class=" '+(isNormal?"yaliword1":"yaliword2")+'">' + (isNormal?"正常":"异常") + '</div>' +
+                            '</div>' +
+                        '</div>'
+            }
+            else if(data[i].classCode == 19){
+                var buildImg = data[i].buildImgbg ? "buildImgbg": "";
+                html += '<div class="t_boxb" deviceid="'+ data[i].id +'">' +
+                            '<div class="title fontSize16 '+ buildImg +'">'+data[i].buildareaname+'</div>' +
+                            '<div class="boxcontent ">' +
+                                '<div class="eqName">' + data[i].eqName + '</div>' +
+                                '<div class="chartDiv pressCharts" isNormal="'+isNormal+'"   id="'+data[i].id+'"></div>' +
+                                '<div class="cankaodata fontSize14">参考值:'+data[i].interfaceList[0].analogdown+'-'+data[i].interfaceList[0].analogup+(data[i].interfaceList[0].analogUnit == ""?"MPa":data[i].interfaceList[0].analogUnit)+'</div>' +
+                            '</div>' +
+                        '</div>'
+            }else if (data[i].classCode >=100 && data[i].classCode  <= 104) { //其他
+                var buildImg = data[i].buildImgbg ? "buildImgbg": "";
+            	var interfa = data[i].interfaceList[0];
+            	var name= interfa.badName || "异常",classname = "abnormalType";
+                if((parseFloat(interfa.currentValue)).toFixed(2) == (parseFloat(interfa.digitalNormal)).toFixed(2)){
+                    name = interfa.goodName || "异常";
+                    classname = "normalType"
+                }
+                var type = interfa.ioType;
+                var html = '<div class="wrap_sysDiv" deviceid="'+ data[i].id +'">' +
+                        '<div class="title fontSize16 '+ buildImg +'">' + data[i].buildareaname + '</div>' +
+                        '<div class="boxcontent normalData" deviceid="' + data[i].id + '" down="'+interfa.analogdown+'" up="'+interfa.analogup+'" warndown="'+interfa.analogWarningDown+'" warnup="'+interfa.analogWarningUp+'">' +
+                        '<div class="eqName">' + data[i].eqName + '</div>' +
+                        '<div class="chartDiv contentimg"><img src="/html/Content/images/NetInfoStatistic/'+(type=="数字量"?"type-other1":"type-other2")+'.png"></div>';
+                        if(type=="数字量"){
+                        	html += '<div class="kongzhigui_box" style="margin: 10.5% 0;" pumtype="'+interfa.detialName+'" goodname="'+interfa.goodName+'" badname="'+interfa.badName+'" normalvalue="'+interfa.digitalNormal+'">' +
+                            '<span class="kzword ">' + interfa.detialName + '</span>' +
+                            '<span class="status '+classname+'" >' + name + '</span></div></div></div>';	
+                        }else{
+                        	html += '<div class="'+(getSysValueType(interfa)?"yaliword1":"yaliword2")+'">' + interfa.currentValue + interfa.analogUnit+'</div>' +
+                        '<div class="cankaodata fontSize14">参考值 : ' + interfa.analogdown + ' - ' + interfa.analogup + interfa.analogUnit+'</div>' +
+            	        '</div>' +
+                        '</div>';
+                        }
+                return html;
+            }
+        }
+        $('#topBoxContent').html(html || "暂无数据...");
+
+        $('.t_boxb').each(function(){
+            $(this).css({"width":"18.5%"});
+            $(this).height($('.topBox').height() - 7 );
+            if(_loginInfo.usertype == 1){
+                $(this).css({"width":"23.4%"});
+                $(this).height($('.topBox').height() - 5);
+            }
+        });
+        $('.t_word').css('line-height',$('.t_word').height() + 'px');
+        window.addEventListener('resize', function () { //宽度自适应
+            $('.t_word').css('line-height',$('.t_word').height() + 'px');
+            $('.t_boxb').css('width',$('.topBox').width()/6);
+        });
+
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].classCode == 19) { //压力
+                if (getSysValueType(data[i].interfaceList[0])){
+                    getHFCChart(data[i], 0)
+                } else {
+                    getHFCChart(data[i], 1)
+                }
+            }
+        }
+
+    }
+
+    //下方表格
+    function getAlarmSysListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/couplet/getFireAlarmList",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+        	var isDeal='<span class="underline" onclick="look(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chakanInfo.png" class="icon_Info" >查看</span>';
+            if(data[i].isdeal == "否"){
+                isDeal = '<span class="underline" onclick="deal(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chuli.png">处理</span>'
+            }
+
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+isDeal+'</td>'+
+                    '<td>'+data[i].eqName+'</td>'+
+                    '<td>'+data[i].time+'</td>'+
+                    '<td>'+data[i].isTest+'</td>'+
+                    '<td class="'+alarmType(data[i].alarmStatus)+'"><img src="../../../Content/images/NetInfoStatistic/'+alarmType(data[i].alarmStatus)+'.png">'+data[i].alarmStatus+'</td>'+
+                    '<td addressid="'+data[i].addressID+'" class="'+((data[i].addressID&&data[i].addressID!="")?"alarm_desc":"no_alarm_desc")+' align-left">'+data[i].alarmSourcedesc+'</td>'+
+                    '<td>'+data[i].alarmCat+'</td>'+
+                    '<td class="align-left">'+data[i].alarmWheredesc+'</td>'+
+                    '</tr>'
+        }
+
+        $('#mainContentTbody').html(html||"<tr><td colspan='9'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+//                console.log(obj)
+                    if(!isNew){
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        getAlarmSysListData();
+                    }
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+    function clickevent(){
+        $('#btnSearch').click(function(){
+            _data.keyword = $('#keyWords').val();
+            _data.startDate = $('#sData2').val();
+            _data.endDate = $('#eData2').val();
+            _ifUsed = 0;
+            getAlarmSysListData();
+        });
+
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            var url = _serverIp + "/front/couplet/exportFireAlarmList?"
+                    + "unitId=" + _unitId
+                    + "&buildId=" + _buildId
+                    + "&type=" + _type
+                    + "&keyword=" + $('#keyWords').val();
+            postExport(url)
+        });
+
+        //批量处理
+        $('.footer').delegate('#dealBtn', 'click', function () {
+            if( $('#mainContentTbody tr:first-child>td').length == 1)
+                return;
+            layer.open({
+                type: 2,
+                title: '批量处理',
+                closeBtn: 1,
+                area:['400px','280px'],
+                shade: 0.1,
+                offset: ['0%','calc(50% - 250px)'],
+                skin: 'layui-layer-loginRecord',
+                content: 'System_dealAll.html?unitId='+_unitId + '&buildId='+_buildId+'&type='+_type
+            });
+        });
+
+        // 查看自定义图片
+        $('#topBoxContent').delegate('.buildImgbg', 'click', function() {
+            var _id = $(this).parent().attr('deviceid');
+            top.layer.open({
+                type: 2,
+                title: '自定义图片',
+                closeBtn: 1,
+                area:['65%','70%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content:'/html/View/NetInfoStatistic/buildImgbg.html?id='+_id
+            })
+        });
+
+        //更多
+        $('#moreBtn').unbind('click').click(function() {
+            top.layer.open({
+                type: 2,
+                title: _unitname+"—气体系统更多接口数据",
+                area: ['800px', '500px'],
+                shade: 0.5,
+                skin:"layui-layer-sysNotice",
+                shadeClose: true,
+                content: (_loginInfo.usertype == 0?"":"../")+'NetInfoStatistic/system-iframe/system_detail1_more.html?type='+_type+'&unitId='+_unitId+'&buildId='+_buildId
+            });
+        });
+
+        //CRT
+        $('#mainContentTbody').delegate(' tr>td.alarm_desc','click',function(){
+            var addressID = $(this).attr('addressid');
+            top.layer.open({
+                type: 2,
+                title: 'CRT图层浏览',
+                closeBtn: 1,
+                area:['60%','65%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: 'Home/Middle_GetCrt_Window.html?addressID='+addressID+'&unitid='+_unitId
+            });
+        });
+    }
+
+
+    function deal(obj){
+        var  _id = $(this).parents('tr').attr('id');
+
+        layer.open({
+            type: 2,
+            title: '报警处理',
+            closeBtn: 1,
+            area:['550px','420px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'System_deal.html?id='+obj,
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+    
+    //查看
+    function look(obj){
+        var  _id = $(this).parents('tr').attr('id');
+
+        layer.open({
+            type: 2,
+            title: '报警查看',
+            closeBtn: 1,
+            area:['550px','380px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'System_deal.html?id='+obj,
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+
+    function getHFCChart(obj, color) {
+        var data = obj.interfaceList[0];
+        var CO2Chart = echarts.init(document.getElementById(obj.id, color));
+        CO2Chart.title = '压力';
+
+        var wordColor = ''; //数据显示颜色
+        var barColor = ''; //仪表盘颜色显示
+        var arrowColor = ''; //指针颜色
+        var axisLabelSize = null;
+        var detailSize = 20;
+        if(top.innerWidth <= 1366){
+            axisLabelSize = 8;
+            detailSize = 14;
+        }
+
+        if (color == 0) {
+            wordColor = '#43eec9';
+            barColor = '#03b7c9';
+            arrowColor = '#43eec9';
+        } else {
+            wordColor = '#f4704d';
+            barColor = '#f4704d';
+            arrowColor = '#f4704d';
+        }
+
+        //data.analogup = 55,data.analogdown = 42.5,data.analogWarningUp = 80,data.analogWarningDown=30;
+
+        var axisSplit1 = (data.analogdown - data.analogWarningDown)/(data.analogWarningUp - data.analogWarningDown);
+        var axisSplit2 = (data.analogup - data.analogWarningDown)/(data.analogWarningUp - data.analogWarningDown);
+
+        var option = {
+            grid: {
+                z: 1, //grid作为柱状图的坐标系，其层级要和仪表图层级不同，同时隐藏
+                show: false,
+                left: '0%',
+                right: '0%',
+                top: '5%',
+                containLabel: true,
+                splitLine: {
+                    show: false //隐藏分割线
+                },
+            },
+            xAxis: [ //这里有很多的show，必须都设置成不显
+                {
+                    type: 'category',
+                    data: [],
+                    axisLine: {
+                        show: false
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    splitArea: {
+                        interval: 'auto',
+                        show: false
+                    }
+                }
+            ],
+            yAxis: [ //这里有很多的show，必须都设置成不显示
+                {
+                    type: 'value',
+                    axisLine: {
+                        show: false
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                }
+            ],
+            toolbox: {
+                show: false
+            },
+            series: [{
+                name: '刻度盘',
+                type: 'gauge',
+                startAngle: 180,
+                endAngle: 0,
+                center: ["50%", "65%"], //整体的位置设置
+                z: 3,
+                min: data.analogWarningDown,
+                max: data.analogWarningUp,
+                splitNumber: 1,
+                radius: '100%',
+                axisLine: { // 坐标轴线
+                    lineStyle: { // 属性lineStyle控制线条样式
+                        width: 10,
+                        color: [
+                            [axisSplit1, '#f4704d'],
+                            [axisSplit2, "#03b7c9"],
+                            [1, '#f4704d'],
+
+                        ]
+                    }
+                },
+                axisTick: { // 坐标轴小标记
+                    length: 5, // 属性length控制线长
+                    splitNumber: 10,
+                    lineStyle: { // 属性lineStyle控制线条样式
+                        color: '#4375AA'
+                    }
+                },
+                splitLine: { // 分隔线
+                    length: 15, // 属性length控制线长
+                    lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+                        color: '#4375AA'
+                    }
+                },
+                axisLabel: {
+                    textStyle: {
+                        fontSize:axisLabelSize,
+                        color: '#03b7c9'
+                    }
+                },
+                pointer: {
+                    show: true,
+                    length: '70%',
+                    width: 2,
+                },
+                itemStyle: {
+                    normal: {
+                        //color: arrowColor,
+                        borderWidth: 0
+                    }
+                },
+                title: { //仪表盘标题
+                    show: false,
+                    offsetCenter: ['0', '20'],
+                    textStyle: {
+                        color: '#03b7c9',
+                        fontSize: 12,
+                        fontFamily: 'Microsoft YaHei'
+                    }
+                },
+                // detail:{
+                //     show: false
+                // },
+                detail: {
+                    textStyle: {
+                        fontSize: 12,
+                        color: wordColor
+                    },
+                    offsetCenter: ["0%", "45%"],
+                    formatter:'{value}'+data.analogUnit
+                },
+                data: [{ value: (data.currentValue || 0), name: '' }]
+            },
+                {
+                    name: '灰色内圈',
+                    type: 'gauge',
+                    z: 2,
+                    radius: '100%',
+                    startAngle: 180,
+                    endAngle: 0,
+                    center: ["50%", "65%"], //整体的位置设置
+                    splitNumber: 4,
+                    axisLine: { // 坐标轴线
+                        lineStyle: { // 属性lineStyle控制线条样式
+                            color: [
+                                [1, '#4375AA']
+                            ],
+                            width: 12,
+                            opacity: 1,
+                        }
+                    },
+                    splitLine: { //分隔线样式
+                        show: false,
+                    },
+                    axisLabel: { //刻度标签
+                        show: false,
+                    },
+                    axisTick: { //刻度样式
+                        show: false,
+                    },
+                    detail: {
+                        show: false,
+                        textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            //fontWeight: 'bolder',
+                            fontSize: 10
+                        }
+                    },
+                },
+            ]
+        }
+
+        CO2Chart.setOption(option);
+        window.addEventListener('resize', function() { //宽度自适应
+            CO2Chart.resize();
+        });
+
+    }
+
+</script>
+</html>

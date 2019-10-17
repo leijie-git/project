@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtInspectSiteMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtInspectSite">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="SiteCode" property="sitecode" jdbcType="NVARCHAR"/>
+        <result column="SiteName" property="sitename" jdbcType="NVARCHAR"/>
+        <result column="SiteDesc" property="sitedesc" jdbcType="NVARCHAR"/>
+        <result column="Remark" property="remark" jdbcType="NVARCHAR"/>
+        <result column="InspectCycle" property="inspectcycle" jdbcType="INTEGER"/>
+        <result column="InspectCycleType" property="inspectcycletype" jdbcType="INTEGER"/>
+        <result column="InspectCount" property="inspectcount" jdbcType="INTEGER"/>
+        <result column="TaskStart" property="taskstart" jdbcType="TIMESTAMP"/>
+        <result column="TaskEnd" property="taskend" jdbcType="TIMESTAMP"/>
+        <result column="NFCCode" property="nfccode" jdbcType="NVARCHAR"/>
+        <result column="UnitID" property="unitid" jdbcType="BIGINT"/>
+        <result column="buildID" property="buildID" jdbcType="BIGINT"/>
+        <result column="buildAreaID" property="buildAreaID" jdbcType="BIGINT"/>
+        <result column="executorID" property="executorID" jdbcType="NVARCHAR"/>
+        <result column="qrCode" property="qrCode" jdbcType="NVARCHAR"/>
+        <result column="siteplace" property="siteplace" jdbcType="NVARCHAR"/>
+    </resultMap>
+    <select id="getList" resultType="com.gw.inspect.data.InspectSiteOutData"
+            parameterType="com.gw.inspect.data.InspectSiteInData">
+        SELECT
+        a.ID ID,
+        a.UnitID UnitID,
+        a.SiteCode SiteCode,
+        a.SiteName SiteName,
+        a.SiteDesc SiteDesc,
+        a.Remark Remark,
+        a.InspectCycle InspectCycle,
+        a.InspectCycleType InspectCycleType,
+        a.InspectCount InspectCount,
+        a.TaskStart TaskStart,
+        a.TaskEnd TaskEnd,
+        a.NFCCode NFCCode,
+        a.buildID,
+        a.buildAreaID,
+        a.executorID,
+        a.qrCode,
+        c.UnitName unitName,
+        a.executorName
+        FROM
+        UT_Inspect_Site a
+        left join UT_Unit_BaseInfo c on a.UnitID =c.ID
+        <where>
+            1=1
+            <if test='UnitID!=1'>
+                and a.UnitID = #{UnitID}
+            </if>
+            <if test="SiteName!=null and SiteName!=''">
+                and SiteName like '%${SiteName}%'
+            </if>
+            <if test="SiteDesc!=null and SiteDesc!=''">
+                and SiteDesc like '%${SiteDesc}%'
+            </if>
+        </where>
+        ORDER BY a.ID DESC
+    </select>
+    <select id="getPlanSiteList" resultType="com.gw.inspect.data.InspectSiteOutData"
+            parameterType="com.gw.inspect.data.InspectSiteInData">
+        SELECT
+        a.ID ID,
+        a.UnitID UnitID,
+        a.SiteCode SiteCode,
+        a.SiteName SiteName,
+        a.SiteDesc SiteDesc,
+        a.Remark Remark,
+        a.InspectCycle InspectCycle,
+        a.InspectCycleType InspectCycleType,
+        a.InspectCount InspectCount,
+        a.TaskStart TaskStart,
+        a.TaskEnd TaskEnd,
+        a.NFCCode NFCCode,
+        b.Status Status,
+        c.DefaultUserName DefaultUserName,
+        c.DefaultUserID DefaultUserID,
+        b.ID planDetailID,
+        b.TaskUserName TaskUserName,
+        b.TaskUserID TaskUserID
+        FROM
+        UT_Inspect_Site a
+        LEFT JOIN UT_Inspect_PlanDetial b ON a.ID = b.SiteID
+        LEFT JOIN UT_Inspect_Plan c ON b.PlanID = c.ID
+        <where>
+            <if test="planID!=null">
+                b.PlanID = #{planID}
+            </if>
+        </where>
+    </select>
+    <select id="getSiteList" resultType="com.gw.inspect.data.InspectSiteOutData"
+            parameterType="com.gw.inspect.data.InspectSiteInData">
+        SELECT
+        a.ID ID,
+        a.UnitID UnitID,
+        a.SiteCode SiteCode,
+        a.SiteName SiteName,
+        a.SiteDesc SiteDesc,
+        a.Remark Remark,
+        a.InspectCycle InspectCycle,
+        a.InspectCycleType InspectCycleType,
+        a.InspectCount InspectCount,
+        a.TaskStart TaskStart,
+        a.TaskEnd TaskEnd,
+        a.NFCCode NFCCode,
+        a.buildID,
+        a.buildAreaID,
+        a.executorID,
+        a.qrCode
+        FROM
+        UT_Inspect_Site a
+        <where>
+            a.ID not in(select SiteID from UT_Inspect_PlanDetial where PlanID=#{planID})
+            <if test="SiteName!=null and SiteName!=''">
+                and a.SiteName like '%${SiteName}%'
+            </if>
+            <if test="SiteCode!=null and SiteCode!=''">
+                and a.SiteCode like '%${SiteCode}%'
+            </if>
+            <if test="UnitID!=null and UnitID!=''">
+                and a.UnitID = #{UnitID}
+            </if>
+
+        </where>
+    </select>
+
+    <select id="getSiteListByID" resultType="com.gw.inspect.data.InspectSiteOutData">
+        SELECT
+        a.ID ID,
+        a.UnitID UnitID,
+        a.SiteCode SiteCode,
+        a.SiteName SiteName,
+        a.SiteDesc SiteDesc,
+        a.Remark Remark,
+        a.InspectCycle InspectCycle,
+        a.InspectCycleType InspectCycleType,
+        a.InspectCount InspectCount,
+        c.PlanStart TaskStart,
+        c.PlanEnd TaskEnd,
+        a.NFCCode NFCCode,
+        b.Status Status,
+        b.TaskUserName DefaultUserName,
+        b.TaskUserID DefaultUserID,
+        b.ID planDetailID,
+        b.TaskUserName TaskUserName,
+        b.TaskUserID TaskUserID,
+        a.buildID,
+        a.buildAreaID,
+        a.executorID,
+        a.qrCode,
+        c.supervisorID
+        FROM
+        UT_Inspect_Site a
+        LEFT JOIN UT_Inspect_PlanDetial b ON a.ID = b.SiteID
+        LEFT JOIN UT_Inspect_Plan c ON b.PlanID = c.ID
+        <where>
+            <if test="site!=null and site!=''">
+                a.ID = #{site}
+            </if>
+            <if test="planID!=null and planID!=''">
+                and b.PlanID = #{planID}
+            </if>
+        </where>
+    </select>
+    <select id="getUnitSiteList" resultType="com.gw.mapper.entity.UtInspectSite">
+  select
+    *
+  from
+    UT_Inspect_Site 
+  where
+    UnitID = #{unitID}
+  </select>
+
+    <!-- 批量插入-->
+    <insert id="insertSitelList" parameterType="java.util.List">
+        <if test="list != null">
+            insert into UT_Inspect_Site(ID,SiteCode,SiteName,SiteDesc,Remark,InspectCycle,InspectCycleType,InspectCount,
+            TaskStart,TaskEnd,NFCCode,UnitID,SiteClassID,buildID,buildAreaID,executorID,qrCode,siteplace)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{item.id},#{item.sitecode},#{item.sitename},#{item.sitedesc},#{item.remark},#{item.inspectcycle},
+                #{item.inspectcycletype},#{item.inspectcount},#{item.taskstart},#{item.taskend},#{item.nfccode},#{item.unitid},#{item.siteclassid},
+                #{item.buildID},#{item.buildAreaID},#{item.executorID},#{item.qrCode},#{item.siteplace})
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="getCodeByUnitid" resultType="java.lang.Integer"
+            parameterType="com.gw.inspect.data.InspectSiteOutData">
+  	SELECT
+		count(a.SiteCode) conut
+	FROM
+		UT_Inspect_Site a
+		where  a.SiteCode=#{siteCode}
+		 and a.UnitID=#{unitID}
+  </select>
+
+    <select id="getInspectSiteBySiteclassid" resultType="com.gw.inspect.data.InspectSiteOutData"
+            parameterType="com.gw.inspect.data.InspectSiteInData">
+    		SELECT
+			a.ID ID
+		FROM
+			UT_Inspect_Site a
+		LEFT JOIN UT_Base_SiteClass b ON a.SiteClassID = b.ID
+		LEFT JOIN UT_Unit_BaseInfo c ON a.UnitID = c.ID
+		WHERE
+			a.SiteClassID =#{ siteClassid }
+    </select>
+
+
+    <!--通过检查点对象查出id   a.executorID=#{executorID} and-->
+    <select id="selectIdByMaintenanceUnitInData" resultType="java.lang.String"
+            parameterType="com.gw.mapper.entity.UtInspectSite">
+        SELECT
+        id
+        FROM
+        UT_Inspect_Site a
+        where
+        a.sitecode=#{sitecode} and
+        a.sitename=#{sitename} and
+        a.sitedesc=#{sitedesc} and
+        a.unitid=#{unitid} and
+        a.buildID=#{buildID} and
+       a.buildAreaID=#{buildAreaID} and
+      a.inspectcount=#{inspectcount} and
+        a.inspectcycle=#{inspectcycle} and
+        a.taskstart=#{taskstart} and
+        a.siteplace=#{siteplace}
+
+    </select>
+
+
+    <!--查询所有点位的名称,位置,执行人,巡查频数,执行周期,周期内起止时间,
+同时根据计划ID判断点位是否已关联该计划(isPlaned),根据时间及是否关联排序-->
+    <select id="selectUtInspectSiteOutList" resultType="com.gw.mapper.entity.UtInspectSiteOut"
+            parameterType="com.gw.mapper.entity.UtInspectSiteOut">
+        SELECT
+        a.id siteId,
+        a.SiteCode SiteCode,
+        a.SiteName siteName,
+        a.SiteDesc SiteDesc,
+        a.NFCCode NFCCode,
+        a.SiteClassID SiteClassID,
+        a.sitePlace sitePlace,
+        a.executorID executorID,
+        a.executorName executorName,
+        a.InspectCount inspectcount,
+        a.InspectCycle inspectcycle,
+        c.PlanStart taskstart,
+        c.PlanEnd taskend,
+        a.UnitID UnitID,
+        b.id PlanDetialID,
+        b.Status Status,
+        b.PlanID planId,
+        c.supervisorID supervisorID,
+        CASE
+        WHEN b.PlanID IS NULL THEN
+        '未关联'
+        ELSE
+        '已关联'
+        END isPlaned,
+        CASE
+        WHEN d.id IS NULL THEN
+        0
+        ELSE
+        1
+        END isTasked
+        FROM
+        UT_Inspect_Site a
+        LEFT JOIN UT_Inspect_PlanDetial b ON a.id = b.siteid and b.PlanID=#{planId}
+        LEFT JOIN UT_Inspect_Plan c on  b.PlanID=c.id
+        LEFT JOIN UT_Inspect_Task d ON b.id = d.PlanDetialID and b.PlanID=#{planId}
+         <where>
+               <if test="UnitID!=null and UnitID!=''">
+                and a.UnitID = #{UnitID}
+            </if>
+            <if test="siteName!=null and siteName!=''">
+                and a.SiteName like '%${siteName}%'
+            </if>
+            <if test="siteCode!=null and siteCode!=''">
+                and a.SiteCode like '%${siteCode}%'
+            </if>
+        </where>
+        order by c.PlanStart, isPlaned
+    </select>
+
+</mapper>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtPhoneLogMapper" >
+	<resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtPhoneLog" >
+		<!--
+          WARNING - @mbg.generated
+        -->
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="unit_id" property="unitId" jdbcType="BIGINT" />
+		<result column="sender" property="sender" jdbcType="BIGINT" />
+		<result column="receiver" property="receiver" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="send_date" property="sendDate" jdbcType="TIMESTAMP" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="long_time" property="longTime" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="getPhoneList" resultType="com.gw.front.history.data.FrontHistoryMessageOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+		SELECT
+		b.UnitName unitName,
+		a.phone phone,
+		a.receiver receiver,
+		count(*) sendCount
+		FROM
+		UT_phone_log a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.unit_id = b.ID
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit e ON e.unit_id = b.id
+		</if>
+		<if test="buildId != null and buildId != ''">
+			LEFT JOIN UT_Unit_Build i ON i.UnitID = b.ID
+		</if>
+		<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="userId != 1">
+				and e.user_id = #{userId}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				and a.send_date >= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND a.send_date &lt;= #{endDate}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND (b.UnitName LIKE '%${keyword}%' or a.phone LIKE '%${keyword}%')
+			</if>
+			<if test="unitId != null and unitId != ''">
+				AND b.ID = #{unitId}
+			</if>
+			<if test="buildId != null and buildId != ''">
+				AND i.ID = #{buildId}
+			</if>
+		</where>
+		group by b.UnitName,a.phone,a.receiver
+	</select>
+	<select id="getAnalysisPhoneList" resultType="com.gw.front.analysis.data.FrontAnalysisPhoneOutData" parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+		SELECT
+		b.UnitCode,
+		b.ChildStationNum childStationNum,
+		b.UnitName unitName,
+		<!-- SUM(CASE WHEN a.status=1 THEN 1 ELSE 0 END) phoneSucCount,
+		SUM(CASE WHEN a.status=2 THEN 1 ELSE 0 END) phoneAnswerCount,
+ 		count(*) phoneSucCount,
+ 		count(*) phoneAnswerCount,-->
+		COUNT (status) phoneSucCount ,
+		COUNT (long_time) phoneAnswerCount,
+		convert(varchar(8),dateadd(ss,SUM(a.long_time),108),108) longTime,
+		count(*) phoneCount
+		FROM
+		UT_phone_log a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.unit_id = b.ID
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit e ON e.unit_id = b.id
+		</if>
+		<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="userId != 1">
+				and e.user_id = #{userId}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND a.send_date >= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND a.send_date &lt;= #{endDate}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND (b.UnitName LIKE '%${keyword}%' or b.UnitCode LIKE '%${keyword}%')
+			</if>
+		</where>
+		group by b.UnitName,b.ChildStationNum,b.UnitCode
+	</select>
+	<select id="getPhoneStatDetail" resultType="com.gw.front.history.data.FrontHistoryMessageOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+		SELECT
+		b.UnitName unitName,
+		a.phone phone,
+		a.receiver receiver,
+		a.send_date sendDate
+		FROM
+		UT_phone_log a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.unit_id = b.ID
+		LEFT JOIN UT_Unit_Build c ON c.UnitID = b.ID
+		<where>
+			a.phone = #{phone}
+			and (b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="startDate != null and startDate != ''">
+				and DateName(year,a.send_date) = #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and CONVERT(varchar(7),a.send_date,120) = #{endDate}
+			</if>
+			<if test="unitId != null and unitId != ''">
+				AND b.ID = #{unitId}
+			</if>
+			<if test="buildId != null and buildId != ''">
+				AND c.ID = #{buildId}
+			</if>
+		</where>
+		order by a.id desc
+	</select>
+	<select id="getCommunicationCount" resultType="com.gw.front.analysis.data.FrontAnalysisCommunicationOutData" parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+		SELECT * FROM (SELECT
+		<!-- SUM(CASE WHEN a.status=1 THEN 1 ELSE 0 END) phoneSucCount,
+		SUM(CASE WHEN a.status=2 THEN 1 ELSE 0 END) phoneAnswerCount, -->
+		COUNT(a.ID) phoneSucCount
+		FROM
+		UT_phone_log a
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit b ON a.unit_id = b.unit_id
+		</if>
+		WHERE a.status IS NOT NULL and a.status !=0
+		<if test="userId != 1">
+			and b.user_id = #{userId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.send_date >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.send_date &lt;= #{endDate}
+		</if>
+		) c
+
+		LEFT JOIN (
+		SELECT
+		COUNT (a.ID) phoneAnswerCount
+		FROM
+		UT_phone_log a
+		WHERE
+		a.status =2
+		<if test="userId != 1">
+			and b.user_id = #{userId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.send_date >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.send_date &lt;= #{endDate}
+		</if>
+		) c1 ON 1 = 1
+		LEFT JOIN (
+		SELECT
+		COUNT (a.ID) phoneCount
+		FROM
+		UT_phone_log a
+		WHERE
+		1 = 1
+		<if test="userId != 1">
+			and b.user_id = #{userId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.send_date >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.send_date &lt;= #{endDate}
+		</if>
+		) c2 ON 1 = 1
+
+		LEFT JOIN (
+		SELECT
+		COUNT(d.ID) messageCount
+		FROM UT_message_log d
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit e ON e.unit_id = d.unit_id
+		</if>
+		WHERE 1=1
+		<if test="userId != 1">
+			and e.user_id = #{userId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and d.send_date >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and d.send_date &lt;= #{endDate}
+		</if>
+		) f ON 1=1
+	</select>
+	<select id="getDataflows" resultType="com.gw.front.analysis.data.FrontAnalysisCommunicationOutData" parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+		SELECT
+		a.rx receiveCount,
+		a.tx sendCount
+		FROM
+		${database}.dbo.sd_dataflow a
+		LEFT OUTER JOIN UT_Unit_NetDevice b ON a.OwnerCode = b.OwnerCode
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit d ON d.unit_id = b.UnitID
+		</if>
+		WHERE
+		(b.isDelete = 0 OR b.isDelete is NULL)
+		<if test="userId != 1">
+			and d.user_id = #{userId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.lastupdate &gt;= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.lastupdate &lt;= #{endDate}
+		</if>
+	</select>
+
+	<select id="getListLog" resultType="com.gw.mapper.entity.UtPhoneLog">
+		SELECT ID,unit_id as unitId,sender,receiver,phone,send_date as sendDate,status,long_time as longTime FROM UT_phone_log WHERE ID=#{id}
+	</select>
+
+	<update id="updatePhoneLog" parameterType="com.gw.mapper.entity.UtPhoneLog">
+		UPDATE UT_phone_log SET status=#{status},long_time=#{longTime} WHERE ID=#{id}
+	</update>
+</mapper>

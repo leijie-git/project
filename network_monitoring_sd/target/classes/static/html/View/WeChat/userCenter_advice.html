@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>意见反馈</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/userCenter.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <style type="text/css">
+        body{
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div>
+            <label for="content">意见内容:</label>
+            <input type="text" name="contentPut" id="contentPut">
+        </div>
+
+        <div>
+            <label for="telPut">联系电话:</label>
+            <input type="text" name="telPut" id="telPut">
+        </div>
+    </div>
+
+    <div class="btBox">
+        <input type="button" name="" value="取消" onclick="backpage();"></button>
+        <input type="button" name="" value="确定" id="submitbt"></button>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var user = GetQuery('user');
+    var phone,content,name;
+
+    $(function(){
+        $(document).on("click", "#submitbt", function() { //提交
+            phone=$('#telPut').val();
+            content=$('#contentPut').val();
+
+            if(phone == '' || (phone.replace(/(^\s*)|(\s*$)/g, "") == "") || content == '' || (content.replace(/(^\s*)|(\s*$)/g, "") == "")){
+                $.toast("输入不完整!","cancel");
+            }else{
+                $.confirm("确定提交吗?", "确定提交?", function() {
+                    $.ajax({
+                        type: "get",
+                        url: hostAdd + "/feedback",
+                        data: "phone=" + phone + "&content=" + content + "&name=" + user,
+                        success: function (data) {
+                            //console.log(data);
+                            if (data.success == true) {
+                                $.toast("意见已提交!",1500,function(){
+                                    history.back(-1);
+                                });
+                            }else{
+                                $.toast("意见提交失败!","cancel");
+                            }
+                        }
+                    });
+                }, function() {
+                  //取消操作
+                });
+            }       
+        });
+    });
+
+    
+
+    function backpage(){ //取消
+        history.back(-1);
+    }
+</script>
+
+</html>

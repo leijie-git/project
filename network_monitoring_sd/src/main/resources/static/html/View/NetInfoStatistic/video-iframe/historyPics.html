@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>视频历史截图</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/historyPics.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        
+    	<div class="top-search">
+            <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off"/>
+                -
+            <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" autocomplete="off"/>
+
+            <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索">
+            <input class="submitBtn" type="button" value="查询">
+        </div>
+
+        <section class="main_hisPics scrollbar-inner">
+            <div class="wrap_hisPics" id="mainContent">
+                <!--<div class="picDiv">-->
+                    <!--<div class="picCont"></div>-->
+                    <!--<div class="decribe">-->
+                        <!--<span>2018-07-01 12:00:00</span>-->
+                        <!--<span>消控室</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+        </section>
+
+        <div class="wrap_page">
+            <div id="demo7"></div>
+
+        </div>
+    </div>
+
+</body>
+
+
+<script type="text/javascript">
+    var ifUsed = 0; //调用page方法的判断
+
+    var _data={
+        pageSize:20,
+        pageNumber:1,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#keyWords').val(),
+        unitId:GetQuery('unitId')
+    };
+
+	$(function(){
+
+        getUnitCutVideoPicData();
+
+
+
+//        jQuery('.scrollbar-macosx').scrollbar({});
+        clickevent();
+
+    });
+
+    function getUnitCutVideoPicData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getUnitVideoLogs",
+            data:_data,
+            success: function (data) {
+                if (ifUsed == 0) {
+                    layerPage(data.total);
+                    ifUsed = 1;
+                }
+                showListContent(data);
+            }
+        });
+    }
+
+    function showListContent(msg){
+        var data = msg.list;
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<div class="picDiv">'+
+                    '<div class="picCont"><img src="'+_serverIp + data[i].path+'" class="hisCutPhoto"></div>'+
+                    '<div class="decribe">'+
+                    '<span title="'+(data[i].createDate)+'">'+(data[i].createDate)+'</span>'+
+                    '<span title="'+data[i].buildArea+'">'+data[i].buildArea+'</span>'+
+                    '</div>'+
+                    '</div>'
+        }
+        $('#mainContent').html(html||"暂无截图记录...");
+
+    }
+
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getUnitCutVideoPicData(); //调用接口获取数据
+                    }
+
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+    function clickevent(){
+    	//收缩父页面选择框
+		$(document).click(function(){
+	        parent.mainUse();
+	    });
+
+        //搜索
+        $('.submitBtn').click(function() {
+            ifUsed = 0;
+            name = $('#searchTxt').val();
+            getData();
+        });
+
+        //查看大图
+        $('#mainContent').delegate('.picDiv .hisCutPhoto','click',function(){
+            getBigPicInfo($(this));//方法写于public.js
+        })
+    }
+
+
+
+
+    function showVideoNum(num){}
+</script>
+</html>

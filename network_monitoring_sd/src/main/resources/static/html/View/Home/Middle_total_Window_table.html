@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位记录详情表格</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/WeibaoInspect/index.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/Middle_total_Window.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+
+    <style type="text/css">
+    .wrapper{
+        position: relative;
+        flex-flow: column;
+        padding: 0 0 0 1%;
+    }
+    .submitBtn{
+        margin-left: 10px;
+    }
+    .top-search{
+        padding-left: 0;
+    }
+/*    #dealResult{
+        width: 140px;
+        height: 30px;
+        line-height: 28px;
+        color: #798EA9!important;
+    }*/
+
+    </style>
+</head>
+
+<body>
+	<div class="wrapper">
+        <!--选择框-->
+        <div class="top-search">
+             <form class="layui-form" action="" autocomplete="off">
+                <!--下拉框-->
+                <div class="layui-inline layui-bg-cyan" id="xcDealStatus">
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="" selected="selected" >--处理状态--</option>
+                            <option value="0">未处理</option>
+                            <option value="1">已处理</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+            -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="submitBtn" type="button" value="查询" id="btnSearch">
+            </form>
+        </div>
+
+        <!--table start-->
+        <div class="table_box">
+            <div class="list_table">
+                <div class="table_header">
+                    <table>
+                        <colgroup>
+                            <col width="4%">
+                            <col width="4%">
+                            <col width="6%">
+                            <col width="8%">
+                            <col width="7%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="13%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="6%">
+                            <col width="6%">
+                            <col width="6%">
+                        </colgroup>
+                        <thead class="fontSize16">
+                            <tr>
+                                <th>序号</th>
+                                <th>误报</th>
+                                <th>测试</th>
+                                <th>单位编号</th>
+                                <th>子站号</th>
+                                <th>单位名称</th>
+                                <th>警情描述</th>     
+                                <th>设备描述</th>                              
+                                <th>报警时间</th>
+                                <th>主机时间</th>
+                                <th>报警类型</th>
+                                <th>是否处理</th>
+                                <th>处理编号</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="table_content scrollbar-inner">
+                    <table cellpadding="0" cellspacing="0" class="tbody">
+                        <colgroup>
+                            <col width="4%">
+                            <col width="4%">
+                            <col width="6%">
+                            <col width="8%">
+                            <col width="7%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="13%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="6%">
+                            <col width="6%">
+                            <col width="6%">
+                        </colgroup>
+                        <tbody class="fontSize14" id="tablebody">
+                        <tr><td colspan="13">暂无数据</td></tr>
+                            <!-- <tr id="">
+                                <td>1</td>
+                                <td>否</td>
+                                <td>否</td>
+                                <td title="1708110A10Q0">1708110A10Q0</td>
+                                <td title="10114">10114</td>
+                                <td title="卫材(中国)药业有限公司">卫材(中国)药业有限公司</td>
+                                <td title="报警主机">报警主机</td>
+                                <td title="2018-11-01 13:02:16">2018-11-01 13:02:16</td>
+                                <td title="2018-11-01 14:012:18">2018-11-01 14:012:18</td>
+                                <td title="监管">监管</td>
+                                <td title="01号主机0011回路00e3b48d节点">01号主机0011回路00e3b48d节点</td>
+                                <td></td>
+                                <td></td>
+                                <td>否</td>
+                                <td class="underline" onclick="deal(this);">处理</td>
+                            </tr>
+                            <tr id="">
+                                <td>2</td>
+                                <td>否</td>
+                                <td>否</td>
+                                <td title="1708110A10Q0">1708110A10Q0</td>
+                                <td title="10114">10114</td>
+                                <td title="卫材(中国)药业有限公司">卫材(中国)药业有限公司</td>
+                                <td title="报警主机">报警主机</td>
+                                <td title="2018-11-01 13:02:16">2018-11-01 13:02:16</td>
+                                <td title="2018-11-01 14:012:18">2018-11-01 14:012:18</td>
+                                <td title="监管">监管</td>
+                                <td title="01号主机0011回路00e3b48d节点">01号主机0011回路00e3b48d节点</td>
+                                <td></td>
+                                <td></td>
+                                <td>是</td>
+                                <td>1000323</td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="footer">
+                <div id="demo0"></div>
+            </div>
+        </div>
+        <!--table end-->
+
+    </div>
+</body>
+
+<script type="text/javascript">
+
+    //var _alarmStatus = GetQuery('alarmStatus'); //在线/总数
+    // var _calibrationType = GetQuery('calibrationType'); //标定类型
+    // var _deviceStatus = GetQuery('deviceStatus'); //设备类型
+    // var startDate='';endDate='';
+    // var isDeal=0; //未处理
+
+    var _ifUsed = 0; //调用page方法的判断
+
+    var _deviceData={
+        pageSize:20,
+        pageNumber:1,
+        isDeal:$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"",
+        unitId:GetQuery('unitid'), //单位id,
+        alarmStatus:GetQuery('alarmStatus'), //在线/总数
+        calibrationType:GetQuery('calibrationType'), //标定类型
+        startDate:$('.timeStart').val(),
+        endDate:$('.timeEnd').val()
+    };
+
+    $(function(){
+        loadLayuiForm();//调用layui form组件，方法写在public
+        Getlist();
+        clickevent();
+
+        //检索
+        $('.checkput').unbind('click').click(function () {
+            _deviceData.startDate = $('.timeStart').val();
+            _deviceData.endDate = $('.timeEnd').val();
+            _deviceData.isDeal = $('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+            _ifUsed = 0; //调用page方法的判断
+            Getlist();
+        });
+    });
+
+    //获取表格数据
+    function Getlist(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getAlarmByUnitId",
+            data:_deviceData,
+            beforeSend:function(){
+                $('.wrapper').append('<div class="loading" style="position: absolute;width: 100%;right: 0;left: 0;margin: auto;top: 50%;text-align: center;color: #fff;"> 加载中 ......</div>');
+            },
+            success: function (msg) {
+                console.log(msg);
+                $('.wrapper .loading').remove();
+                if (_ifUsed == 0) {
+                    layerPage(msg.total);
+                    _ifUsed = 1;
+                }
+
+                var data = msg.list;
+                if(!data){
+                    return;
+                }
+                var _list = '';
+                for(var i=0;i<data.length;i++){
+                    _list+=
+                    "<tr id='"+ data[i].id +"'>" + 
+                        "<td>" + (i + 1) + "</td>" + 
+                        "<td>" + (data[i].dealResult == 1 ? '是' : '否') + "</td>"+
+                        "<td>" + (data[i].calibrationId == 2 ? '是' : '否') + "</td>"+
+                        "<td>" + (data[i].unitCode || '') + "</td>"+ //单位编号
+                        "<td>" + (data[i].childStationNum || '') + "</td>"+ //子站号
+                        "<td>" + (data[i].unitName || '') + "</td>"+ //单位名称
+                        "<td>"+ (data[i].alarmDevicedesc || '') + "</td>"+ //警情描述 (报警设备+报警源+发生地点)
+                        "<td>" + (data[i].alarmDevicedesc || '') + "</td>" + //描述
+                        "<td>"+(data[i].time || '')+"</td>"+ //报警时间
+                        "<td>"+(data[i].dealtime || '')+"</td>"+ //主机时间
+                        "<td>" + (data[i].alarmStatus ||'') +"</td>"+ //报警类型
+                        getIsDeal(data[i].dealCode) +
+                    "</tr>";
+                }
+                $('#tablebody').html(_list || '<tr><td colspan="15">暂无数据...</td></tr>');
+                $('#tablebody tr>td').each(function(){$(this).attr('title',$(this).text())})
+            }
+        });
+    }
+    
+    function clickevent(){
+        $('#btnSearch').unbind('click').click(function(){
+            _deviceData.startDate = $('#sData2').val();
+            _deviceData.endDate = $('#eData2').val();
+            _deviceData.isDeal=$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+            _ifUsed = 0;
+            Getlist();
+        });
+
+    }
+
+    function getIsDeal(code){
+        if(_deviceData.isDeal == 0){ //未处理
+            return "<td>否</td><td class='underline' onclick='deal(this);'>处理</td>";
+        }else{ //已处理
+            return "<td>是</td><td>" + (code == '' ? '' : code) + "</td>";
+        }
+    }
+
+    function getAlarmType(type){
+        if(type == 0){
+            return '手动报警';
+        }else if(type == 1){
+            return '火警';
+        }else if(type == 2){
+            return '故障';
+        }else if(type == 3){
+            return '启动';
+        }else if(type == 4){
+            return '反馈';
+        }else if(type == 5){
+            return '监管';
+        }else if(type == 6){
+            return '屏蔽';
+        }else if(type == 7){
+            return '恢复';
+        }else if(type == 8){
+            return '复位';
+        }else if(type == 9){
+            return '用户传输装置操作';
+        }else if(type == 11){
+            return '火警恢复';
+        }else if(type == 12){
+            return '故障恢复';
+        }else if(type == 13){
+            return '停止';
+        }else if(type == 14){
+            return '反馈撤销';
+        }else if(type == 15){
+            return '监管撤销';
+        }else if(type == 16){
+            return '屏蔽撤销';
+        }else if(type == 20){
+            return '消音';
+        }else if(type == 21){
+            return '解除报警';
+        }else if(type == 22){
+            return '自动火警有人';
+        }else if(type == 23){
+            return '自动火警超时';
+        }else if(type == 24){
+            return '自动火警无人';
+        }else if(type == 25){
+            return '确认火警';
+        }else if(type == 26){
+            return '紧急火警';
+        }else if(type == 27){
+            return '预警';
+        }else if(type == 28){
+            return '报警';
+        }else if(type == 30){
+            return '传输装置开机';
+        }else if(type == 31){
+            return '传输装置关机';
+        }else if(type == 32){
+            return '控制器开机';
+        }else if(type == 33){
+            return '控制器关机';
+        }else if(type == 34){
+            return 'RTU开机';
+        }else if(type == 35){
+            return 'RTU关机';
+        }
+    }
+
+
+    //处理
+    function deal(obj){
+        var id =$(obj).parent().attr('id');
+        parent.layer.open({
+            type: 2,
+            title: '报警处理弹窗',
+            closeBtn: 1,
+            area: ['50%', '70%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: '../NetInfoStatistic/system-iframe/System_deal.html?id=' + id,
+        });
+    }
+
+     //分页
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo0'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    //console.log(obj)
+                    if (!isNew) {
+                        _deviceData.pageNumber = obj.curr;
+                        _deviceData.pageSize = obj.limit;
+                        //console.log(_curr)
+                        Getlist(); //调用接口获取数据
+                    }
+
+                }
+            });
+        });
+    }
+</script>
+
+</html>

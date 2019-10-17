@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>报警信息</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <script src="../../Script/WeChat/pinchzoom.js"></script>
+
+
+    <style>
+        .item_title {
+            color: #3287cf;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 15px;
+            background: rgba(50, 135, 207, 0.06) url(../../Content/images/WeChat/alarm_next.png) no-repeat 96% center scroll;
+        }
+        
+        .weui-cells {
+            margin-top: 0;
+        }
+        
+        #crtBox {
+            position: relative;
+        }
+        
+        #crtBox img {
+            width: 100%;
+        }
+        
+        #videoFun {
+            float: right;
+            margin-right: 6%;
+            background: #04be02;
+            color: #fff;
+            padding: 0 10px;
+            border-radius: 10px;
+            height: 30px;
+            line-height: 30px;
+            margin-top: 5px;
+        }
+        
+        .weui-cell__bd {
+            min-width: 90px;
+        }
+        
+        #crtBox img.icon-alarm {
+            position: absolute;
+            width: 20px;
+            box-shadow: 0 0 1px 2px rgba(255, 0, 0, .0);
+            background: rgba(255, 0, 0, .5);
+            animation: alarmAn 2s infinite;
+            margin-left: -10px;
+            margin-top: -10px;
+        }
+        
+        @keyframes alarmAn {
+            0% {
+                box-shadow: 0 0 1px 2px rgba(255, 0, 0, .0);
+            }
+            50% {
+                box-shadow: 0 0 1px 2px rgba(255, 0, 0, .5);
+            }
+            100% {
+                box-shadow: 0 0 1px 2px rgba(255, 0, 0, .0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="alarmDeal" class="item_title" onclick="alarmDeal()">
+        处理
+    </div>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>单位名称</p>
+            </div>
+            <div class="weui-cell__ft" id="alarmUnit">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>类型</p>
+            </div>
+            <div class="weui-cell__ft" id="alarmSys">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>报警描述</p>
+            </div>
+            <div class="weui-cell__ft" id="alarmDesc">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>报警分类</p>
+            </div>
+            <div class="weui-cell__ft" id="alarmType">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>时间</p>
+            </div>
+            <div class="weui-cell__ft" id="alarmTime">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>地点</p>
+            </div>
+            <div class="weui-cell__ft" id="alarmAddr">说明文字</div>
+        </div>
+    </div>
+    <div class="item_title">
+        平面图
+        <div id="videoFun" onclick="loadVideo(this);" hidden>视频</div>
+    </div>
+    <div id="crtBox" style="width: 100%; overflow: hidden;" onclick="showCrtWechat(this);"></div>
+</body>
+
+</html>
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    var alarmId = GetQuery('id');
+    var alarmtype = GetQuery('alarmtype');
+    var isdeal = GetQuery('isdeal');
+    var isdeals; //ajax返回
+    $(function() {
+        // if (isdeal == '0') {
+        //     // $('#alarmDeal').hide(); //isdeal==0 为未处理
+        // } else {
+        //     $('#alarmDeal').text('查看');
+        // }
+
+        var baseInfoUrl, dealInfoUrl;
+        if (alarmtype == 1) {
+            baseInfoUrl = hostAdd + '/getRTUAlarmInfo'; //故障
+            dealInfoUrl = hostAdd + '/dealRTUAlarm';
+        } else {
+            baseInfoUrl = hostAdd + '/getAlarmInfo';
+            dealInfoUrl = hostAdd + '/dealAlarm';
+        }
+
+        $.ajax({
+            url: baseInfoUrl,
+            type: 'get',
+            data: 'id=' + alarmId,
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if (data.success) {
+                    $('#alarmUnit').text(data.obj.unitName);
+                    $('#alarmSys').text(data.obj.alarmStatus);
+                    $('#alarmDesc').text(data.obj.alarmDevicedesc);
+                    $('#alarmType').text(data.obj.alarmCat);
+                    $('#alarmTime').text(data.obj.alarmTime);
+                    $('#alarmAddr').text(data.obj.alarmWheredesc);
+                    if (data.obj.isdeal == 0) {
+                        $('#alarmDeal').text('处理');
+                    } else {
+                        $('#alarmDeal').text('查看');
+                    }
+                    isdeals = data.obj.isdeal;
+
+                    if (data.obj.addressID != '' && data.obj.addressID != undefined) {
+                        getCRT(data.obj.addressID); //获取crt相关信息
+                    }
+                }
+            },
+            error: function(data) {
+                console.log(data)
+            },
+            complete: function() {
+                // dealInfo(dealInfoUrl);
+            }
+        });
+
+
+
+    });
+
+    function dealInfo(dealInfoUrl) {
+        console.log(dealInfoUrl)
+        console.log(alarmId)
+        $.ajax({
+            url: dealInfoUrl,
+            type: 'post',
+            data: 'id=' + alarmId + '&picUrl=' + '&isPushWb=0' + '&pushDesc=123' + '&dealResult=0' + '&dealInfo=123',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                // if (data.success) {
+                //     $('#alarmUnit').text(data.obj.unitName);
+                //     $('#alarmSys').text(data.obj.alarmStatus);
+                //     $('#alarmDesc').text(data.obj.alarmDevicedesc);
+                //     $('#alarmType').text(data.obj.eqName);
+                //     $('#alarmTime').text(data.obj.time);
+                //     $('#alarmAddr').text(data.obj.alarmWheredesc);
+                // }
+            },
+            error: function(data) {
+                console.log(data)
+            }
+        });
+
+    }
+
+    //跳转处理页面
+    function alarmDeal() {
+        self.location.href = "alarmListdetailDeal.html?id=" + alarmId + "&alarmtype=" + alarmtype + '&isdeals=' + isdeals;
+    };
+
+    //获取图片
+    function getCRT(crtid) {
+        $.ajax({
+            url: hostAdd + '/getOneCRT',
+            type: 'get',
+            data: 'addressID=' + crtid,
+            dataType: 'json',
+            success: function(data) {
+                console.log('crt图纸', data);
+                if (data.success) {
+                    $('#crtBox').before('　点位信息：' + data.obj.eqname + '--' + data.obj.partcode + '--' + data.obj.adress)
+                    $('#crtBox').append(
+                        // '<img onclick="showCrtWechat(\'' + hostAddFile + data.obj.buildAreaImg + '\')" src="' + hostAddFile + data.obj.buildAreaImg + '" >'
+                        '<img  src="' + hostAddFile + data.obj.buildAreaImg + '" >' +
+                        // '<img  src="' + "http://192.168.1.168:1912" + data.obj.buildAreaImg + '" >' +
+                        '<img class="icon-alarm" src="/image/crt/' + data.obj.codeValue + '_1.png' + '" style="left:' + data.obj.xaxis + ';top:' + data.obj.yaxis + '">'
+                    );
+
+                    $('#crtBox').each(function() {
+                        new RTP.PinchZoom($(this), {});
+                    });
+
+                    if (data.obj.videoId != '' && data.obj.videoId != undefined) {
+                        getVideoDetail(data.obj.videoId); //获取视频信息详情
+                    }
+                } else {
+                    $.toptip('CRT信息获取失败', 'error');
+                }
+            },
+            error: function(data) {
+                console.log(data)
+                $.toptip('CRT信息获取失败', 'error');
+            }
+        });
+    };
+
+
+    //获取视频信息详情
+    function getVideoDetail(videoId) {
+        $.ajax({
+            url: hostAdd + '/getVideoDetail',
+            type: 'get',
+            data: 'videoID=' + videoId,
+            dataType: 'json',
+            success: function(data) {
+                console.log('视频详情', data);
+                if (data.success) {
+                    $('#videoFun').attr('videoid', data.obj.ip);
+                    $('#videoFun').show();
+                } else {
+                    $.toptip('CRT信息获取失败', 'error');
+                }
+            },
+            error: function(data) {
+                console.log(data)
+                $.toptip('CRT信息获取失败', 'error');
+            }
+        });
+    };
+
+    //crt图片放大
+    function showCrtWechat(element) {
+        // var imgElement = $(element).find('img');
+        // if (imgElement == undefined) {
+        //     return false;
+        // }
+        // var imgurl = imgElement.attr('src');
+        // // console.log(imgurl, [imgurl])
+        // WeixinJSBridge.invoke("imagePreview", {
+        //     "urls": [imgurl],
+        //     "current": imgurl
+        // });
+    }
+
+    //加载视频
+    function loadVideo(element) {
+        //方法1：
+        var videoId = $(element).attr('videoid');
+        self.location.href = "videoYsy.html?ip=" + videoId;
+    }
+</script>

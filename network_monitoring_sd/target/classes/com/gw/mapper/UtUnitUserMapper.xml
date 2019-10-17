@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitUserMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitUser">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="UserName" property="username" jdbcType="NVARCHAR"/>
+        <result column="Account" property="account" jdbcType="NVARCHAR"/>
+        <result column="Password" property="password" jdbcType="NVARCHAR"/>
+        <result column="UserType" property="usertype" jdbcType="INTEGER"/>
+        <result column="UserRole" property="userrole" jdbcType="INTEGER"/>
+        <result column="Sex" property="sex" jdbcType="INTEGER"/>
+        <result column="Birthday" property="birthday" jdbcType="TIMESTAMP"/>
+        <result column="Email" property="email" jdbcType="NVARCHAR"/>
+        <result column="MobilePhone" property="mobilephone" jdbcType="NVARCHAR"/>
+        <result column="Department" property="department" jdbcType="NVARCHAR"/>
+        <result column="Post" property="post" jdbcType="NVARCHAR"/>
+        <result column="IsDelete" property="isdelete" jdbcType="INTEGER"/>
+        <result column="AddDate" property="adddate" jdbcType="TIMESTAMP"/>
+        <result column="AddUserID" property="adduserid" jdbcType="NVARCHAR"/>
+        <result column="UserID" property="userid" jdbcType="BIGINT"/>
+        <result column="OpenID" property="openid" jdbcType="NVARCHAR"/>
+        <result column="CertificatesType" property="certificatestype" jdbcType="NVARCHAR"/>
+        <result column="CertificatesNO" property="certificatesno" jdbcType="NVARCHAR"/>
+        <result column="Photo" property="photo" jdbcType="NVARCHAR"/>
+        <result column="UnitID" property="unitid" jdbcType="BIGINT"/>
+        <result column="CertificatesPic" property="certificatespic" jdbcType="VARCHAR"/>
+        <result column="CertificatesDate" property="certificatesdate" jdbcType="TIMESTAMP"/>
+        <result column="LicenseNO" property="licenseno" jdbcType="NVARCHAR"/>
+        <result column="isPushFault" property="ispushfault" jdbcType="VARCHAR"/>
+        <result column="channelId" property="channelid" jdbcType="VARCHAR"/>
+        <result column="ExpiryTime" property="expirytime" jdbcType="TIMESTAMP"/>
+        <result column="channelId" property="channelid" jdbcType="VARCHAR"/>
+        <result column="ReceiveAlarmType" property="receivealarmtype" jdbcType="VARCHAR"/>
+        <result column="phone_name" property="phoneName" jdbcType="VARCHAR"/>
+        <result column="userHeader" property="userHeader" jdbcType="NVARCHAR" />
+        <result column="createDate" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="createUser" property="createUser" jdbcType="NVARCHAR" />
+        <result column="updateDate" property="updateDate" jdbcType="TIMESTAMP" />
+        <result column="updateUser" property="updateUser" jdbcType="NVARCHAR" />
+         <result column="address" property="address" jdbcType="NVARCHAR" />
+        <result column="ethnicGroup" property="ethnicGroup" jdbcType="NVARCHAR" />
+        <result column="sign" property="sign" jdbcType="NVARCHAR" />
+        <result column="remark" property="remark" jdbcType="NVARCHAR" />
+        <result column="isSysUser" property="isSysUser" jdbcType="NVARCHAR" />
+
+    </resultMap>
+
+    <select id="selectAllMaintenanceUser" resultType="com.gw.unit.data.MaintenanceUserOutData">
+        SELECT
+        m.UnitName unitname,
+        u.id,
+        u.account,
+        u.userrole,
+        u.sex,
+        u.username,
+        CONVERT (VARCHAR, u.birthday, 23)birthday,
+        u.email,
+        u.mobilephone,
+        u.department,
+        u.post,
+        u.certificatestype,
+        u.certificatesno,
+        CONVERT (VARCHAR, u.certificatesdate, 23)certificatesdate,
+        u.licenseno,
+        u.photo,
+        u.certificatespic,
+        u.ReceiveAlarmType receivealarmtype,
+        CONVERT (VARCHAR, u.ExpiryTime, 23) expirytime,
+        u.UnitID
+        FROM
+        UT_Unit_User u LEFT OUTER JOIN
+        UT_Maintenance_Unit m ON u.UnitID = m.ID
+        WHERE
+        u.UserType = 0
+        <if test="UnitID != null and UnitID !=''">
+            AND u.UnitID like '%${UnitID}%'
+        </if>
+        <if test="username != null and username !=''">
+            AND u.username like '%${username}%'
+        </if>
+        <if test="unitname != null and unitname != ''">
+            AND m.UnitName like '%${unitname}%'
+        </if>
+        <if test="account != null and account != ''">
+            AND u.account like '%${account}%'
+        </if>
+        ORDER BY u.id DESC
+    </select>
+
+    <select id="selectAllNetworkingUser" resultType="com.gw.unit.data.NetworkingUserOutData"
+            parameterType="com.gw.unit.data.NetworkingUserInData">
+        SELECT
+        b.UnitName unitname,
+        u.id,
+        u.unitid,
+        u.account,
+        u.userrole,
+        u.sex,
+        u.username,
+        CONVERT (VARCHAR, u.birthday, 23)birthday,
+        u.email,
+        u.mobilephone,
+        u.department,
+        u.post,
+        u.certificatestype,
+        u.certificatesno,
+        CONVERT (VARCHAR, u.certificatesdate, 23)certificatesdate,
+        u.licenseno,
+        u.photo,
+        u.certificatespic,
+        u.ReceiveAlarmType receivealarmtype,
+        CONVERT (VARCHAR, u.ExpiryTime, 23) expirytime
+        FROM
+        UT_Unit_User u
+        LEFT OUTER JOIN
+        UT_Unit_BaseInfo b
+        ON
+        u.UnitID = b.ID
+        WHERE
+        u.UserType = 1
+        AND (b.isDelete = 0 OR b.isDelete is NULL)
+        <if test="unitid != null and unitid != ''">
+            AND u.unitid = #{unitid}
+        </if>
+        <if test="username != null and username !=''">
+            AND u.username like '%${username}%'
+        </if>
+        <if test="account != null and account != ''">
+            AND u.account like '%${account}%'
+        </if>
+        <if test="unitname != null and unitname != ''">
+            AND b.UnitName like '%${unitname}%'
+        </if>
+        ORDER BY u.id DESC
+    </select>
+    <select id="getUserList" resultType="com.gw.unit.data.MaintenanceUserOutData">
+        SELECT
+        id,
+        account,
+        password,
+        userrole,
+        sex,
+        username
+        FROM
+        UT_Unit_User
+        <where>
+            1=1
+            <if test="unitID!=null and unitID!=''">
+                and UnitID = #{unitID}
+            </if>
+            <if test="userrole != null and userrole != ''">
+                and userrole=#{userrole}
+            </if>
+        </where>
+    </select>
+    <select id="getAllUserSelectList" resultType="com.gw.systemManager.data.NotifyRelUserOutData">
+  	SELECT
+  		id,
+  		username,
+  		account
+  	FROM
+        UT_Unit_User
+    ORDER BY id
+  </select>
+    <select id="getAllUserDisSelectList" resultType="com.gw.systemManager.data.NotifyRelUserOutData"
+            parameterType="java.util.List">
+        SELECT
+        id,
+        username,
+        account
+        FROM
+        UT_Unit_User
+        WHERE ID NOT IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getUserListByUnitId" resultType="com.gw.front.login.data.FrontUnitUserOutData">
+        SELECT
+        id,
+        username,
+        mobilephone
+        FROM
+        UT_Unit_User
+        <if test="unitId != null and unitId != ''">
+            WHERE
+            unitid = #{unitId}
+        </if>
+    </select>
+
+    <select id="getUnitIdById" resultType="java.lang.String">
+        SELECT
+        UnitID
+        FROM
+        UT_Unit_User
+        <if test="id != null ">
+            WHERE
+            ID = #{id}
+        </if>
+    </select>
+    <select id="getUserListByIds" resultType="com.gw.systemManager.data.NotifyRelUserOutData">
+        SELECT
+        ID id,
+        UserName username,
+        Account account
+        FROM
+        UT_Unit_User
+        WHERE
+        ID IN
+        <foreach collection="userIdList" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </select>
+    <update id="updateOpenId">
+	UPDATE UT_Unit_User
+	   SET openId = ''
+	WHERE
+	    OpenID = #{openId}
+	    and Account!=#{account}
+  </update>
+
+    <update id="updateChannelId">
+        UPDATE UT_Unit_User
+        SET channelId = ''
+        WHERE
+        IsDelete = 0
+        <if test="account != null and account != ''">
+            and Account!=#{account}
+        </if>
+        <if test="channelId != null and channelId != ''">
+            and channelId = #{channelId}
+        </if>
+
+
+    </update>
+    <select id="selectAllUser" resultType="com.gw.front.login.data.FrontUnitUserOutData">
+	SELECT
+	    *
+	FROM
+	    UT_Unit_User
+ </select>
+    <select id="selectUserByAccount" resultType="com.gw.openApi.common.data.out.UserOut">
+		SELECT
+			top 1
+			a.id userId,
+			a.UserId sysUserId,
+			a.UserName userName,
+			a.Account account,
+			a.UserType userType,
+			a.UserRole userRole,
+			a.Email email,
+			a.MobilePhone mobilePhone,
+			a.UnitID unitID
+		FROM UT_Unit_User a
+		WHERE a.isDelete != 1 AND a.Account = #{account}
+	</select>
+
+    <!--根据用户Account 查出id-->
+    <select id="getIdByAccount" parameterType="java.lang.String" resultType="java.lang.String">
+
+       select id from UT_Unit_User
+
+		WHERE
+
+			Account=#{account}
+
+	</select>
+
+
+</mapper>

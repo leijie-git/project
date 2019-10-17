@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>物联系统</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+
+    <style>
+        body {
+            background: #fff;
+        }
+        
+        .weui-grid__icon {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .weui-grid {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-grids">
+        <a href="" class="weui-grid js_grid" id="eqsystemcode3">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s1.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                报警系统
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode2">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s2.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                电气火灾
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode1">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s3.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                灭火系统
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode12">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s4.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                视频监控
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode4">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s5.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                防火分隔
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode5">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s6.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                气体系统
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode13">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s7.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                灭火器
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode6">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s8.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                燃气系统
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode7">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s9.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                应急疏散
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode8">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s10.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                无线烟感
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid" id="eqsystemcode9">
+            <div class="weui-grid__icon">
+                <img src="../../Content/images/WeChat/index/s7.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                防排烟系统
+            </p>
+        </a>
+    </div>
+    <div class="weui-loadmore weui-loadmore_line" id="noData" hidden>
+        <span class="weui-loadmore__tips">暂无数据</span>
+    </div>
+</body>
+
+</html>
+
+<script>
+    var unitId = GetQuery('unitid');
+    $(function() {
+        $.ajax({
+            url: hostAdd + '/getEqSystemByUnitId',
+            type: 'get',
+            data: 'unitId=' + unitId,
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if (data.success) {
+                    for (var i = 0; i < data.obj.length; i++) {
+                        $('#eqsystemcode' + data.obj[i].id).show();
+                        var hrefAddr = "iotSystemItem.html?system=" + escape(data.obj[i].eqsystemname) + "&systemid=" + data.obj[i].id + "&eqsystemcode=" + data.obj[i].eqsystemcode + "&unitid=" + unitId;
+                        $('#eqsystemcode' + data.obj[i].id).attr('href', hrefAddr);
+                    };
+                    if (data.obj.length <= 0) {
+                        $('#noData').show();
+                    }
+                }
+            },
+            error: function(data) {
+                console.log(data);
+            },
+        });
+    });
+</script>

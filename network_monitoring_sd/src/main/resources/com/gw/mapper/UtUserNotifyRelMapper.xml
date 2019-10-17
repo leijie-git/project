@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUserNotifyRelMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUserNotifyRel" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="unit_user_id" property="unitUserId" jdbcType="BIGINT" />
+    <id column="notify_id" property="notifyId" jdbcType="BIGINT" />
+    <result column="is_read" property="isRead" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getNotifyRelUser" resultType="com.gw.systemManager.data.NotifyRelUserOutData">
+  	SELECT
+		n.unit_user_id id,
+		u.UserName,
+		u.Account
+	FROM
+		UT_User_Notify_Rel n
+	LEFT OUTER JOIN UT_Unit_User u ON n.unit_user_id = u.ID
+	<if test="notifyId != null and notifyId != ''">
+		WHERE n.notify_id = #{notifyId}
+	</if>
+  </select>
+</mapper>

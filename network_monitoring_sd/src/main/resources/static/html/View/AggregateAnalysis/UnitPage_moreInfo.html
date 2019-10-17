@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/UnitPageIndex.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <style type="text/css">
+        .top-search{
+            margin-top: 2%;
+        }
+        .submitBtn{
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!--时间范围选择-->
+    <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">      
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="submitBtn" type="button" value="查询">
+            </form>
+        </div>
+
+
+
+    <!--弹窗-->
+    <div id="chartBox">
+        <div id="chart1"></div>
+        <div class="eventbox" id="eventCountContent">
+
+        </div>
+    </div>
+
+<script>
+    var _unitid = GetQuery('unitid');
+$(function(){
+    getEventsCountData();
+    domeEvelement();
+});
+
+    function getEventsCountData(){
+        var data = {
+            unitId:_unitid,
+            pageNumber:1,
+            pageSize:20,
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:$('#search').val()
+        };
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/eventsCount",
+            data:data,
+            success: function (data) {
+                //console.log(data);
+                if(data.success){
+                    var eventData = [],eventLegend=[],dataTotal=0;
+                    var msg = data.obj;
+                    for(var i = 0 ; i < msg.length;i++){
+                        eventData.push({"name":msg[i].coupletKey,'value':msg[i].coupletValue});
+                        eventLegend.push(msg[i].coupletKey);
+                        dataTotal += parseInt(msg[i].coupletValue);
+                    }
+
+                    if(dataTotal != 0){
+                        loadData(eventData,eventLegend);
+                        loadTreeListContent(eventData,dataTotal)
+                    }
+                    else{
+                        $('#chart1').text('暂无数据');
+                        $('#eventCountContent').text('暂无数据')
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+function loadData(realData,xData){
+//    var chart1Data=[11,11,6,4,4,5,10,11];
+   // xData=['火警', '故障','屏蔽','复位','监管','启动','反馈'];
+    var _color=['#f54f4d', '#ff9a0c','#cbc9c8','#16b7c9','#f16ed8','#4376c5','#0657f1'];
+//    realData=[
+//        { value: chart1Data[0], name: '火警' },
+//        { value: chart1Data[1], name: '故障' },
+//        { value: chart1Data[2], name: '屏蔽' },
+//        { value: chart1Data[3], name: '复位' },
+//        { value: chart1Data[4], name: '监管' },
+//        { value: chart1Data[5], name: '启动' },
+//        { value: chart1Data[6], name: '反馈' }
+//    ];
+    var chart1 = echarts.init(document.getElementById("chart1"));
+    chart1.title = '设备';
+
+
+    var option = {
+        title: {
+        },
+        backgroundColor: '',
+        legend: {
+            //orient: 'vertical',
+            x: 'center',
+            bottom: '10%',
+            itemWidth: 5,
+            itemHeight: 5,
+            itemGap: 5,
+            textStyle: {
+                color: '#7b9aaa',
+                fontSize: 12
+            },
+            data: xData
+        },
+        color: _color,
+        series: [
+            {
+                name: '异常率',
+                type: 'pie',
+                selectedMode: 'single',
+                center: ['50%', '38%'],
+                radius: ['35%', '48%'],
+                hoverAnimation: false,
+                label: {
+                    normal: {
+                        position: 'outside'
+                    },
+                },
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true,
+                            formatter: '{d}%',
+                            textStyle: {
+                                color: '#68a6de',
+                                fontSize: 10,
+                            }
+                        }
+                    }
+                },
+                labelLine: {
+                    normal: {
+                        length: 10,
+                        length2: 5
+                        //show: false
+                    }
+                },
+                data: realData
+            },
+            {
+                name: '',
+                type: 'pie',
+                center: ['50%', '38%'],
+                radius: ['30%', '31%'],
+                itemStyle: { //环内样式
+                    normal: { //默认样式
+                        label: { //标签
+                            show: false,
+                        },
+                        labelLine: {
+                            show: false,
+                        },
+                    },
+                }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                animation: false,
+                data: [{
+                    name: '',
+                    value: 100,
+                    itemStyle: {
+                        normal: {
+                            color: '#316DB6'
+                        },
+                        emphasis: {
+                            color: '#316DB6'
+                        }
+                    },
+                    tooltip: {
+                        show: false,
+                    },
+                    cursor: 'default',
+                }],
+            }
+
+        ]
+    };
+
+    chart1.setOption(option);
+
+    window.addEventListener('resize', function () { //宽度自适应
+        chart1.resize();
+    });
+
+}
+
+    function loadTreeListContent(data,dataTotal){
+        console.log(dataTotal)
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<div class="eventDiv">' +
+                    '<div class="word">'+data[i].name+'</div>' +
+                    '<div class="bar">' +
+                    '<div class="barPrograss" style="width: '+((data[i].value /dataTotal )*100).toFixed(2)+'%;"></div>' +
+                    '</div>' +
+                    '<div class="barData fontSize16">'+data[i].value+'</div>' +
+                    '</div>'
+        }
+
+        $('#eventCountContent').html(html)
+    }
+
+    function domeEvelement(){
+        $('.submitBtn').unbind('click').click(function(){
+            getEventsCountData();
+        })
+    }
+</script>
+
+</body>
+</html>

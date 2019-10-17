@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitBuildareaMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitBuildarea" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="BuildAreaName" property="buildareaname" jdbcType="NVARCHAR" />
+    <result column="BuildAreaSite" property="buildareasite" jdbcType="NVARCHAR" />
+    <result column="BuildAreabg" property="buildareabg" jdbcType="NVARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="BgWidth" property="bgwidth" jdbcType="DECIMAL" />
+    <result column="BgHeight" property="bgheight" jdbcType="DECIMAL" />
+    <result column="Remark" property="remark" jdbcType="NVARCHAR" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP" />
+    <result column="BuildID" property="buildid" jdbcType="BIGINT" />
+    <result column="BuildImgbg" property="buildimgbg" jdbcType="NVARCHAR" />
+  </resultMap>
+  <select id="getList" resultType="com.gw.build.data.BuildAreaOutData" parameterType="com.gw.build.data.BuildAreaInData">
+     SELECT
+	    a.ID id,
+	    a.UnitID unitID,
+	    a.BuildAreaName buildAreaName,
+	    a.BuildAreaSite buildAreaSite,
+	    a.BuildAreabg buildAreabg,
+	    a.BuildImgbg buildImgbg,
+	    a.Status status,
+	    a.BgWidth bgWidth,
+	    a.BgHeight bgHeight,
+	    a.Remark remark,
+	    a.CreateDate createdate,
+	    a.Lastupdate lastupdate,
+	    a.BuildID buildID,
+	    b.UnitName unitName
+	FROM
+	    UT_Unit_BuildArea a
+	    LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+	    <where>
+	    1=1
+			<if test="unitID!=null and unitID!=''">
+				and a.UnitID = #{unitID}
+			</if>
+			and (b.isDelete = 0 OR b.isDelete is NULL)
+	    <if test="buildAreaName!=null and buildAreaName!=''">
+	       and a.BuildAreaName like '%${buildAreaName}%'
+	    </if>
+	    <if test="buildAreaSite!=null and buildAreaSite!=''">
+	    and   a.BuildAreaSite like '%${buildAreaSite}%'
+	    </if>
+	    <if test="buildID!=null and buildID!=''" >
+	      and a.BuildID = #{buildID}
+	    </if>
+	     <if test="unitName!=null and unitName!=''" >
+          and b.UnitName like '%${unitName}%'
+        </if>
+	    </where>
+	    ORDER BY a.ID DESC
+  </select>
+  <select id="getBuildAreaList" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData" >
+ 	 SELECT
+		a.id coupletKey,
+		a.BuildAreaName coupletValue
+	FROM
+		UT_Unit_BuildArea a
+	LEFT JOIN UT_Unit_Build b ON a.BuildID = b.ID
+	WHERE
+		b.UnitID = #{unitId}
+		<if test="buildId != null and buildId != ''">
+			AND a.BuildID = #{buildId}
+		</if>
+  </select>
+  <select id="getBuildAreaByUnitId" resultType="com.gw.build.data.BuildAreaOutData">
+  	SELECT
+		a.BuildAreaName buildAreaName,
+		a.ID id,
+		a.BuildImgbg buildImgbg
+	FROM
+		UT_Unit_BuildArea a
+	WHERE
+		a.UnitID = #{unitId}
+  </select>
+  <select id="getBuildAreaByBuildId" resultType="com.gw.build.data.BuildAreaOutData">
+  	SELECT
+		a.BuildAreaName buildAreaName,
+		a.ID id,
+		a.BuildAreabg buildImgbg,
+		a.BgWidth bgWidth,
+		a.BgHeight bgHeight
+	FROM
+		UT_Unit_BuildArea a
+	WHERE
+		a.BuildID = #{buildId}
+  </select>
+  <select id="getBuildAreaExportData" resultType="com.gw.build.data.BuildAreaOutData" parameterType="com.gw.build.data.BuildAreaInData">
+  		SELECT
+			a.ID id,
+			a.BuildAreaName buildAreaName,
+			a.BuildAreaSite buildAreaSite,
+			a.Status status,
+			a.Remark remark,
+			b.UnitName unitName,
+			c.BuildingName buildName
+		FROM
+			UT_Unit_BuildArea a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+		LEFT JOIN UT_Unit_Build c ON c.ID = a.BuildID
+		<where>
+			<if test="buildAreaName != null and buildAreaName != ''">
+				AND a.BuildAreaName like '%${buildAreaName}%'
+			</if>
+			<if test="buildAreaSite != null and buildAreaSite != ''">
+				AND a.BuildAreaSite like '%${buildAreaSite}%'
+			</if>
+			<if test="unitName != null and unitName != ''">
+				AND b.UnitName like '%${unitName}%'
+			</if>
+		</where>
+  </select>
+  
+  <select id="getUnitBuildArea" resultType="com.gw.front.unit.data.FrontUnitBuildArea">
+        SELECT
+            a.ID buildAreaID,
+            c.BuildingName+'-'+a.BuildAreaName name
+        FROM
+            UT_Unit_BuildArea a
+        LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+        LEFT JOIN UT_Unit_Build c ON c.ID = a.BuildID
+        <where>
+            <if test="unitID !=null and unitID!=''">
+                b.ID = #{unitID}
+            </if>
+        </where>
+  </select>
+
+  <select id="getUnitBuildAndArea" resultType="com.gw.front.unit.data.FrontUnitBuildPOutData">
+	  SELECT
+	  a.BuildAreaName name,
+	  a.ID id,
+	  a.BuildID pid
+	  FROM
+	  UT_Unit_BuildArea a
+	  <where>
+		  <if test="unitID !=null and unitID!=''">
+			  a.unitid = #{unitID}
+		  </if>
+	  </where>
+	  UNION ALL
+	  SELECT
+	  b.buildingname name,
+	  b.id,
+	  0 pid
+	  FROM
+	  UT_Unit_Build b
+        <where>
+            <if test="unitID !=null and unitID!=''">
+                b.UnitID = #{unitID}
+            </if>
+        </where>
+  </select>
+
+  <select id="getUserBuildAndArea" resultType="com.gw.front.unit.data.FrontUnitBuildPOutData">
+		 SELECT
+		a.BuildAreaName name,
+		a.ID id,
+		a.BuildID pid
+	FROM
+		UT_Unit_BuildArea a
+	LEFT JOIN UT_Base_UserRelation d ON a.ID = d.relation_id
+	WHERE
+		d.user_id = #{userId}
+	UNION ALL
+		SELECT
+			b.buildingname name,
+			b.id,
+			0 pid
+		FROM
+			UT_Unit_Build b
+		LEFT JOIN UT_Base_UserRelation d ON b.ID = d.relation_id
+		WHERE
+			d.user_id = #{userId}
+  </select>
+
+
+	<select id="getUnitidByBuildAreaId" resultType="com.gw.build.data.BuildAreaOutData">
+		SELECT DISTINCT
+			a.UnitID,
+			c.UnitName
+			from UT_Unit_BuildArea a
+			LEFT JOIN UT_Unit_BaseInfo c on a.UnitID = c.ID
+			LEFT JOIN Ut_EQ_address_rel b on a.ID = b.BuildAreaID
+			WHERE
+			b.BuildAreaID=#{buildAreaId}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!--根据区域名称查询id-->
+	<select id="selectIDByBuildAreaName" parameterType="java.lang.String" resultType="java.lang.Long" >
+		SELECT
+		a.ID
+		FROM
+		UT_Unit_BuildArea a
+		WHERE
+		BuildAreaName= #{ BuildAreaName}
+	</select>
+</mapper>

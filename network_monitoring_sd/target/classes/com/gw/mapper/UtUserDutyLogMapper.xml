@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gw.mapper.UtUserDutyLogMapper">
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUserDutyLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="shift_user" jdbcType="BIGINT" property="shiftUser" />
+    <result column="duty_user" jdbcType="BIGINT" property="dutyUser" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  
+  <select id="getLastLog" resultMap="BaseResultMap">
+  	SELECT
+		TOP (1) id,
+		shift_user,
+		duty_user,
+		start_date,
+		end_date,
+		remark
+	FROM
+		UT_user_duty_log
+	ORDER BY
+		id DESC
+  </select>
+  
+  <select id="getUserDutyLogList" resultType="com.gw.front.history.data.FrontHistoryUserDutyLogOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+  	SELECT
+  		a.ID id,
+		b.UserName userName,
+		ISNULL(c.UnitName, d.UnitName) unitName,
+		CONVERT (VARCHAR, a.start_date, 120) startDate,
+		CONVERT (VARCHAR, a.end_date, 120) endDate,
+		b.MobilePhone phone,
+		'' address,
+		b.CertificatesNO certificatesNO
+	FROM
+		UT_user_duty_log a
+	LEFT OUTER JOIN UT_Unit_User b ON a.duty_user = b.ID
+	LEFT OUTER JOIN UT_Unit_BaseInfo c ON b.UnitID = c.ID
+	LEFT OUTER JOIN UT_Maintenance_Unit d ON d.ID = b.UnitID
+	<where>
+			(c.isDelete = 0 OR c.isDelete is NULL)
+		<if test="userId != null and userId != ''">
+			AND (a.shift_user = #{userId} or a.duty_user=#{userId})
+		</if>
+		<if test="startDate != null and startDate != ''">
+			AND a.start_date >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.end_dat &lt;= #{endDate}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND b.UserName like '%${keyword}%' OR c.UnitName LIKE '%${keyword}%'
+		</if>
+	</where>
+	ORDER BY a.start_date DESC
+  </select>
+ </mapper>

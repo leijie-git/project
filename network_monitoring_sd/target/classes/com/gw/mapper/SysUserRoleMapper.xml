@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.SysUserRoleMapper">
+	<resultMap id="BaseResultMap"
+		type="com.gw.mapper.entity.SysUserRole">
+		<!-- WARNING - @mbg.generated -->
+		<result column="UserID" property="userid" jdbcType="BIGINT" />
+		<result column="RoleID" property="roleid" jdbcType="BIGINT" />
+	</resultMap>
+	<select id="getUserRoleByUserId"
+		resultType="com.gw.systemManager.data.SysRoleOutData">
+		SELECT
+		  r.role_id roleId,
+		  rr.ROLE_NAME roleName
+		FROM
+		  sys_user_role r
+		  LEFT JOIN sys_role rr ON r.RoleId = rr.ID
+		WHERE
+		  r.UserID = #{id}
+		ORDER BY
+		  r.RoleID
+	</select>
+
+	<select id="getUserHasRole"
+			resultType="com.gw.systemManager.data.SysRoleOutData">
+		SELECT
+		  r.RoleId id,
+		  rr.RoleName roleName
+		FROM
+		  sys_user_role r
+		  LEFT JOIN sys_role rr ON r.RoleID = rr.ID
+		WHERE
+		  r.UserID = #{id}
+		  and rr.Type = #{type}
+		ORDER BY
+		  r.RoleID
+	</select>
+	<select id="getUserNoRole"
+			resultType="com.gw.systemManager.data.SysRoleOutData">
+		SELECT
+		  ID id,
+		  RoleName roleName
+		FROM
+		  sys_role
+		WHERE
+		  id NOT IN (
+		      SELECT
+		          RoleId
+		      FROM
+		          sys_user_role
+		      WHERE
+		          UserID = #{id}
+		)
+		AND Type = #{type}
+	</select>
+	<delete id="deleteByUserId" parameterType="java.lang.Long">
+		DELETE 
+		FROM 
+		  sys_user_role
+		WHERE 
+		  UserID = #{userId,jdbcType=BIGINT}
+	</delete>
+</mapper>

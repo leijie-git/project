@@ -1,0 +1,155 @@
+body {
+    background: url(../../../Content/images/WeChat/center/bg_userCenter.jpg) no-repeat center top scroll;
+    background-size: 100% auto;
+}
+
+.center_username {
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+}
+
+.center_info>img {
+    vertical-align: middle;
+    width: 18%;
+    margin: 0 15px;
+}
+
+.center_info>span {
+    color: #fff;
+    display: inline-block;
+    width: 50%;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.center_info>span>i {
+    color: red;
+    font-style: normal;
+}
+
+.contbox {
+    width: 100%;
+    background-color: #fff;
+    position: absolute;
+    bottom: 4%;
+}
+
+.contbox .box {
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    height: 45px;
+    line-height: 45px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.contbox .box:last-child {
+    border-bottom: none;
+}
+
+.contbox .box .icon {
+    float: left;
+    margin: 13px 10px 0 15px;
+    width: 5%;
+}
+
+.contbox .box .word {
+    float: left;
+    display: inline-block;
+    font-size: 14px;
+    color: #222;
+}
+
+.contbox .box .bt {
+    float: right;
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 10px;
+    border: 2px solid #0090f9;
+    height: 30px;
+    line-height: 26px;
+    margin-top: 7px;
+    padding: 0 13px;
+    font-size: 12px;
+    color: #0090f9;
+}
+
+.onlineTime {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.arrow {
+    float: right;
+    display: inline-block;
+    margin: 13px 10px;
+    width: 5%;
+}
+
+
+/*意见反馈*/
+
+.main {
+    width: 100%;
+    height: auto;
+    margin-top: 5%;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.main>div {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 5%;
+}
+
+.main>div:first-child {
+    border-bottom: 1px solid #ccc;
+}
+
+.main label {
+    font-size: 14px;
+    color: #444;
+    margin-right: 5%;
+}
+
+.main input {
+    width: 70%;
+    height: 35px;
+    line-height: 35px;
+    border-bottom: 1px solid #777;
+    outline: none;
+    padding: 0 5px;
+}
+
+.btBox {
+    width: 100%;
+    text-align: center;
+    -webkit-display: flex;
+    -moz-display: flex;
+    display: flex;
+    justify-content: space-around;
+}
+
+.btBox input {
+    outline: none;
+    width: 40%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #bebebe;
+    color: #222;
+    font-size: 16px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-top: 15%;
+}
+
+.btBox input:last-child {
+    background-color: #0090f9;
+    color: #fff;
+}

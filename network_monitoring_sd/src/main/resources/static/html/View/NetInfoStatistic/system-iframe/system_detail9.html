@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="60">  <!--每隔60秒自动刷新页面-->
+    <title>各系统监测-气体系统</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail1.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail5.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail10.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <style>
+        .sureframe{
+            width: 300px;
+            height: 150px;
+            position: absolute;
+            top: 24%;
+            left: 38%;
+            background: #0A3C78;
+            border-radius: 5%;
+            display: none;
+        }
+        .sureBtn{
+            position: absolute;
+            top: 77%;
+            left: 25%;
+            width: 60px;
+            border-radius: 5px;
+            background: #18aef9;
+            border: #18aef9;
+            cursor: pointer;
+        }
+        .cancelBtn{
+            position: absolute;
+            top: 77%;
+            right: 25%;
+            width: 60px;
+            border-radius: 5px;
+            background: #18aef9;
+            border: #18aef9;
+            cursor: pointer;
+        }
+        .sureframetitle{
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-bottom: 1px solid #fff;
+        }
+        .inputpassword{
+            position: absolute;
+            top: 38%;
+            left: 9%;
+        }
+        #closeframe{
+            position: absolute;
+            top: 2%;
+            right: 5%;
+            cursor: pointer;
+        }
+        .errorTip{
+            width: 70px;
+            position: absolute;
+            top: 58%;
+            left: 40%;
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="scrollbar-inner topBox">
+        <div  id="topBoxContent" style="width: 100%;padding-left: 2%">
+            <!--<div class="t_boxb" id="111">-->
+                <!--<div class="t_word">南区9号楼</div>-->
+                <!--<div class="t_cont">-->
+                    <!--<div class="t_cont_title">二氧化碳称重</div>-->
+                    <!--<div class="t_cont_state" currentStatus="开">状态：开</div>-->
+                    <!--<div class="t_cont_state bottom">-->
+                        <!--<form class="layui-form" action="" autocomplete="off">-->
+                            <!--&lt;!&ndash;下拉框&ndash;&gt;-->
+                            <!--<div class="layui-inline layui-bg-cyan" >-->
+                                <!--<div class="layui-input-inline">-->
+                                    <!--<select name="modules" lay-verify="required" lay-search="">-->
+                                        <!--<option value="1">电平</option>-->
+                                        <!--<option value="2">点动</option>-->
+                                    <!--</select>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</form>-->
+                        <!--<div  class="t_cont_button">启动</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="t_boxb">-->
+                <!--<div class="t_word">南区5号楼</div>-->
+                <!--<div class="t_cont">-->
+                    <!--<div class="t_cont_title">七氟丙烷压力值</div>-->
+                    <!--<div class="t_cont_state">状态：开</div>-->
+                    <!--<div class="t_cont_button">启动</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+
+<!--验证框-->
+<div id="passwordcheck" class="sureframe">
+    <span id="closeframe">x</span>
+    <div class="sureframetitle">验证</div>
+    <div class="inputpassword">
+        请输入密码：<input type="password" id="password">
+    </div>
+    <input class="sureBtn" type="button" value="确认">
+    <input class="cancelBtn" type="button" value="取消">
+
+    <!--密码错误提示-->
+    <div class="errorTip">
+        密码错误！
+    </div>
+</div>
+
+<!--确认框-->
+<div id="passwordcheck2" class="sureframe" hidden>
+    <div class="sureframetitle">再次确认</div>
+    <div class="inputpassword" id="countdown"></div>
+    <input class="sureBtn" type="button" value="确认">
+    <input class="cancelBtn" type="button" value="取消">
+</div>
+
+
+
+</body>
+
+<script type="text/javascript">
+    var _unitId = GetQuery('unitId'); //单位
+    var _buildId = GetQuery('areaid'); //区域
+    var _type = GetQuery('systemID'); //系统
+    var _unitname = GetQuery('unitname'); //单位名称
+
+    var _devicesId = '';
+
+    var intt = "";
+
+    var that;
+
+    $(function(){
+        getInterfaceOutDataList();//获取列掉
+//        loadLayuiForm(); //调用layui form组件，方法写在public
+        clickevent();
+    });
+
+    //获取列表
+    function getInterfaceOutDataList(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getInterfaceOutData",
+            data: 'unitId=' + _unitId+"&buildId="+_buildId,
+            success: function(data) {
+                if (data.success) {
+                    getDataHtml(data.obj);//加载元素
+                }
+            },
+            complete: function() {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            },
+            error:function(data){
+                console.log('getinterfaceOutData失败',data);
+            }
+        });
+    }
+
+    //加载元素
+    function  getDataHtml(data){
+        var html = "";
+        for(var i = 0 ;i<data.length;i++){
+            html +='<div class="t_boxb" id="'+data[i].id+'">'+
+                        '<div class="t_word">'+data[i].buildareaname+'</div>' +
+                        '<div class="t_cont">' +
+                            '<div class="t_cont_title">'+data[i].eqName+'</div>' +
+                            '<div class="t_cont_state" currentStatus="'+(1 == data[i].statusValue?0:1)+'">状态：'+data[i].status+'</div>' +
+                            '<div  class="t_cont_state bottom">' +
+//                                 '<form class="layui-form" autocomplete="off">' +
+//                                     '<div class="layui-inline layui-bg-cyan">' +
+//                                         '<div class="layui-input-inline">' +
+//                                             '<select name="modules" lay-verify="required" lay-search="">' +
+//                                                 '<option value="1">电平</option>' +
+//                                                 '<option value="2">点动</option>' +
+//                                             '</select>' +
+//                                         '</div>' +
+//                                     '</div>' +
+//                                 '</form>' +
+                                '<div class="t_cont_orderType">'+(data[i].orderType==1?"电平":"点动")+':</div>' +
+                                '<div class="t_cont_button" currentStatus="'+(data[i].orderType||2)+'">'+(data[i].digitalNormal == data[i].statusValue?data[i].badName:data[i].goodName)+'</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>'
+        }
+        $('#topBoxContent').html(html||"暂无数据...");
+        loadLayuiForm(); //调用layui form组件，方法写在public
+        setInterval(function(){
+            $('#topBoxContent>.t_boxb').each(function(){
+                var id = $(this).attr('id');
+                getCurrentDeviceStatus(id);
+            })
+        },60000);//1min刷新状态值
+
+    }
+
+
+    function getCurrentDeviceStatus(id){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getCurrentStatus",
+            data: 'id=' + id,
+            success: function(data) {
+//              console.log(data);
+                if (data.success) {
+                    var dom = id.split(',');
+                    for(var i = 0 ; i < dom.length;i++){
+                        $('.t_boxb#'+dom[i]).find('.t_cont_state:not(.bottom)').text("状态："+data.obj);//加载元素
+                    }
+                }
+            },
+            error:function(data){
+                console.log('getCurrentStatus失败',data);
+            }
+        });
+    }
+
+
+    //按钮操作 - 掉用接口
+    function changeStatus(id,status,actiontype){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/changeRTUStatus",
+            data: 'status=' + status+"&id="+id+"&actiontype="+actiontype,
+            success: function(data) {
+                //console.log(data);
+                if (data.success) {
+                    $('#topBoxContent #'+id).find('.t_cont_state:not(.bottom)').html("状态："+data.obj);
+                    layer.msg("【RTU输出控制】命令已经下发！")
+                }
+                else{
+                    layer.msg("命令下发失败！")
+                }
+            },
+            complete: function() {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function clickevent(){
+        var _inter;//用户更新设备状态的循环的。。。。
+
+        $('#topBoxContent').on("click"," .t_cont_button:not(.ban)",function(){
+
+            that = $(this);
+
+            $("#passwordcheck").show();
+            $("#password").val("");
+
+//            var  time = 1;
+//            elem.addClass('ban');
+//            var inter = setInterval(function(){
+//                if(time<10){
+//                    time ++
+//                }else{
+//                    elem.removeClass('ban');
+//                    clearInterval(inter)
+//                }
+//            },1000)
+        })
+    }
+    function change(){
+        // var elem = $(this);
+        var id = that.parents('.t_boxb').attr('id');
+        var status = that.parents().siblings('.t_cont_state:not(.bottom)').attr('currentStatus') || 1;
+        // var actiontype = elem.siblings('.layui-form').find('dd.layui-this').attr('lay-value') || "";
+        var actiontype = that.attr('currentStatus');
+
+        _devicesId += (_devicesId == ""?"":",")+id;
+
+        changeStatus(id,status,actiontype);//改变状态
+
+        if(_inter)clearInterval(_inter);
+        _inter = setInterval(function(){
+            getCurrentDeviceStatus(_devicesId);
+        },3000);
+    }
+
+    $(".cancelBtn").eq(0).click(function () {
+        $(".cancelBtn").eq(0).siblings(".errorTip").hide();
+        $(".cancelBtn").eq(0).parent().hide();
+    });
+
+    $(".sureBtn").eq(0).click(function(){
+        if($("#password").val() == "123456"){
+            $(".sureBtn").eq(0).parent().css("display","none");
+            setTimeout(function () {
+                $(".sureBtn").eq(0).parent().siblings("#passwordcheck2").show();
+                countdown();
+            },200);
+        }else{
+            $(".errorTip").show();
+        }
+    });
+
+    $("#password").on('input propertychange',function(){
+        //输入框的值不为空 且 输入的数字达到13位  方可解锁按钮
+        if($(this).val() == ""){
+            $(".errorTip").hide();
+        }
+    });
+
+    $("#closeframe").click(function() {
+        $("#closeframe").siblings(".errorTip").hide();
+        $("#closeframe").parent().hide();
+    });
+
+    function countdown() {
+        clearInterval(intt);
+        $("#countdown").html("倒计时还有30秒");
+        var j = 29;
+        intt = setInterval(function(){
+            $("#countdown").html('倒计时还有'+ j +'秒');
+            if(j>0){
+                j--;
+            }else{
+                clearInterval(intt);
+                $("#passwordcheck2").hide();
+                change();
+            }
+        },1000);
+        $(".sureBtn").eq(1).click(function () {
+            clearInterval(intt);
+            $(".sureBtn").eq(1).parent("#passwordcheck2").hide();
+            change();
+        });
+        $(".cancelBtn").eq(1).click(function () {
+            clearInterval(intt);
+            $(".cancelBtn").eq(1).parent().hide();
+        });
+    }
+</script>
+</html>

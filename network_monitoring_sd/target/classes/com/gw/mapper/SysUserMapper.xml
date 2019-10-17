@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.SysUserMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.SysUser" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="User_Name" property="userName" jdbcType="VARCHAR" />
+    <result column="Account" property="account" jdbcType="VARCHAR" />
+    <result column="Password" property="password" jdbcType="VARCHAR" />
+    <result column="USERHEADER" property="userHeader" jdbcType="VARCHAR" />
+    <result column="CREATEDATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="CREATEUSER" property="createUser" jdbcType="VARCHAR" />
+    <result column="UPDATEDATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATEUSER" property="updateUser" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="BIRTHDAY" property="birthday" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="ETHNICGROUP" property="ethnicGroup" jdbcType="VARCHAR" />
+    <result column="SIGN" property="sign" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectAllUser" resultType="com.gw.systemManager.data.SysUserOutData">
+  	<!--SELECT-->
+		<!--ID id,-->
+		<!--User_Name userName,-->
+		<!--Account account,-->
+		<!--phone phone,-->
+		<!--USER_HEADER userHeader,-->
+		<!--CONVERT (VARCHAR, CREATE_DATE, 120) createDate,-->
+		<!--BIRTHDAY birthday,-->
+		<!--SEX sex,-->
+		<!--ADDRESS address,-->
+		<!--ETHNIC_GROUP ethnicGroup,-->
+		<!--SIGN sign,-->
+		<!--REMARK remark-->
+	<!--FROM -->
+		<!--SYS_USER-->
+		<!--<if test="userName != null and userName != ''">-->
+			<!--where User_Name like '%${userName}%'-->
+		<!--</if>-->
+	<!--order by CREATE_DATE desc-->
+  <!--</select>-->
+
+
+
+    SELECT
+    id id,
+    username username,
+    account account,
+    MobilePhone phone,
+    USERHEADER userHeader,
+    CONVERT (VARCHAR, CREATEDATE, 120) createDate,
+    Birthday birthday,
+    sex sex,
+    ADDRESS address,
+    ETHNICGROUP ethnicGroup,
+    SIGN sign,
+    REMARK remark
+    FROM
+    UT_Unit_User
+    where
+      UnitID is null
+      or isSysUser='1'
+
+
+    <if test="userName != null and userName != ''">
+    and username like '%${userName}%'
+    </if>
+    order by CREATEDATE desc
+    </select>
+</mapper>

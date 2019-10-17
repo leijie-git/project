@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位记录详情</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/WeibaoInspect/index.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/Middle_total_Window.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+
+        <div class="list">
+            <div class="input_box">
+                <input type="text" class="search fontSize16" id="unitSearch" placeholder="搜索联网单位名称">
+                <button class="search_btn"></button>
+            </div>
+
+            <div id="unitList">
+                <!--table start-->
+                <div class="table_box">
+                    <div class="list_table">
+                        <div class="table_header">
+                            <table>
+                                <colgroup>
+                                    <col width="35%">
+                                    <col width="65%">
+                                </colgroup>
+                                <thead class="fontSize16">
+                                    <tr>
+                                        <th>子站号</th>
+                                        <th>单位名称</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="table_content scrollbar-inner">
+                            <table cellpadding="0" cellspacing="0" class="tbody">
+                                <colgroup>
+                                    <col width="35%">
+                                    <col width="65%">
+                                </colgroup>
+                                <tbody class="fontSize14" id="tablebody">
+                                    <!---->
+                                    <!-- <tr onclick="getDetailTable(this);" id="">
+                                        <td class="underline">000006</td>
+                                        <td class="underline" title="北京航港大厦">北京航港大厦</td>
+                                    </tr> -->
+
+                                    <!-- 关注,报备或测试时使用以下 -->
+                                    <!-- <tr onclick="getDetailTable();" id=""> 
+                                        <td class="underline">000006</td>
+                                        <td class="underline">北京航港大厦</td>
+                                        <td class="underline" onclick="unflow(this);">取消关注</td>
+                                    </tr> -->
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer" style="padding-top: 15px;">
+                        <div id="demo0"></div>
+                    </div>
+                </div>
+                <!--table end-->
+            </div>
+        </div>
+
+
+        <div class="content">
+            <iframe id="contFrame" class="contFrame" src="Middle_total_Window_table.html" frameborder="0"></iframe>
+        </div>
+
+    </div>
+</body>
+
+<script type="text/javascript">
+    var _alarmStatus = GetQuery('alarmStatus'); //在线/总数
+    var _calibrationType = GetQuery('calibrationType'); //标定类型
+    var _ifUsed= 0;
+    var _data = {
+        alarmStatus:_alarmStatus,
+        calibrationType:_calibrationType,
+        pageSize:20,
+        pageNumber:1,
+        unitname:$('#unitSearch').val()
+    };
+    // var _count = 0; //数量
+    // var _curr = 0; //当前页码
+    // var ifUsed = 0; //调用page方法的判断
+
+    var col =  '<col width="30%">'+
+                '<col width="50%">'+
+                '<col width="20%">';
+    var th = '<th>操作</th>';
+
+    if(_calibrationType == 4 || _calibrationType == 1 || _calibrationType == 2){ //关注 报备 测试
+        $('colgroup').html(col);
+        $('thead tr').append(th);
+    }
+
+    $(function(){
+        Getlist();
+
+        //检索
+        $('.checkput').unbind('click').click(function () {
+            // _name = $('.search').val();
+            _data.unitname = $('.search').val();
+             _ifUsed = 0; //调用page方法的判断
+            Getlist();
+        });
+
+    });
+
+    //获取单位列表
+    function Getlist(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getUnitPageListByState",
+            // url: _serverIp + "/front/homeIndex/getUnitPageListByState",
+            data:_data,
+            success: function (msg) {
+                //console.log(msg);
+                     if (_ifUsed == 0) {
+                         layerPage(msg.total);
+                         _ifUsed = 1;
+                     }
+
+                    var data = msg.list;
+                    var _list='';
+                    if(!data){
+                        return;
+                    }
+                    for(var i=0;i<data.length;i++){
+                        if(_calibrationType == 4 || _calibrationType == 1 || _calibrationType == 2){ //关注 报备 测试
+                            _list+=
+                            "<tr onclick='getDetailTable(this)' id='" + data[i].unitId + "'>" +
+                            '<td class="underline">' + data[i].unitCode + '</td>' +
+                            "<td class='underline' title='"+data[i].unitName+"'>" + data[i].unitName + '</td>' +
+                            '</tr>';
+                        }else{
+                            _list+=
+                            "<tr onclick='getDetailTable(this)' id='" + data[i].unitId + "'>" +
+                            '<td class="underline">' + data[i].unitCode + '</td>' +
+                            "<td class='underline' title='"+data[i].unitName+"'>" + data[i].unitName + '</td>' +
+                            "<td class='underline' onclick='unflow(this);'>取消关注</td>"+
+                            '</tr>';
+                        }                       
+                    }
+                    $('#tablebody').html(_list||"<tr><td colspan='2'>暂无数据</td></tr>");
+                    $('#tablebody tr').eq(0).click();
+            }
+        });
+    }
+
+    ///////////////取消关注
+    function unflow(obj,type){
+        var _id = $(obj).parents('tr').attr('id');
+
+        layer.confirm('确定取消关注吗?', {
+            btn: ['是', '否'] //按钮
+        }, function () { //是
+            $.ajax({
+                type: "get",
+                //url: _serverIp + "/front/homeIndex/cancelConcern",
+                data:"unitId="+_id,
+                success: function (msg) {
+                    //console.log(data);
+                    if (msg.success == true) {
+                        layer.msg('设置成功');
+                        getUnitListByStateData(type)
+                    }
+                }
+            });
+        }, function () { //否
+
+        });
+
+    }
+
+    //刷新右侧表格
+    function getDetailTable(obj){
+        $(obj).addClass('active').siblings().removeClass('active');
+        var unitid = $(obj).attr('id');
+        $('#contFrame').attr('src','Middle_total_Window_table.html?unitid=' + unitid + '&alarmStatus=' + _alarmStatus + '&calibrationType=' + _calibrationType);
+    }
+
+
+    //分页
+     function layerPage(count){
+         layui.use(['laypage', 'layer'], function() {
+             var laypage = layui.laypage
+                     , layer = layui.layer;
+             laypage.render({
+                 elem: 'demo0'
+                 ,count: count
+                 ,limit:20
+                 ,prev: '<em>&lt;</em>'
+                 ,next: '<em>&gt;</em>'
+                 ,layout: [ 'prev', 'page', 'next']
+                 ,jump: function(obj,isNew){
+                    //console.log(obj)
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        Getlist(); //调用接口获取数据
+                    }
+
+                 }
+             });
+         });
+     }
+
+    
+
+</script>
+</html>

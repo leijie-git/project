@@ -1,0 +1,504 @@
+*,html{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+body{
+	padding: 0;
+}
+#demo7,.pagedemo{
+	position: absolute;
+	bottom: 10px;
+	padding-left: 10px;
+}
+
+
+/*单位系统分析*/
+.wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding-top: 8px;
+}
+
+
+section{
+	width: 100%;
+	height: calc(100% - 40px);
+}
+
+.top-search>form{
+	float: left;
+	width: calc(100% - 200px);
+}
+
+.timeBTChose{
+	overflow: hidden;
+	float: right;
+	margin-top: 5px;
+	width: 150px;
+	height: 25px;
+	margin-right: 10px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #116bb9;
+	-webkit-display: flex;
+	display: flex;
+	justify-content: space-between;
+}
+
+.timeBTChose > span{
+	height: 100%;
+	line-height: 25px;
+	float: left;
+	display: inline-block;
+	text-align: center;
+	width: 33.3%;
+	background-color: #014b91;
+	border-right: 1px solid #116bb9;
+	cursor: pointer;
+}
+
+.timeBTChose > span:last-child{
+	border-right: none;
+}
+
+.timeBTChose > span:hover,
+.actTime{
+	color: #75e5f5;
+	background-color: #116bb9!important;
+}
+
+.box1{
+	overflow: hidden;
+	width: 100%;
+	margin: 0 auto;
+	height: 30%;
+	background: url(../../images/AggregateAnalysis/box.png)no-repeat center;
+	background-size: 100% 100%;
+}
+
+.wordleft{
+	width: 6%;
+	height: 100%;
+	float: left;
+	display: inline-block;
+}
+.wordleft > img{
+    margin-left: 35%;
+    margin-top: 48%;
+    width: 35px;
+}
+#chart{
+	width: 94%;
+	height: 100%;
+	padding: 1%;
+	float: left;
+	display: inline-block;
+}
+
+.box2{
+	height: 70%;
+	overflow: hidden;
+	padding-bottom: 10px!important;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.box2 .chartdiv{
+	width: 23%!important;
+	height: calc(60% - 40px);
+	margin: 15px .9% 0 .9%;
+	float: left;
+	display: inline-block;
+	border: 1px solid #0071c3;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	display: none;
+}
+.chartdiv:nth-child(1){
+	width: 26%;
+}
+.chartdiv:nth-child(2){
+	width: 26%;
+}
+.chartdiv:nth-child(3){
+	width: 22%;
+}
+.chartdiv:nth-child(4){
+	width: 18%;
+}
+.chartdiv:nth-child(5){
+	width: 22%;
+}
+.chartdiv:nth-child(6){
+	width: 24%;
+}
+.chartdiv:nth-child(7){
+	width: 24%;
+}
+.chartdiv:nth-child(8){
+	width: 22%;
+}
+.chartdiv:nth-child(9){
+	width: 26%;
+}
+.chartdiv:nth-child(10){
+	width: 25%;
+}
+
+.chartdiv .title{
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+	background: transparent;
+}
+
+.chartdiv .cont{
+	width: 100%;
+	height: calc(100% - 25px);
+	background-color: rgba(16, 71, 110,.6);
+}
+
+
+@media screen and (max-width: 1366px){
+	.wordleft > img {
+	    margin-top: 28%;
+	    width: 28px;
+	}
+}
+
+
+
+/*查岗分析*/
+.box3{
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	margin: 0 auto;
+	height: 35%;
+	background: url(../../images/AggregateAnalysis/chagangHdBg.png)no-repeat center;
+	background-size: 100% 100%;
+}
+
+.box3 .Chkchart1,
+.box3 #Chkchart2{
+	position: relative;
+	width: 50%;
+	height: 100%;
+	float: left;
+	display: inline-block;
+}
+
+#Chkchart1{
+	width: 100%;
+	height: 100%;
+}
+
+.box3 .Chkchart1 .eventCircle{
+	position: absolute;
+	bottom: 8%;
+	width: 100%;
+	text-align: center;
+}
+
+
+.circleBox{
+    position: absolute;
+    top: 33%;
+    width: 6%;
+    height: 51%;
+    left: 22%;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	text-align: center;
+}
+
+.totalData{
+	font-weight: bold;
+	color: #fff;
+	width: 100%;
+	height: 50%;
+	padding-top: 20%;
+	border-bottom: 1px solid #68a6de;
+}
+
+.circleBox div:last-child{
+	width: 100%;
+	height: 50%;
+	padding-top: 8%;
+	color: #fff;
+}
+
+.table_box{
+	width: 100%;
+	height: 65%;
+	margin: 0 auto;
+}
+
+
+/*通讯系统分析*/
+.box4{
+	display: flex;
+	justify-content: center;
+	overflow: hidden;
+	width: 100%;
+	margin: 0 auto;
+	height: 30%;
+	background: url(../../images/AggregateAnalysis/box4_1.png)center center /100% 100% no-repeat;
+}
+
+.box4 #Chkchart1,
+.box4 #Chkchart2,
+.box4 #Chkchart3{
+	width: 33.3%;
+	margin: 0;
+	height: 100%;
+	cursor: pointer;
+}
+
+.box4 .circleBox1{
+	position: absolute;
+    height: 13.5%;
+    width: 4%;
+    top: 16%;
+    left: 15.5%;
+    -webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	text-align: center;
+}
+
+.box4 .circleBox3{
+	position: absolute;
+    height: 13.5%;
+    width: 4.5%;
+    top: 16%;
+    right: 15%;
+    -webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	text-align: center;
+}
+
+.circleBox1 > div:last-child,
+.circleBox3 > div:last-child{
+	width: 100%;
+	height: 50%;
+	padding-top: 8%;
+	color: #fff;
+}
+
+#Chkchart2{
+	position: relative;
+}
+
+#Chkchart2>div{
+	position: absolute;
+	color: #fff;
+}
+#Chkchart2 .msgDataBox{
+	text-align: center;
+    left: 47%;
+    top: 34%;
+    -webkit-z-index: 99;
+    -moz-z-index: 99;
+    z-index: 99;
+}
+#Chkchart2 .msgDataBox>div{
+	line-height: 30px;
+}
+
+#Chkchart2 .msgDataBox>div:first-child{
+	font-weight: bold;
+}
+#Chkchart2 .msgBgBox{
+	position: absolute;
+    width: 40%;
+    left: 32%;
+    bottom: 3%;
+    height: 60%;
+	background: url(../../images/AggregateAnalysis/bomsgBg.png)center center /100% 100% no-repeat;
+}
+
+.box4 canvas{
+	cursor: pointer;
+}
+
+@media screen and (max-width: 1366px){
+	#Chkchart2 .msgDataBox {       
+        top: 27%;
+	}
+}
+
+
+/*事件分析*/
+.eventbox{
+	overflow: hidden;
+	width: 50%;
+	height: 100%;
+}
+
+.eventDiv{
+	width: 100%;
+	padding: 0 10% 0 16%;
+	height: 34px;
+	line-height: 34px;
+	cursor: pointer;
+	display: flex;
+	/*overflow: hidden;*/
+}
+.eventActive{
+	background-color: rgba(16, 71, 110, 0.8);
+}
+
+.eventDiv>div{
+	float: left;
+	display: inline-block;
+}
+.eventDiv .barData{
+	float: right;
+	color: #EEBF00;
+	width: 8%;
+}
+
+.eventDiv .word{
+	width: 90px;
+	height: 100%;
+	text-align: left;
+	letter-spacing: 2px;
+	margin-right: 5%;
+	white-space: nowrap;
+}
+
+.eventDiv .bar{
+	position: relative;
+	width: calc(90% - 110px);
+	margin-top: 10px;
+	margin-right: 5%;
+	height: 16px;
+	border: 1px solid #4B6B94;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	background-color: #062F5D;
+	padding: 1px 0;
+	float: right;
+}
+
+.barPrograss{
+	position: absolute;
+	height: calc(100% - 2px);
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	background:-moz-linear-gradient(left,#0f50a0,#5abbfd);/*Mozilla*/
+	background:-webkit-gradient(linear,0 50%,100% 50%,from(#0f50a0),to(#5abbfd));/*Old gradient for webkit*/
+	background:-webkit-linear-gradient(left,#0f50a0,#5abbfd);/*new gradient for Webkit*/
+	background:-o-linear-gradient(left,#0f50a0,#5abbfd); /*Opera11*/
+}
+
+.table_content img {
+	width: 24px;
+    margin-right: 3px;
+    margin-top: -4px;
+}
+
+.underline{
+	text-decoration: underline;
+	display: inline-block;
+}
+
+
+/*逻辑图弹窗*/
+#LogicBox{
+	padding: 4% 3%;
+	width: 100%;
+	height: 100%;
+}
+
+#LogicBox .titleBox{
+	overflow: hidden;
+	-webkit-display: flex;
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+}
+
+#LogicBox .titleBox>div{
+	-webkit-display: flex;
+	display: flex;
+	justify-content: space-between;
+	width: calc(50% - 5px);
+	height: 30px;
+}
+
+#LogicBox .titleBox>div>div{
+	height: 100%;
+	text-align: center;
+}
+
+#LogicBox .titleBox>div>div:first-child{
+	background: rgba(163, 216, 250,.2);
+	width: 30%;
+}
+
+#LogicBox .titleBox>div>div:last-child{
+	background: rgba(16, 71, 110,.6);
+	width: 70%;
+}
+
+#LogicBox .contBox{
+	width: 100%;
+	height: calc(100% - 30px);
+	padding-top: 10px;
+}
+
+#LogicBox .contBox .c_word{
+	width: 100%;
+	height: 35px;
+}
+
+#LogicBox .contBox .c_word span{
+	display: inline-block;
+	text-align: center;
+	width: 100px;
+	height: 25px;
+	line-height: 25px;
+	border-top: 1px solid rgba(16, 71, 110,1);
+	border-bottom: 1px solid rgba(16, 71, 110,1);
+}
+
+#LogicBox .contBox>div:last-child{
+	    width: 100%;
+    height: calc(100% - 35px);
+    border: 1px solid black;
+    background: #fff;
+    /* text-align: center; */
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+#LogicBox img{
+/* 	width: 15px; */
+    margin-top: -3px;
+    margin-right: 5px;
+}
+
+.num{
+	width: 14px;
+	height: 14px;
+	display: inline-block;
+	border-radius: 50px;
+	border: 1px #A0C4E6 solid;
+	line-height: 12px;
+	text-align: center;
+}

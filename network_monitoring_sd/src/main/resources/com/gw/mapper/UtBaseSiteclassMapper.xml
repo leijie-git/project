@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseSiteclassMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseSiteclass" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="SiteClassName" property="siteclassname" jdbcType="NVARCHAR" />
+    <result column="SiteClassDesc" property="siteclassdesc" jdbcType="NVARCHAR" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getList" resultType="com.gw.inspect.data.InspectSiteClassOutData" parameterType="com.gw.inspect.data.InspectSiteClassInData">
+    SELECT
+	    ID ID,
+	    UnitID UnitID,
+	    SiteClassName SiteClassName,
+	    SiteClassDesc SiteClassDesc
+    FROM
+        UT_Base_SiteClass
+    <where>
+        1 = 1
+        <if test="SiteClassName!=null and SiteClassName!=''">
+          and SiteClassName like '%${SiteClassName}%'
+        </if>
+         <if test="SiteClassDesc!=null and SiteClassDesc!=''">
+          and SiteClassDesc like '%${SiteClassDesc}%'
+        </if>
+        <if test='UnitID!=1' >
+          and UnitID = #{UnitID}
+        </if>
+    </where>
+    ORDER BY ID DESC
+  </select>
+
+    <select id="getBySiteclassname" resultType="com.gw.inspect.data.InspectSiteClassOutData"
+            parameterType="string">
+    select
+    ID,
+    SiteClassName SiteClassName
+     from UT_Base_SiteClass
+     where SiteClassName =#{SiteClassName} and UnitID=#{UnitID}
+    </select>
+
+    <select id="getBySiteclassnameAndId" resultType="com.gw.inspect.data.InspectSiteClassOutData"
+            parameterType="string">
+    select
+    ID,
+    SiteClassName SiteClassName
+     from UT_Base_SiteClass
+     where SiteClassName =#{SiteClassName} and ID!=#{id}
+    </select>
+
+    <select id="selectNumber" resultType="java.lang.Integer"
+            parameterType="com.gw.inspect.data.InspectSiteClassInData">
+  	SELECT
+		count(a.SiteClassName) conut
+	FROM
+		UT_Base_SiteClass a
+		where  a.SiteClassName like '%未定义%'
+		 and a.UnitID=#{UnitID}
+  </select>
+
+    <!--根据单位id 和位置查出位置ID-->
+
+    <select id="selectIDBySiteClassNameAndUnitID" resultType="java.lang.String"
+            parameterType="java.util.Map">
+     select id
+     from
+     UT_Base_SiteClass
+     where
+     SiteClassName=#{SiteClassName} and
+      UnitID=#{UnitID}
+    </select>
+
+</mapper>

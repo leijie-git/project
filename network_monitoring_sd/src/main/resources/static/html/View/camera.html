@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>各种视频</title>
+    <link href="../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../Content/css/NetInfoStatistic/video.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../Script/jquery-1.11.0.js"></script>
+    <script src="../Script/public.js"></script>
+    <script src="../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../Script/layer/layer.js"></script>
+
+    <!-- 各类插件必须 -->
+    <script src="../Script/Video/hik/webcomponent/webVideoCtrl.js"></script>
+    <script src="../Script/Video/hik/webcomponent/demo.js"></script>
+    <script src="../Script/Video/hik/iVMS7200/ivms7200Helper.js"></script>
+    <script src="../Script/Video/hik/ckplayer/ckplayer.js"></script>
+    <script src="../Script/Video/hik/ckplayer/ezuikit.js"></script>
+    <script src="../Script/Video/Uniview/Win32/common.js"></script>
+    <script src="../Script/codebase/webVideoCtrl.js"></script>
+
+    <!-- video.js必须 -->
+  <!--  <script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>--><!--乐橙摄像头，video.js插件 .m3u8 IE8下必须-->
+    <link href="../Script/videojs/video.css" rel="stylesheet"><!--乐橙摄像头，video.js插件 .m3u8必须-->
+	<script src="../Script/videojs/video.js"></script><!--乐橙摄像头，video.js插件 .m3u8必须-->
+    <!--<script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script> &lt;!&ndash;乐橙摄像头，video.js插件 .m3u8必须&ndash;&gt;-->
+    
+    <!--乐橙插件必须-->
+     <!--<script src="../Script/lecheng/swfobject.js"></script>-->
+    <!--<script src="../Script/lecheng/sewise.player.min.js"></script>-->
+
+
+    <script src="../Script/camera.js"></script>
+</head>
+<body style="background: black">
+<div class="video_box" id="idcontainer" style="width: 89%;height: 99%;margin: auto">
+    <!--<iframe id="camera" style="width: 100%;height: 100%"></iframe>-->
+</div>
+
+<div class="tips fontSize16"><a>请先下载控件</a></div>
+<select id="ip" class="sel" onchange="getChannelInfo();" style="display: none"></select>
+<select id="channels" class="sel" style="display: none"></select>
+<script>
+    var CamConfig =
+    {
+        ID: 'video',
+        CameraIP: '',
+        CameraPort: '',
+        CameraUser: '',
+        CameraPwd: '',
+
+        DVRControl: null,
+        LoginUserId: 0,                         //注册设备用户ID
+        ProtocolType: 0,                         //协议类型，0 – TCP， 1 - UDP
+        StreamType: 1,                           //码流类型，0 表示主码流， 1 表示子码流
+        IsPlay: 0,
+        ChannelNum:parseInt('1'),
+        NowChanNo: 0,
+        IsRecord: 0,
+        IsTalk: 0,
+        IsVoice: 0,
+        PTZSpeed: 1,
+        IsAutoPTZ: 0,
+        Preset: 1,                                //预置位
+        WndIndex:0,                               //窗体索引
+
+        //iVMS7200参数
+        ActiveXObj: null,
+        PlayOCX: null,
+        iConnHandle: -1,
+        isPlay: -1,
+        isVoice: 0,
+        iChannel: 1,
+        iRegisterNo: 1,
+        iStreamType: 0,//0为主流码 1为子流码
+        Mode: 'TCP',
+        DeviceID:'video',// 'xfzd0011',//设置ID
+        RegIP: '115.85.192.50',//注册服务器IP
+        RegPort: '7660',
+        StreamIP: '115.85.192.50',//流媒体服务器IP
+        StreamPort: '7554',
+        AlarmIP: '115.85.192.50',//报警服务器IP
+        AlarmPort: '7332'
+    };
+
+    //////////////////////////////宇视摄像头/////////////////////////////////
+    var sdk_viewer = null; // 控件（插件）对象
+    var Main = {
+        EventMap: ""
+    }
+    Main.EventMap = (function () {
+        var closure = {
+            formatExceotionCode: function (u32ExceptionCode) {
+                u32ExceptionCode = u32ExceptionCode.split(',');
+                return parseInt(u32ExceptionCode, 10);
+            },
+            formatTaskNo: function (u32Task_No) {
+                u32Task_No = u32Task_No.split(',');
+                return parseInt(u32Task_No, 10);
+            }
+        };
+        return {
+            /* 告警事件上报 */
+            __200: function (strAlarmInfo) {
+                //alert(strAlarmInfo);
+            }
+        };
+    })();
+
+    function loginYS() {
+        if (CamConfig.isPlay < 0) {
+            //初始化摄像头
+            var cfg = {
+                id: "player",                    //加载的activex控件id
+                container: "idvideownd",    //控件/插件的父节点
+                name: "sdk_viewer",              //实例对象的名称，用于设置napi上报事件的入参
+                events: Main.EventMap,           //控件事件map
+                stPortInfo: {
+                    szDeviceIp: "",
+                    szLocalIp: "",
+                },                                  //端口信息
+                stUserInfo: {                        //用户登录信息
+                    User: "",
+                    Password: ""
+                },
+                maxWnd: 64,                       //控件动态创建窗格的个数，不小于最大通道路数,默认64路 (可选)
+                focusColor: 'ffcc00',             //窗格获得焦点时的边框颜色，注意：参数形如'xxxxxx'，为颜色的16进制，以b g r 顺序，而不是r g b (可选)
+                unfocusColor: '747d7d',           //窗格未获得焦点时的边框颜色，注意：参数形如'xxxxxx'，为颜色的16进制，以b g r 顺序，而不是r g b (可选)
+                backgColor: '373737',             //控件背景色，注意：参数形如'xxxxxx'，为颜色的16进制，以b g r 顺序，而不是r g b (可选)
+                // noCreateWnd: 'true'
+            };
+            //流类型
+            var StreamType =
+            {
+                LIVE: 0,    //实况流
+                PICTRUE: 1, //抓拍流（jpeg）
+                MJPEG: 2,    //照片流
+                IMAGE_TYPE_PLATE: 3, //过车图片流
+                PIC_VIEW: 4 //图片查看
+            };
+
+            var LiveStream = {
+                LIVE_STREAM_INDEX_MAIN: 0,   // 主流
+                LIVE_STREAM_INDEX_AUX: 1,   // 辅流
+                LIVE_STREAM_INDEX_THIRD: 2    // 第三流
+            }
+
+            var Protocal = {
+                TRANSPROTOCAL_RTPTCP: 1,         //TCP
+                TRANSPROTOCAL_RTPUDP: 2          // UDP
+            }
+
+            sdk_viewer = new Utils.Player(cfg);                                       //初始化控件
+            var retcode = sdk_viewer.execFunction("NetSDKSetPlayWndNum", 1);         //分屏
+            if (0 != retcode) {
+                alert("实况窗口实例化失败");
+                return;
+            }
+
+            var SDKRet = sdk_viewer.execFunction("NETDEV_Login", CamConfig.CameraIP, CamConfig.CameraPort, CamConfig.CameraUser, CamConfig.CameraPwd);
+            if (-1 == SDKRet) {
+                alert("登录失败");
+                return;
+            }
+            else {
+                var result = JSON.parse(SDKRet);
+                CamConfig.iConnHandle = result.UserID;
+                //document.getElementById("start").disabled = false;
+                //document.getElementById("login").disabled = true;
+                //document.getElementById("logout").disabled = false;
+                //$("#playerContainer").css("height", "400px");
+                var dataMap = {
+                    dwChannelID: CamConfig.ChannelNum,
+                    dwStreamType: LiveStream.LIVE_STREAM_INDEX_MAIN,
+                    dwLinkMode: Protocal.TRANSPROTOCAL_RTPTCP,
+                    dwFluency: 0
+                }
+
+                var jsonStr = JSON.stringify(dataMap);
+                var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+
+                var retcode = sdk_viewer.execFunction("NETDEV_RealPlay", parseInt(ResourceId), CamConfig.iConnHandle, jsonStr);
+                if (0 != retcode) {
+                    alert("播放实况失败。");
+                }
+                else {
+                    CamConfig.isPlay = 1;
+                }
+            }
+        }
+        else {
+            logoutYS();
+        }
+    }
+
+    function logoutYS() {
+        if (sdk_viewer == null)
+            return;
+        var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+        var retcode = sdk_viewer.execFunction("NETDEV_StopRealPlay", parseInt(ResourceId));  //关闭视频流
+        if (0 != retcode) {
+            alert("停流失败。");
+        }
+
+        sdk_viewer.execFunction("NETDEV_Logout", CamConfig.iConnHandle);
+        CamConfig.iConnHandle = -1;
+        CamConfig.isPlay = -1;
+        //document.getElementById("login").disabled = false;
+        //document.getElementById("logout").disabled = true;
+    }
+
+    //////////////////////////阿百讯视频服务器///////////////////////////
+    function startABXPreview(isipc) {
+        var Control = $("#idcontainer .camera").children("object").get(0);
+        if (CamConfig.isPlay != 1) {
+            CamConfig.isPlay = 1;
+            if (isipc == 0)
+                Control.OpenVideo(CamConfig.CameraUser, CamConfig.CameraPwd, CamConfig.CameraIP, CamConfig.ChannelNum, 0);
+            else
+                Control.OpenVideo(CamConfig.CameraUser, CamConfig.CameraPwd, CamConfig.CameraIP, 4, -1, 0);
+        }
+        else
+        {
+            if (isipc == 0)
+                Control.CloseVideo();
+            else
+                Control.CloseVideo();
+            CamConfig.isPlay = 0;
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////萤石云直播UIKit//////////////////////////////////
+
+    function openYSDirectPlayUIKit() {
+        //var url = CamConfig.CameraIP;
+        var id = 'myPlayer';
+        //alert($("#" + id).children("source").length);
+        //debugger;
+        var srcRtmp="rtmp://rtmp.open.ys7.com/openlive/"+CamConfig.CameraIP;
+        var srcHls = "http://hls.open.ys7.com/openlive/" + CamConfig.CameraIP + ".m3u8";
+        $("#" + id).children("source").eq(0).attr("src", srcRtmp);
+        $("#" + id).children("source").eq(1).attr("src", srcHls);
+
+        var player = new EZUIPlayer(id);
+        //player.tryPlay();
+        player.on('error', function () {
+            console.log('error');
+        });
+        player.on('play', function () {
+            console.log('play');
+        });
+        player.on('pause', function () {
+            console.log('pause');
+        });
+
+    }
+    /////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////iVMS7200/////////////////////////////////
+
+    function startPreview7200() {
+        var info = '';
+        var control = $("#idcontainer .camera").children("object").get(0);
+        CamConfig.PlayOCX = control;
+        CamConfig.DeviceID = CamConfig.DeviceID;
+        info = InitOcx7200(CamConfig);
+        //alert('1：' + info);
+        info = connDevice7200(CamConfig);
+        //alert('2：' + info);
+        //alert(OwnerCameraConfig.isPlay);
+        if (CamConfig.isPlay < 0) {
+            //初始化摄像头
+            Play7200(CamConfig);
+            if (CamConfig.isPlay >= 0) {
+            }
+        }
+        else {
+            StopPlay7200(CamConfig);
+            DisConnect7200(CamConfig);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    ////////////////////////海康-WebComponets组件/////////////////////////////
+    function initWebHik() {
+        if (CamConfig.LoginUserId == 0)
+        {
+            initHikWeb("idvideownd");
+            changeWndNum(1);
+//            clickLogin(CamConfig, null, function () {
+//                if (CamConfig.LoginUserId == 1) {
+//
+//                }
+//            });
+//            CamConfig.CameraIP = _ip;
+//            CamConfig.CameraPort = _port;
+//            CamConfig.CameraUser = _userName;
+//            CamConfig.CameraPwd = _password;
+            clickLogin(CamConfig.CameraIP,CamConfig.CameraPort,CamConfig.CameraUser,CamConfig.CameraPwd)
+            setTimeout(startWebPreview,500);
+        }
+        else
+        {
+            if (CamConfig.IsPlay == 1)
+                clickStopRealPlay(CamConfig, null);
+            if (CamConfig.LoginUserId == 1)
+                clickLogout(CamConfig, null);
+        }
+    }
+
+    function startWebPreview() {
+        CamConfig.StreamType = 1;// parseInt(streamtype);
+        if (CamConfig.IsPlay == 0) {
+            clickStartRealPlay(CamConfig, null);
+            if (CamConfig.IsPlay == 1) {
+
+            }
+        }
+        else {
+            if (CamConfig.IsPlay == 1)
+                clickStopRealPlay(CamConfig, null);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////海康-OCX控件///////////////////////////////
+    function initHikCamera(cc) {
+        cc.LoginUserId = -1;
+        cc.ProtocolType = 0;
+        cc.StreamType = 0;
+        cc.IsPlay = 0;
+
+        var myDate = new Date();
+        var iYear = myDate.getFullYear();
+        if (iYear < 1971 || iYear > 2037) {
+            //alert("为了正常使用本软件，请将系统日期年限设置在1971-2037范围内！");
+
+            //parent.location.href = "../login.php";
+        }
+        if (document.getElementById("HIKOBJECT01").object == null) {
+            //alert("请先下载控件并注册！");
+            //m_bDVRControl = null;
+        }
+        if (cc.DVRControl.object == null) {
+            //layer.msg("请先下载控件并注册！");
+//            layer.confirm(
+//                   '未安装ActiveX(IE),按“确定”键打开下载页面，下载安装以后请刷新页面！',
+//                   {btn: ['确定', '取消'],skin: 'layui-layer-confirm',area:['350px','170px'],title: '提示' },
+//                   function (index) {
+//                       layer.close(index);
+//                       window.open();                 //在另外新建窗口中打开窗口
+//                   }
+//            );
+            cc.DVRControl = null;
+            $('.tips').show().html('<a href="../Script/codebase/NetVideoActiveX23.cab">点击下载控件并注册！</a>');
+            return;
+        }
+        var szDevIp = cc.CameraIP;
+        var szDevPort = cc.CameraPort;
+        var szDevUser = cc.CameraUser;
+        var szDevPwd = cc.CameraPwd;
+        //alert(szDevIp + " ," + szDevPort + " ," + szDevUser + " ," + szDevPwd);
+        cc.LoginUserId = cc.DVRControl.Login(szDevIp, szDevPort, szDevUser, szDevPwd);
+        if (cc.LoginUserId == -1) {
+            alert("摄像机注册失败!");
+            return;
+        }
+        else {
+
+        }
+        var szDecName = cc.DVRControl.GetServerName();
+        if (szDecName == "") {
+            alert("获取名称失败!!");
+            return;
+        }
+        else {
+        }
+        //document.getElementById("senseDeviceName").value = szDecName;
+
+        szServerInfo = cc.DVRControl.GetServerInfo();
+
+        //alert("ddd");
+        var bRet = cc.DVRControl.StartRealPlay(0, cc.ProtocolType, cc.StreamType);
+        if (bRet) {
+            cc.IsPlay = 1;
+        }
+        else {
+            var dRet = cc.DVRControl.GetLastError();
+            alert("预览通道1失败！代码：" + dRet);
+        }
+    }
+
+    function presetCamera(cc, iPreset) {
+        iPreset = parseInt(iPreset);
+        if (!isNaN(iPreset)) {
+            //alert(iPreset);
+            bRet = cc.DVRControl.PTZCtrlGotoPreset(iPreset);
+            if (!bRet) {
+                var dRet = cc.DVRControl.GetLastError();
+                alert("预置位失败！代码：" + dRet);
+            }
+        }
+    }
+
+    function ButtonPress(cc, sKey) {
+        try {
+            switch (sKey) {
+                case "LoginDev":
+                {
+                    cc.LoginUserId = cc.DVRControl.Login(cc.CameraIP, cc.CameraPort, cc.CameraUser, cc.CameraPwd);
+                    if (cc.LoginUserId == -1) {
+                        LogMessage("注册失败！");
+                    }
+                    else {
+                        LogMessage("注册成功！");
+                        //for (var i = 2; i <= 4; i++) {
+                        //    document.getElementById("HIKOBJECT" + i).SetUserID(LoginUserId);
+                        //}
+                    }
+                    break;
+                }
+                case "LogoutDev":
+                {
+                    if (cc.DVRControl.Logout()) {
+                        LogMessage("注销成功！");
+                    }
+                    else {
+                        LogMessage("注销失败！");
+                    }
+                    break;
+                }
+                case "getDevName":
+                {
+                    var szDecName = cc.DVRControl.GetServerName();
+                    //szDecName = szDecName.replace(/\s/g,"&nbsp;");
+                    if (szDecName == "") {
+                        LogMessage("获取名称失败！");
+                        szDecName = "Embedded Net DVR";
+                    }
+                    else {
+                        LogMessage("获取名称成功！");
+                    }
+                    //document.getElementById("DeviceName").value = szDecName;
+                    break;
+                }
+                case "getDevChan":
+                {
+                    szServerInfo = cc.DVRControl.GetServerInfo();
+                    var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                    xmlDoc.async = "false"
+                    xmlDoc.loadXML(szServerInfo)
+                    cc.ChannelNum = parseInt(xmlDoc.documentElement.childNodes[0].childNodes[0].nodeValue);
+                    //m_szDeviceType = xmlDoc.documentElement.childNodes[1].childNodes[0].nodeValue;
+                    //ChannelNum = parseInt(iChannelNum);
+                    if (cc.ChannelNum < 1) {
+                        LogMessage("获取通道失败！");
+                    }
+                    else {
+                        LogMessage("获取通道成功！");
+                        //document.getElementById("ChannelList").length = 0; //先清空下拉列表
+                        for (var i = 0; i < cc.ChannelNum; i++) {
+                            var szChannelName = cc.DVRControl.GetChannelName(i);
+                            if (szChannelName == "") {
+                                szChannelName = "通道" + (i + 1);
+                            }
+                            //document.getElementById("ChannelList").options.add(new Option(szChannelName, i));
+                        }
+                    }
+                    break;
+                }
+                case "Preview:start":
+                {
+                    //cc.NowChanNo = parseInt(document.getElementById("ChannelList").value);
+                    if (cc.NowChanNo > -1) {
+                        if (cc.IsPlay == 1) {
+                            cc.DVRControl.StopRealPlay();
+                        }
+
+                        var bRet = cc.DVRControl.StartRealPlay(cc.NowChanNo, cc.ProtocolType, cc.StreamType);
+                        if (bRet) {
+                            LogMessage("预览通道" + (cc.NowChanNo + 1) + "成功！");
+                            cc.IsPlay = 1;
+                        }
+                        else {
+                            LogMessage("预览通道" + (cc.NowChanNo + 1) + "失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请选择通道号！");
+                    }
+                    break;
+                }
+                case "Preview:stop":
+                {
+
+                    if (cc.DVRControl.StopRealPlay()) {
+                        LogMessage("停止预览成功！");
+                        cc.IsPlay = 0;
+                    }
+                    else {
+                        LogMessage("停止预览失败！");
+                    }
+                    break;
+                }
+                case "CatPic:bmp":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.DVRControl.BMPCapturePicture("C:/OCXBMPCaptureFiles", 1)) {
+                            LogMessage("抓BMP图成功！");
+                        }
+                        else {
+                            LogMessage("抓BMP图失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "CatPic:jpeg":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.DVRControl.JPEGCapturePicture((cc.NowChanNo + 1), 2, 0, "C:/OCXJPEGCaptureFiles", 1)) {
+                            LogMessage("抓JPEG图成功！");
+                        }
+                        else {
+                            LogMessage("抓JPEG图失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "Record:start":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsRecord == 0) {
+                            if (cc.DVRControl.StartRecord("C:/OCXRecordFiles")) {
+                                LogMessage("开始录像成功！");
+                                cc.IsRecord = 1;
+                            }
+                            else {
+                                LogMessage("开始录像失败！");
+                            }
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "Record:stop":
+                {
+                    if (cc.IsRecord == 1) {
+                        if (cc.DVRControl.StopRecord(1)) {
+                            LogMessage("停止录像成功！");
+                            cc.IsRecord = 0;
+                        }
+                        else {
+                            LogMessage("停止录像失败！");
+                        }
+                    }
+                    break;
+                }
+                case "talk:start":
+                {
+                    if (cc.LoginUserId > -1) {
+                        if (cc.IsTalk == 0) {
+                            if (cc.DVRControl.StartTalk(1)) {
+                                //alert("开始对讲成功！");
+                                cc.IsTalk = 1;
+                            }
+                            else {
+                                var dRet = cc.DVRControl.GetLastError();
+                                alert("开始对讲失败！错误号：" + dRet);
+                            }
+                        }
+                    }
+                    else {
+                        LogMessage("请注册设备！");
+                    }
+                    break;
+                }
+                case "talk:stop":
+                {
+                    if (cc.IsTalk == 1) {
+                        if (cc.DVRControl.StopTalk()) {
+                            LogMessage("停止对讲成功！");
+                            cc.IsTalk = 0;
+                        }
+                        else {
+                            LogMessage("停止对讲失败！");
+                        }
+                    }
+                    break;
+                }
+                case "voice:start":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsVoice == 0) {
+                            if (cc.DVRControl.OpenSound(1)) {
+                                LogMessage("打开声音成功！");
+                                cc.IsVoice = 1;
+                            }
+                            else {
+                                LogMessage("打开声音失败！");
+                            }
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "voice:stop":
+                {
+                    if (cc.IsVoice == 1) {
+                        if (cc.DVRControl.CloseSound(1)) {
+                            LogMessage("关闭声音成功！");
+                            cc.IsVoice = 0;
+                        }
+                        else {
+                            LogMessage("关闭声音失败！");
+                        }
+                    }
+                    break;
+                }
+                case "PTZ:stop":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed)) {
+                            LogMessage("停止PTZ成功！");
+                            cc.IsAutoPTZ = 0;
+                        }
+                        else {
+                            LogMessage("停止PTZ失败！");
+                        }
+                    }
+                    break;
+                }
+                case "PTZ:leftup":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(13, cc.PTZSpeed)) {
+                            LogMessage("PTZ左上成功！");
+                        }
+                        else {
+                            LogMessage("PTZ左上失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:rightup":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(14, cc.PTZSpeed)) {
+                            LogMessage("PTZ右上成功！");
+                        }
+                        else {
+                            LogMessage("PTZ右上失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:up":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(0, cc.PTZSpeed)) {
+                            LogMessage("PTZ上成功！");
+                        }
+                        else {
+                            LogMessage("PTZ上失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:left":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(2, cc.PTZSpeed)) {
+                            LogMessage("PTZ向左成功！");
+                        }
+                        else {
+                            LogMessage("PTZ向左失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:right":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(3, cc.PTZSpeed)) {
+                            LogMessage("PTZ向右成功！");
+                        }
+                        else {
+                            LogMessage("PTZ向右失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:rightdown":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(16, cc.PTZSpeed)) {
+                            LogMessage("PTZ右下成功！");
+                        }
+                        else {
+                            LogMessage("PTZ右下失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:leftdown":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(15, cc.PTZSpeed)) {
+                            LogMessage("PTZ左下成功！");
+                        }
+                        else {
+                            LogMessage("PTZ左下失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:down":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(1, cc.PTZSpeed)) {
+                            LogMessage("PTZ向下成功！");
+                        }
+                        else {
+                            LogMessage("PTZ向下失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "PTZ:auto":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.DVRControl.PTZCtrlStart(10, cc.PTZSpeed)) {
+                            LogMessage("PTZ自转成功！");
+                            cc.IsAutoPTZ = 1;
+                        }
+                        else {
+                            LogMessage("PTZ自转失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "zoom:in":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(4, cc.PTZSpeed)) {
+                            LogMessage("焦距拉近成功！");
+                        }
+                        else {
+                            LogMessage("焦距拉近失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "zoom:out":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(5, cc.PTZSpeed)) {
+                            LogMessage("焦距拉远成功！");
+                        }
+                        else {
+                            LogMessage("焦距拉远失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "focus:in":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(6, cc.PTZSpeed)) {
+                            LogMessage("聚焦拉近成功！");
+                        }
+                        else {
+                            LogMessage("聚焦拉近失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "focus:out":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(7, cc.PTZSpeed)) {
+                            LogMessage("聚焦拉远成功！");
+                        }
+                        else {
+                            LogMessage("聚焦拉远失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "iris:in":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(8, cc.PTZSpeed)) {
+                            LogMessage("光圈大成功！");
+                        }
+                        else {
+                            LogMessage("光圈大失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "iris:out":
+                {
+                    if (cc.IsPlay == 1) {
+                        if (cc.IsAutoPTZ == 1) {
+                            cc.DVRControl.PTZCtrlStop(10, cc.PTZSpeed);
+                            cc.IsAutoPTZ = 0;
+                        }
+                        if (cc.DVRControl.PTZCtrlStart(9, cc.PTZSpeed)) {
+                            LogMessage("光圈小成功！");
+                        }
+                        else {
+                            LogMessage("光圈小失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "getImagePar":
+                {
+                    if (cc.IsPlay == 1) {
+                        var szXmlInfo = cc.DVRControl.GetVideoEffect();
+                        if (szXmlInfo != "") {
+                            var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                            xmlDoc.async = "false"
+                            xmlDoc.loadXML(szXmlInfo)
+                            //document.getElementById("PicLight").value = xmlDoc.documentElement.childNodes[0].childNodes[0].nodeValue;
+                            //document.getElementById("PicContrast").value = xmlDoc.documentElement.childNodes[1].childNodes[0].nodeValue;
+                            //document.getElementById("PicSaturation").value = xmlDoc.documentElement.childNodes[2].childNodes[0].nodeValue;
+                            //document.getElementById("PicTonal").value = xmlDoc.documentElement.childNodes[3].childNodes[0].nodeValue;
+                            LogMessage("获取图像参数成功！");
+                        }
+                        else {
+                            LogMessage("获取图像参数失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "setImagePar":
+                {
+                    if (cc.IsPlay == 1) {
+                        var iL = 1;// parseInt(document.getElementById("PicLight").value);
+                        var iC = 1;// parseInt(document.getElementById("PicContrast").value);
+                        var iS = 1;// parseInt(document.getElementById("PicSaturation").value);
+                        var iT = 1;// parseInt(document.getElementById("PicTonal").value);
+                        var bRet = cc.DVRControl.SetVideoEffect(iL, iC, iS, iT);
+                        if (bRet) {
+                            LogMessage("设置图像参数成功！");
+                        }
+                        else {
+                            LogMessage("设置图像参数失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "setPreset":
+                {
+                    if (cc.IsPlay == 1) {
+                        var iPreset = 1;// parseInt(document.getElementById("Preset").value);
+                        var bRet = DVRControl.PTZCtrlSetPreset(iPreset);
+                        if (bRet) {
+                            LogMessage("设置预置点成功！");
+                        }
+                        else {
+                            LogMessage("设置预置点失败！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                case "goPreset":
+                {
+                    if (cc.IsPlay == 1) {
+                        //var iPreset = 1;// parseInt(document.getElementById("Preset").value);
+                        var bRet = cc.DVRControl.PTZCtrlGotoPreset(cc.Preset);
+                        if (bRet) {
+                            LogMessage("调用预置点成功！");
+                        }
+                        else {
+                            LogMessage("调用预置点成功！");
+                        }
+                    }
+                    else {
+                        LogMessage("请先预览！");
+                    }
+                    break;
+                }
+                default:
+                {
+                    //Record:start   setPreset
+                    break;
+                }
+            } 	//switch
+        }
+        catch (err) {
+            alert(err);
+        }
+    }
+
+    function startPreview() {
+        if (CamConfig.IsPlay == 0) {
+            var Control = $("#idcontainer .camera").children("object").get(0);
+            CamConfig.DVRControl = Control;
+            //初始化摄像头
+            initHikCamera(CamConfig);
+            if (CamConfig.IsPlay == 1) {
+
+            }
+        }
+        else {
+            if (CamConfig.IsPlay == 1)
+                ButtonPress(CamConfig, "Preview:start");
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////
+
+    /////////////////////////萤石云直播//////////////////////////////////
+    function openYSDirectPlay(){
+        var url = CamConfig.CameraIP;
+        var flashvars = {
+            f: '/Scripts/Video/hik/ckplayer/m3u8.swf',
+            a: url, //此处填写购买获取到的视频播放地址
+            c: 0,
+            p: 1,//autoplay
+            s: 4,
+            lv: 1
+        };
+        var params = { bgcolor: '#FFF', allowFullScreen: true, allowScriptAccess: 'always', wmode: 'transparent' };
+        CKobject.embedSWF("/Scripts/Video/hik/ckplayer/ckplayer.swf", "idvideownd", "video" + CamConfig.ID, "100%", "100%", flashvars, params);
+    }
+
+    ////////////////////////大华IE//////////////////////////////////////////
+      function StartPreviewDaHua(){
+        var SSOcx = document.getElementById("playOcx");  
+        SSOcx.SetDeviceInfo(_ip,_port,1,_userName,_password);  
+        SSOcx.StartPlay();
+    }
+
+    //////////////////////////乐橙摄像头 为支持.m3u8格式视频能在主流浏览器上正常播放，这里使用的是video.js插件//////////////////////////////////////
+    function openLCDirectPlay(){
+        //乐橙插件的使用
+        //  var id = 'idvideownd';
+        //  SewisePlayer.setup({
+        //      server: "vod",
+        //      type: "m3u8",
+        //      autostart: "true",
+        //      poster: "http://jackzhang1204.github.io/materials/poster.png",
+        //      videourl:CamConfig.CameraIP ,
+        //      skin: "vodWhite",
+        //      title: "Live M3U8",
+        //      claritybutton: "disable",
+        //     lang: "zh_CN"
+        //      }, id);
+
+        //videojs的简单使用
+        var myPlayer = videojs('myVideoDiv', {
+            bigPlayButton: true,
+            textTrackDisplay: false,
+            posterImage: false,
+            errorDisplay: false,
+            sources: [
+            {
+            src: "http://szpaasalihlsgw.lechange.cn:9001/LCO/4J07851PAJ6CD6B/0/1/20190621152057/dev_20190621152057_0lfiztnl1laiqfkd.m3u8", //视频url
+            type: 'application/x-mpegURL'
+            },
+            // {  //添加多个视频时在此增加
+            //   src: '//path/to/video.webm',
+            //   type: 'video/webm'
+            // }
+            ]
+        });
+
+        videojs("myVideoDiv").ready(function () {
+            var myPlayer = this;
+            myPlayer.play();
+        });
+    }
+</script>
+<script>
+
+    var _ip = GetQuery('ip');
+    var _port = GetQuery('port');
+    var _userName = GetQuery('userName');
+    var _password = GetQuery('password');
+    var _deviceType = GetQuery('deviceType');
+    // var _poscode = GetQuery('poscode');
+
+    //var _ip = "221.6.68.150";
+    //    var _port = "9004";
+    //    var _userName = "admin";
+    //    var _password = "12345";
+    //    var _ip = "http://hls.open.ys7.com/openlive/c05c22b39e2342d49def39b49c89bf71.m3u8";
+    //    var _port = "80";
+    //    var _userName = "szsdkj";
+    //    var _password = "szsdkj2009";
+    //    var _deviceType ='2';
+
+    $(function() {
+        loadUnitVideo();
+    });
+
+    function loadUnitVideo(){
+        CamConfig.CameraIP = _ip;
+        CamConfig.CameraPort = _port;
+        CamConfig.CameraUser = _userName;
+        CamConfig.CameraPwd = _password;
+        getVideo();
+    }
+
+    function getVideo(){
+        var ip = _ip;
+        var port = _port;
+        var account = _userName;
+        var password = _password;
+        var type = _deviceType;
+
+//        console.log(type)
+        if(type == 0 ){//海康Ocx控件
+            var html = '<div id="idvideownd" class="camera" style="width: 100%; height: 100%; background-color: black; padding: 0px; margin: 0px;">'
+                    +'<object classid="CLSID:CAFCF48D-8E34-4490-8154-026191D73924" codebase="../Script/codebase/NetVideoActiveX23.cab" standby="Waiting..." id="HIKOBJECT01" width="100%" height="100%" name="HIKOBJECT01"></object>'
+                    + '</div>'
+            $('#idcontainer').html(html);
+            setTimeout('startPreview()',500)
+        }
+        else if(type == 1){//海康Web组件
+            var html = '<div id="idvideownd" class="camera" style="padding:0px;margin:0px; background-color:black;"></div>'
+            $('#idcontainer').html(html)
+            setTimeout('initWebHik()',500)
+        }
+        else if(type == 2){//萤石直播/萤石云
+            var html = '<div id="idvideownd" class="camera" style="background-color: black;width: 100%;height: 100%; padding: 0px; margin: 0px;"></div>'
+            $('#idcontainer').html(html)
+            setTimeout('openYSDirectPlay()',500)
+        }
+        else if(type == 3){//iVMS7200
+            var html = '<div class="camera" style="width: 100%; height: 100%; background-color: black; padding: 0px; margin: 0px;">'
+                    +'<object classid="clsid:EE4EA829-B8DA-4229-AC72-585AF45AD778" codebase="../../iVMS7200/ppvsguard.cab#version=2,3,0,1234" standby="Waiting..." id="ppvs" width="100%" height="100%" name="ppvs" title="视频"></object>'
+                    +'</div>'
+            $('#idcontainer').html(html)
+            setTimeout('startPreview7200()',500)
+        }
+        else if(type == 4){//萤石直播UIKit
+            var html = '<div id="idvideownd" class="camera" style="background-color: black; padding: 0px; margin: 0px;">'
+                    +'<video id="myPlayer" poster="" controls playsinline webkit-playsinline style="width:100%;height:100%;">'
+                    +'<source src="" type="" />'
+                    +'<source src="" type="application/x-mpegURL" />'
+                    +'</video>'
+                    +'</div>'
+            $('#idcontainer').html(html)
+            setTimeout('openYSDirectPlayUIKit()',500)
+        }
+        else if(type == 5){//阿百讯视频服务器
+            var html ='<div id="idvideownd" class="camera" style="background-color: black; padding: 0px; margin: 0px;">'
+                    +'<object id="AryaVideoOneEmbed" width="400" height="300" classid="CLSID:D2ACAA12-5938-47FC-9200-E721CF1DD9ED" codebase="~/video/ABaixun/AryaVideoOneEmbed.cab#version=2,0,0,7"> </object>'
+                    +'</div>'
+            $('#idcontainer').html(html)
+            // setTimeout('startABXPreview(0)',500)
+        }
+        else if(type == 6){//阿百讯IPC
+            var html ='<div id="idvideownd" class="camera" style="background-color: black; padding: 0px; margin: 0px;">'
+                    +'<object id="AryaVideoOneEmbed" width="400" height="300" classid="CLSID:D2ACAA12-5938-47FC-9200-E721CF1DD9ED" codebase="~/video/ABaixun/AryaIPCEmbed.cab#version=2,0,0,4"> </object>'
+                    +'</div>'
+            $('#idcontainer').html(html)
+            //setTimeout('startABXPreview(1)',500)
+        }
+        else if(type == 7){//宇视摄像头
+            var html ='<div id="idvideownd" class="camera" style=" padding: 0px; margin: 0px; background-color: black;"></div>'
+
+            $('#idcontainer').html(html)
+            setTimeout('loginYS()',500)
+        }
+        else if(type == 8){ //大华IE
+            var html ='<div id="idvideownd" class="camera" style=" padding: 0px; margin: 0px; background-color: black;">'
+                    +'<object classid="clsid:30209FBC-57EB-4F87-BF3E-740E3D8019D2" codebase=""  standby="Waiting..." id="playOcx" width="400" height="300" name="playOcx" align="center" >' 
+                    +'<embed width="618" height="360" align="center" ></embed>'
+                    +'</object>'
+                    +'</div>';
+            $('#idcontainer').html(html);
+            setTimeout(()=>{
+                StartPreviewDaHua();
+            }, 500);
+        }
+        else if(type == 9){ //乐橙摄像头，这里使用的是video.js插件
+            // var html =
+            //     '<div id="idvideownd" class="camera" style="width: 400px;height: 300px;padding: 0px; margin: 0px; background-color: black;text-align: center">'+
+		     //    '<video id="myVideoDiv" class="video-js vjs-default-skin vjs-big-play-centered" controls autoplay preload="auto" width="400" height="300">'+
+    	     //    '</video>'+
+	         //    '</div>';
+            var html = '<video id="myVideoDiv" class="video-js vjs-default-skin vjs-big-play-centered" controls autoplay preload="auto" width="640px" height="314px" style="margin: auto"></video>';
+            $('#idcontainer').html(html);
+            //videojs.options.flash.swf = "video-js.swf";
+         /*   setTimeout(()=>{
+                openLCDirectPlay();
+            }, 500);*/
+            setTimeout('openLCDirectPlay()',100)
+        }
+
+    }
+
+
+    function closeMe() {
+        //假设这是iframe页
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    };
+</script>
+</body>
+</html>

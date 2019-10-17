@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>短信记录-短信弹窗</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/HistoryNote/History14_MsgWindow.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+    <div class="wrapper" style="padding: 4% 2% 2% 2%;width: 100%;height: 100%;overflow: hidden;background: none;">
+
+        <div class="top_box">
+            <div class="titleBox">
+                <div>
+                    <div>检索时间</div>
+                    <div id="searchTime">2018年8月</div>
+                </div>
+
+                <div>
+                    <div>手机号码</div>
+                    <div id="phone">28776567676</div>
+                </div>
+            </div>
+            <div class="titleBox">
+                <div>
+                    <div>成功发送次数</div>
+                    <div id="successTime">0</div>
+                </div>
+
+                <div>
+                    <div>失败发送次数</div>
+                    <div id="failTime">0</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--table start-->
+        <div class="table_box table_box2">
+            <div class="list_table">
+                <div class="table_header">
+                    <table>
+                        <colgroup>
+                            <col width="5%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="20%">
+                            <col width="35%">
+                            <col width="12%">
+                            <col width="8%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>手机号码</th>
+                                <th>单位名称</th>
+                                <th>信息类型</th>
+                                <th>发送内容</th>
+                                <th>发送事件</th>
+                                <th>是否成功</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="table_content scrollbar-inner">
+                    <table cellpadding="0" cellspacing="0" class="tbody">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="20%">
+                            <col width="35%">
+                            <col width="12%">
+                            <col width="8%">
+                        </colgroup>
+                        <tbody id="mainContentTbody">
+                            <!--<tr id="3ewrsdfs">-->
+                                <!--<td>1</td>-->
+                                <!--<td>18550132424</td>-->
+                                <!--<td>苏州思迪</td>-->
+                                <!--<td>顶楼消火栓管网压力</td>-->
+                                <!--<td class="trcont">思迪建筑消防演示平台(1405140A5010)在 2018-08-03 08:23:23 [顶楼消火栓管网压力] 当前值0.3434543333Mp,参考范围(0.4000000000454433Mp~1.200000000534543345)</td>-->
+                                <!--<td>2018-04-23 14:23:43</td>-->
+                                <!--<td class="lightgreen">成功</td>-->
+                            <!--</tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div id="demo7"></div>
+            </div>
+
+        </div>
+        <!--table end-->
+    </div>
+
+    <!--弹窗-->
+    <div id="LogicBox">
+        <div class="titleBox">
+            <div>
+                <div>
+                    <img src="../../Content/images/Public/icon_luoji.png">
+                    <span>报警单位</span>
+                </div>
+                <div>苏州思迪信息技术有限公司</div>                   
+            </div>
+
+            <div>
+                <div>
+                    <img src="../../Content/images/Public/icon_luoji.png">
+                    <span>报警时间</span>
+                </div>
+                <div>2018-07-20 18:23:43</div>                   
+            </div>
+        </div>
+
+        <div class="contBox">
+            <div class="c_word">
+                <span>逻辑触发图例</span>
+            </div>
+
+            <div>
+                此处放图
+                <img src="png">
+            </div>
+        </div>
+    </div>
+
+   
+    
+</body>
+
+<script>
+    var _ifUsed = 0; //调用page方法的判断
+    var _data={
+        pageSize:20,
+        pageNumber:1,
+        startDate: GetQuery('startDate'),
+        endDate: GetQuery('endDate'),
+        phone: GetQuery('phone'),
+        unitId:GetQuery('unitid')
+    };
+
+    var _phone = GetQuery('phone');
+
+    $(function(){
+        $('#searchTime').text("");
+        $('#phone').text(GetQuery('phone'));
+        getAlarmSysListData();
+        domEvelement();
+    });
+
+    function getAlarmSysListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getMessageStatDetail",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        var successTime = 0,failTime=0;
+        for(var i = 0 ; i < data.length;i++){
+            if(data[i].status == 1)
+                successTime++;
+            else if(data[i].status == 0)
+                failTime++;
+            html +='<tr>'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].phone+'</td>'+
+                    '<td>'+data[i].unitName+'</td>'+
+                    '<td>'+data[i].messageType+'</td>'+
+                    '<td class="trcont">'+data[i].content+'</td>'+
+                    '<td>'+data[i].sendDate+'</td>'+
+                    '<td class="'+(data[i].status == 1?"lightgreen":"red")+'">'+(data[i].status == 1?"成功":"失败")+'</td>'+
+                    '</tr>'
+        }
+        $('#successTime').text(successTime);
+        $('#failTime').text(failTime);
+        $('#mainContentTbody').html(html||"<tr><td colspan='5'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+
+    function domEvelement(){
+
+    }
+
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    console.log(obj);
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getAlarmSysListData(); //调用接口获取数据
+                    }
+                }
+            });
+        })
+        //完整功能
+    }
+    
+</script>
+</html>

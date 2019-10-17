@@ -1,0 +1,24 @@
+spring:
+  mvc:
+    async:
+      request-timeout: 8s
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      database: runtest
+server:
+  connection-timeout: 5s
+logging:
+  level:
+    com.gw.mapper: debug
+TL.outData.url:
+TL.outData.auth:
+TL.unitParam.defualtAccount: 
+TL.unitParam.defualtAccountId:
+Ali.Phone.Service.Key: LTAIgWxn6uDMLcXN
+Ali.Phone.Service.Cipter: yJpPdLC7F2fkPX4YzGvwMwPDVsWp2ZivtXF8JYYrpT4
+Ali.Phone.Service.TtsCode: TTS_164666141
+Ali.Phone.Service.Timeout: 10000
+Ali.Phone.Service.ShowNum: "051287821690"
+Phone.Call.UnitName:

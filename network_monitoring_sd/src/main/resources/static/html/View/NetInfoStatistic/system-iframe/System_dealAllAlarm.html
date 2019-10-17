@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>全部处理</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/HistoryNote/History_deal.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/History_dealAll.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+
+     <!--批量处理 弹窗-->
+    <div id="deallBox">
+        <div class="top_box">
+        	<div class="div1">
+        		<div class="div_l">测试</div>
+        		<div class="div_r">
+                    <span class="imgbox">
+                        <img src="../../../Content/images/NetInfoStatistic/piliangNoChk.png" labtest="1"><span>是</span>
+                    </span>
+                    <span class="imgbox">
+                        <img src="../../../Content/images/NetInfoStatistic/piliangNoChk.png" labtest="0"><span>否</span>
+                    </span>
+        		</div>
+        	</div>
+        </div>
+
+        <input class="submitBtn" type="button" value="" >
+    </div>
+
+</body>
+<script type="text/javascript">
+    var _unitId = GetQuery('unitId'); //单位
+    var _buildId = GetQuery('buildId'); //区域
+    var _type = GetQuery('type'); //系统
+
+    $(function(){
+        domeEvelement();
+    });
+
+    function getDealResult(isTest,alarmStatus){
+        var data = {
+            isTest:isTest,
+            alarmStatus:alarmStatus,
+            type: _type,
+            unitId: _unitId,
+            buildId: _buildId
+        };
+
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/dealAlarmBatch",
+            data: data,
+            success: function(data) {
+                //console.log(data);
+                if (data.success == true) {
+                   layer.msg('处理成功！');
+                    setTimeout(function(){
+                       window.parent.location.reload(true);
+                        $('.fire_more',parent.parent.document).attr('isdeal','yes'); //改变存储在首页的状态，在关闭更多时是否更新处理后的数据
+                    },2000)
+                }
+                else{
+                    layer.msg(data.obj);
+                }
+            }
+        })
+    }
+
+    function domeEvelement(){
+        $('.submitBtn').unbind('click').click(function(){
+           var isTest =  $('.imgbox>img.active').attr('labtest');//测试
+            var alarmStatus = 1;
+            getDealResult(isTest,alarmStatus);
+        });
+
+        //选择报警类型
+        $('.div_r>div>div').unbind('click').click(function(){
+            $('.div_r>div>div').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        //测试是否选择
+        $('.div_r > .imgbox').unbind('click').click(function(){
+            $(this).children('img').addClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangChk.png');
+            $(this).siblings().children('img').removeClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangNoChk.png');
+        });
+    }
+
+</script>
+
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>历史记录-巡查维保记录</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">      
+                <!--下拉框-->      
+                <!--<div class="layui-inline layui-bg-cyan" id="alarmType">-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<select name="modules" lay-verify="required" lay-search="">-->
+                            <!--<option value="">&#45;&#45;维保记录&#45;&#45;</option>-->
+                            <!--<option value="1">维保记录</option>-->
+                            <!--<option value="2">维保记录</option>-->
+                            <!--<option value="3">维保记录</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!--下拉框-->      
+                <div class="layui-inline layui-bg-cyan" id="result">
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="" selected>--选择处理结果--</option>
+                            <option value="0">未处理</option>
+                            <option value="3">已处理</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索">
+                <input class="submitBtn" type="button" value="查询">
+            </form>
+        </div>
+        
+        <!--table start-->
+            <div class="table_box table_box2">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="5%">
+                                <col width="8%">
+                                <col width="12%">
+                                <col width="7%">
+                                <col width="12%">
+                                <col width="15%">
+                                <col width="8%">
+                                <col width="9%">
+                                <col width="9%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>单位编号</th>
+                                <th>单位名称</th>
+                                <th>上报人员</th>
+                                <th>维保内容</th>
+                                <th>位置</th>
+                                <th>处理状态</th>
+                                <th>上报时间</th>
+                                <th>处理时间</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="8%">
+                                <col width="12%">
+                                <col width="7%">
+                                <col width="12%">
+                                <col width="15%">
+                                <col width="8%">
+                                <col width="9%">
+                                <col width="9%">
+                            </colgroup>
+                            <tbody id="tbodyContent">
+                            <!--<tr id="safdsgsa">-->
+                                <!--<td>1</td>-->
+                                <!--<td>000013</td>-->
+                                <!--<td>上海跨国采购</td>-->
+                                <!--<td>王师傅</td>-->
+                                <!--<td>灭火器</td>-->
+                                <!--<td>国内公司</td>-->
+                                <!--<td class="lightgreen">已处理</td>-->
+                                <!--<td>2018-04-34 17:32:45</td>-->
+                                <!--<td>2018-04-34 17:32:45</td>-->
+                            <!--</tr>-->
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div id="demo7"></div>
+                    <img class="exportBtn" id="exportBtn" src="../../../Content/images/Public/exportBT.png">
+                </div>
+
+            </div>
+            <!--table end-->
+    </div>
+</body>
+
+    <script type="text/javascript">
+        var _ifWBUsed=0;
+        var _unitid = GetQuery('unitid');
+        var _buildid = GetQuery('buildid');
+//        var _systemid = GetQuery('sysid');
+        var _WBData={
+            pageNumber:1,
+            pageSize:20,
+            status:$('#result').find('dd.layui-this').attr('lay-value')||"",
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:$('#keyWords').val(),
+            buildId:_buildid,
+            unitId:_unitid
+        };
+
+
+        $(function(){
+            loadLayuiForm();//调用layui form组件，方法写在public
+            clickevent();
+
+            getWBListData();
+        });
+
+        function getWBListData(){
+            var isAsync = true,lid = 0;
+            if (isAsync)
+                lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+            $.ajax({
+                type: "get",
+                url: _serverIp + "/front/maintenance/getRepairList",
+                data:_WBData,
+                success: function (data) {
+                    //console.log(data);
+                    if (_ifWBUsed == 0) {
+                        layerPage(data.total,1);
+                        _ifWBUsed = 1;
+                    }
+                    getWBTable(data); //获取灭火器表格数据
+                },
+                complete: function () {
+                    if (isAsync){
+                        layer.close(lid);
+                    }
+                }
+            });
+        }
+
+        //获取维保表格数据
+        function getWBTable(msg) {
+            var data = msg.list;
+            var html = '';
+            for(var i = 0 ; i < data.length;i++){
+                html += '<tr id="safdsgsa">' +
+                        '<td>'+(msg.startRow++)+'</td>' +
+                        '<td>'+data[i].unitCode+'</td>' +
+                        '<td>'+data[i].unitName+'</td>' +
+                        '<td>'+data[i].wbclr+'</td>' +
+                        '<td>'+data[i].checkInfo+'</td>' +
+                        '<td>'+data[i].repairSite+'</td>' +
+                        '<td class="'+(data[i].dealStatus == "已处理"?"":"red")+'">'+data[i].dealStatus+'</td>'+
+                        '<td>'+data[i].createtime+'</td>' +
+                        '<td>'+data[i].dealDate+'</td>' +
+                        '</tr>'
+            }
+            $('#tbodyContent').html(html||"<tr><td colspan='9'>暂无数据...</td></tr>");
+            $('#tbodyContent tr>td').each(function(){$(this).attr('title',$(this).text())})
+        }
+        //处理状态
+        function getDealStatus(status){
+            var status={
+                statusTxt:"",
+                statusClass:"red"
+            }
+            var statusTxt = "";
+            if(status == 0){
+                status.statusTxt = "待分配"
+
+            }else if(status == 1){
+                status.statusTxt = "已分配"
+            }else if(status == 2){
+                status.statusTxt = "巡查人员确认"
+            }else if(status == 3){
+                status.statusTxt = "最终确认";
+                status.statusClass= "lightgreen"
+            }
+            return status;
+        }
+
+        function clickevent(){
+
+            //搜索
+            $('.submitBtn').click(function() {
+                _ifWBUsed = 0;
+                _WBData={
+                    pageNumber:1,
+                    pageSize:20,
+                    status:$('#result').find('dd.layui-this').attr('lay-value')||"",
+                    startDate:$('#sData2').val(),
+                    endDate:$('#eData2').val(),
+                    keyword:$('#keyWords').val(),
+                    buildId:_buildid,
+                    unitId:_unitid
+                };
+                getWBListData();
+            });
+
+            //导出
+            $('#exportBtn').click(function(){
+                if( $('#mainContentTbody tr:first-child>td').length == 1){
+                    return;
+                }
+                var _status = $('#result').find('dd.layui-this').attr('lay-value')||"";
+                var url = _serverIp + "/front/maintenance/exportRepairList?"
+                        + "status=" + _status
+                        + "&keyword=" + $('#keyWords').val()
+                        + "&startDate=" + $('#sData2').val()
+                        + "&endDate=" + $('#eData2').val()
+                        +"&unitId="+_unitid
+                        +"&buildId="+_buildid;
+                postExport(url)
+            })
+
+        }
+
+
+        function layerPage(count){
+            layui.use(['laypage', 'layer'], function() {
+                var laypage = layui.laypage
+                        , layer = layui.layer;
+                laypage.render({
+                    elem: 'demo7'
+                    ,count: count
+                    ,limit:20
+                    ,prev: '<em>&lt;</em>'
+                    ,next: '<em>&gt;</em>'
+                    ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                    ,jump: function(obj,isNew){
+    //                    console.log(obj);
+                        if (!isNew) {
+                            _WBData.pageNumber = obj.curr;
+                            _WBData.pageSize = obj.limit;
+                            //console.log(_curr)
+                            getWBListData(); //调用接口获取数据
+                        }
+
+                    }
+                });
+            })
+            //完整功能
+
+        }
+
+
+    </script>
+</html>

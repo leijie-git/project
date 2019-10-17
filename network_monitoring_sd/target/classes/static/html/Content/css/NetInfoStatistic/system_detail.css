@@ -1,0 +1,751 @@
+/*各系统监测- 各系统详情页*/
+
+body {
+    margin: 0;
+    background: none;
+    overflow: hidden;
+    padding: 0;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    background: none;
+    overflow: hidden;
+    /*padding-top: 10px;*/
+    /*padding-left: 20px;*/
+    /*background: rgba(6, 48, 96, 0.6);*/
+}
+
+.top-search {
+    /*padding-top: 5px;*/
+}
+
+.wrapper2 {
+    overflow: hidden;
+    position: relative;
+    float: left;
+    display: inline-block;
+    width: 97%;
+    background: url(../../images/NetInfoStatistic/waterpageBG.png)no-repeat center;
+    background-size: 100% 100%;
+}
+
+.selectTime{
+    max-width: 170px;
+    width: 20%;
+}
+/*topBox*/
+.top-search.btn_more{
+    height: 20px;
+}
+.layui-form{
+    display: flex;
+}
+.submitBtn{
+    margin-left: 5px;
+}
+.selectB{
+    border-radius: 5px;
+}
+.topBox {
+    width: 100%;
+    height: 35%;
+    overflow: hidden;
+}
+
+.scroll-wrapper.topBox2 {
+    overflow: hidden;
+    border-bottom: 1px solid #064278;
+}
+.scroll-content.topBox2{
+    /*height: 100%;*/
+}
+
+.t_box {
+    width: 20%;
+    height: 100%;
+}
+
+.t_box2 {
+    width: 33.33%;
+    height: 100%;
+    float: left;
+}
+
+.t_word {
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    color: #eee;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.t_word2 {
+    height: 35px;
+    line-height: 40px;
+    color: #eee;
+    text-align: center;
+}
+
+.t_word2>span {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    border-top: 1px solid #405883;
+    border-bottom: 1px solid #405883;
+}
+
+.t_cont {
+    position: relative;
+    height: calc(100% - 25px);
+    width: 100%;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.t_cont2 {
+    height: calc(100% - 35px);
+}
+
+.t_cont_title {
+    width: 100%;
+    text-align: center;
+    height: 20px;
+    line-height: 26px;
+    color: #ccc;
+}
+
+.t_cont_cont {
+    width: 100%;
+    height: 75%;
+}
+
+.t_cont_cont2 {
+    height: calc(100% - 25px);
+    padding: 10px;
+}
+
+.t_cont_bottom {
+    position: absolute;
+    /*bottom: 0;*/
+    line-height: 25px;
+    color: #ccc;
+    text-align: center;
+    width: 100%;
+}
+.eqName{
+    text-align: center;
+    color: #ccc;
+}
+
+.kongzhigui_box .kzword {
+    float: left;
+    display: inline-block;
+    width: 42%;
+    height: 100%;
+    text-align: right;
+    padding-right: 5%;
+    color: #ccc;
+}
+
+.kongzhigui_box .status {
+    float: left;
+    display: inline-block;
+    text-align: left;
+    /*padding-left: 5%;*/
+    width: 50px;
+    height: 16px;
+    line-height: 14px;
+    padding: 0px 6px;
+    color: #676767;
+}
+.kongzhigui_box .status.abnormalType{
+    text-align: right;
+    background: url("../../images/NetInfoStatistic/state_abnormal_bg.png") 100%/100%;
+}
+.kongzhigui_box .status.normalType{
+    text-align: left;
+    background: url("../../images/NetInfoStatistic/state_normal1_bg.png") 100%/100%;
+}
+.normalData.active,.t_elctCont.active,.boxcontent.active{
+    border: 1px #43eec9 solid;
+}
+
+/*表格*/
+
+.table_box {
+    width: 100%;
+    height: 70%;
+}
+
+.table_content .underline {
+    text-decoration: underline;
+}
+.table_content .alarm_desc{
+    color: #5BC9FF;
+    text-decoration: underline;
+    cursor: pointer;
+    padding-right: 10px;
+}
+.table_content .no_alarm_desc{
+    color:#7A9FD4;
+}
+
+.table_content img {
+    /*margin-right: 3px;*/
+    margin-top: -4px;
+}
+
+.table_box2 {
+    height: calc(100% - 40px);
+}
+.table_content>table>tbody tr td{
+    padding: 0;
+}
+
+
+/*灭火系统中间*/
+
+.middleBox {
+    width: 100%;
+    height: 35%;
+    position: relative;
+}
+
+.middleBox form {
+    position: absolute;
+    left: 35%;
+    top: 10px;
+    -webkit-z-index: 9;
+    -moz-z-index: 9;
+    z-index: 9;
+}
+
+
+/*
+#middleChart{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    bottom: 0;
+}*/
+
+.cankaozhi {
+    position: absolute;
+    top: 8%;
+    left: 3%;
+    color: #777;
+}
+
+.contentimg{
+    height: calc(75% - 22px)!important;
+}
+.currentWord{
+    position: absolute;
+    bottom: calc(15% + 10px);
+}
+
+
+
+/*灭火系统底部水箱其区域*/
+
+.bottBox {
+    overflow: hidden;
+    width: 100%;
+    height: 32%;
+}
+
+.bottBox .anmiteBox {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    float: left;
+}
+
+.anmiteBox .box {
+    position: absolute;
+    left: 20%;
+    width: 60%;
+    height: 40%;
+    bottom: 37%;
+}
+
+.anmiteBox .waterimg {
+    margin-left: 30%;
+}
+
+.word {
+    position: absolute;
+    color: #43eec9;
+    width: 100%;
+    text-align: center;
+}
+
+.btword {
+    position: absolute;
+    bottom: -40px;
+    left: 4%;
+    width: 100%;
+}
+
+.yaliword1 {
+    width: 100%;
+    height: 10%;
+    text-align: center;
+    color: #43eec9;
+}
+.yaliword2 {
+    width: 100%;
+    height: 10%;
+    text-align: center;
+    color: #f4704d;
+}
+
+.chartDiv {
+    width: 100%;
+    height: 75%;
+    overflow: hidden;
+}
+
+.bo {
+    position: absolute;
+    left: 20%;
+    width: 60%;
+    height: 40%;
+    bottom: 37%;
+    overflow: hidden;
+    border-bottom-left-radius: 20%;
+}
+
+.bo>div {
+    position: absolute;
+    width: 600px;
+    height: 130%;
+    left: -100px;
+}
+
+.bo1 {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    animation: mymove 5s infinite alternate;
+    -webkit-animation: mymove 5s infinite alternate;
+    /* Safari 和 Chrome */
+}
+
+.bo2 {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    animation: mymove2 5s infinite alternate linear;
+    -webkit-animation: mymove2 5s infinite alternate linear;
+}
+
+.anmiteBox .box>img {
+    height: 100%;
+    width: 100%;
+}
+
+@keyframes mymove {
+    from {
+        left: -30%;
+    }
+    to {
+        left: 10%;
+    }
+}
+
+@keyframes mymove2 {
+    from {
+        left: 10%;
+    }
+    to {
+        left: -30%;
+    }
+}
+
+
+.wrapperl1 {
+    position: absolute;
+    top: 80%;
+    left: 62%;
+}
+
+.wrapperl2 {
+    position: absolute;
+    top: 30%;
+    left: 62%;
+}
+
+
+
+/*电气火灾*/
+
+.scroll-wrapper.topBoxElec {
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+}
+
+.elecBox {
+    width: 100%;
+    height: calc(50% - 0px);
+    overflow: hidden;
+    position: relative;
+    border-top: 1px solid #031C33;
+}
+
+.elecBox form {
+    float: right;
+}
+
+.t_elctCont {
+    width: 90%;
+    height: calc(100% - 55px);
+    padding: 11px 16px;
+    margin-left: 5%;
+    border-radius: 9px;
+    background: rgba(8, 59, 115, 0.8);
+    cursor: pointer;
+}
+
+.t_wrap {
+    width: 100%;
+    height: 100%;
+    border-radius: 9px;
+    padding: 0 10px;
+    background: rgba(8, 69, 121, 0.8);
+}
+
+.cont_top {
+    width: 100%;
+    height: calc(100% - 58px);
+    border-bottom: 1px solid #063255;
+}
+
+.cont_top>div {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    float: left;
+}
+
+.cont_botom {
+    width: 100%;
+    height: 58px;
+}
+
+.cont_botom>div {
+    width: 31.3%;
+    height: 85%;
+    margin:5px 1%;
+    text-align: center;
+    float: left;
+    position: relative;
+    border:1px solid #0C5DA3;
+    border-radius: 4px;
+}
+
+.cont_botom>div>img {
+    cursor: pointer;
+    display: block;
+    margin: 8% auto 0;
+}
+.cont_botom .img_box{
+    width:30px;
+    height: 100%;
+    float: left;
+    padding-top: 5px;
+    background: #0B4D8A;
+
+}
+.cont_botom>div>.tipBox{
+    width:calc(100% - 30px);
+}
+.cont_botom .tipBox{
+    width: 100%;
+    height: 100%;
+    /*float: left;*/
+    overflow: hidden;
+}
+.cont_botom .tipBox>span{
+    padding-left: 2px;
+    text-align: left;
+    display: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.cont_botom .tipBox>span.block{
+    display: block;
+}
+.red {
+    color: #db4e56;
+}
+
+.lightgreen {
+    color: #04dbd3;
+}
+
+.openImg {
+    width: 30px;
+    margin-top: 5px;
+}
+
+.more {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+    -webkit-z-index: 9;
+    -moz-z-index: 9;
+    z-index: 9;
+}
+
+.guzhang {
+    color: orange;
+}
+
+.huojing {
+    color: #f54c4d;
+}
+
+.pingbi {
+    color: #ccc9c8;
+}
+
+.fuwei {
+    color: #13A6BB;
+}
+
+.fankui {
+    color: #3C7DFC;
+}
+
+.qidong {
+    color: #4675C2;
+}
+
+.jianguan {
+    color: #F16EDA;
+}
+
+
+
+
+
+/*分页*/
+
+#demo7 {
+    text-align: center;
+    padding: 0 10px;
+    width: calc(100% - 230px);
+    position: absolute;
+    bottom: 10px;
+}
+
+.wrap_page {
+    position: relative;
+}
+
+
+
+
+.lineStyle {
+    width: 100%;
+    height: 16px;
+    line-height: 16px;
+}
+
+.tempdiv {
+    width: 70px;
+    height: 100%;
+    background: url(../../images/NetInfoStatistic/temp.png)no-repeat center;
+    background-size: 100% 100%;
+    position: relative;
+    left: 50%;
+}
+
+.tempbar {
+    position: absolute;
+    width: 8px;
+    height: 62%;
+    left: 20%;
+    top: 14%;
+    background-color: none;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.tempData {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #348dd5;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+.tempData.abnormal {
+    /*background-color: #f4704d;*/
+    background: -webkit-linear-gradient(#f4704d, #348dd5); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#f4704d, #348dd5); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#f4704d, #348dd5); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#f4704d, #348dd5); /* 标准的语法 */
+}
+.msg.msgblue {
+    background: url(../../images/NetInfoStatistic/temp_blue.png)no-repeat center;
+    background-size: 100% 100%;
+}
+.msg.msgred {
+    background: url(../../images/NetInfoStatistic/temp_red.png)no-repeat center;
+    background-size: 100% 100%;
+}
+.msg {
+    position: absolute;
+    width: 25%;
+    height: 20px;
+    line-height: 20px;
+    left: 18%;
+    text-align: left;
+    padding-left: 5px;
+    color: #fff;
+    left: -89px;
+    width: 76px;
+}
+
+.elecBoxTop {
+    height: 80px;
+    padding: 25px 25px 0;
+}
+
+.line_Chart {
+    height: calc(100% - 80px);
+}
+
+.btn_group button:first-child {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-left: 1px solid #2B77B2;
+}
+
+.btn_group button:last-child {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.btn_group button:hover,
+.btn_group button.active {
+    color: #85FFF9;
+    background: #126FBD;
+}
+
+.btn_group button {
+    height: 22px;
+    color: #BDDBFD;
+    background: #134A8B;
+    border: 1px solid #2B77B2;
+    border-left: none;
+    padding: 0 10px;
+    float: left;
+    cursor: pointer;
+    outline: none;
+}
+.more_btn{
+    font-size: 14px;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 9;
+}
+.more_btn i{
+    font-size: 14px;
+}
+@media screen and (max-width: 1366px) {
+    .bo {
+        /*border-bottom-left-radius: 25px!important;*/
+    }
+    .contentimg>img,
+    .contentimg2>img {
+        /*margin-top: 10%!important;*/
+    }
+
+    .cankaodata>img {
+        width: 20%!important;
+    }
+    .t_word {
+        margin-bottom: 0;
+    }
+    .t_elctCont {
+            width: 95%;
+        height: calc(100% - 35px);
+        margin-left:2.5%;
+        padding: 5px 8px;
+    }
+    .elecBoxTop {
+        height: 40px;
+        padding: 10px 25px 0;
+    }
+    .line_Chart {
+        height: calc(100% - 40px);
+    }
+    .t_cont_cont2 {
+        padding: 5px;
+    }
+    .tempData {
+        width: 70%;
+    }
+    .tempdiv {
+        max-width: 47px;
+    }
+  
+    .cont_botom .img_box img {
+        width: 20px;
+        margin: 3% auto 0;
+    }
+    .t_wrap{
+        padding: 0;
+    }
+    .tipBox {
+        /*right: -75px;*/
+    }
+    .t_cont_bottom{
+        line-height: 16px;
+    }
+}
+
+
+.checkall {
+    cursor: pointer;
+}
+
+.icon_Info{
+    width: 22px;
+    /*margin-right: 5px;*/
+}
+
+.wrap-timeChoose{
+    position: absolute;
+    right: 5%;
+    top: calc(51% + 20px);
+    z-index: 9;
+    width: 500px;
+}
+
+.wrap-timeChoose2{
+    float: right;
+    width: 500px;
+}
+
+
+
+

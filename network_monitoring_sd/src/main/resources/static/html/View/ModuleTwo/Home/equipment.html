@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>物联</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/Index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+</head>
+
+<body>
+<div class="wrap_module" style="padding: 17px 2.8% 24px;">
+    <header class="lightblue fontSize16">
+        <div class="h1" labIframe="../../NetInfoStatistic/equipment.html">设备</div>
+        <div class="h4" labIframe="../../NetInfoStatistic/nbEquipment.html">NB设备</div>
+    </header>
+
+    <section>
+        <iframe id="frameCont" src="../../NetInfoStatistic/equipment.html" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>
+    </section>
+</div>
+
+</body>
+
+<script type="text/javascript">
+
+    $(function(){
+
+        clickevent();
+        var box = GetQuery('box');
+        if(box == 2){
+            $('header > div.h1').click();
+        }
+    });
+
+    function clickevent(){
+        //顶部三个nav
+        $('header > div').click(function(){
+            $(this).addClass('active orange').siblings().removeClass('active orange');
+            $('#frameCont').attr('src',$(this).attr('labIframe'));
+        });
+
+    }
+
+</script>
+</html>

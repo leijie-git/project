@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title></title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <style>
+        .weui-cells {
+            margin-top: 0;
+        }
+        
+        .status-type {
+            margin-right: 10px;
+            background: #fff;
+            padding: 0 5px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-search-bar" id="searchBarUnit">
+        <div class="status-type" id="statusType">状态筛选</div>
+        <form class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInputUnit" placeholder="请输入关键字查询" required="">
+                <a href="javascript:" class="weui-icon-clear" id="searchClearUnit"></a>
+            </div>
+            <label class="weui-search-bar__label" id="searchTextUnit">
+                    <i class="weui-icon-search"></i>
+                    <span>请输入关键字查询</span>
+                  </label>
+        </form>
+        <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancelUnit">取消</a>
+    </div>
+    <!-- <div class="weui-form-preview">
+        <div class="weui-form-preview__bd">
+            <div class="weui-form-preview__item">
+                <label class="weui-form-preview__label">灭火器类型</label>
+                <span class="weui-form-preview__value">电动打蛋机</span>
+            </div>
+            <div class="weui-form-preview__item">
+                <label class="weui-form-preview__label">灭火器位置</label>
+                <span class="weui-form-preview__value">名字名字名字</span>
+            </div>
+            <div class="weui-form-preview__item">
+                <label class="weui-form-preview__label">药剂到期时间</label>
+                <span class="weui-form-preview__value">123</span>
+            </div>
+        </div>
+    </div> -->
+    <div id="FireExtinguisherDetail" class="weui-popup__container">
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            你的内容放在这里...
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    var pageTitle = GetQuery('pagetitle');
+    var _mhqData;
+    $('title').text(pageTitle);
+    $(function() {
+        getUnitList('');
+    });
+
+    function getUnitList(FEStatus) {
+        var unitId = GetQuery('unitid');
+        $.ajax({
+            type: 'get',
+            url: hostAdd + "/getFireExtinguisherList",
+            data: 'unitId=' + unitId + '&status=' + FEStatus,
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if (!data.success) {
+                    return false;
+                }
+                _mhqData = data.obj;
+                // $('body').find('.weui-cells').empty();
+                $('.weui-form-preview').remove();
+                for (var i = 0; i < data.obj.length; i++) {
+                    $('body').append(
+                        '<div class="weui-form-preview" onclick="openDetail(this,' + i + ');">' +
+                        '<div class="weui-form-preview__bd">' +
+                        '<div class="weui-form-preview__item">' +
+                        '<label class="weui-form-preview__label">灭火器类型</label>' +
+                        '<span class="weui-form-preview__value">' + data.obj[i].extinguisherType + '</span>' +
+                        '</div>' +
+                        '<div class="weui-form-preview__item">' +
+                        '<label class="weui-form-preview__label">灭火器位置</label>' +
+                        '<span class="weui-form-preview__value">' + data.obj[i].extinguisherPosition + '</span>' +
+                        '</div>' +
+                        '<div class="weui-form-preview__item" hidden>' +
+                        '<label class="weui-form-preview__label">出厂日期</label>' +
+                        '<span class="weui-form-preview__value">' + data.obj[i].productDate + '</span>' +
+                        '</div>' +
+                        '<div class="weui-form-preview__item" hidden>' +
+                        '<label class="weui-form-preview__label">监测日期</label>' +
+                        '<span class="weui-form-preview__value">' + data.obj[i].jcDate + '</span>' +
+                        '</div>' +
+                        '<div class="weui-form-preview__item">' +
+                        '<label class="weui-form-preview__label">药剂到期时间</label>' +
+                        '<span class="weui-form-preview__value">' + data.obj[i].eqChangeDate + '</span>' +
+                        '</div>' +
+                        '<div class="weui-form-preview__item" hidden>' +
+                        '<label class="weui-form-preview__label">药剂填充时间</label>' +
+                        '<span class="weui-form-preview__value">' + data.obj[i].fullDate + '</span>' +
+                        '</div>' +
+                        '<div class="weui-form-preview__item" hidden>' +
+                        '<label class="weui-form-preview__label">药剂报废时间</label>' +
+                        '<span class="weui-form-preview__value">' + data.obj[i].validityDate + '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
+                    );
+                }
+            },
+
+        });
+    };
+
+    $("#statusType").select({
+        title: "灭火器状态选择",
+        items: [{
+            title: "全部",
+            value: "",
+        }, {
+            title: "已到期",
+            value: "0",
+        }, {
+            title: "已报废",
+            value: "1",
+        }, {
+            title: "即将到期",
+            value: "2",
+        }, {
+            title: "即将报废",
+            value: "3",
+        }],
+        onClose: function(data) {
+            console.log(data.data)
+            getUnitList(data.data.values);
+            $("#statusType").text(data.data.titles)
+        }
+    });
+
+    function openDetail(element, index) {
+        // var pageInner = escape($(element).html());
+        var pageInner = escape(JSON.stringify(_mhqData[index]));
+        console.log(pageInner);
+        self.location.href = "patrolMHQRecordDetail.html?&pageinner=" + pageInner;
+    }
+</script>

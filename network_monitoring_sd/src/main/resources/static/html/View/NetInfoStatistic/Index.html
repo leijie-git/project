@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>物联</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/NetInfoStatistic/Index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+</head>
+
+<body>
+	<div class="wrap_module">
+		<header class="lightblue fontSize16">
+            <div class="h3 active orange" labIframe="systemMonitor.html">各系统监测</div>
+			<div class="h2" labIframe="video.html">视频</div>
+            <div class="h1" labIframe="equipment.html">设备</div>
+            <div class="h4" labIframe="nbEquipment.html">NB设备</div>
+		</header>
+
+        <section>
+            <iframe id="frameCont" src="systemMonitor.html" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>
+        </section>
+	</div>
+
+</body>
+
+<script type="text/javascript">
+
+	$(function(){
+
+        clickevent();
+        var box = GetQuery('box');
+        if(box == 2){
+            $('header > div.h1').click();
+        }
+	});
+
+    function clickevent(){
+        //顶部三个nav
+        $('header > div').click(function(){
+            $(this).addClass('active orange').siblings().removeClass('active orange');
+            $('#frameCont').attr('src',$(this).attr('labIframe'));
+        });
+
+    }
+    //加载单位所包含的系统的图标点击图片跳转接收参数
+    function get(name){
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+    $(document).ready(function(e) {
+        var ico_num = get('ico_num');//传过来的参数
+        if(ico_num!=null){//判断有传参的时候, 给iframe重置src  并加上各个参数
+            unitId2 = get('unitId');
+            $('#frameCont').attr('src', 'systemMonitor.html?ico_num='+ico_num+'&unitId='+unitId2);
+        }
+
+    });
+
+
+
+</script>
+</html>

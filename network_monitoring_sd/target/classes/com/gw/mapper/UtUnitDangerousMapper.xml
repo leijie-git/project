@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitDangerousMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitDangerous" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="DangerousName" property="dangerousname" jdbcType="NVARCHAR" />
+    <result column="DangerousCount" property="dangerouscount" jdbcType="INTEGER" />
+    <result column="CountUnit" property="countunit" jdbcType="NVARCHAR" />
+    <result column="Site" property="site" jdbcType="NVARCHAR" />
+    <result column="DangerousLevel" property="dangerouslevel" jdbcType="NVARCHAR" />
+    <result column="DangerousUsed" property="dangerousused" jdbcType="NVARCHAR" />
+    <result column="DangerousCZCS" property="dangerousczcs" jdbcType="NVARCHAR" />
+    <result column="JSFZR" property="jsfzr" jdbcType="NVARCHAR" />
+    <result column="JSFZRDH" property="jsfzrdh" jdbcType="NVARCHAR" />
+    <result column="AQGLR" property="aqglr" jdbcType="NVARCHAR" />
+    <result column="AQGLRDH" property="aqglrdh" jdbcType="NVARCHAR" />
+    <result column="IsXFBS" property="isxfbs" jdbcType="INTEGER" />
+    <result column="OperateDesc" property="operatedesc" jdbcType="NVARCHAR" />
+    <result column="DangerousType" property="dangeroustype" jdbcType="NVARCHAR" />
+    <result column="DangerousState" property="dangerousstate" jdbcType="NVARCHAR" />
+    <result column="DangerousImageName" property="dangerousimagename" jdbcType="NVARCHAR" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getList" resultType="com.gw.unit.data.DangerousOutData" parameterType="com.gw.unit.data.DangerousInData">
+    SELECT
+	    a.ID ID,
+	    a.UnitID UnitID,
+	    b.UnitName unitName,
+	    a.DangerousName DangerousName,
+	    a.DangerousCount DangerousCount,
+	    a.CountUnit CountUnit,
+	    a.Site Site,
+	    a.DangerousLevel DangerousLevel,
+	    a.DangerousUsed DangerousUsed,
+	    a.DangerousCZCS DangerousCZCS,
+	    a.JSFZR JSFZR,
+	    a.JSFZRDH JSFZRDH,
+	    a.AQGLR AQGLR,
+	    a.AQGLRDH AQGLRDH,
+	    a.IsXFBS IsXFBS,
+	    a.OperateDesc OperateDesc,
+	    a.DangerousType DangerousType,
+	    a.DangerousState DangerousState,
+	    a.DangerousImageName DangerousImageName
+	    
+    FROM
+        UT_Unit_Dangerous a
+        LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+    <where>
+	    <if test="DangerousName != null and DangerousName!=''">
+	        a.DangerousName like '%${DangerousName}%'
+	    </if>
+	     <if test="Site != null and Site!=''">
+           and a.Site like '%${Site}%'
+        </if>
+         <if test="JSFZR != null and JSFZR!=''">
+           and a.JSFZR like '%${JSFZR}%'
+        </if>
+        <if test="unitName != null and unitName!=''">
+           and b.UnitName like '%${unitName}%'
+        </if>
+	    <if test="UnitID != null and UnitID != ''">
+	    	AND b.ID = #{UnitID}
+	    </if>
+    </where>
+    ORDER BY ID DESC
+  </select>
+</mapper>

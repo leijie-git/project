@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位管理</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/UnitManage/index.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/AggregateAnalysis/unitAnalyse.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="wrap_module" style="padding: 0">
+    <div class="list">
+        <div class="input_box">
+            <input type="text" id="searchUnit" class="search fontSize16" placeholder="搜索联网单位名称">
+            <button class="search_btn" onclick="getAllUnitData();"></button>
+        </div>
+        <ul id="unitList" class="fontSize14 unit_list scrollbar-inner">
+
+        </ul>
+    </div>
+    <div class="arrow_btn" id="arrowBtn"></div>
+    <div class="content">
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="submitBtn" type="button" value="查询">
+            </form>
+
+            <div class="timeBTChose">
+                <span>月</span>
+                <span>季</span>
+                <span>年</span>
+            </div>
+        </div>
+        <div class="box2 scrollbar-inner">
+            <div class="chartdiv chart1">
+                <div class="title">火灾报警系统设备异常率</div>
+                <div class="cont"id="chart1" ></div>
+            </div>
+            <div class="chartdiv chart2">
+                <div class="title">灭火系统设备异常率</div>
+                <div class="cont" id="chart2"></div>
+            </div>
+            <div class="chartdiv chart3">
+                <div class="title">电气火灾设备异常率</div>
+                <div class="cont" id="chart3"></div>
+            </div>
+            <div class="chartdiv chart4">
+                <div class="title">视频监控接入率</div>
+                <div class="cont" id="chart4"></div>
+            </div>
+            <div class="chartdiv chart5">
+                <div class="title">防火分隔设备异常率</div>
+                <div class="cont" id="chart5"></div>
+            </div>
+            <div class="chartdiv chart6">
+                <div class="title">防排烟系统设备异常率</div>
+                <div class="cont" id="chart6"></div>
+            </div>
+            <div class="chartdiv chart7">
+                <div class="title">气体系统设备异常率</div>
+                <div class="cont" id="chart7"></div>
+            </div>
+            <div class="chartdiv chart8">
+                <div class="title">燃气系统设备异常率</div>
+                <div class="cont" id="chart8"></div>
+            </div>
+            <div class="chartdiv chart9">
+                <div class="title">应急疏散设备异常率</div>
+                <div class="cont" id="chart9"></div>
+            </div>
+            <div class="chartdiv chart10">
+                <div class="title">无线烟感设备异常率</div>
+                <div class="cont" id="chart10"></div>
+            </div>
+            <div class="chartdiv chart11">
+                <div class="title">查岗应答率</div>
+                <div class="cont" id="chart11"></div>
+            </div>
+            <div class="chartdiv chart12">
+                <div class="title">事件分析</div>
+                <div class="cont" id="chart12"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/Echarts/echarts.min.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+<script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+
+<script type="text/javascript">
+    var tableId = ['extinguisher', 'maintenanceProgress', 'inspectProgress'];
+    var tableIndex = 0;
+    $(function() {
+        if(_loginInfo.usertype == 1){
+            $('.list').hide();
+            $('.arrow_btn').hide();
+            $('.content').css('width','100%');
+            getAlarmStatBySystemChartData(_loginInfo.unitid);
+            getUplookCoutData(_loginInfo.unitid);//查岗总次数
+            getEventsCountData(_loginInfo.unitid);//事件分析
+        }
+        if(_loginInfo.usertype == 0){
+            getAllUnitData();
+            getAlarmStatBySystemChartData("");
+            getUplookCoutData("");//查岗总次数
+            getEventsCountData("");//事件分析
+        }
+
+
+
+
+        //绑定事件
+        bindEvent();
+
+    });
+
+    //获取所有联网单位
+    function getAllUnitData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getUnits",
+            data:'unitName='+$('#searchUnit').val(),
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    showUnitListContent(msg);
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showUnitListContent(msg){
+        var allhtml = "";
+        for(var i = 0 ; i < msg.length;i++){
+            allhtml+='<li title="'+msg[i].unitName+'" id="'+msg[i].unitId+'" data-type="wdsfdsffsd" class="li_unit" >'+msg[i].unitName+'</li>'
+        }
+        $('#unitList').html(allhtml||"<li>暂无单位接入</li>");
+        $('.block_header').eq(0).click();
+        $('#unitList .li_unit').eq(0).click();
+    }
+
+    function getAlarmStatBySystemChartData(unitid){
+
+        var _chartData = {
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:$('#keyWords').val(),
+            unitId:unitid
+        };
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getAlarmStatBySystem",
+            data:_chartData,
+            success: function (data) {
+                //console.log(data);
+                if(data.success == true){
+                    var msg = data.obj;
+                    showChartData(msg);
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showChartData(msg){
+        //火灾自动报警系统
+        var  fire = getKeyData(msg.fireCount);
+        loadData2('chart1',fire[0],fire[1]);
+        //灭火系统设备异常率
+        var water = getKeyData(msg.waterCount);
+        loadData2('chart2',water[0],water[1]);
+        //电气火灾设备异常率
+        var elect = getKeyData(msg.eleCount);
+        loadData2('chart3',elect[0],elect[1]);
+        //视频监控接入率
+        var video = getKeyData(msg.videoCount);
+        loadData2('chart4',video[0],video[1]);
+        //防火分隔设备异常率
+        var split = getKeyData(msg.splitCount);
+        loadData2('chart5',split[0],split[1]);
+        //防排烟系统设备异常率
+        var smoke = getKeyData(msg.smokeCount);
+        loadData2('chart6',smoke[0],smoke[1]);
+        //气体系统设备异常率
+        var gaseous = getKeyData(msg.gaseousCount);
+        loadData2('chart7',gaseous[0],gaseous[1]);
+        //燃气系统设备异常率
+        var gas = getKeyData(msg.gasCount);
+        loadData2('chart8',gas[0],gas[1]);
+        //应急疏散设备异常率
+        var emergency = getKeyData(msg.emergencyCount);
+        loadData2('chart9',emergency[0],emergency[1]);
+        //无线烟感设备异常率
+        var smokeFeeling = getKeyData(msg.smokeFeelingCount);
+        loadData2('chart10',smokeFeeling[0],smokeFeeling[1]);
+    }
+
+    function loadData2(id,xData,chart1Data){
+        var _color=[],realData=[];
+
+        for(var i = 0 ; i<chart1Data.length;i++){
+            realData.push({value:chart1Data[i],name:xData[i]});
+        }
+
+        if(id=='chart1'){ //火灾报警系统设备异常率
+            _color=['#f54f4d', '#ff9a0c','#cbc9c8','#16b7c9','#f16ed8','#4376c5','#0657f1','#885ee4'];
+        }else if(id=='chart2'){ //灭火系统设备异常率
+            _color=['#2b81da', '#4376c5','#16b7c9','#0657f1','#ff9a0c','#23dfc1','#4376c5','#885ee4','#f54f4d'];
+
+        }else if(id=='chart3'){ //电气火灾设备异常率
+            _color=['#ff9a0c', '#885ee4','#16b7c9','#23dfc1','#f54f4d'];
+        }else if(id=='chart4'){ //视频接入率
+            _color=['#0657f1', '#dd9c0a'];
+
+        }else if(id=='chart5'){ //防火分隔设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5'];
+
+        }else if(id=='chart6'){ //防排烟系统设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5','#885ee4','#f54f4d'];
+
+        }else if(id=='chart7'){ //气体系统设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5','#885ee4'];
+
+        }else if(id=='chart8'){ //燃气系统设备异常率
+            _color=['#0657f1','#4376c5','#885ee4'];
+
+        }else if(id=='chart9'){ //应急疏散设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5'];
+
+        }else{ //无线烟感设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5','#885ee4','#f54f4d'];
+        }
+
+        if(realData.length == 0){
+            $('#'+id).parent('.chartdiv').hide();
+//            $('#'+id).html('暂无数值...');
+            return
+        }
+        $('#'+id).parent('.chartdiv').show();
+
+        showDetailCharts(id,_color,xData,realData);
+
+
+    }
+    function getKeyData(key){
+        var name = [],value=[];
+        for(var i = 0 ; i < key.length ; i++){
+            name.push(key[i].coupletKey);
+            value.push(key[i].coupletValue);
+        }
+        return [name,value]
+    }
+
+    //查岗总数
+    function getUplookCoutData(unitid){
+        var data = {
+            pageSize:20,
+            pageNumber:1,
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:$('#keyWords').val(),
+            unitId:unitid
+        };
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getUplookCout",
+            data:data,
+            success: function (data) {
+                //console.log(data);
+                var msg = data.obj;
+                var coupletKey = msg.coupletKey || 0;
+                var coupletValue = msg.coupletValue ||0;
+
+                if(coupletValue != 0){
+                    $('.chart11').show();
+                    showDetailCharts('chart11',['#00dfc3', '#f56c20'],['应答','无应答'],[{value:coupletKey,name:"应答"},{value:coupletValue - coupletKey,name:"无应答"}])
+                }
+                else{
+                    $('.chart11').hide();
+                }
+
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //事件分析
+    function getEventsCountData(){
+        var data = {
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:"",
+            eventType:"",
+            unitId:$('#unitList>li.active').attr('id')
+        };
+
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/eventsCount",
+            data:data,
+            success: function (data) {
+                //console.log(data);
+                if(data.success){
+                    var eventData = [],dataTotal= 0,xdata=[];
+                    var msg = data.obj;
+                    for(var i = 0 ; i < msg.length;i++){
+                        eventData.push({"name":msg[i].coupletKey,'value':msg[i].coupletValue});
+                        xdata.push(msg[i].coupletKey);
+                        dataTotal += Number(msg[i].coupletValue);
+                    }
+
+                    if(dataTotal != 0){
+                        $('.chart12').show()
+                        var color=["#875EE2","#FB4A52","#FF980C","#14D374","#079FEB","#CBC9CE","#12B9CC","#F46ADA","#4475C2","#015BF9"]
+                        showDetailCharts('chart12',color,xdata,eventData)
+                    }
+                    else{
+                        $('.chart12').hide();
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+
+    function showDetailCharts(id,_color,xData,realData){
+//        $('#'+id).
+        var chart1 = echarts.init(document.getElementById(id));
+        chart1.clear();
+//        chart1.title = '火灾报警系统设备异常率';
+
+        var option = {
+            title: {
+            },
+            backgroundColor: 'rgba(16, 71, 110,.6)',
+            tooltip: { // 提示框. Can be overwrited by series or data
+                trigger: 'item',
+                formatter: "{b}: {c}",
+                confine:true
+            },
+            legend: {
+                //orient: 'vertical',
+                x: 'center',
+                //y: 'bottom',
+                data: xData,
+                type:'scroll',
+                //orient:'vertical',
+                inactiveColor: '#777',
+                //right: '2%',
+                bottom: '1%',
+                itemWidth:8,
+                itemHeight:8,
+                pageIconSize:12,
+                pageIconColor:'#21AFF7',
+                pageIconInactiveColor:'#2073BF',
+                pageTextStyle:{
+                    color: '#418ACE'
+                },
+                textStyle: {
+                    color:'#BDC6E3',
+                    fontSize: 12
+                }
+            },
+            color: _color,
+            series: [
+                {
+                    name: '异常率',
+                    type: 'pie',
+                    selectedMode: 'single',
+                    center: ['50%', '45%'],
+                    radius: ['28%', '40%'],
+                    hoverAnimation: false,
+                    selectedOffset:0,
+                    label: {
+                        normal: {
+                            position: 'outside'
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                formatter: '{d}%',
+                                textStyle: {
+                                    color: '#68a6de',
+                                    fontSize: 10,
+                                }
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 5,
+                            length2:5
+                        }
+                    },
+                    data: realData
+                },
+                {
+                    name: '',
+                    type: 'pie',
+                    center: ['50%', '45%'],
+                    radius: ['24%', '25%'],
+                    itemStyle: { //环内样式
+                        normal: { //默认样式
+                            label: { //标签
+                                show: false,
+                            },
+                            labelLine: {
+                                show: false,
+                            },
+                        },
+                    }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animation: false,
+                    data: [{
+                        name: '',
+                        value: 100,
+                        itemStyle: {
+                            normal: {
+                                color: '#316DB6'
+                            },
+                            emphasis: {
+                                color: '#316DB6'
+                            }
+                        },
+                        tooltip: {
+                            show: false,
+                        },
+                        cursor: 'default',
+                    }],
+                }
+
+            ]
+        };
+
+        chart1.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            chart1.resize();
+        });
+    }
+
+    //
+    //绑定事件
+    function bindEvent() {
+        //搜索
+        $('#searchUnit').unbind(" input propertychange").on(" input propertychange",function(){
+            var thisValue = $('#searchUnit').val();
+            var count=0;
+            if(thisValue == ""){
+                $('#unitList>li').show()
+            }
+            else{
+                $('#unitList>li').hide()
+                        .filter(function(index){
+//                            console.log($(this).text().indexOf(thisValue));
+                            if($(this).text().indexOf(thisValue) >= 0){
+                                count = 1;
+                                $(this).show();
+                                return this;
+                            }
+                        }).show();
+            }
+        });
+
+
+        $('.chartdiv ').height($('.chartdiv ').height()).width($('.chartdiv ').width())
+        //单位列表
+        $('#unitList').delegate('li', 'click', function() {
+            $('#unitList li.active').removeClass('active');
+            $(this).addClass('active');
+            var unitid = $(this).attr('id');
+            getAlarmStatBySystemChartData(unitid);
+            getUplookCoutData(unitid);//查岗总次数
+            getEventsCountData(unitid);//事件分析
+           // $('#contFrame').attr('src','unitData.html?unitid='+$(this).attr('id'))
+        });
+        //单位列表箭头按钮
+        $('#arrowBtn').unbind('click').click(function() {
+            $('.wrap_module').toggleClass('no_list');
+        });
+
+        $('.timeBTChose > span').unbind('click').click(function(){ //月季年
+            $(this).addClass('actTime').siblings().removeClass('actTime');
+            var text = $(this).text();
+            if(text == '月'){
+                $('#sData2').val(getNowFormatDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == '季'){
+                $('#sData2').val(getQuarterStartDate());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == "年"){
+                $('#sData2').val(getNowYeartDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }
+            var unitid = $('#unitList li.active').attr('id')
+           getAlarmStatBySystemChartData(unitid);
+            getUplookCoutData(unitid);//查岗总次数
+            getEventsCountData(unitid);//事件分析
+        });
+    }
+</script>
+
+</html>

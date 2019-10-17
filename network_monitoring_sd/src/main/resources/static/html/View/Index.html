@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>消防安全管理平台</title>
+    <link href="../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../Content/css/Index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../Script/jquery-1.11.0.js"></script>
+    <script src="../Script/public.js"></script>
+    <script src="../Script/Index.js"></script>
+
+    <script src="../Script/Echarts/echarts.min.js"></script>
+    <script src="../Script/layui/layui.js"></script>
+    <script src="../Script/layer/layer.js"></script>
+    <script src="../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+
+</head>
+<body>
+<!-- 报警声音 -->
+<audio src="../Content/video/fire.mp3" controls style="z-index: 999;position: absolute;display: none" id="firePlayer">
+</audio>
+
+<audio src="../Content/video/waterfire.mp3"   style="position: absolute;z-index: 999; display:none;" id="waterPlayer">
+</audio>
+<!--<button id="shengyin">123345</button>-->
+<input type="hidden" value="0" id="alarmAudioPlayNum" />
+<div class="wrapper">
+    <!-- 头部菜单-->
+    <header>
+        <div class="content_header">
+            <div class="sys_name">
+                <div class="sys_name_con">
+                    <img src="" class="logo">
+                </div>
+            </div>
+            <div class="sys_nav fontSize18">
+<!--                <div class="home active" labiframe="Home/Index.html"><span>首页</span></div>
+                <div class="checkPost" labiframe="CheckPost/Index.html"><span>查岗</span></div>
+                <div class="net" labiframe="NetInfoStatistic/Index.html"><span>物联</span></div>
+                <div class="inspect" labiframe="WeibaoInspect/Index.html"><span>维保巡查</span></div>
+                <div class="history" labiframe="HistoryNote/Index.html"><span>历史记录</span></div>
+                <div class="analyse" labiframe="AggregateAnalysis/Index.html"><span>综合分析</span></div>
+                <div class="unit" labiframe="UnitManage/index.html"><span>单位管理</span></div>
+                <div class="study" labiframe="OnlineStudy/index.html"><span>在线学习</span></div>
+                <div class="alarmInfo" labiframe="Home/AlarmDetails.html" style="display: none!important;"><span>接警详情</span></div>-->
+            </div>
+            <div class="sys_tools">
+                <div class="tools_con">
+                    <div class="alarm_notice">
+                        <div class="alarmCount" title="" id="NotReadAlarmCount">0</div>
+                        <img src="../Content/images/Index/ico_notice.png"/>
+                    </div>
+                    <div class="controlSwitchs" id="btnControlSwitchs">
+                        <span id="">开关</span><img src="../Content/images/Index/ico_nav_more.png" style="width: 12px"/>
+                    </div>
+                    <!--<div class="alarmSwitch" id="btnVideoSwitchLog" status="1" title="视频开关：关">-->
+                    <!--&lt;!&ndash;报警开关&ndash;&gt;-->
+                    <!--<img src="../Content/images/Index/switch_open.png" style="display: none;" class="open"/>-->
+                    <!--<img src="../Content/images/Index/switch_close.png" style="background-color: #333;border-radius: 5px;" class="close"/>-->
+                    <!--</div>-->
+                    <!--<div class="alarmSwitch" id="btnAlarmSwitchLog" status="0" title="报警开关：开">-->
+                    <!--&lt;!&ndash;报警开关&ndash;&gt;-->
+                    <!--<img src="../Content/images/Index/switch_open.png" class="open"/>-->
+                    <!--<img src="../Content/images/Index/switch_close.png" style="display: none;background-color: #333;border-radius: 5px;" class="close"/>-->
+                    <!--</div>-->
+                    <div class="toggleTask">
+                        <img src="../Content/images/Home/icon_takeAccount.png" title="交接班"/>
+                    </div>
+                    <div class="setPageColor">
+                        <img src="../Content/images/Index/icon_color.png"/>
+                    </div>
+                    <div class="userPhoto">
+                        <img src="../Content/images/Index/ico_user.png" /><span id="account"></span><img src="../Content/images/Index/ico_nav_more.png" style="width: 12px"/>
+                    </div>
+                </div>
+                <div class="sys_time fontSize16">
+                    <div class="time_year">
+                        <!--<div class="week"></div>-->
+                        <div class="day"></div>
+                    </div>
+                    <div class="time_minute"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 调色盘-->
+    <div class="wrap_sysColors" style="display: none">
+        <div class="sysbgcolor_small" type="3"></div>
+        <div class="sysbgcolor_center" type="1"></div>
+        <div class="sysbgcolor_big" type="2"></div>
+    </div>
+
+    <div class="wrap_witchs fontSize14" style="display: none;">
+        <div class="alarmSwitch" id="btnVideoSwitchLog" status="1" title="关">
+            视频
+            <img src="../Content/images/Index/switch_open.png" style="display: none;" class="open"/>
+            <img src="../Content/images/Index/switch_close.png" style="background-color: #333;border-radius: 5px;" class="close"/>
+        </div>
+        <div class="alarmSwitch" id="btnAlarmSwitchLog" status="0" title="开" style="padding-left: 16px;">
+            声音
+            <img src="../Content/images/Index/switch_open.png" class="open"/>
+            <img src="../Content/images/Index/switch_close.png" style="display: none;background-color: #333;border-radius: 5px;" class="close"/>
+            <input type="checkbox" name="loopCheck" id="loopCheck"/>
+        </div>
+        <div class="alarmSwitch" id="btnStrobeSwitchLog" status="0" title="关">
+            频闪
+            <img src="../Content/images/Index/switch_open.png" class="open" style="display: none;"/>
+            <img src="../Content/images/Index/switch_close.png" style="background-color: #333;border-radius: 5px;" class="close"/>
+        </div>
+    </div>
+
+    <!-- 用户详细信息-->
+    <div class="wrap_userInfo_list">
+        <div class="layer_userInfo_header fontSize16"><div>用户详细信息</div></div>
+        <div class="layer_userInfo_con fontSize14">
+            <div class="lookUserInfo"><img src="../Content/images/Index/icon_userInfo.png">查看用户信息</div>
+            <div class="modifyAccount"><img src="../Content/images/Index/icon_account.png">修改账号信息</div>
+            <div class="loginRecord"><img src="../Content/images/Index/icon_record.png">登录记录</div>
+            <div class="signOut"><img src="../Content/images/Index/icon_logout.png">退出登录</div>
+        </div>
+    </div>
+
+    <!-- 实时报警浮动图标-->
+    <div class="timelyAlarmIcon fontsize16">
+        <div class="fontSize18" id="timelyAlarmCount">0</div>
+        <div>实时报警</div>
+    </div>
+
+    <!-- 24小时内火警记录图标-->
+    <!-- <div class="hisAlarmIcon fontsize16">
+        <div>火警记录</div>
+    </div> -->
+
+    <!-- 机器人-->
+    <!--<div id="intelligentServices"></div>-->
+    <!--遮罩层-->
+    <div class="intelligent_shadow">
+        <div class="intelligent_page">
+            <iframe src="" id="intelligentIframe"></iframe>
+            <div class="intelligent_close"></div>
+        </div>
+    </div>
+
+
+    <section>
+        <iframe src="Home/Index.html" id="contFrame" name="contFrame" width="100%" height="100%" scrolling="no" frameborder="0"></iframe>
+    </section>
+
+
+</div>
+
+</body>
+
+<script type="text/javascript">
+    $(function(){
+        ifOptSwatchsStatus();//判断功能按钮的状态
+        getNoticeListData();//header - 获取未读站内通知数
+        //登录名
+        $('#account').text(_loginInfo.username).attr('title',_loginInfo.username);
+        //logo
+        $('.logo').attr('src', _loginInfo.logourl || "/file/upload/logo.png");
+        $('.logo').click(function(){
+            window.open('http://'+ location.host + '/console/index'); //维保用户点击跳转到后台地址
+        });
+        getTimelyAlarmTotal();
+        domEvelement();
+
+        //getModulePage();
+        //getStatic();
+
+    });
+    function getStatic(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/getStatic",
+            success: function (data) {
+                if (data.success) {
+                    var obj = data.obj
+                    document.title = obj.title;
+                }
+            }
+        });
+    }
+
+    ////////////////实时报警总数
+    function getTimelyAlarmTotal() {
+        $.ajax({
+            type : "get",
+            url : _serverIp + "/front/homeIndex/getRealTimeAlarmCount",
+            success : function(data) {
+                //console.log(data);
+                if (data.success) {
+                    buildAlarmCount(data.obj);
+                }
+            }
+        });
+    }
+
+    //RTU灭火系统异常
+        function fireAbnormal(data){
+            var fireAudio = $('#btnAlarmSwitchLog').attr('status');
+            var outfire = document.getElementById("waterPlayer");
+            outfire.load();
+            if (parseInt(fireAudio) == 0) {
+                outfire.play();
+            }
+        }
+
+    function buildAlarmCount(msg){
+        var swatchindex = localStorage.getItem("swatchindex");
+        var count = msg['alarmCount'];
+        if (swatchindex) {
+            var arr = swatchindex.split(',');
+            for (var i = 0; i < arr.length; i++) {
+                if(msg[arr[i]] == ""){
+                    continue;
+                }
+                count += parseInt(msg[arr[i]])
+            }
+        }
+        var arr=[1,3,4,6,7,8,9];
+        if(arr.indexOf(msg.waterAlarmCount) > -1){
+            var fireAudio = $('#btnAlarmSwitchLog').attr('status');
+            //console.log(msg.waterAlarmCount+'水声音'+fireAudio);
+            var outfire = document.getElementById("waterPlayer");
+            outfire.load();
+            if(parseInt(fireAudio) == 0){
+                outfire.play();
+            }
+        }
+
+        $('#timelyAlarmCount').text(count);
+        //                    $('#alarmTypeTab>div').eq(0).click();
+        if (count > 0) {
+            $('.timelyAlarmIcon').addClass('alarm');
+        }
+    }
+
+    ////////////////header - 获取未读站内通知数
+    function getNoticeListData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getNotifyList",
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    var count = 0;
+                    for(var i = 0 ; i < msg.length ; i++){
+                        if(msg[i].isRead == "未阅"){
+                            count++
+                        }
+                    }
+                    if(count != 0){
+                        $('#NotReadAlarmCount').show();
+                    }
+                    $('#NotReadAlarmCount').text(count).attr('title',count);
+                }
+            }
+        });
+    }
+
+    function domEvelement(){
+        $.ajax({
+            type: "get",
+            async: false,
+            url: _serverIp + "/resource/listStageResource?type=1",
+            success: function (data) {
+                if (data.success) {
+                    var obj = data.obj;
+                    var html = "";
+                    for(var i=0;i<obj.length;i++){
+                        if(obj[i].name == "首页"){
+                            html += '<div class="home active" labiframe="Home/Index.html"><span>首页</span></div>';
+                        }else if(obj[i].name == "查岗"){
+                            html += '<div class="checkPost" labiframe="CheckPost/Index.html"><span>查岗</span></div>';
+                        }else if(obj[i].name == "物联"){
+                            html += '<div class="net" labiframe="NetInfoStatistic/Index.html"><span>物联</span></div>';
+                        }else if(obj[i].name == "维保巡查"){
+                            html += '<div class="inspect" labiframe="WeibaoInspect/Index.html"><span>维保巡查</span></div>';
+                        }
+                        else if(obj[i].name == "历史记录"){
+                            html += '<div class="history" labiframe="HistoryNote/Index.html"><span>历史记录</span></div>';
+                        }
+                        else if(obj[i].name == "综合分析"){
+                            html += '<div class="analyse" labiframe="AggregateAnalysis/Index.html"><span>综合分析</span></div>';
+                        }
+                        else if(obj[i].name == "单位管理"){
+                            html += '<div class="unit" labiframe="UnitManage/index.html"><span>单位管理</span></div>';
+                        }
+                        else if(obj[i].name == "在线学习"){
+                            html += '<div class="study" labiframe="OnlineStudy/index.html"><span>在线学习</span></div></div>';
+                        }
+                        else if(obj[i].name == "预案系统"){
+                            html += '<div class="alarmInfo" labiframe="http://www.baidu.com"><span>预案系统</span></div>';
+                        }
+                    }
+                    $(".sys_nav").html(html);
+                }
+            }
+        });
+        //导航切换
+        $('.sys_nav > div').unbind('click').click(function(){
+            if($(this).hasClass('active'))
+                return;
+            var lab = $(this).attr('labiframe');
+
+            if(lab == "Home/AlarmDetails.html"){
+                $('.timelyAlarmIcon').hide();
+            }
+            else{
+                $('.timelyAlarmIcon').show();
+            }
+            $('#contFrame').attr('src',lab);
+
+            $('.sys_nav > div').removeClass('active');
+            $(this).addClass('active')
+        });
+        //用户详细信息
+        $('.userPhoto').unbind('click').click(function(){
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area:['200px','180px'],
+                offset: 'rt',
+                shadeClose: true,
+                skin: 'layui-layer-userList',
+                content: $('.wrap_userInfo_list')
+            });
+        });
+        //站内通知
+        $('.alarm_notice').unbind('click').click(function(){
+            layer.open({
+                type: 2,
+                title: '站内通知',
+                closeBtn: 1,
+                area:['55%','68%'],
+                shade: 0.1,
+                skin: 'layui-layer-sysNotice',
+                content: 'Home/SysNotice.html'
+            });
+        });
+        //查看用户信息
+        $('.lookUserInfo').unbind('click').click(function(){
+            layer.open({
+                type: 2,
+                title:'查看用户信息',
+                closeBtn: 1,
+                area:['720px','335px'],
+                shade: 0.1,
+                skin: 'layui-layer-UserInfo',
+                content: 'Home/UserInfo.html'
+            });
+        });
+        //修改账号信息
+        $('.modifyAccount').unbind('click').click(function(){
+            layer.open({
+                type: 2,
+                title: "修改用户信息",
+                area:['450px','320px'],
+                closeBtn: 1,
+                shade: 0.5,
+                skin: 'layui-layer-loginRecord',
+                content: 'Home/ModifyAccount.html'
+            });
+        });
+        //登录记录
+        $('.loginRecord').unbind('click').click(function(){
+            layer.open({
+                type: 2,
+                title: '登录记录',
+                closeBtn: 1,
+                area:['55%','68%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: 'Home/LoginRecord.html'
+            });
+        });
+        //退出登录
+        $('.signOut').unbind('click').click(function(){
+            layer.open({
+                type: 2,
+                title: '<img src="../Content/images/Home/logout_tip.png" class="icon_signOut">退出登录',
+                closeBtn: 1,
+                area:['350px','170px'],
+                shade: 0.1,
+                skin: 'layui-layer-signOut',
+                content: 'Home/SignOut.html'
+            });
+        });
+        //交接班
+        $('.toggleTask').unbind('click').click(function() {
+            if($(this).hasClass('unclick')){
+                layer.msg('有未处理的火警！');
+                return;
+            }
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['594px', '330px'],
+                closeBtn: 0,
+                shade: 0.5,
+                shadeClose: true,
+                skin: 'layui-layer-loginRecord',
+                content: 'Home/toggleTaskLayer.html'
+            });
+        });
+        //调色板
+        $('.setPageColor').unbind('click').click(function(){
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area:['150px','30px'],
+                offset: ['5.5%','calc(97% - 150px)'],
+                shade:0.1,
+                shadeClose: true,
+                skin: 'layui-layer-sysColors',
+                content: $('.wrap_sysColors')
+            });
+        });
+        $('.wrap_sysColors>div').unbind('click').click(function(e){
+            e.stopPropagation();
+            $(this).addClass('active').siblings('div').removeClass('active');
+            var type = $(this).attr('type');
+            if(type == 2){
+                $('.wrapper').css('background','#000');
+            }
+            else{
+                $('.wrapper').css('background-image','url(../Content/images/Index/sysBg_'+type+'.png)');
+            }
+            if($('.sys_nav >div.active').hasClass('home')){
+                window.document.getElementById('contFrame').contentWindow.setMapStyle(type)
+            }
+            _loginInfo.bgColorType = type;
+            localStorage.setItem("LoginInfo", JSON.stringify(_loginInfo));
+        });
+        //$('.wrap_sysColors>div[type='+(_loginInfo.bgColorType || 1)+']').click();
+        $('.wrap_sysColors>div[type='+(_loginInfo.bgColorType || 1)+']').addClass('active');
+        if(_loginInfo.bgColorType == 2)
+            $('.wrapper').css('background','#000');
+        else
+            $('.wrapper').css('background-image','url(../Content/images/Index/sysBg_'+(_loginInfo.bgColorType || 1)+'.png)');
+
+        //开关 - 弹出下拉
+        $('#btnControlSwitchs').unbind('click').click(function(){
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area:['130px','105px'],
+                offset: ['5.5%','calc(95% - 160px)'],
+                shadeClose: true,
+                skin: 'layui-layer-switchs',
+                content: $('.wrap_witchs')
+            });
+        });
+        //实时报警信息按钮
+        $('.timelyAlarmIcon').unbind('click').click(function(){
+            top.layer.open({
+                type: 2,
+                title: false,
+                closeBtn: 0,
+                area:['600px','26%'],
+                offset: 'lb',
+                shade: 0,
+                skin: 'layui-layer-timelyAlarm',
+                content: 'Home/TimelyAlarmList.html',
+                success:function(){
+                    $('.timelyAlarmIcon').addClass('active');
+
+                },
+                end:function(){
+                    $('.timelyAlarmIcon').removeClass('active');
+
+                }
+            });
+        });
+        //报警-声音开关按钮
+        $('#btnAlarmSwitchLog').unbind('click').click(function(){
+            var $this = $(this);
+            var status = $(this).attr('status');//默认状态是开，所以存储的值为0,
+            var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+            $.ajax({
+                type: "get",
+                url: _serverIp + "/front/homeIndex/alarmSwitchLog",
+                data:"currentStatus="+status,
+                success: function (data) {
+                    //console.log(data);
+                    if (data.success) {
+                        $this.find('img').toggle();
+                        var audioEle = document.getElementById("firePlayer");
+                        loginInfo.isAudioOpen = status;
+                        localStorage.setItem("LoginInfo", JSON.stringify(loginInfo));
+                        if(parseInt(status) == 1){
+                            $this.attr({'status':0,'title':'开'});
+                            //audioEle.play(); //报警推送时会重新播放音频，
+                        }
+                        else{
+                            $this.attr({'status':1,'title':'关'});
+                            audioEle.pause();
+                        }
+                    }
+                }
+            });
+        });
+        //视频开关按钮
+        $('#btnVideoSwitchLog').unbind('click').click(function(){
+            var $this = $(this);
+            var status = $(this).attr('status');//默认状态是开，所以存储的值为0,
+            var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+            $this.find('img').toggle();
+            loginInfo.isVidoePush = status;
+            localStorage.setItem("LoginInfo", JSON.stringify(loginInfo));
+            if(status == 1){
+                $this.attr({'status':0,'title':'开'});
+            }
+            else{
+                $this.attr({'status':1,'title':'关'});
+
+            }
+        });
+        //频闪控制开关按钮
+        $('#btnStrobeSwitchLog').unbind('click').click(function(){
+            var $this = $(this);
+            var status = $(this).attr('status');//默认状态是开，所以存储的值为0,
+            var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+            $this.find('img').toggle();
+            loginInfo.isStrobePush = status;
+            localStorage.setItem("LoginInfo", JSON.stringify(loginInfo));
+            if(status == 1){
+                $this.attr({'status':0,'title':'开'});
+            }
+            else{
+                $this.attr({'status':1,'title':'关'});
+                $.ajax({
+                    type: "get",
+                    url: "http://localhost:4016/ServiceAjax.svc/Alarm?flag=0",
+                    success: function(data) {}
+                });
+            }
+        });
+
+        //24h火警记录点击
+        // $('.hisAlarmIcon').unbind('click').click(function(){
+        //     layer.open({
+        //         type: 2,
+        //         title: '24小时火警记录',
+        //         area: ['75%', '70%'],
+        //         closeBtn: 1,
+        //         shade: 0.5,
+        //         shadeClose: true,
+        //         skin: 'layui-layer-loginRecord',
+        //         content: 'Home/Window_history.html'
+        //     });
+        // });
+
+        //声音是否循环选择
+        $('#loopCheck').unbind('click').click(function(){
+            event.stopPropagation();
+            if($(this).is(':checked')){ //开启循环
+                var setloop = JSON.parse(localStorage.getItem("setloop"));
+                if(setloop == null || setloop == undefined){
+                    var setloop = 0;
+                    localStorage.setItem("setloop", JSON.stringify(setloop));
+                }
+                $('#firePlayer').attr('loop','loop');
+                $('#firePlayer').attr('src','../Content/video/fire.mp3');
+            }else{ //关闭循环
+                localStorage.removeItem('setloop');
+                $('#firePlayer').removeAttr('loop');
+                $('#firePlayer').attr('src','../Content/video/fireShort.mp3');
+            }
+        });
+    }
+
+    function ifOptSwatchsStatus(){
+        var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+        //报警开关按钮
+        if(parseInt(loginInfo.isAudioOpen) != 1){
+            $('#btnAlarmSwitchLog').attr({'status':1,'title':'关'});
+            $('#btnAlarmSwitchLog>img.close').show().siblings('img').hide();
+        }
+        else{
+            $('#btnAlarmSwitchLog').attr({'status':0,'title':'开'});
+            $('#btnAlarmSwitchLog>img.open').show().siblings('img').hide();
+        }
+        //视频开关按钮
+        if(parseInt(loginInfo.isVidoePush) != 1){
+            $('#btnVideoSwitchLog').attr({'status':1,'title':'关'});
+            $('#btnVideoSwitchLog>img.close').show().siblings('img').hide();
+        }
+        else{
+            $('#btnVideoSwitchLog').attr({'status':0,'title':'开'});
+            $('#btnVideoSwitchLog>img.open').show().siblings('img').hide();
+        }
+        //频闪开关按钮  btnStrobeSwitchLog
+        var alarmCount =  $("#contFrame").contents().find("#alarmNoDealCount").text();
+        if(parseInt(alarmCount) > 0){
+            if(parseInt(loginInfo.isStrobePush) != 1){
+                $('#btnStrobeSwitchLog').attr({'status':1,'title':'关'});
+                $('#btnStrobeSwitchLog>img.close').show().siblings('img').hide();
+            }
+            else{
+                $('#btnStrobeSwitchLog').attr({'status':0,'title':'开'});
+                $('#btnStrobeSwitchLog>img.open').show().siblings('img').hide();
+            }
+        }
+        else{
+            loginInfo.isStrobePush = 0;
+            localStorage.setItem("LoginInfo", JSON.stringify(loginInfo));
+            $('#btnStrobeSwitchLog').attr({'status':1,'title':'关'});
+            $('#btnStrobeSwitchLog>img.close').show().siblings('img').hide();
+
+        }
+
+        //声音loop复选框按钮
+        var setloop = JSON.parse(localStorage.getItem("setloop"));
+        // console.log(setloop,'setloop')
+        if(setloop == 0){
+            $('#loopCheck').attr('checked',true);
+            $('#firePlayer').attr('loop','loop');
+            $('#firePlayer').attr('src','../Content/video/fire.mp3');
+        }else{
+            $('#loopCheck').attr('checked',false);
+            $('#firePlayer').removeAttr('loop');
+            $('#firePlayer').attr('src','../Content/video/fireShort.mp3');
+        }
+    }
+
+    function getModulePage(module){
+        var keys = module.split(',');
+        if(keys[0] == "net"){
+            $('.sys_nav > div.net').attr('labiframe','NetInfoStatistic/Index.html?box=2')
+        }
+        $('.sys_nav > div.'+keys[0]).click(); //iframe页面跳转
+        if(keys[0] == "net"){
+            $('.sys_nav > div.net').attr('labiframe','NetInfoStatistic/Index.html')
+        }
+
+        }
+
+
+    function setPushModule(data){
+        //报警声音
+        //console.log('data.alarmStatus='+data.alarmStatus);
+        if(data.alarmStatus == 1){
+            var fireAudio = $('#btnAlarmSwitchLog').attr('status');
+            var audioEle = document.getElementById("firePlayer");
+            audioEle.load();
+            if(parseInt(fireAudio) == 0){
+                audioEle.play();
+            }
+        }
+
+        //报警推送开关
+        var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+        if(parseInt(loginInfo.isOppenFirePush) == 1){
+            if(!$('.timelyAlarmIcon').hasClass('active')){
+                $('.timelyAlarmIcon').click()
+            }
+        }
+        //地图报警点位-动画
+        setTimeout(function(){
+//	        window.document.getElementById('contFrame').contentWindow.getAlarmPushPointInMap(data.unitId);
+            if(data.unitId !=""){
+                window.document.getElementById('contFrame').contentWindow.getPointInMap(data.unitId);
+            }
+        },1000);
+        //视频弹出
+        if(parseInt(loginInfo.isVidoePush) == 1){
+            // (data.videoId !="" && data.videoId && data.unitId != "" && data.unitId)
+            if(data.videoId !="" && data.videoId && data.unitId){
+                getAlarmPushVideoPage(data.videoId,data.unitId); //方法在public.js
+                // getAlarmPushVideoPage(data.videoId,data.unitId);
+            }
+        }
+
+        //频闪控制开关
+        if(parseInt(loginInfo.isStrobePush) == 1){ //开
+            $.ajax({
+                type: "get",
+                url: "http://localhost:4016/ServiceAjax.svc/Alarm?flag=1",
+                success: function(data) {}
+            });
+        }
+        else{
+//             $.ajax({
+//                 type: "get",
+//                 url: "http://localhost:4016/ServiceAjax.svc/Alarm?flag=0",
+//                 success: function(data) {}
+//             });
+        }
+    }
+</script>
+
+<script>
+    $(function () {
+        $('#intelligentIframe').attr('src', _robotUrl + '&userid=' + escape(_loginInfo.id) + '&username=' + escape(_loginInfo.username) + '&tel=' + escape(_loginInfo.mobilephone));
+        // $('#intelligentServices').hover(
+        //     function () {
+        //         $(this).addClass('hover').attr('title', '');
+        //     }, function () {
+        //         $(this).removeClass('hover').attr('title', '');
+        //     });
+        //
+        // $('#intelligentServices').click(function () {
+        //     $('.intelligent_shadow').show();
+        //     $('.intelligent_page').addClass('animation');
+        //     setTimeout(function () {
+        //         $('.intelligent_page').addClass('open')
+        //     }, 800)
+        // });
+        $('.intelligent_close').click(function () {
+            $('.intelligent_shadow').hide(500);
+            $('.intelligent_page').removeClass('animation')
+        })
+    })
+</script>
+<script>
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        var websocket = new WebSocket(_webSocketserverIp+"/websocket/" + JSON.parse(localStorage.getItem("LoginInfo")).id+"/"+JSON.parse(localStorage.getItem("LoginInfo")).loginTime);
+        //连接发生错误的回调方法
+        websocket.onerror = function () {
+            setMessageInnerHTML("与服务器连接失败...");
+        };
+
+        //连接成功建立的回调方法
+        websocket.onopen = function (event) {
+            setMessageInnerHTML("与服务器连接成功...");
+        };
+
+        //接收到消息的回调方法
+        websocket.onmessage = function(event) {
+            if (event.data && JSON.parse(event.data).alarmStatus== null){
+                if( JSON.parse(event.data).eqSystemID== 1){
+                    fireAbnormal(JSON.parse(event.data));//灭火系统异常
+                }
+                // 传2次值，先判断传的值是数量统计还是RTU信息
+                if(JSON.parse(event.data).unitId == null){
+                    buildAlarmCount(JSON.parse(event.data));
+                }else{
+                    // 判断当前RTU有没有绑定点位视频
+                    if(JSON.parse(event.data).videoId != null){
+                        var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+                        // 判断视频是否开启
+                        if(parseInt(loginInfo.isVidoePush) == 1){
+                            var unitid = JSON.parse(event.data).unitId;
+                            var videoid = JSON.parse(event.data).videoId;
+                            getAlarmPushVideoPage(videoid,unitid);
+                        }
+                    }
+                }
+            }else{
+                //火警
+                getTimelyAlarmTotal();
+                //推送数据后处理的步骤
+                setPushModule(JSON.parse(event.data));
+            }
+        };
+
+        //连接关闭的回调方法
+        websocket.onclose = function () {
+            setMessageInnerHTML("已关闭当前链接");
+        }
+
+        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+        window.onbeforeunload = function () {
+            websocket.close();
+        }
+    } else {
+        alert('Not support websocket');
+    }
+
+    //将消息显示在网页上
+    function setMessageInnerHTML(innerHTML) {
+        console.log(innerHTML);
+    }
+
+    //关闭连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    //发送消息
+    //     function send() {
+    //         websocket.send($("#text").val());
+    //     }
+
+    //调用home/index中列表点击方法
+    function getAlarmEvent(obj){
+        document.getElementById("contFrame").contentWindow.goUnitFunc(obj);
+    }
+
+</script>
+
+</html>

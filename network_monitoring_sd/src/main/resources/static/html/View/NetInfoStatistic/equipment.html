@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>物联</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/NetInfoStatistic/Index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+    <div class="wrapper second_module">
+
+        <!--选择框Div start-->
+        <div class="top-search">
+             <form class="layui-form" action="" autocomplete="off">
+                <!--下拉框-->      
+                <div class="layui-inline layui-bg-cyan" id="deviceSys" >
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="">--设备系统--</option>
+                            <option value="1">灭火系统</option>
+                            <option value="2">电气火灾</option>
+                            <option value="3">火灾自动报警系统</option>
+                            <option value="4">防火分离</option>
+                            <option value="5">气体系统 </option>
+                            <option value="6">燃气系统</option>
+                            <option value="7">应急疏散 </option>
+                            <option value="8">无线烟感</option>
+                            <option value="9">防排烟系统</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--下拉框-->      
+                <div class="layui-inline layui-bg-cyan inline_deviceType"  id="deviceType">
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="">--设备类型--</option>
+                            <option value="1">报警主机</option>
+                            <option value="2">用户信息传输装置</option>
+                            <option value="3">RTU</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--下拉框-->      
+                <div class="layui-inline layui-bg-cyan" id="deviceState" >
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="">--设备状态--</option>
+                            <option value="1">在线</option>
+                            <option value="2">离线 </option>
+                        </select>
+                    </div>
+                </div>
+
+                 <!--<input class="selectB" type="search" placeholder="请输入软件版本" style="border-radius: 5px;">-->
+                <!--下拉框-->      
+                <!--<div class="layui-inline layui-bg-cyan">-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<select name="modules" lay-verify="required" lay-search="">-->
+                            <!--<option value="">&#45;&#45;软件版本&#45;&#45;</option>-->
+                            <!--<option value="1">layer</option>-->
+                            <!--<option value="2">form</option>-->
+                            <!--<option value="3">layim</option>-->
+                            <!--<option value="4">element</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" />
+            -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" />
+
+                    <input class="selectB" id="keyValue" type="search" placeholder="请输入关键字搜索" autocomplete="off">
+                <input class="submitBtn" type="button" value="查询">
+            </form>
+        </div>
+        <!--选择框Div end-->
+
+        <!--table start-->
+        <div class="table_box">
+            <div class="list_table">
+                <div class="table_header">
+                    <table>
+                        <colgroup>
+                            <col width="4%">
+                            <col width="5%">
+                            <col width="6%">
+                            <col width="9%">
+                            <col width="6%">
+                            <col width="5%">
+                            <col width="10%">
+                            <col width="7%">
+                            <col width="5%">
+                            <col width="5%">
+                            <col width="11%">
+                            <col width="6%">
+                            <col width="8%">
+                            <col width="8%">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>设备系统</th>
+                            <th>设备类型</th>
+                            <th>设备名称</th>
+                            <th>设备型号</th>
+                            <th>子号</th>
+                            <th>使用时间</th>
+                            <th>设备状态</th>
+                            <th>标定描述</th>
+                            <th>子站号</th>
+                            <th>所属单位名称</th>
+                            <th>单位编号</th>
+                            <th>终端IP</th>
+                            <th>通讯协议</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="table_content scrollbar-inner">
+                    <table cellpadding="0" cellspacing="0" class="tbody">
+                        <colgroup>
+                            <col width="4%">
+                            <col width="5%">
+                            <col width="6%">
+                            <col width="9%">
+                            <col width="6%">
+                            <col width="5%">
+                            <col width="10%">
+                            <col width="7%">
+                            <col width="5%">
+                            <col width="5%">
+                            <col width="11%">
+                            <col width="6%">
+                            <col width="8%">
+                            <col width="8%">
+                        </colgroup>
+                        <tbody id="mainContentTbody">
+                            <!--<tr id="sadadfas">-->
+                                <!--<td>1</td>-->
+                                <!--<td></td>-->
+                                <!--<td class="blue">报警主机</td>-->
+                                <!--<td>演示平台电气火灾</td>-->
+                                <!--<td class="underline" onclick="getEqIsModel(this);">RTU200</td>-->
+                                <!--<td>1</td>-->
+                                <!--<td>2018-05-30</td>-->
+                                <!--<td class="underline lightgreen" onclick="getEqIsOnline(this);">报警主机正常</td>-->
+                                <!--<td>1140</td>-->
+                                <!--<td>40023223</td>-->
+                                <!--<td>00000012</td>-->
+                                <!--<td>上海跨国采购中心办公楼</td>-->
+                                <!--<td>223432234342</td>-->
+                                <!--<td>思迪2/1</td>-->
+                                <!--<td>V00021</td>-->
+                            <!--</tr>-->
+                            <!--<tr id="dsaffda">-->
+                                <!--<td>1</td>-->
+                                <!--<td></td>-->
+                                <!--<td class="blue">报警主机</td>-->
+                                <!--<td>演示平台电气火灾</td>-->
+                                <!--<td class="underline" onclick="getEqIsModel(this);">RTU200</td>-->
+                                <!--<td>1</td>-->
+                                <!--<td>2018-05-30</td>-->
+                                <!--<td class="underline red" onclick="getEqIsOnline(this);">离线</td>-->
+                                <!--<td>1140</td>-->
+                                <!--<td>40023223</td>-->
+                                <!--<td>00000012</td>-->
+                                <!--<td>上海跨国采购中心办公楼</td>-->
+                                <!--<td>223432234342</td>-->
+                                <!--<td>思迪2/1</td>-->
+                                <!--<td>V00021</td>-->
+                            <!--</tr>-->
+                            <!--<tr id="dasfdsadf">-->
+                                <!--<td>1</td>-->
+                                <!--<td></td>-->
+                                <!--<td class="blue">报警主机</td>-->
+                                <!--<td>演示平台电气火灾</td>-->
+                                <!--<td class="underline" onclick="getEqIsModel(this);">RTU200</td>-->
+                                <!--<td>1</td>-->
+                                <!--<td>2018-05-30</td>-->
+                                <!--<td class="underline lightgreen" onclick="getEqIsOnline(this);">在线</td>-->
+                                <!--<td>1140</td>-->
+                                <!--<td>40023223</td>-->
+                                <!--<td>00000012</td>-->
+                                <!--<td>上海跨国采购中心办公楼</td>-->
+                                <!--<td>223432234342</td>-->
+                                <!--<td>思迪2/1</td>-->
+                                <!--<td>V00021</td>-->
+                            <!--</tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="wrap_page">
+                <div id="demo7"></div>
+                <img src="../../Content/images/Public/exportBT.png" class="btn_export">
+            </div>
+
+        </div>
+        <!--table end-->
+
+    </div>
+
+    <!--设备型号资料 弹窗-->
+    <div id="eqMsgBox" class="scrollStyle">
+        <div>
+            <div class="eqmodelDiv fontSize16">设备型号</div>
+            <div class="detailDiv">RTU200</div>
+        </div>
+
+        <div>
+            <div class="eqmodelDiv fontSize16">设备类型</div>
+            <div class="detailDiv">
+                <form class="layui-form" action="" autocomplete="off">
+                    <!--下拉框-->      
+                    <div class="layui-inline layui-bg-cyan">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="">--设备类型--</option>
+                                <option value="1">灭火系统</option>
+                                <option value="2">电气火灾</option>
+                                <option value="3">火灾自动报警系统</option>
+                                <option value="4">防火分离</option>
+                                <option value="5">气体系统 </option>
+                                <option value="6">燃气系统</option>
+                                <option value="7">应急疏散 </option>
+                                <option value="8">无线烟感</option>
+                                <option value="9">防排烟系统</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <div class="eqmodelDiv fontSize16">产品名称</div>
+            <div class="detailDiv">消防信息控制终端</div>
+        </div>
+
+        <div>
+            <div class="eqmodelDiv fontSize16">通讯模式</div>
+            <div class="detailDiv">
+                <form class="layui-form" action="" autocomplete="off">
+                    <!--下拉框-->      
+                    <div class="layui-inline layui-bg-cyan">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="">--通讯模式--</option>
+                                <option value="1">类通讯模式1</option>
+                                <option value="2">类通讯模式2</option>
+                                <option value="3">通讯模式3</option>
+                                <option value="4">通讯模式4</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <div class="eqmodelDiv fontSize16">软件版本</div>
+            <div class="detailDiv">1.1</div>
+        </div>
+
+        <div>
+            <div class="eqmodelDiv fontSize16">硬件版本</div>
+            <div class="detailDiv">2.2</div>
+        </div>
+
+        <div>
+            <div class="eqmodelDiv fontSize16">制造商</div>
+            <div class="detailDiv">
+                <form class="layui-form" action="" autocomplete="off">
+                    <!--下拉框-->      
+                    <div class="layui-inline layui-bg-cyan">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="">--苏州思迪--</option>
+                                <option value="1">单位1</option>
+                                <option value="2">单位2</option>
+                                <option value="3">单位3</option>
+                                <option value="4">单位4</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <div class="eqmodelDiv fontSize16">图像资料</div>
+            <div class="detailDiv">
+                <img src="../../Content/images/NetInfoStatistic/chkimg.png">
+                <span class="underline lightblue" onclick="chkImg();">查看</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!--查看图片-->
+    <div id="imgbox scrollbar-macosx">
+
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    var _ifUsed = 0; //调用page方法的判断
+    var _id='';
+
+    var _deviceData={
+        pageSize:20,
+        pageNumber:1,
+//        eqSystemID:$('#deviceSys').find('dd.layui-this').attr('lay-value')||"",
+//        eqClassID:$('#deviceType').find('dd.layui-this').attr('lay-value')||"",
+//        upStatus:$('#deviceState').find('dd.layui-this').attr('lay-value')||"",
+        eqSystem:$('#deviceSys').find('dd.layui-this').attr('lay-value')||"",
+        type:$('#deviceType').find('dd.layui-this').attr('lay-value')||"",
+        status:$('#deviceState').find('dd.layui-this').attr('lay-value')||"",
+        version:'',
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#keyValue').val()
+    };
+
+    $(function(){
+        loadLayuiForm();//调用layui form组件，方法写在public
+       // layerPage(400); //分页
+        getTableData(); //表格数据加载
+        clickevent();
+    });
+
+
+    //表格数据加载
+    function getTableData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getSDDeviceStatusList",
+            data:_deviceData,
+            async:isAsync,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+
+                showListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showListContent(msg){
+        var data = msg.list;
+        var html = "";
+        var remark="";
+        for(var i = 0 ; i < data.length;i++){
+        	if(data[i].calibrationStatus =='0'){
+        		remark = "未标定";
+        	}else if(data[i].calibrationStatus =='2'){
+        		remark = "已标定";
+        	}else{
+        		remark = data[i].remark
+        		
+        	}
+            bClick = '';
+        	if (data[i].deviceType == '主机'){
+                bClick = ' onclick="getdeviceType(\''+data[i].id+'\');"';
+            }
+            html +='<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].eqSystemName+'</td>'+
+                    '<td class="blue align-left " '+ bClick +'>'+data[i].deviceType+'</td>'+
+                    '<td class="align-left">'+data[i].deviceName+'</td>'+
+                    '<td>'+data[i].deviceModel+'</td>'+
+                    '<td>'+data[i].deviceNo+'</td>'+
+                    '<td>'+data[i].time+'</td>'+
+                    '<td onclick="getEqIsOnline(this);" class="underline '+(data[i].deviceStatus == "离线"?"red":"")+'">'+data[i].deviceStatus+'</td>'+
+                    '<td><span class="'+(data[i].calibrationStatus !='0'?"":"red")+' underline lookUpCount" calibrationId="'+(data[i].calibrationStatus =='0'?"":data[i].calibrationId)+'">'+remark+'</span></td>'+
+                    '<td>'+data[i].childstationnum+'</td>'+
+                    '<td class="align-left">'+data[i].unitName+'</td>'+
+                    '<td>'+data[i].unitCode+'</td>'+
+                    '<td>'+data[i].ip+'</td>'+
+                    '<td>'+data[i].agreement+'</td>'+
+                    '</tr>'
+        }
+        $('#mainContentTbody').html(html||"<tr><td colspan='15'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+
+    function getdeviceType(id){
+        top.layer.open({
+            type: 2,
+            title: '设备类型',
+            closeBtn: 1,
+            area:['50%','75%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: '/html/View/NetInfoStatistic/equipment_ host.html?id='+id
+        });
+
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+//                    console.log(obj);
+                    if (!isNew) {
+                        _deviceData.pageNumber = obj.curr;
+                        _deviceData.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getTableData(); //调用接口获取数据
+                    }
+
+                }
+            });
+        });
+        //完整功能
+
+    }
+
+    function clickevent(){
+        //搜索
+        $('.submitBtn').click(function() {
+            _deviceData.eqSystem = $('#deviceSys').find('dd.layui-this').attr('lay-value')||"";
+            _deviceData.type = $('#deviceType').find('dd.layui-this').attr('lay-value')||"";
+            _deviceData.status = $('#deviceState').find('dd.layui-this').attr('lay-value')||"";
+            _deviceData.startDate = $('#sData2').val();
+            _deviceData.endDate = $('#eData2').val();
+            _deviceData.keyword = $('#keyValue').val();
+            _ifUsed = 0;
+            getTableData();
+
+        });
+
+        //导出
+        $('.btn_export').click(function(){
+            if( $('#mainContentTbody tr').length == 0)
+                return;
+            var _eqSystemID = $('#deviceSys').find('dd.layui-this').attr('lay-value')||"";
+            var _eqClassID = $('#deviceType').find('dd.layui-this').attr('lay-value')||"";
+            var _upStatus = $('#deviceState').find('dd.layui-this').attr('lay-value')||"";
+            var url = _serverIp + "/front/history/exportDevices?"
+                    + "eqSystemID=" + _eqSystemID
+                    + "&eqClassID=" + _eqClassID
+                    + "&upStatus=" + _upStatus
+                    + "&version="
+                    + "&startDate=" + $('#sData2').val()
+                    + "&endDate=" + $('#eData2').val()
+                    + "&keyword=" + $('#keyValue').val();
+            postExport(url)
+        });
+
+        //查看上传数
+        $('#mainContentTbody').delegate('.underline.lookUpCount','click',function(){
+            var calibrationId = $(this).attr('calibrationId');
+            var id = $(this).parents('tr').attr('id');
+            layer.open({
+                type: 2,
+                title: '标定',
+                closeBtn: 1,
+                area:['300px','300px'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: 'calibrationPage.html?id='+id+"&calibrationId="+calibrationId
+            });
+
+//            var url;
+//            var isAsync = true,lid = 0;
+//            if (isAsync)
+//                lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+//            $.ajax({
+//                type: "get",
+//                url: _serverIp + "/front/couplet/getDeviceCalibration",
+//                data:'calibrationId='+calibrationId,
+//                async:isAsync,
+//                success: function (data) {
+//                    //console.log(data);
+//                    if(!data.success){
+//                        return;
+//                    }
+//
+//
+//                },
+//                complete: function () {
+//                    if (isAsync){
+//                        layer.close(lid);
+//                    }
+//                }
+//            });
+
+
+        })
+    }
+
+    //设备型号弹窗
+    function getEqIsModel(obj){
+        _id = $(this).parent().attr('id');
+        layer.open({
+            type: 1,
+            title: '设备型号资料',
+            closeBtn: 1,
+            area:['35%','340px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: $('#eqMsgBox')
+        });
+    }
+
+    //设备离在线情况弹窗
+    function getEqIsOnline(obj){
+        var id = $(obj).parent().attr('id');
+        top.layer.open({
+            type: 2,
+            title: '设备离在线情况',
+            closeBtn: 1,
+            area:['50%','75%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: (_loginInfo.usertype == 0?"":"../")+'HistoryNote/History_detail/History12_EqIsOnline.html?id='+id+'&unitid='
+        });
+
+    }
+
+    //弹窗中查看图像资料
+    function chkImg(){
+        var _img=''; //获取到的图片数据
+        $('#imgbox').html(_img); //添加到弹窗中
+
+        top.layer.open({
+            type: 1,
+            title: '图片查看',
+            closeBtn: 1,
+            area:['80%','80%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: $('#imgbox')
+        });
+    }
+
+</script>
+</html>

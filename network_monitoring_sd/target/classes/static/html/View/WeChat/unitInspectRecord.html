@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title></title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/levelII.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+</head>
+
+
+<body>
+    <!-- <div class="weui-cells" id="recordList">
+        <div class="weui-cell">
+            <div class="weui-cell__hd">所有联网单位总共公司公司<button disabled class="reply_lose">应答失败</button></div>
+            <div class="weui-cell__bd" hidden>
+                <p>2018-10-8 09:26:30</p>
+            </div>
+            <div class="weui-cell__bd">
+                <p>责任人:<span>123123</span></p>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells" id="recordList">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><button disabled class="reply_success">应答成功</button></div>
+            <div class="weui-cell__bd">
+                <p>2018-10-8 09:26:30</p>
+            </div>
+            <div class="weui-cell__bd">
+                <p>责任人:<span>123123</span></p>
+            </div>
+        </div>
+    </div> -->
+</body>
+
+<script type="text/javascript">
+    var unitid = GetQuery('unitid');
+
+    $(function() {
+        getList(); //查岗记录
+    });
+
+    function getList() {
+        $.ajax({
+            type: "get",
+            url: hostAdd + "/getLookupLogs",
+            data: "unitId=" + unitid,
+            success: function(data) {
+                console.log(data);
+                if (data.success == true) {
+
+                    var cont = '';
+                    for (var i = 0; i < data.obj.length; i++) {
+                        cont +=
+                            '<div class="weui-cells" id="recordList">' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__hd">' +
+                            isEmpty(data.obj[i].unitname) +
+                            isStatus(data.obj[i].lookStatus) +
+                            '</div>' +
+                            '<div class="weui-cell__bd" ' + ((data.obj[i].status == "失败") ? "hidden" : "") + '>' +
+                            '<p>' + isEmpty(data.obj[i].sendDate) + '</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>责任人:<span>' + isEmpty(data.obj[i].recerveUser) + '</span></p>' +
+                            '</div>' +
+                            '</div>';
+                    }
+                    $('body').append(cont || '<div style="text-align: center;font-size:14px;margin-top: 5%;">--无记录--</div>');
+
+                } else {
+
+                }
+            }
+        });
+    }
+
+    function isEmpty(data) {
+        if (data == '' || data == null) {
+            return ' ';
+        } else {
+            return data;
+        }
+    }
+
+    function isStatus(data) {
+        if (data == '值班脱岗') {
+            return "<button disabled class='reply_lose'>" + data + "</button>";
+        } else {
+            return "<button disabled class='reply_success'>" + data + "</button>";
+        }
+    }
+</script>
+
+</html>

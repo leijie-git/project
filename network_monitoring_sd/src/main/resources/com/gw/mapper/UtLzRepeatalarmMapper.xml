@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzRepeatalarmMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzRepeatalarm" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="AlarmType" property="alarmtype" jdbcType="INTEGER" />
+    <result column="AlarmStatus" property="alarmstatus" jdbcType="INTEGER" />
+    <result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER" />
+    <result column="AlarmCode" property="alarmcode" jdbcType="NVARCHAR" />
+    <result column="AlarmSite" property="alarmsite" jdbcType="NVARCHAR" />
+    <result column="AlarmTitle" property="alarmtitle" jdbcType="NVARCHAR" />
+    <result column="AlarmInfo" property="alarminfo" jdbcType="LONGNVARCHAR" />
+    <result column="IsUrgent" property="isurgent" jdbcType="INTEGER" />
+    <result column="AlarmTime" property="alarmtime" jdbcType="TIMESTAMP" />
+    <result column="RequirementTime" property="requirementtime" jdbcType="TIMESTAMP" />
+    <result column="IsFeedback" property="isfeedback" jdbcType="INTEGER" />
+    <result column="FeedbackTime" property="feedbacktime" jdbcType="TIMESTAMP" />
+    <result column="FeedbackInfo" property="feedbackinfo" jdbcType="LONGNVARCHAR" />
+    <result column="FeedbackUser" property="feedbackuser" jdbcType="NVARCHAR" />
+    <result column="DealTime" property="dealtime" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="IsOverAlarm" property="isoveralarm" jdbcType="INTEGER" />
+    <result column="LastUpdateDate" property="lastupdatedate" jdbcType="TIMESTAMP" />
+    <result column="RequirementCount" property="requirementcount" jdbcType="INTEGER" />
+    <result column="RequirementCountUnit" property="requirementcountunit" jdbcType="INTEGER" />
+    <result column="DealStatus" property="dealstatus" jdbcType="INTEGER" />
+    <result column="CurrentDealUser" property="currentdealuser" jdbcType="NVARCHAR" />
+    <result column="DealDate" property="dealdate" jdbcType="TIMESTAMP" />
+    <result column="DealInfo" property="dealinfo" jdbcType="NVARCHAR" />
+    <result column="DealResult" property="dealresult" jdbcType="INTEGER" />
+    <result column="IsNeedRepair" property="isneedrepair" jdbcType="INTEGER" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+    <result column="BaseID" property="baseid" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getMaintenanceDetail" resultType="com.gw.wechat.data.FrontRepairDetailOutData">
+	SELECT
+	    a.ID id,
+	    b.UserName dealUser,
+	    a.DealDate dealDate,
+	    a.OperateInfo questionInfo,
+	    a.DealInfo checkInfo,
+	    c.picUrl quetionUrl,
+	    a.picPath checkUrl,
+	    c.RepairSite siteName
+	FROM
+	    UT_LZ_RepairDetial a
+	LEFT JOIN UT_Unit_User b ON a.DealUserID = b.ID
+	LEFT JOIN UT_LZ_Repair c ON a.RepairID = c.ID
+	<where>
+	   <if test="id!=null and id!=''">
+	       c.ID = #{id}
+	   </if>
+	</where>
+  </select>
+</mapper>

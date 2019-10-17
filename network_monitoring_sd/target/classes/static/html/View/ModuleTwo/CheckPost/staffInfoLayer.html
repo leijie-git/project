@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/CheckPost/staffInfoLayer.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="identity">
+            <div class="title">身份证信息</div>
+            <div class="content">
+                <div class="indeBox1 doucment_pos">
+                    <img src="../../../Content/images/idCard/idcardbg.png" >
+                    <div class="doc_name" datakey="userName"></div>
+                    <div class="doc_sex" datakey="sex"></div>
+                    <div class="doc_clan" datakey="nation"></div>
+                    <div class="doc_birth"><span class="doc_year">****</span><span class="doc_month">**</span><span class="doc_day">**</span></div>
+                    <div class="doc_address">************</div>
+                    <div class="doc_num"></div>
+                    <div class="doc_photo"></div>
+                </div>
+                <div class="indeBox1 doucment_ant">
+                    <img src="../../../Content/images/idCard/idcardbg_back.png" >
+                    <div class="doc_auth" datakey="startDate"></div>
+                    <div class="doc_validity" datakey="cardType"></div>
+                </div>
+            </div>
+        </div>
+        <div class="image">
+            <div class="title">查岗人员影像</div>
+            <div class="content" id="lookupInfoPath">
+                <!-- <img src="http://static-xiaoguotu.17house.com/xgt/t/00/1462377941123.jpg" > -->
+                <!--<img src="../../Content/images/upload/1.png" >-->
+            </div>
+        </div>
+        <table>
+        	<thead>
+	            <tr>
+	                <th>姓名</th>
+	                <th>联系方式</th>
+	                <th>证件类别</th>
+	                <th>证书编号</th>
+	                <th>发证日期</th>
+	                <th>上岗证号</th>
+	                <th>工作经历</th>
+	            </tr>
+            </thead>
+            <tbody id="mianTbody">
+            </tbody>
+        </table>
+        <img class="print_btn" src="../../../Content/images/Public/printBT.png" >
+    </div>
+</body>
+<script src="../../../Script/jquery-1.11.0.js"></script>
+<script src="../../../Script/public.js"></script>
+<script src="../../../Script/layer/layer.js"></script>
+<script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<script>
+var id = GetQuery("id");
+var validate = GetQuery("validate");
+var cardNo="";
+var _data = {id:id};
+$(function() {
+    //绑定事件
+    getLookupRecordData();
+    //bindEvent();
+});
+function getLookupRecordData(){
+    var isAsync = true,lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "get",
+        url: _serverIp + "/front/lookup/getLookupUserInfo",
+        data:_data,
+        async:isAsync,
+        success: function (data) {
+            $('div[datakey]').each(function(){
+                var key = $(this).attr('datakey');
+                $(this).text(data.obj[key]);
+            });
+//            var birth = (data.obj.birth).split('-');
+//            $('.doc_year').text(birth[0]);
+//            $('.doc_month').text(birth[1]);
+//            $('.doc_day').text(birth[2]);
+
+            $('.doc_photo').html('<img src="data:image/jpg;base64,'+data.obj.cardInfoPath+'" class="img-responsive"  />');
+            var cardNo = data.obj.cardNo;
+            $('.doc_num').text(cardNo.substring(0,6)+"********"+cardNo.substring(14));
+
+
+            showListContent(data);
+        },
+        complete: function () {
+            if (isAsync){
+                layer.close(lid);
+            }
+        }
+    });
+}
+
+function showListContent(msg){
+    var data = msg.obj;
+    if(data.lookupInfoPath != null && lookupInfoPath != ""){
+	    var img = "<img src='"+_serverIp +data.lookupInfoPath+"'>";
+		$("#lookupInfoPath").html(img);
+    }else{
+    	$("#lookupInfoPath").html("");
+    }
+    cardNo = data.infoId;
+    var html = "";
+    if(validate == 1){
+      html = '<tr>'+
+            '<td>'+data.userName+'</td>'+
+            '<td>'+data.phone+'</td>'+
+            '<td>'+data.cardType+'</td>'+
+            '<td>'+data.cardNumber+'</td>'+
+            '<td>'+data.cardDate+'</td>'+
+            '<td>'+data.certificate+'</td>'+
+            '<td><span class="examine" id="examine" onclick="showUserExperience()">查看</span></td>'+
+            '</tr>';
+    }
+    $('#mianTbody').html(html||"<tr><td colspan='7'>暂无数据...</td></tr>");
+    $('#mianTbody>tr>td').each(function(){$(this).attr('title',$(this).text())});
+}
+
+//绑定事件
+/* function bindEvent() {
+    $('#examine').click(function(){
+        window.parent.layer.open({
+           type: 2,
+           title: $('#name').text() + '工作经历',
+           closeBtn: 1,
+           area:['55%','50%'],
+           shade: 0.1,
+           skin: 'layui-layer-workHistoryLayer',
+           content: './workHistoryLayer.html?cardNo='+cardNo
+        });
+    });
+} */
+function showUserExperience(){
+	 top.layer.open({
+           type: 2,
+           title: $('#name').text() + '工作经历',
+           closeBtn: 1,
+           area:['55%','50%'],
+           shade: 0.1,
+           skin: 'layui-layer-workHistoryLayer',
+           content: 'CheckPost/workHistoryLayer.html?infoId='+cardNo
+        });
+}
+$(".print_btn").click(function(){
+	window.print();
+});
+</script>
+
+</html>

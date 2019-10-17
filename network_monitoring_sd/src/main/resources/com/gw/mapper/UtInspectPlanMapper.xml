@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtInspectPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtInspectPlan" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="PlanName" property="planname" jdbcType="NVARCHAR" />
+    <result column="PlanStart" property="planstart" jdbcType="TIMESTAMP" />
+    <result column="PlanEnd" property="planend" jdbcType="TIMESTAMP" />
+    <result column="DefaultUserID" property="defaultuserid" jdbcType="NVARCHAR" />
+    <result column="DefaultUserName" property="defaultusername" jdbcType="NVARCHAR" />
+    <result column="CreateUser" property="createuser" jdbcType="BIGINT" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="Remark" property="remark" jdbcType="NVARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getList" resultType="com.gw.inspect.data.InspectPlanOutData" parameterType="com.gw.inspect.data.InspectPlanInData">
+ SELECT
+      a.PlanName PlanName,
+      a.PlanStart PlanStart,
+      a.PlanEnd PlanEnd,
+      a.supervisorID supervisorID,
+      u.UserName supervisorName,
+      a.CreateUser CreateUser,
+      a.CreateDate CreateDate,
+      a.Remark Remark,
+      a.Status Status,
+      a.ID ID,
+      a.UnitID UnitID
+
+      FROM
+      UT_Inspect_Plan a left JOIN UT_Unit_User u on a.supervisorID=u.id
+    <where>
+    1=1
+        <if test= 'UnitID!=1'>
+        and a.UnitID =#{UnitID}
+        </if>
+        <if test="PlanStart!=null and PlanStart!=''">
+        and PlanStart  &gt;= #{PlanStart}
+        </if>
+         <if test="PlanEnd!=null and PlanEnd!=''">
+        and PlanEnd  &lt;= #{PlanEnd}
+        </if>
+         <if test="PlanName!=null and PlanName!=''">
+         and a.PlanName like '%${PlanName}%'
+        </if>
+        <if test="supervisorName!=null and supervisorName!=''">
+         and  u.UserName like '%${supervisorName}%'
+        </if>
+    </where>
+    ORDER BY ID DESC
+  </select>
+
+
+    <!--根据执行人查出执行人id-->
+    <select id="getDefaultUserIDByDefaultUserName" resultType="java.lang.String" parameterType="java.lang.String">
+      SELECT
+
+      DISTINCT  DefaultUserID DefaultUserID
+        FROM
+         UT_Inspect_Plan
+              where
+
+            DefaultUserName =#{DefaultUserName}
+
+
+
+
+    </select>
+</mapper>

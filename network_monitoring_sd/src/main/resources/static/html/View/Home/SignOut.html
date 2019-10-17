@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/SignOut.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+</head>
+</head>
+<body>
+<div class="layer_mainContent">
+    <div class="confirm fontSize16">您确定要“退出”登录吗？</div>
+    <div><button class="btn_submit">确定</button><button class="btn_cancel">取消</button></div>
+</div>
+</body>
+<script>
+    $(function(){
+        domEvelement();
+    });
+    function domEvelement(){
+        $('.btn_submit').click(function(){
+        	 $.ajax({
+                 type: "get",
+                 url: _serverIp + "/front/start/logout",
+                 success: function (data) {
+                     if (data.success) {
+			            top.location.href="../Login.html"
+                     }
+                 }
+             });
+        });
+        $('.btn_cancel').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+    }
+</script>
+</html>

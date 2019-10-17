@@ -1,0 +1,67 @@
+
+/*改变zTree控件的默认样式*/
+.ztree,.ztree *{
+    background-color: transparent;
+}
+.ztree li span.button::before{
+    color: #000;
+}
+.ztree li a,.ztree li span.button.ico_open::before,.ztree li span.button.ico_close::before,.ztree li span.button.ico_docu::before{
+    color: #000;
+}
+
+.ztree li span.button.chk.checkbox_false_full_focus::before {
+    color: #000;
+}
+.ztree li span.button.chk.checkbox_true_full_focus::before {
+    color: #000;
+}
+#tree li{
+    border:1px solid #aaa;
+}
+#tree li ul{
+    padding-left: 0;
+    /*margin: 8px 0;*/
+    /*margin-bottom: 0;*/
+}
+#tree li a{
+    margin-left: 6px;
+}
+#tree li ul>li{
+    padding-left: 0;
+    padding-right:0;
+}
+#tree li>ul li{
+    border-left: 0;
+    border-right: 0;
+    border-bottom:0;
+}
+span.level0{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+#tree>li>span:nth-child(1){
+    margin-left: 8px;
+}
+#tree>li>span,#tree>li>a,#tree>li>ul>li>span,#tree>li>ul>li>a,#tree>li>ul>li>ul>li>span,#tree>li>ul>li>ul>li>a{
+    margin-top:8px;
+    margin-bottom: 8px;
+}
+
+#tree>li>ul>li>span:nth-child(1){
+    margin-left: 36px;
+}
+#tree>li>ul>li>ul>li>span:nth-child(1){
+    margin-left: 38px;
+}
+
+
+
+
+
+
+
+
+#authModal .form-group{
+    text-align: center;
+}

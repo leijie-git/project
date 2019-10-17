@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>各系统监测-报警系统</title>
+    <meta http-equiv="refresh" content="60">  <!--每隔60秒自动刷新页面-->
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail1.css" rel="stylesheet" type="text/css"/>
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+
+
+    <style>
+        .table_content table tbody .checkbox {
+            vertical-align: middle;
+            filter: alpha(opacity=0);
+            -moz-opacity: 0;
+            -khtml-opacity: 0;
+            width: 18px;
+            height: 18px;
+            background: url(../../../Content/images/NetInfoStatistic/checkbox.png) no-repeat center;
+            background-size: 100% 100%;
+            margin: auto;
+        }
+        .table_content table tbody .checkbox.active{
+            background: url("../../../Content/images/NetInfoStatistic/checkbox_checked.png") no-repeat center;
+            background-size: 100% 100%;
+        }
+        .table_content table tbody tr.tr_deviceOutline .checkbox {
+            cursor: no-drop;
+        }
+        .Bjzj{
+            width: 100%;
+            height: 110px;
+            text-align: center;
+            line-height: 90px;
+        }
+    </style>
+
+</head>
+
+<body>
+	<div class="wrapper">
+
+        <div class="top-search btn_more">
+            <form class="layui-form" action="" autocomplete="off">
+                <span class="more_btn" id="moreBtn">更多<i class="layui-icon">&#xe65b</i></span>
+            </form>
+        </div>
+
+        <section style="height: calc(50% - 40px);">
+            <div class="scrollbar-inner">
+                <div class="divbox" id="mainDivBoxContent">
+
+                </div>
+            </div>
+        </section>
+
+        <div class="lineStyle">
+            <img src="../../../Content/images/NetInfoStatistic/wuxian_line.png"><!--分割线-->
+        </div>
+
+        <div class="top-search">
+            <form class="layui-form" action="">
+                <!--下拉框-->
+                <div class="layui-inline layui-bg-cyan" id="alarmType">
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="">--选择报警类型--</option>
+                            <option value="1,22,23,24,25,26">火警</option>
+                            <option value="2">故障</option>
+                            <option value="3">启动</option>
+                            <option value="4">反馈</option>
+                            <option value="5">监管</option>
+                            <option value="6">屏蔽</option>
+                            <option value="7">恢复</option>
+                            <option value="8">复位</option>
+                        </select>
+                    </div>
+                </div>
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off" />
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" autocomplete="off" />
+                <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索" autocomplete="off">
+                <input class="submitBtn" type="button" id="btnSearch" value="查询">
+            </form>
+        </div>
+
+        <!--table start-->
+            <div class="table_box table_box2" style="height: calc(50% - 30px);">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="5%">
+                                <col width="5%">
+                                <col width="7%">
+                                <col width="8%">
+                                <col width="12%">
+                                <col width="8%">
+                                <col width="10%">
+                                <col width="18%">
+                                <col width="12%">
+                                <col width="15%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th><img class="checkbox" src="../../../Content/images/NetInfoStatistic/checkbox.png" id="checkedall"></th>
+                                <th>序号</th>
+                                <th>处理</th>
+                                <th>设备</th>
+                                <th>时间</th>
+                                <th>测试</th>
+                                <th>报警类型</th>
+                                <th class="align-left padding-left">节点</th>
+                                <th>报警分类</th>
+                                <th>报警地点</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="5%">
+                                <col width="7%">
+                                <col width="8%">
+                                <col width="12%">
+                                <col width="8%">
+                                <col width="10%">
+                                <col width="18%">
+                                <col width="12%">
+                                <col width="15%">
+                            </colgroup>
+                            <tbody id="mainContentTbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div id="demo7"></div>
+                    <img class="dealBt" id="dealBtn" src="../../../Content/images/Public/piliang.png">
+                    <img class="exportBtn" id="exportBtn" src="../../../Content/images/Public/exportBT.png">
+                </div>
+
+            </div>
+        <!--table end-->
+    </div>
+</body>
+
+<script type="text/javascript">
+    var _unitId = GetQuery('unitId'); //单位
+    var _buildId = GetQuery('areaid'); //区域
+    var _type = GetQuery('systemID'); //系统
+    var _unitname = GetQuery('unitname'); //单位名称
+    var _ifUsed = 0; //调用page方法的判断
+    var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+    var _data = {
+        pageSize:20,
+        pageNumber:1,
+        keyword:$('#keyWords').val(),
+        unitId:_unitId,
+        buildId:_buildId,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        alarmStatus:$('#alarmType').find('dd.layui-this').attr('lay-value')||"",
+        type:_type,
+        userId: loginInfo.id
+    };
+
+    $(function(){
+        getAlarmEqment();
+        loadLayuiForm();
+        // getAlarmSysListData();
+//        layerPage();
+        clickevent();
+        bindEvent();
+    });
+
+// 获取报警系统的设备
+function getAlarmEqment() {
+    var data = {
+        UnitID: _unitId,
+        EqSystemID: _type
+        // buildid: _buildId
+    }
+    var isAsync = true,lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        url: _serverIp + "/front/couplet/getFireAlarmImgList",
+        type: "get",
+        data: data,
+        async: false,
+        success: function(d){
+            if(d.success){
+                var obj = d.obj;
+                var html = "";
+                for(var i=0;i<obj.length;i++){
+                    if(obj[i].classCode == 1){  //报警主机
+                        html += getAlarmHostHtml(obj[i]);
+                    }else if(obj[i].classCode == 16){    //用户传输装置
+                        html += getUserDeviceHtml(obj[i]);
+                    }
+                }
+
+                $("#mainDivBoxContent").html(html || "暂无数据");
+
+                $('.wrap_sysDiv').each(function(){
+                    $(this).css({"width":"12rem"});
+                    $(this).css({'height':"calc(22px + "+$(this).width()+"px)","width":$(this).width()+"px"});
+                    // if(_loginInfo.usertype == 1){
+                    //     $(this).css({"width":"10rem"});
+                    //     $(this).css({'height':"calc(22px + "+$(this).width()+"px)","width":$(this).width()+"px"})
+                    // }
+                });
+
+                getAlarmSysListData(obj[0].id);
+                $('#mainDivBoxContent .boxcontent:eq(0)').addClass('active');
+
+            }
+        }
+    })
+}
+
+// 报警主机
+function getAlarmHostHtml(obj) {
+    var html = '<div class="wrap_sysDiv">' +
+        '<div class="title fontSize16">' + obj.buildareaName + '</div>' +
+        '<div class="boxcontent normalData" deviceid="' + obj.id + '">' +
+        '<div class="eqName">' + obj.eqName + '</div>' +
+        '<div class="Bjzj"><img src="../../../Content/images/NetInfoStatistic/Bjzj.png" style="width: 60%;"></div>' +
+        // '<div class="'+(getSysValueType(obj.interfaceList[0])?"yaliword1":"yaliword2")+'">' + obj.interfaceList[0].currentValue + (obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+'</div>' +
+        // '<div class="cankaodata fontSize14">参考值 : ' + obj.interfaceList[0].analogdown + ' - ' + obj.interfaceList[0].analogup + (obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+'</div>' +
+        '</div>' +
+        '</div>';
+    return html;
+}
+
+// 用户传输装置
+function getUserDeviceHtml(obj) {
+    var html = '<div class="wrap_sysDiv">' +
+        '<div class="title fontSize16">' + obj.buildareaName + '</div>' +
+        '<div class="boxcontent normalData" deviceid="' + obj.id + '">' +
+        '<div class="eqName">' + obj.eqName + '</div>' +
+        '<div class="Bjzj"><img src="../../../Content/images/NetInfoStatistic/TransmissionDevice.png" style="width: 60%;"></div>' +
+        // '<div class="'+(getSysValueType(obj.interfaceList[0])?"yaliword1":"yaliword2")+'">' + obj.interfaceList[0].currentValue + (obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+'</div>' +
+        // '<div class="cankaodata fontSize14">参考值 : ' + obj.interfaceList[0].analogdown + ' - ' + obj.interfaceList[0].analogup + (obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+'</div>' +
+        '</div>' +
+        '</div>';
+    return html;
+}
+
+// 获取报警列表数据
+function getAlarmSysListData(id){
+    var isAsync = true,lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "get",
+        url: _serverIp + "/front/couplet/getFireAlarmSelectList",
+        data:{
+            pageSize:20,
+            pageNumber:1,
+            keyword:$('#keyWords').val(),
+            UnitID:_unitId,
+            // buildId:_buildId,
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            // alarmStatus:$('#alarmType').find('dd.layui-this').attr('lay-value')||"",
+            type:_type,
+            id: id   /*暂定*/
+        },
+        success: function (data) {
+            //console.log(data);
+            if (_ifUsed == 0) {
+                layerPage(data.total);
+                _ifUsed = 1;
+            }
+            showAlarmListContent(data);
+        },
+        complete: function () {
+            if (isAsync){
+                layer.close(lid);
+            }
+        }
+    });
+}
+
+function showAlarmListContent(msg){
+    var data = msg.list;
+    var html="";
+    for(var i = 0 ; i < data.length;i++){
+    	 var isDeal='<span class="underline" onclick="look(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chakanInfo.png" class="icon_Info" >查看</span>';
+         if(data[i].isdeal == "否"){
+             isDeal = '<span class="underline" onclick="deal(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chuli.png">处理</span>'
+         }
+
+        html += '<tr id="'+data[i].id+'" class="'+getIfOnineResult(data[i].isdeal).resClass +'">'+
+                '<td><div class="checkbox" id="'+data[i].id+'"></div></td>'+
+                '<td>'+(msg.startRow++)+'</td>'+
+                '<td>'+isDeal+'</td>'+
+                '<td>'+data[i].eqName+'</td>'+
+                '<td>'+data[i].time+'</td>'+
+                '<td>'+data[i].isTest+'</td>'+
+                '<td class="'+alarmType(data[i].alarmStatus)+'"><img src="../../../Content/images/NetInfoStatistic/'+alarmType(data[i].alarmStatus)+'.png">'+data[i].alarmStatus+'</td>'+
+                '<td addressid="'+data[i].addressID+'" class="'+((data[i].addressID&&data[i].addressID!="")?"alarm_desc":"no_alarm_desc")+' align-left">'+data[i].alarmSourcedesc+'</td>'+
+                '<td>'+data[i].alarmCat+'</td>'+
+                '<td>'+data[i].alarmWheredesc+'</td>'+
+                '</tr>'
+    }
+
+    $('#mainContentTbody').html(html||"<tr><td colspan='9'>暂无数据...</td></tr>");
+    $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+}
+
+function layerPage(count){
+    var id = $('#mainDivBoxContent').find('.boxcontent.active').attr('deviceid');
+    layui.use(['laypage', 'layer'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer;
+        laypage.render({
+            elem: 'demo7'
+            ,count: count
+            ,limit:20
+            ,prev: '<em>&lt;</em>'
+            ,next: '<em>&gt;</em>'
+            ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+            ,jump: function(obj,isNew){
+//                console.log(obj)
+                if(!isNew){
+                    _data.pageNumber = obj.curr;
+                    _data.pageSize = obj.limit;
+                    getAlarmSysListData(id);
+                }
+            }
+        });
+    })
+    //完整功能
+
+}
+
+    function clickevent(){
+
+        $('#mainDivBoxContent').delegate(' .boxcontent', 'click', function() {
+            var _id = $(this).attr('deviceid');
+
+            $('#mainDivBoxContent .boxcontent').removeClass('active');
+            $(this).addClass('active')
+            getAlarmSysListData(_id);
+            // var name = $(this).prev().text();
+        });
+
+        $('#btnSearch').click(function(){
+            _data.keyword = $('#keyWords').val();
+            _data.startDate = $('#sData2').val();
+            _data.endDate = $('#eData2').val();
+            _data.alarmStatus=$('#alarmType').find('dd.layui-this').attr('lay-value')||""
+            _ifUsed = 0;
+            var id = $('#mainDivBoxContent').find('.boxcontent.active').attr('deviceid');
+            getAlarmSysListData(id);
+        })
+
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            var url = _serverIp + "/front/couplet/exportFireAlarmList?"
+                    + "unitId=" + _unitId
+                    + "&buildId=" + _buildId
+                    + "&type=" + _type
+                    + "&keyword=" + $('#keyWords').val();
+            postExport(url)
+        });
+
+
+
+      /*  //批量处理
+        $('.footer').delegate('#dealBtn', 'click', function () {
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            layer.open({
+                type: 2,
+                title: '批量处理',
+                closeBtn: 1,
+                area:['400px','280px'],
+                shade: 0.1,
+                offset: ['0%','calc(50% - 250px)'],
+                skin: 'layui-layer-loginRecord',
+                content: 'System_dealAll.html?unitId='+_unitId + '&buildId='+_buildId+'&type='+_type
+            });
+        });*/
+
+
+
+        //批量处理(wo)
+        $('.footer').delegate('#dealBtn', 'click', function() {
+            _partDeviceIds = [];   //每次调用前先清空数据
+            $("#mainContentTbody tr .active").each(function(){
+
+                _partDeviceIds.push($(this).parent().parent().attr("id"));
+            });
+            if(_partDeviceIds == ""){
+                layer.msg("请先选择要处理的信息！");
+                return;
+            }
+            layer.open({
+                type: 2,
+                title: '批量处理',
+                closeBtn: 1,
+                area: ['400px', '280px'],
+                shade: 0.1,
+                offset: ['0%','calc(50% - 250px)'],
+                skin: 'layui-layer-loginRecord',
+                content:'System_dealAll.html?'
+
+            });
+        });
+        //CRT
+        $('#mainContentTbody').delegate(' tr>td.alarm_desc','click',function(){
+            var addressID = $(this).attr('addressid');
+            top.layer.open({
+                type: 2,
+                title: 'CRT图层浏览',
+                closeBtn: 1,
+                area:['60%','65%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                    content: '/html/View/Home/Middle_GetCrt_Window.html?addressID='+addressID+'&unitid='+_unitId
+            });
+        });
+    }
+
+
+
+    //单个处理
+    function deal(obj){
+        //var id = $(this).parents('tr').attr('id');
+        layer.open({
+            type: 2,
+            title: '报警处理',
+            closeBtn: 1,
+            area:['550px','420px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'System_deal.html?id='+obj
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+    
+    function look(obj){
+        //var id = $(this).parents('tr').attr('id');
+        layer.open({
+            type: 2,
+            title: '报警查看',
+            closeBtn: 1,
+            area:['550px','380px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'System_deal.html?id='+obj
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+
+    function getIfOnineResult(type){
+        var res = {
+            resClass : "",
+            resIfShow:"none"
+        };
+        if(type == "是"){ // 已处理
+            res = {
+                resClass : "tr_deviceOutline",
+                resIfShow:"block"
+            };
+        }
+        return res;
+    }
+
+
+    function bindEvent(){
+    // 复选(wo)
+    $('#mainContentTbody').delegate('tr:not(.tr_deviceOutline) .checkbox', 'click', function () {
+        $(this).toggleClass('active');
+    });
+    }
+    //全选操作(wo)
+    var uncheckUrl = "../../../Content/images/NetInfoStatistic/checkbox.png";
+    var checkUrl = "../../../Content/images/NetInfoStatistic/chose.png";
+    $("#checkedall").click(function() {
+        if($(this).attr("src") == uncheckUrl){
+            $(this).attr("src",checkUrl);
+            $("#mainContentTbody tr .checkbox").addClass("active");
+            $("#mainContentTbody tr.tr_deviceOutline .checkbox").removeClass("active");
+        }else{
+            $(this).attr("src",uncheckUrl);
+            $("#mainContentTbody tr .checkbox").removeClass("active");
+        }
+    });
+
+</script>
+
+
+</html>

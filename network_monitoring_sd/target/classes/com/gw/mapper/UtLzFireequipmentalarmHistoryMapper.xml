@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzFireequipmentalarmHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzFireequipmentalarmHistory">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="AlarmCode" property="alarmcode" jdbcType="NVARCHAR"/>
+        <result column="EquipmentName" property="equipmentname" jdbcType="NVARCHAR"/>
+        <result column="EquipmentDetialName" property="equipmentdetialname" jdbcType="NVARCHAR"/>
+        <result column="NormalValue" property="normalvalue" jdbcType="NVARCHAR"/>
+        <result column="AlarmValue" property="alarmvalue" jdbcType="NVARCHAR"/>
+        <result column="AlarmTime" property="alarmtime" jdbcType="TIMESTAMP"/>
+        <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP"/>
+        <result column="isDeal" property="isdeal" jdbcType="INTEGER"/>
+        <result column="DealType" property="dealtype" jdbcType="INTEGER"/>
+        <result column="DealTime" property="dealtime" jdbcType="TIMESTAMP"/>
+        <result column="DealUser" property="dealuser" jdbcType="NVARCHAR"/>
+        <result column="DealInfo" property="dealinfo" jdbcType="NVARCHAR"/>
+        <result column="IsNeedRepair" property="isneedrepair" jdbcType="INTEGER"/>
+        <result column="IsNeedMaintain" property="isneedmaintain" jdbcType="INTEGER"/>
+        <result column="MaintainDesc" property="maintaindesc" jdbcType="NVARCHAR"/>
+        <result column="DealResult" property="dealresult" jdbcType="INTEGER"/>
+        <result column="UnitID" property="unitid" jdbcType="BIGINT"/>
+        <result column="FireEquipmentDetialID" property="fireequipmentdetialid" jdbcType="BIGINT"/>
+        <result column="picUrl" jdbcType="VARCHAR" property="picurl"/>
+        <result column="Alarm_Status" property="alarmStatus" jdbcType="INTEGER"/>
+        <result column="dealCode" jdbcType="VARCHAR" property="dealcode"/>
+    </resultMap>
+
+</mapper>

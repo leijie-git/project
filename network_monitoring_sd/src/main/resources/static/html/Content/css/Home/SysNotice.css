@@ -1,0 +1,60 @@
+.layer_mainContent{
+    height: calc(100% - 12px);
+}
+
+.already_read{
+    color: #DA4A54;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.not_read{
+    color: #42F8FF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.table_content > table tr{
+    cursor: auto;
+}
+.icon_opt{
+    width: 24px;
+}
+.opt_delete,.opt_Info{
+    cursor: pointer;
+}
+
+.layer_noticeDesc{
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+.wrap_noticeDesc{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+ }
+
+.div_list {
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    display: -webkit-flex;
+    display: flex;
+    margin: 2px 0;
+}
+
+
+.div_list>.colspan85{
+    width: 85%;
+    padding: 0 2%!important;
+}
+
+
+
+
+
+
+
+
+
+
+

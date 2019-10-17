@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>历史记录</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+</head>
+
+<body>
+    <div class="weui-search-bar" id="searchBarUnit">
+        <form class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInputUnit" placeholder="请输入关键字查询" required="">
+                <a href="javascript:" class="weui-icon-clear" id="searchClearUnit"></a>
+            </div>
+            <label class="weui-search-bar__label" id="searchTextUnit">
+                    <i class="weui-icon-search"></i>
+                    <span>请输入关键字查询</span>
+                  </label>
+        </form>
+        <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancelUnit">取消</a>
+    </div>
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <a class="weui-navbar__item weui-bar__item--on nav1" href="#tab1">
+            维保任务记录
+          </a>
+            <a class="weui-navbar__item" href="#tab2">
+            巡查任务记录
+          </a>
+        </div>
+        <div class="weui-tab__bd">
+            <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+                <!-- <div class="weui-form-preview" onclick="openDetailWB()">
+                    <div class="weui-form-preview__bd">
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">单位名称</label>
+                            <span class="weui-form-preview__value">电动打蛋机</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">报警类型</label>
+                            <span class="weui-form-preview__value">名字名字名字</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">位置</label>
+                            <span class="weui-form-preview__value">xxxx位置</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">报警时间</label>
+                            <span class="weui-form-preview__value">2018-10-10 10:13:12</span>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <div id="tab2" class="weui-tab__bd-item">
+                <!-- <div class="weui-form-preview" onclick="openDetailXC();">
+                    <div class="weui-form-preview__bd">
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">单位名称</label>
+                            <span class="weui-form-preview__value">电动打蛋机</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">来源</label>
+                            <span class="weui-form-preview__value">名字名字名字</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">位置</label>
+                            <span class="weui-form-preview__value">xxxx位置</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">报警时间</label>
+                            <span class="weui-form-preview__value">2018-10-10 10:13:12</span>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!--滚动加载-->
+    <div class="weui-loadmore" id="onLoad" hidden>
+        <i class="weui-loading"></i>
+        <span class="weui-loadmore__tips">正在加载</span>
+    </div>
+    <!--暂无数据-->
+    <div class="weui-loadmore weui-loadmore_line" id="noData" hidden>
+        <span class="weui-loadmore__tips">暂无数据</span>
+    </div>
+
+</body>
+
+
+<script>
+    var pageNumber = 1;
+    var pageSize = 10;
+    var funType = 1; //1维保任务 2巡检任务
+    var loading = true; //状态标记
+    $('.weui-tab').height($('body').height() - $('#searchBarUnit').height());
+
+    $(function() {
+        $('.weui-navbar > a').click(function() {
+            pageNumber = 1;
+            if ($(this).hasClass('nav1')) {
+                funType = 1;
+                $('#tab1').empty();
+                loading = true;
+                getData1();
+            } else {
+                funType = 2;
+                $('#tab2').empty();
+                loading = true;
+                getData2();
+            };
+        });
+
+        $('.weui-navbar > a').eq(0).click();
+        downUpData(); //下拉加载  
+
+    });
+
+    //下拉加载
+    function downUpData() {
+        $('#tab1').infinite().on("infinite", function() {
+            if (loading) return;
+            loading = true;
+            getData1();
+        });
+        $('#tab2').infinite().on("infinite", function() {
+            if (loading) return;
+            loading = true;
+            getData2();
+        });
+    }
+
+    function openDetailWB(id) {
+        self.location.href = "patrolWBTaskDetail.html?id=" + id
+    };
+
+    function openDetailXC(id) {
+        //self.location.href = "patrolXCTaskDetail.html?id=" + id;
+    };
+
+    function getData1() {
+
+        $.ajax({
+            type: "get",
+            url: hostAdd + "/getRepairPageList",
+            data: "pageNumber=" + pageNumber + "&pageSize=" + pageSize,
+            async: false,
+            success: function(data) {
+
+                if (data.success == true) {
+                    console.log(data);
+
+                    for (var i = 0; i < data.obj.list.length; i++) {
+                        $('#tab1').append(
+                            "<div class='weui-form-preview' onclick='openDetailWB(" + data.obj.list[i].id + ")' >" +
+                            '<div class="weui-form-preview__bd">' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">单位名称</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].unitName + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">处理状态</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].dealStatus + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">位置</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].repairSite + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">执行时间</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].dealDate + '</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>'
+                        );
+                    };
+                    if (pageNumber * pageSize <= data.obj.total) {
+                        $('#tab1').append($('#onLoad'));
+                        $('#onLoad').show(); //显示加载标识
+                        pageNumber++;
+                        loading = false;
+                    } else {
+                        $('body').append($('#onLoad'));
+                        $('#onLoad').hide();
+                        loading = true;
+                    }
+
+
+                    if (data.obj.total == 0) {
+                        $('#tab1').append('<div class="weui-loadmore weui-loadmore_line"><span style="background:#f2f2f2;" class="weui-loadmore__tips">暂无数据</span></div>');
+                        return false;
+                    }
+                }
+
+            },
+            error: function(data) {
+                console.log(data);
+                $('body').append($('#onLoad'));
+                $('#onLoad').hide();
+            }
+        });
+    }
+
+    function getData2() {
+
+        $.ajax({
+            type: "get",
+            url: hostAdd + "/getInspectTaskList",
+            data: "pageNumber=" + pageNumber + "&pageSize=" + pageSize,
+            async: false,
+            success: function(data) {
+                console.log(data);
+                if (data.success == true) {
+
+                    for (var i = 0; i < data.obj.list.length; i++) {
+                        $('#tab2').append(
+                            "<div class='weui-form-preview' onclick='openDetailXC(" + data.obj.list[i].id + ")' >" +
+                            '<div class="weui-form-preview__bd">' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">计划名称</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].planName + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">巡查编号</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].sitecode + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">巡查位置</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].siteDesc + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">巡查时报</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj.list[i].taskStart + '-' + data.obj.list[i].taskEnd + '</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>'
+                        );
+                    }
+                    if (pageNumber * pageSize <= data.obj.total) {
+                        $('#tab2').append($('#onLoad'));
+                        $('#onLoad').show(); //显示加载标识
+                        pageNumber++;
+                        loading = false;
+                    } else {
+                        $('body').append($('#onLoad'));
+                        $('#onLoad').hide();
+                        loading = true;
+                    }
+
+                    if (data.obj.total == 0) {
+                        $('#tab2').append('<div class="weui-loadmore weui-loadmore_line"><span style="background:#f2f2f2;" class="weui-loadmore__tips">暂无数据</span></div>');
+                        return false;
+                    }
+
+                };
+            },
+            error: function(data) {
+                console.log(data);
+                $('body').append($('#onLoad'));
+                $('#onLoad').hide();
+            }
+        });
+    }
+</script>
+
+
+
+</html>

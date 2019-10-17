@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>个人中心</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/userCenter.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/jquery-2.1.4.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <!--cookie.js-->
+    <script src="../../Script/Video/Uniview/Win32/plugins/jquery.cookie.js"></script>
+</head>
+
+<body>
+    <div class="font-18 center_username">当前用户人：<span></span></div>
+    <!--     <div class="center_info"> -->
+    <!--         <img src="../../Content/images/WeChat/center/logo_sd_center.png"> -->
+    <!--         <span> -->
+    <!--             安全指数&nbsp;<i>94</i>分&nbsp;☆☆☆☆☆<br> -->
+    <!--             <p style="height: 12px;"></p> -->
+    <!--             您的联网监测安全指数击败了XX用户特此授予你五星级称号 -->
+    <!--         </span> -->
+
+    <!--     </div> -->
+    <div class="contbox">
+        <div class="box boxfir">
+            <img src="../../Content/images/WeChat/center/icon_time.png" class="icon">
+            <span class="word">用户在线时间<span class="onlineTime"></soan></span>
+        </div>
+
+        <!-- <div class="box">
+            <img src="../../Content/images/WeChat/center/icon_message.png" class="icon">
+            <span class="word">消息推送</span>
+            <span class="bt">开启</span>
+        </div> -->
+
+        <div class="box advice">
+            <img src="../../Content/images/WeChat/center/icon_out.png" class="icon">
+            <span class="word">意见反馈</span>
+            <img src="../../Content/images/WeChat/center/page_next.png" class="arrow">
+        </div>
+
+        <div class="box loginout">
+            <img src="../../Content/images/WeChat/center/icon_back.png" class="icon">
+            <span class="word">退出</span>
+            <img src="../../Content/images/WeChat/center/page_next.png" class="arrow">
+        </div>
+
+    </div>
+</body>
+
+<script type="text/javascript">
+    var user = GetQuery('username');
+    var loginDate = GetQuery('loginDate');
+    var onlineTime = parseInt((Date.parse(new Date()) - loginDate) / 60000);
+
+
+
+    $(function() {
+        $('.center_username > span').text(user); //当前用户人
+        getOnlineTime(); //
+
+        setInterval(function() {
+            getOnlineTime();
+        }, 10000);
+
+        $('.bt').click(function() { //消息推送开启
+            //接口
+        });
+
+        $('.advice').click(function() { //意见反馈
+            self.location.href = "userCenter_advice.html?user=" + user;
+        });
+
+        $(".loginout").click(function() { //登出
+            $.confirm("确定退出吗?", "确定退出?", function() {
+
+                $.ajax({
+                    type: "get",
+                    url: hostAdd + "/logout?openId="+$.cookie("openId"),
+                    success: function(data) {
+                        console.log('退出', data);
+                        if (data.success == true) {
+                            //取消自动登录
+                            $.cookie("isRemember", "false", {
+                                path: '/'
+                            });
+
+                            // self.location.href = "login.html";
+                            setTimeout(function() {
+                                document.addEventListener('WeixinJSBridgeReady', function() {
+                                    WeixinJSBridge.call('closeWindow');
+                                }, false);
+                                WeixinJSBridge.call('closeWindow');
+                            }, 500);
+                        } else {
+                            $.toast("退出失败,请刷新页面重试!", 1500, "cancel");
+                            setTimeout(function() {
+                                document.addEventListener('WeixinJSBridgeReady', function() {
+                                    WeixinJSBridge.call('closeWindow');
+                                }, false);
+                                WeixinJSBridge.call('closeWindow');
+                            }, 500);
+                        }
+                    }
+                });
+                // setTimeout(function() {
+                //     document.addEventListener('WeixinJSBridgeReady', function() {
+                //         WeixinJSBridge.call('closeWindow');
+                //     }, false);
+                //     WeixinJSBridge.call('closeWindow');
+                // }, 500);
+            }, function() {
+                //取消操作
+
+            });
+        });
+    });
+
+    function getOnlineTime() { //用户在线时间
+        $('.onlineTime').html('<b style="color: orange;font-weight: bold;">' + onlineTime + '</b>' + '分钟');
+    }
+</script>
+
+</html>

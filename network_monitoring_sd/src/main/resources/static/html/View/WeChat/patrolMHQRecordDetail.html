@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>灭火器详情</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <style>
+        .weui-cells {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-form-preview"></div>
+</body>
+
+</html>
+
+<script>
+    var eleInner = GetQuery('pageinner');
+    console.log(JSON.parse(eleInner))
+    $(function() {
+        getUnitList();
+    });
+
+    function getUnitList() {
+        var data = JSON.parse(eleInner);
+        $('.weui-form-preview').append(
+            '<div class="weui-form-preview">' +
+            '<div class="weui-form-preview__bd">' +
+            '<div class="weui-form-preview__item">' +
+            '<label class="weui-form-preview__label">灭火器类型</label>' +
+            '<span class="weui-form-preview__value">' + data.extinguisherType + '</span>' +
+            '</div>' +
+            '<div class="weui-form-preview__item">' +
+            '<label class="weui-form-preview__label">灭火器位置</label>' +
+            '<span class="weui-form-preview__value">' + data.extinguisherPosition + '</span>' +
+            '</div>' +
+            '<div class="weui-form-preview__item" hidden>' +
+            '<label class="weui-form-preview__label">出厂日期</label>' +
+            '<span class="weui-form-preview__value">' + data.productDate + '</span>' +
+            '</div>' +
+            '<div class="weui-form-preview__item" hidden>' +
+            '<label class="weui-form-preview__label">监测日期</label>' +
+            '<span class="weui-form-preview__value">' + data.jcDate + '</span>' +
+            '</div>' +
+            '<div class="weui-form-preview__item">' +
+            '<label class="weui-form-preview__label">药剂到期时间</label>' +
+            '<span class="weui-form-preview__value">' + data.eqChangeDate + '</span>' +
+            '</div>' +
+            '<div class="weui-form-preview__item" hidden>' +
+            '<label class="weui-form-preview__label">药剂填充时间</label>' +
+            '<span class="weui-form-preview__value">' + data.fullDate + '</span>' +
+            '</div>' +
+            '<div class="weui-form-preview__item" hidden>' +
+            '<label class="weui-form-preview__label">药剂报废时间</label>' +
+            '<span class="weui-form-preview__value">' + data.validityDate + '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+        );
+        $('.weui-form-preview__item').show();
+    };
+</script>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzMonthinspectMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzMonthinspect" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="InspectDate" property="inspectdate" jdbcType="TIMESTAMP" />
+    <result column="InspectSite" property="inspectsite" jdbcType="NVARCHAR" />
+    <result column="InspectDepartment" property="inspectdepartment" jdbcType="NVARCHAR" />
+    <result column="ProblemDesc" property="problemdesc" jdbcType="NVARCHAR" />
+    <result column="DealInfo" property="dealinfo" jdbcType="NVARCHAR" />
+    <result column="CheckUser" property="checkuser" jdbcType="NVARCHAR" />
+    <result column="CheckedUser" property="checkeduser" jdbcType="NVARCHAR" />
+    <result column="RecordUser" property="recorduser" jdbcType="NVARCHAR" />
+    <result column="ManageUser" property="manageuser" jdbcType="NVARCHAR" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="IsOK" property="isok" jdbcType="INTEGER" />
+    <result column="InspectName" property="inspectname" jdbcType="NVARCHAR" />
+    <result column="InspectInfo" property="inspectinfo" jdbcType="NVARCHAR" />
+    <result column="InspectReport" property="inspectreport" jdbcType="NVARCHAR" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+    <result column="IDFromData" property="idfromdata" jdbcType="BIGINT" />
+    <result column="CreateUser" property="createuser" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

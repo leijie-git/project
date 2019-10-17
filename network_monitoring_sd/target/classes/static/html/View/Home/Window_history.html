@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>24h火警记录</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/warningMoreLayer.css" rel="stylesheet" type="text/css" />
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <style>
+    .list_table {
+        height: calc(100% - 55px);
+    }
+    </style>
+</head>
+<body>
+    <div class="wrapped">
+        <div class="list_table">
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="5%">
+                        <col width="8%">
+                        <col width="15%">
+                        <col width="13%">
+                        <col width="6%">
+                        <col width="10%">
+                        <col width="13%">
+                        <col width="14%">
+                        <col width="14%">
+                        <col width="8%">
+                    </colgroup>
+                    <thead class="fontSize16">
+                    <tr>
+                        <th>序号</th>
+                        <th>处理</th>
+                        <th>单位名称</th>
+                        <th>时间</th>
+                        <th>测试</th>
+                        <th>报警类型</th>
+                        <th>节点</th>
+                        <th>报警分类</th>
+                        <th>报警地点</th>
+                        <th>CRT</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="8%">
+                        <col width="15%">
+                        <col width="13%">
+                        <col width="6%">
+                        <col width="10%">
+                        <col width="13%">
+                        <col width="14%">
+                        <col width="14%">
+                        <col width="8%">
+                    </colgroup>
+                    <tbody class="fontSize14" id="mainContentTbody">
+                    <!--<tr id="2323332">-->
+                    <!--<td>-->
+                    <!--<img class="checkbox" src="../../Content/images/NetInfoStatistic/checkbox.png">-->
+                    <!--</td>-->
+                    <!--<td>1</td>-->
+                    <!--<td><img src="../../Content/images/NetInfoStatistic/chuli.png"><span class="underline" onclick="deal(this)">处理</span></td>-->
+                    <!--<td>报警主机</td>-->
+                    <!--<td>2018-07-24 08:14:43</td>-->
+                    <!--<td>否</td>-->
+                    <!--<td class="guzhang"><img src="../../Content/images/NetInfoStatistic/guzhang.png">故障</td>-->
+                    <!--<td class="underline">01号主机0002回路0214节点01楼29层00区</td>-->
+                    <!--<td></td>-->
+                    <!--<td>广场中央地下车库</td>-->
+                    <!--</tr>-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <div id="demo7" style="position: absolute;bottom: 10px"></div>
+            <img class="dealBt" id="dealBtn" src="../../Content/images/Public/piliang.png">
+            <img class="exportBtn" id="exportBtn" src="../../Content/images/Public/exportBT.png">
+        </div>
+    </div>
+</body>
+
+<script>
+    var _unitid = GetQuery('unitid')||"";
+    var _isDeal = GetQuery('isDeal')||"";
+    var _ifUsed = 0; //调用page方法的判断
+    var _data = {
+        pageSize:20,
+        pageNumber:1,
+        // keyword:$('#keyWords').val(),
+        unitId:_unitid,
+        buildId:"",
+        // startDate:$('#sData2').val(),
+        // endDate:$('#eData2').val(),
+        status:"1",
+        type:"",
+        isDeal:_isDeal
+    };
+
+    $(function(){
+        loadLayuiForm();
+        loadData();
+        bindEvent();
+    });
+
+    function bindEvent(){
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            // var url = _serverIp + "/front/history/exportFireList?"
+                    + "unitId="+_unitid
+                    + "&buildId="
+                    + "&type="
+                    + "&status=1"
+                    // + "&startDate=" + $('#sData2').val()
+                    // + "&endDate" + $('#eData2').val()
+                    // + "&keyword=" + $('#keyWords').val()
+                    + "&dealResult"+_dealResult;
+            postExport(url);
+        });
+        
+        //crt
+        $('#mainContentTbody ').delegate('tr .btn_crt','click',function(){
+            var addressID = $(this).attr('addressid');
+            var unitid = $(this).attr('unitid');
+            top.layer.open({
+                type: 2,
+                title: 'CRT图层浏览',
+                closeBtn: 1,
+                area:['60%','65%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: (_loginInfo.usertype == 1?"../":"")+'Home/Middle_GetCrt_Window.html?addressID='+addressID+'&unitid='+unitid
+            });
+        });
+
+        //表格单选全选
+    $('.list_table').delegate('.checkbox', 'click', function() {
+        $(this).toggleClass('chkit');
+
+        if ($(this).hasClass('chkit') && $(this).hasClass('checkall')) { //全选选中时
+            $(this).attr('src', '../../Content/images/NetInfoStatistic/chose.png');
+            $("#mainContentTbody .checkbox").attr('src', '../../Content/images/NetInfoStatistic/chose.png');
+            $("#mainContentTbody .checkbox").addClass('chkit');
+        }
+
+        if (!$(this).hasClass('chkit') && $(this).hasClass('checkall')) { //全选未选中时
+            $(this).attr('src', '../../Content/images/NetInfoStatistic/checkbox.png');
+            $("#mainContentTbody .checkbox").attr('src', '../../Content/images/NetInfoStatistic/checkbox.png');
+            $("#mainContentTbody .checkbox").removeClass('chkit');
+        }
+
+        if ($(this).hasClass('chkit') && !$(this).hasClass('checkall')) { //单行选中时
+            $(this).attr('src', '../../Content/images/NetInfoStatistic/chose.png');
+            var trNumber = $("#mainContentTbody tr").length;
+            if (trNumber == $('#mainContentTbody .chkit').length) {
+                $('.checkall').addClass('chkit');
+                $('.checkall').attr('src', '../../Content/images/NetInfoStatistic/chose.png');
+            }
+        }
+
+        if (!$(this).hasClass('chkit') && !$(this).hasClass('checkall')) { //单行未选中时
+            $(this).attr('src', '../../Content/images/NetInfoStatistic/checkbox.png');
+            $('.checkall').removeClass('chkit');
+            $('.checkall').attr('src', '../../Content/images/NetInfoStatistic/checkbox.png');
+        }
+
+    });
+
+    //批量处理
+    $('.footer').delegate('#dealBtn', 'click', function() {
+        layer.open({
+            type: 2,
+            title: '批量处理',
+            closeBtn: 1,
+            area: ['400px', '280px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: '../NetInfoStatistic/system-iframe/System_dealAllAlarm.html?'
+        });
+    });
+
+    //单个处理
+    function deal(obj) {
+        var id = $(this).parents('tr').attr('id');
+        layer.open({
+            type: 2,
+            title: '报警处理',
+            closeBtn: 1,
+            area: ['50%', '70%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: '../NetInfoStatistic/system-iframe/System_deal.html?id=' + obj
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+    //查看
+    function look(obj) {
+        var id = $(this).parents('tr').attr('id');
+            layer.open({
+                type: 2,
+                title: '报警查看',
+                closeBtn: 1,
+                area: ['50%', '70%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: '../NetInfoStatistic/system-iframe/System_deal.html?id=' + obj
+                //content: 'History_deal.html?ID=' + _id,
+            });
+        }
+    }
+
+    function loadData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "post",
+            // url: _serverIp + "/front/history/getFireList",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            var isDeal='<img src="../../Content/images/NetInfoStatistic/chakanInfo.png" class="icon_Info" ><span class="underline" onclick="look(\''+data[i].id+'\');">查看</span>';
+            if(data[i].isdeal == "否"){
+                isDeal = '<img src="../../Content/images/NetInfoStatistic/chuli.png" class="icon_deal"><span class="underline" onclick="deal(\''+data[i].id+'\');">处理</span>'
+            }
+
+            html += '<tr id="'+data[i].id+'" onclick="goUnitFunc(\''+data[i].unitId+'\')">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td class="'+(data[i].isdeal == "是"?"":"red")+'">'+isDeal+'</td>'+
+                    '<td>'+data[i].unitName+'</td>'+
+                    '<td>'+data[i].time+'</td>'+
+                    '<td>'+data[i].isTest+'</td>'+
+                    '<td class="'+alarmType(data[i].alarmStatus)+'"><img src="../../Content/images/NetInfoStatistic/'+alarmType(data[i].alarmStatus)+'.png">'+data[i].alarmStatus+'</td>'+
+                    '<td class="align-left">'+data[i].alarmSourcedesc+'</td>'+
+                    '<td>'+data[i].alarmCat+'</td>'+
+                    '<td class="align-left">'+data[i].alarmWheredesc+'</td>'+
+    //                '<td class="'+(data[i].addressID !=""?"btn_crt":"no_crt")+'">'+(data[i].addressID!=""?"查看":"")+'</td>'+
+                    '<td addressid="'+data[i].addressID+'" unitid="'+data[i].unitId+'"  class="'+(data[i].addressID !=""?"btn_crt underline":"no_crt")+'"><img src="../../Content/images/Public/icon_crt.png"/></td>'+
+                    '</tr>'
+        }
+        $('#mainContentTbody').html(html||"<tr><td colspan='10'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    if(!isNew){
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        loadData();
+                    }
+                }
+            });
+        });
+        //完整功能
+    }
+
+    
+    </script>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>登录</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/jquery-2.1.4.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <!--cookie.js-->
+    <script src="../../Script/Video/Uniview/Win32/plugins/jquery.cookie.js"></script>
+
+</head>
+
+<body>
+    <div class="content">
+
+        <div class="login_box">
+            <div class="login_title">
+                消防安全管理平台
+            </div>
+            <form>
+                <div class="login_input">
+                    <label>
+                        <input name="account" placeholder="请输入用户名" autocomplete="off">
+                    </label>
+                </div>
+                <div class="login_input">
+                    <label>
+                            <input name="password" type="password" placeholder="请输入密码" autocomplete="off">
+                    </label>
+                </div>
+                <label class="login_clock"><input type="checkbox" style="vertical-align: middle;" > 记住密码</label>
+                <input type="hidden" name="openId" id="openId">
+                <button type="button" onclick="subLogin();">登 录</button>
+            </form>
+        </div>
+        <div class="login_copyright">
+            当前版本：1.0
+            <br>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    function getRequest() {
+        var url = window.location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+
+                theRequest[strs[i].split("=")[0]] = decodeURI(strs[i].split("=")[1]);
+
+            }
+        }
+        return theRequest;
+    }
+    //用方法获取url中的code
+    var code = getRequest().code;
+
+    //软键盘破坏预防
+    var pageHeight = $('body').height();
+    $('.content').height(pageHeight);
+
+    $(function() {
+        isRememberAccount();
+        getOpenId();
+    });
+
+    function getOpenId() {
+        $.ajax({
+            url: hostAdd + '/getOpenId?code=' + code,
+            type: 'get',
+            dataType: 'json',
+            async: false,
+            success: function(data) {
+            	if(data.success){
+	                $.cookie("openId", data.obj, {
+	                    path: '/',
+	                    expires: 30
+	                });
+	                $("#openId").val(data.obj);
+            	}
+            },
+            error: function(data) {
+                // $.toptip('登录成功，跳转中...', 'error');
+                console.log(data);
+            },
+        })
+    }
+
+    function isRememberAccount() {
+        var isRemember = $.cookie("isRemember");
+        var userName = $.cookie("userName");
+        var userPass = $.cookie("userPass");
+        if (isRemember == 'true') {
+            $('input[name="account"]').val(userName);
+            $('input[name="password"]').val(userPass);
+            $('.login_clock').find('input').prop('checked', true);
+            //记住密码 自动登录
+            subLogin();
+        }
+    }
+
+    //登录
+    function subLogin() {
+        var userName = $.trim($('input[name="account"]').val());
+        var userPass = $.trim($('input[name="password"]').val());
+        var isRemember = $('.login_clock').find('input').prop('checked');
+        if (userName == '' || userPass == '') {
+            $.toptip('请完整填写账号密码', 'warning');
+            return false;
+        }
+        if (isRemember) {
+            $.cookie("userName", userName, {
+                path: '/',
+                expires: 30
+            });
+            $.cookie("userPass", userPass, {
+                path: '/',
+                expires: 30
+            });
+            $.cookie("isRemember", isRemember, {
+                path: '/',
+                expires: 30
+            });
+        } else {
+            $.cookie("isRemember", isRemember, {
+                path: '/'
+            });
+        }
+
+
+        $.ajax({
+            url: hostAdd + '/login',
+            type: 'get',
+            data: $("form").serialize(),
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if (!data.success) {
+                    $.toptip(data.msg, 'error');
+                    return false;
+                }
+                //getCode();
+
+                // console.log(getCode());
+                // debugger;
+
+                var nowDate = Date.parse(new Date());
+                $.toptip('登录成功，跳转中...', 'success');
+                if(data.obj.userrole == 7){
+                    setTimeout(function(){
+                        var userData = escape(JSON.stringify(data.obj));
+                        self.location.href = "indexEquipment.html?userdata=" + userData + "&nowdate=" + nowDate;
+                    }, 500);
+                }else{
+                    setTimeout(function(){
+                        var userData = escape(JSON.stringify(data.obj));
+                        self.location.href = "index.html?userdata=" + userData + "&nowdate=" + nowDate;
+                    }, 500);
+                }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
+</script>

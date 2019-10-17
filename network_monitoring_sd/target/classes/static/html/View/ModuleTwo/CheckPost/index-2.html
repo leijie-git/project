@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>查岗</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/CheckPost/Index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+<body>
+<div class="wrapper_content second_module">
+
+    <div class="middleBox">
+        <div class="wrap_search">
+            <div class="searchBt">
+                <input type="search" id="keyWords" name="sear" placeholder="请输入关键字搜索" class="searchPut"style="background-color: transparent;color: #c8c4ce;">
+                <span class="search-span btn_search"><button class="search-button " id="btnSearch">查询</button></span>
+                <span class="search-span"><button class="search-button btn_inspect" searchtype="1">点名全部</button></span>
+                <span class="search-span"><button class="search-button btn_inspect" searchtype="0">点名选中</button></span>
+            </div>
+        </div>
+        <!--table start-->
+        <div class="table_box">
+            <div class="list_table">
+                <div class="table_header">
+                    <table>
+                        <colgroup>
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="15%">
+                            <col width="18%">
+                            <col width="15%">
+                            <col width="17%">
+                            <col width="15%">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>全选</th>
+                            <th>序号</th>
+                            <th>子站号</th>
+                           <!-- <th>单位地址</th>-->
+                           <th class="align-left padding-left">设备编号</th>
+                            <th class="align-left padding-left">设备类型</th>
+                            <th class="align-left padding-left">设备名称</th>
+                            <th>结果</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <script>
+
+                </script>
+                <div class="table_content scrollbar-inner">
+
+                    <table cellpadding="0" cellspacing="0" class="tbody">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="15%">
+                            <col width="18%">
+                            <col width="15%">
+                            <col width="17%">
+                            <col width="15%">
+                        </colgroup>
+                        <tbody id="mianTbody">
+                        <!--<tr class="tr_deviceOutline">-->
+                            <!--<td><div class="checkbox"></div></td>-->
+                            <!--<td>1</td>-->
+                            <!--<td>400521140</td>-->
+                            <!--<td>000014</td>-->
+                            <!--<td>上海跨国采购中心办公楼</td>-->
+                            <!--<td>021-65245510</td>-->
+                            <!--<td>用户装置传输系统</td>-->
+                            <!--<td><img src="../../Content/images/NetInfoStatistic/deviceOutline.png" class="live"></td>-->
+                        <!--</tr>-->
+                        <!--<tr class="tr_deviceOutline">-->
+                            <!--<td><div class="checkbox"></div></td>-->
+                            <!--<td>1</td>-->
+                            <!--<td>400521140</td>-->
+                            <!--<td>000014</td>-->
+                            <!--<td>上海跨国采购中心办公楼</td>-->
+                            <!--<td>021-65245510</td>-->
+                            <!--<td>用户装置传输系统</td>-->
+                            <!--<td><img src="../../Content/images/NetInfoStatistic/deviceOutline.png" class="live"></td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td><div class="checkbox"></div></td>-->
+                            <!--<td>1</td>-->
+                            <!--<td>400521140</td>-->
+                            <!--<td>000014</td>-->
+                            <!--<td>上海跨国采购中心办公楼</td>-->
+                            <!--<td>021-65245510</td>-->
+                            <!--<td>用户装置传输系统</td>-->
+                            <!--<td></td>-->
+                        <!--</tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap_page">
+        <div id="demo7"></div>
+        <img src="../../../Content/images/Public/exportBT.png" class="btn_export">
+    </div>
+</div>
+
+<div class="layer_mainContent">
+    <div class="confirm fontSize16">按“确定”键进行点名操作！</div>
+    <div><button class="btn_submit">确定</button><button class="btn_cancel">取消</button></div>
+</div>
+
+<script>
+    var _ifUsed = 0; //调用page方法的判断
+    var incoid = GetQuery('incoid');
+    var _data = {
+        pageSize:20,
+        pageNumber:1,
+        eqSystem:"",
+        type:"",
+        upStatus:"",
+        softVersion:"",
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#keyWords').val(),
+        unitId:"",
+        isNaming:1
+    };
+    var _partDeviceIds = [],_allDeviceIds=[];
+    $(function () {
+        loadLayuiForm();
+        getAlarmSysListData();
+        domeEvelement();
+    });
+    var _timer = null,_updataResultTime=null; //时间倒计时的循环,更新点名结果的循环次数
+  //查询按钮
+    $('#btnSearch').unbind('click').click(function(){
+        _data.keyword = $('#keyWords').val();
+        getAlarmSysListData();
+    });
+    function getAlarmSysListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/lookup/getNetworkingUnitSDDeviceStatusList",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            if(data[i].deviceStatus == "在线" || data[i].deviceStatus =="报警主机正常" || data[i].deviceStatus == "RTU正常"){
+                _allDeviceIds.push(data[i].id);
+            }
+            var isDeal= '<span class="underline" onlick="deal(this);">'+data[i].dealCode+'</span>';
+            if(data[i].isdeal == 0){
+                isDeal = '<img src="../../../Content/images/NetInfoStatistic/chuli.png"><span class="underline" onlick="deal(this);">处理</span>'
+            }
+
+            html += '<tr id="'+data[i].id+'" class="'+getIfOnineResult(data[i].deviceStatus).resClass +'">'+
+                    '<td><div class="checkbox" id="'+data[i].id+'"></div></td>'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].deviceNo+'</td>'+
+                    '<td class="align-left">'+data[i].ownerCode+'</td>'+
+                    '<td class="align-left">'+data[i].deviceType+'</td>'+
+                    '<td class="align-left">'+data[i].deviceName+'</td>'+
+                    '<td class="optResult '+getIfOnineResult(data[i].deviceStatus).resIfShow+'">'+(getIfOnineResult(data[i].deviceStatus).resIfShow == "fail"?data[i].deviceStatus:"")+'</td>'+
+                    '</tr>'
+        }
+
+        $('#mianTbody').html(html||"<tr><td colspan='7'>暂无数据...</td></tr>");
+        $('#mianTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    function getIfOnineResult(type){
+        var res = {
+            resClass : "",
+            resIfShow:""
+        };
+        if(type != "在线" && type !="报警主机正常" && type != "RTU正常"){ // 异常
+            res = {
+                resClass : "tr_deviceOutline",
+                resIfShow:"fail"
+            };
+        }
+
+        return res;
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+//                    console.log(obj);
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getAlarmSysListData(); //调用接口获取数据
+                    }
+
+                }
+            });
+        });
+        //完整功能
+    }
+
+    function domeEvelement(){
+        $('#mianTbody').delegate('tr:not(.tr_deviceOutline) .checkbox', 'click', function () {
+            $(this).toggleClass('active');
+            var deviceId = $(this).attr('id');
+            if($(this).hasClass('active')){
+                _partDeviceIds.push(deviceId);
+            }
+            else{
+                _partDeviceIds = $.grep(_partDeviceIds, function(value) { return value != deviceId; })
+            }
+        });
+        $('.btn_inspect').unbind('click').click(function () {
+            var searchtype = $(this).attr('searchtype');
+            if(searchtype == 0&&_partDeviceIds.length == 0){
+                layer.msg('请选选择要点名的记录！');
+                return;
+            }
+            if(searchtype == 1&&_allDeviceIds.length == 0){
+                layer.msg('暂无可查岗的记录！');
+                return;
+            }
+            if(searchtype == 1){
+                $('#mianTbody tr:not(.tr_deviceOutline) .checkbox').addClass('active');
+            }
+            top.layer.confirm(
+                    '按“确定”键进行点名操作！',
+                    {btn: ['确定', '取消'],skin: 'layui-layer-confirm',area:['350px','170px'],title: '<img src="../../Content/images/Home/logout_tip.png" class="icon_signOut">提示' },
+                    function (index) {
+                        if(searchtype == 1){ //点名全部
+                            lookup(_allDeviceIds,index);
+                        }
+                        else if(searchtype == 0)//点名选中
+                            lookup(_partDeviceIds,index);
+                    }
+            );
+        });
+        
+        //导出
+        $('.btn_export').click(function(){
+            if( $('#mianTbody tr').length == 0)
+                return;
+            var url = _serverIp + "/front/lookup/exportNetworkingUnitSDDeviceStatusList?isNaming=1"
+                    + "&keyword=" + $('#keyWords').val();
+            postExport(url)
+        })
+
+    }
+
+
+    function lookup(data,index){
+
+        var deviceids="";
+        for(var i = 0 ; i < data.length ; i++){
+            deviceids += data[i]+(i == data.length - 1?"":",")
+        }
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/lookup/networkingUnitLookUp",
+            data:'deviceIds='+deviceids+'&type=21',
+            success: function (msg) {
+                //console.log(data);
+                if (msg.success == true) {
+                    layer.msg('发送点名请求成功！');
+                    for(var i = 0 ; i < data.length ; i++){
+                        $('#mianTbody tr#'+data[i]).addClass('look');
+                        $('#mianTbody tr#'+data[i]+' td>.checkbox.active').addClass('checked');
+                    }
+
+                    top.layer.close(index);
+                    getDownTimeTips(data); //显示时间倒计时提示
+
+                }
+                else{
+                    layer.msg('发送点名请求失败！');
+                    top.layer.close(index);
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        })
+    }
+    var _updateArr=null; //最终要获取点名状态的列数组
+    //// 点名之后 - 显示时间倒计时提示
+    function getDownTimeTips(data){
+        clearInterval(_updataResultTime);
+        _updateArr=data;
+
+        var IntervalTime = 10000;//重复获取查岗状态的时间 - 10秒
+        for(var i = 0 ; i < data.length;i++){
+            if($('#mianTbody tr#'+data[i]+'.look>td.optResult').attr('labtime')>0){}
+            else{
+                var maxtime = 180000;//3分钟-秒
+                $('#mianTbody tr#'+data[i]+'.look>td.optResult').attr('labtime',maxtime-1).text("点名中...").removeClass('fail')
+            }
+        }
+
+        _updataResultTime = setInterval(function(){
+            $('.checkbox.active.checked').each(function(){
+                var maxtime = $(this).parents('tr.look').find('.optResult').attr('labtime');
+                var id = $(this).parents('tr.look').attr('id');
+
+                var maxtime = maxtime-IntervalTime;
+
+                if(maxtime>=0){
+                    $(this).parents('tr.look').find('.optResult').text(maxtime > 0?"点名中...":"点名超时").removeClass('fail').attr('labtime',maxtime).addClass(maxtime >0?"":"fail")
+                    if(maxtime <= 0){
+                        _updateArr = $.grep(_updateArr, function( n) {
+                            return ( n != id );
+                        });
+                    }
+                }
+                else{
+                    $(this).parents('tr.look').find('.optResult').text("点名超时").removeClass('fail').attr('labtime',maxtime).addClass("fail")
+                    _updateArr = $.grep(_updateArr, function( n) {
+                        return ( n != id );
+                    });
+                }
+            });
+
+            if(_updateArr.length==0){
+                clearInterval(_updataResultTime);
+            }
+            getCurrentOptStatusData(_updateArr);//获取当前点过名的记录的反馈信息
+        },IntervalTime);
+
+//        _timer = setInterval(function(){
+//            $('.checkbox.active.checked').each(function(){
+//                var maxtime = $(this).parents('tr.look').find('.optResult').attr('labtime');
+//
+//                if(maxtime>=0){
+//                    $(this).parents('tr.look').find('.optResult').text(maxtime != 0?"查岗中...":"查岗超时").removeClass('fail').attr('labtime',maxtime-1).addClass(maxtime !=0?"":"fail")
+//                    var id = $(this).parents('tr.look').attr('id');
+//                    if(maxtime == 0){
+//                        updateArr = $.grep(updateArr, function( n, i ) {
+//                            return ( n != id );
+//                        });
+//                    }
+//                }
+//            })
+//        },1000);
+
+        //getCurrentOptStatusData(data);//获取当前点过名的记录的反馈信息
+
+
+    }
+    //获取当前点过名的记录的反馈信息
+    function getCurrentOptStatusData(data){
+//        console.log(data)
+        var deviceids="";
+        for(var i = 0 ; i < data.length ; i++){
+            deviceids += data[i]+(i == data.length - 1?"":",")
+        }
+
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/lookup/getNamingCurrentstatus",
+            data:'deviceIds='+deviceids,
+            success: function (msg) {
+                //console.log(data);
+                if (msg.success == true) {
+                    var successData = msg.obj;
+                    for(var i = 0 ; i < data.length ; i++){
+                        for(var s = 0 ; s < successData.length ;s++){
+                            if(data[i] == successData[s].coupletKey  && successData[s].coupletValue == 1){
+                                $('#mianTbody tr#'+data[i]+'.look>td.optResult').html("点名成功").attr('labtime',"");
+                                $('#mianTbody tr#'+data[i]+'.look>td>.checkbox.checked').removeClass('checked');
+                                _updateArr = $.grep(_updateArr, function(n) {
+                                    return ( n != data[i]);
+                                });
+                            }
+                            else{
+                                if($('#mianTbody tr#'+data[i]+'.look>td.optResult').attr('labtime')){
+
+                                }
+                            }
+                        }
+                    }
+                }
+                else{
+
+                }
+            }
+        })
+
+    }
+
+</script>
+</body>
+</html>

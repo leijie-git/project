@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUserInformationMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUserInformation" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="card_type" property="cardType" jdbcType="VARCHAR" />
+    <result column="card_number" property="cardNumber" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="id_card" property="idCard" jdbcType="VARCHAR" />
+    <result column="certificate" property="certificate" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getUserInformationList" resultType="com.gw.unit.data.UtUserInformationOutData" parameterType="com.gw.unit.data.UserExperienceInData">
+  		SELECT
+			ID,
+			name name,
+			card_type cardType,
+			card_number cardNumber,
+			CONVERT(VARCHAR,start_time,23) startTime,
+			id_card idCard,
+			certificate certificate,
+			phone phone,
+			sex sex
+		FROM
+			[dbo].[UT_user_information]
+		<where>
+	  		<if test="name != null and name != ''">
+	  			name like '%${name}%'
+	  		</if>
+	  		<if test="cardNumber != null and cardNumber != ''">
+	  			and card_number like '%${cardNumber}%'
+	  		</if>
+	  		<if test="idCard != null and idCard != ''">
+	  			and id_card like '%${idCard}%'
+	  		</if>
+	  		<if test="phone != null and phone != ''">
+	  			and phone like '%${phone}%'
+	  		</if>
+		</where>
+  </select>
+</mapper>

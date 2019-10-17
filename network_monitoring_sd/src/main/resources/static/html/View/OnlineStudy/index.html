@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位管理</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/OnlineStudy/index.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="wrapper">
+       <div class="content">
+           <div class="item animation"> <!--游戏-->
+               <div class="loop1"><a href="http://www.sd-xfpx.com/XFScience" target="_blank"></a></div>
+               <div class="loop2"></div>
+               <div class="icon"></div>
+           </div>
+           <div class="item animation"><!--动画-->
+               <div class="loop1"><a href="http://www.sd-xfpx.com/XFScience" target="_blank"></a></div>
+               <div class="loop2"></div>
+               <div class="icon"></div>
+           </div>
+           <div class="item animation"><!--全景学习-->
+               <div class="loop1"><a href="http://www.sd-xfpx.com/Overall" target="_blank"></a></div>
+               <div class="loop2"></div>
+               <div class="icon"></div>
+           </div>
+           <div class="item animation"><!--考核测试-->
+               <div class="loop1"><a href="http://www.sd-xfpx.com/WorkPlat" target="_blank"></a></div>
+               <div class="loop2"></div>
+               <div class="icon"></div>
+           </div>
+           <div class="item animation"><!--实操演练-->
+               <div class="loop1"><a href="http://www.sd-xfpx.com/OperateStudy" target="_blank"></a></div>
+               <div class="loop2"></div>
+               <div class="icon"></div>
+           </div>
+           <div class="item animation"><!--多媒体-->
+               <div class="loop1"><a href="http://www.sd-xfpx.com/XFScience" target="_blank"></a></div>
+               <div class="loop2"></div>
+               <div class="icon"></div>
+           </div>
+           <div class="center">
+             <div class="center1"></div>
+             <div class="center2"></div>
+             <div class="center3"></div>
+           </div>
+       </div>
+    </div>
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script type="text/javascript">
+
+$(function() {
+    //绑定事件
+    bindEvent();
+
+});
+//绑定事件
+function bindEvent() {
+  $('.item').hover(function() {
+    $(this).removeClass('animation');
+  }, function() {
+    $(this).addClass('animation');
+  });
+
+}
+</script>
+
+</html>

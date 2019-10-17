@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>设备状态</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/index.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <!-- <script src="../../Script/WeChat/jqueryWeChatUI/lib/jquery-2.1.4.js"></script> -->
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+
+    <style>
+        .ownercode {
+            float: right;
+            font-size: 14px;
+            line-height: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <!--主体-->
+    <div class="weui-tab">
+        <div class="weui-tab__bd" id="indexTab">
+            <div id="tab4" class="weui-tab__bd-item weui-tab__bd-item--active">
+                <div class="weui-search-bar" id="searchBarFac">
+                    <form class="weui-search-bar__form">
+                        <div class="weui-search-bar__box">
+                            <i class="weui-icon-search"></i>
+                            <input type="search" class="weui-search-bar__input" id="searchInputFac" placeholder="请输入关键字查询" required="">
+                            <a href="javascript:" class="weui-icon-clear" id="searchClearFac"></a>
+                        </div>
+                        <label class="weui-search-bar__label" id="searchTextFac">
+                                <i class="weui-icon-search"></i>
+                                <span>请输入关键字查询</span>
+                              </label>
+                    </form>
+                    <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancelFac">搜索</a>
+                </div>
+                <div class="weui-cells" id="facList">
+                    <!-- <div class="weui-cell">
+                        <div class="weui-cell__hd">单位名称</div>
+                        <div class="weui-cell__bd">
+                            <p>用户信息传输装置</p>
+                        </div>
+                        <div class="weui-cell__bd fac_online">
+                            <p>在线</p>
+                        </div>
+                        <div class="weui-cell__ft fac_onclock" onclick="lockOn()">标定</div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-tabbar" id="indexTabbar">
+            <a href="#tab1" class="weui-tabbar__item " pageurl="index.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f1_normal.png">
+                </div>
+                <p class="weui-tabbar__label">报警信息</p>
+            </a>
+            <a href="#tab2" class="weui-tabbar__item" pageurl="indexUnitManage.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f2_normal.png">
+                </div>
+                <p class="weui-tabbar__label">单位管理</p>
+            </a>
+            <a href="#tab3" class="weui-tabbar__item" pageurl="indexIot.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f3_normal.png">
+                </div>
+                <p class="weui-tabbar__label">物联</p>
+            </a>
+            <a href="#tab4" class="weui-tabbar__item weui-bar__item--on" pageurl="indexEquipment.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f4_press.png">
+                </div>
+                <p class="weui-tabbar__label">设备状态</p>
+            </a>
+            <a href="#tab5" class="weui-tabbar__item " pageurl="indexEveryday.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f5_normal.png">
+                </div>
+                <p class="weui-tabbar__label">日常巡查</p>
+            </a>
+        </div>
+        <div id="shadowBox"></div>
+    </div>
+    <div id="popupPage" class="weui-popup__container" style="z-index: 500;">
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <div id="popupPageName">
+                <div id="backIndex"></div>
+                <span></span>
+            </div>
+            <div class="popupPageFrame_box">
+                <iframe id="popupPageFrame" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!--滚动加载-->
+    <div class="weui-loadmore" id="onLoad" hidden>
+        <i class="weui-loading"></i>
+        <span class="weui-loadmore__tips">正在加载</span>
+    </div>
+    <!--暂无数据-->
+    <div class="weui-loadmore weui-loadmore_line" id="noData" hidden>
+        <span class="weui-loadmore__tips">暂无数据</span>
+    </div>
+</body>
+
+</html>
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    //获取用户信息
+    var userData = JSON.parse(GetQuery('userdata'));
+    var userType = userData.usertype;
+    var userrole = userData.userrole;
+    var pageNumber = 1;
+    var pageSize = 20;
+    var searchUnitName = '';
+    var loading = true; //状态标记
+
+    $(function() {
+
+        pageHeight();
+
+        //首页底部菜单点击事件
+        indexTabbarClick();
+
+        //统计告警未处理数量
+        getAlarmNodealStat();
+
+        //设备状态
+        getSDDeviceStatusList();
+
+        //顶部搜索功能 searchInputUnit
+        $('#searchCancelFac').click(function() {
+            searchUnitName = $.trim($('#searchInputFac').val()).toLocaleUpperCase();
+            $('#facList').empty();
+            pageNumber = 1;
+            getSDDeviceStatusList();
+        });
+
+        //下拉加载
+        $('#tab4').infinite().on("infinite", function() {
+            console.log('time1')
+            if (loading) return;
+            loading = true;
+            setTimeout(function() {
+                getSDDeviceStatusList();
+            }, 1000);
+        });
+
+        if(userrole == 7){
+            $("#indexTabbar").hide();
+        }
+    });
+
+    //首页底部菜单点击事件
+    function indexTabbarClick() {
+        $('#indexTabbar').find('.weui-tabbar__item').click(function() {
+            var aArray = $('#indexTabbar').find('.weui-tabbar__item');
+            var aThis = $(this);
+            var aOld = $('#indexTabbar').find('.weui-bar__item--on');
+            var thisIndex = $.inArray(aThis[0], aArray);
+            var oldIndex = $.inArray(aOld[0], aArray);
+            var pageId = aThis.attr('href');
+            var tabName = $(this).find('p').text();
+            var pageUrl = $(this).attr('pageurl'); //跳转页
+
+            //用户身份判断 联网用户单位管理及物联页面直接跳转 
+            if (userType == 1 && thisIndex == 1) {
+                //单位管理
+                var selfUniName = escape('单位查岗');
+                self.location.href = "unitMap.html?pagetitle=" + selfUniName + "&unitid=" + userData.unitid;
+                return false;
+            }
+            if (userType == 1 && thisIndex == 2) {
+                //物联
+                self.location.href = "iotSystem.html?unitid=" + userData.unitid;
+                return false;
+            }
+            var nowDate = GetQuery('nowdate');
+            self.location.href = pageUrl + "?userdata=" + escape(GetQuery('userdata')) + "&nowdate=" + nowDate;
+            return false;
+            //style change
+            $(this).addClass('weui-bar__item--on');
+            $(this).siblings().removeClass('weui-bar__item--on');
+            if (thisIndex != oldIndex) {
+                aOld.find('.weui-tabbar__icon').find('img').attr('src', '../../Content/images/WeChat/index/btn_main_f' + (oldIndex + 1) + '_normal.png');
+                aThis.find('.weui-tabbar__icon').find('img').attr('src', '../../Content/images/WeChat/index/btn_main_f' + (thisIndex + 1) + '_press.png');
+            }
+            // tab page change
+            $('#indexTab').children('.weui-tab__bd-item').removeClass('weui-tab__bd-item--active');
+            $('#indexTab').find(pageId).addClass('weui-tab__bd-item--active');
+            //title change
+            $('title').text(tabName);
+        })
+    };
+
+    function getAlarmNodealStat() {
+        $.ajax({
+            type: 'get',
+            url: hostAdd + "/getAlarmNodealStat",
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if (!data.success) {
+                    return false;
+                }
+                $('#fireCount').text(data.obj.fireCount);
+                $('#interfaceCount').text(data.obj.interfaceCount);
+
+                if (data.obj.fireCount + data.obj.interfaceCount > 0) {
+                    $('a[href="#tab1"]').find('img').attr('src', '../../Content/images/WeChat/index/btn_main_f1_pressalarm.png');
+                    $('a[href="#tab1"]').find('p').css('color', 'red');
+                }
+            },
+
+        });
+    }
+
+    //页面4 设备列表
+    function getSDDeviceStatusList() {
+        $.ajax({
+            type: 'get',
+            url: hostAdd + "/getSDDeviceStatusList",
+            data: 'pageSize=' + pageSize + '&pageNumber=' + pageNumber + '&keyword=' + searchUnitName,
+            dataType: 'json',
+            success: function(data) {
+                console.log('设备列表', data);
+                if (data.success) {
+                    for (var i = 0; i < data.obj.list.length; i++) {
+                        if (searchUnitName == "" || data.obj.list[i].unitName.toLocaleUpperCase().indexOf(searchUnitName) > -1) {
+                            $('#facList').append(
+                                ' <div class="weui-cell" onclick="equipmentInfo(\'' + data.obj.list[i].id + '\',\'' + data.obj.list[i].deviceType + '\')">' +
+                                '<div class="weui-cell__hd">' + data.obj.list[i].unitName + '<div class="ownercode"><span>' + data.obj.list[i].deviceName + '</span><span>' + data.obj.list[i].ownerCode + '</span></div></div>' +
+                                '<div class="weui-cell__bd">' +
+                                '<p>' + data.obj.list[i].deviceType + '</p>' +
+                                '</div>' +
+                                '<div class="weui-cell__bd fac_online">' +
+                                '<p>' + data.obj.list[i].deviceStatus + '</p>' +
+                                '</div>' +
+                                '<div class="weui-cell__ft fac_onclock" bdtype="' + data.obj.list[i].calibrationId + '"  onclick="lockOn(\'' + data.obj.list[i].id + '\',this)">标定</div>' +
+                                '</div>'
+                            )
+                        }
+
+                    };
+                    if (pageNumber * pageSize <= data.obj.total) {
+                        $('#tab4').append($('#onLoad'));
+                        $('#onLoad').show(); //显示加载标识
+                        pageNumber++;
+                        loading = false;
+                    } else {
+                        $('body').append($('#onLoad'));
+                        $('#onLoad').hide();
+                        loading = true;
+                    }
+
+
+                    if (data.obj.total == 0) {
+                        $('#tab4').append('<div class="weui-loadmore weui-loadmore_line"><span style="background:#f2f2f2;" class="weui-loadmore__tips">暂无数据</span></div>');
+                        return false;
+                    }
+                }
+            },
+            error: function(data) {
+                console.log(data);
+                $('body').append($('#onLoad'));
+                $('#onLoad').hide();
+            }
+        });
+    };
+
+    //跳转设备状态详情
+    function equipmentInfo(id, deviceType) {
+        if (deviceType == "RTU") {
+            deviceType = 0;
+        } else {
+            deviceType = 1;
+        }
+        self.location.href = 'equipmentInfo.html?id=' + id + '&devicetype=' + deviceType;
+    }
+
+    function alarmInfoClick() {
+        $('#tab1').find('.weui-cell').click(function() {
+            // self.location.href = "alarmList.html";
+            // $("#popupPageName").find('span').text("设备设施故障");
+            // $("#popupPageFrame").attr('src', 'alarmList.html?1');
+            // $("#popupPage").popup();
+        });
+    }
+
+
+
+    $('#backIndex').click(function() {
+        $.closePopup();
+    })
+
+    //进入调整主体宽度，ios系统下页面产生历史记录页面下方会新增白条，改变窗体高度。
+    function pageHeight() {
+        var pageHeight = $(window).height();
+        var footnavH = $('#indexTabbar').height();
+        $('#indexTab').height(pageHeight - footnavH);
+        window.onresize = function() {
+            var pageHeight = $(window).height();
+            var footnavH = $('#indexTabbar').height();
+            $('#indexTab').height(pageHeight - footnavH);
+        }
+    };
+
+
+    //下导航设备状态 标定 功能 （参数 单位id 标定类型id）
+    function lockOn(unitId, thisElement) {
+        var thisElementBdtype = $(thisElement).attr('bdtype');
+        var selectItem = '';
+        $.ajax({
+            type: 'get',
+            url: hostAdd + "/calibrationList",
+            data: 'pageSize=20&pageNumber=2&keyword=',
+            dataType: 'json',
+            async: false,
+            success: function(data) {
+                console.log('标定列表', data);
+                if (data.success) {
+                    for (var i = 0; i < data.obj.length; i++) {
+                        if (thisElementBdtype == data.obj[i].id) {
+                            selectItem += '<option value="' + data.obj[i].id + '" selected>' + data.obj[i].remark + '</option>'
+                        } else {
+                            selectItem += '<option value="' + data.obj[i].id + '">' + data.obj[i].remark + '</option>'
+                        }
+                    }
+                } else {
+                    $.toptip('传输装置状态事件类型获取失败，请刷新页面重新加载。', 'error');
+                }
+            },
+            error: function(data) {
+                console.log(data);
+            },
+        });
+        //获取历史标定数据
+        var startDate;
+        var endDate;
+        var remark;
+        $.ajax({
+            type: 'get',
+            url: hostAdd + '/getDeviceCalibration',
+            data: 'eqId=' + unitId,
+            dataType: 'json',
+            async: false,
+            success: function(data) {
+                console.log('保存返回数据', data);
+                if (data.success) {
+                    startDate = data.obj.startDate == "" ? "" : data.obj.startDate + 'T00:00:00';
+                    endDate = data.obj.endDate == "" ? "" : data.obj.endDate + 'T00:00:00';
+                    remark = data.obj.remark;
+                }
+                console.log(startDate, endDate)
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+        var text =
+            '<div class="weui-cells weui-cells_form" id="confimBox">' +
+            '<div class="weui-cell weui-cell_select weui-cell_select-after">' +
+            '<div class="weui-cell__hd">' +
+            '<label for="" class="weui-label">事件类型:</label>' +
+            ' </div>' +
+            '<div class="weui-cell__bd">' +
+            '<select class="weui-select" name="select2">' +
+            selectItem +
+            '</select>' +
+            '</div>' +
+            '</div>' +
+
+            '<div class="weui-cell">' +
+            '<div class="weui-cell__hd"><label for="" class="weui-label">开始时间:</label></div>' +
+            '<div class="weui-cell__bd">' +
+            '<input class="weui-input" type="datetime-local" value="' + startDate + '" id="sDate">' +
+            '</div>' +
+            '</div>' +
+
+            '<div class="weui-cell">' +
+            '<div class="weui-cell__hd"><label for="" class="weui-label">结束时间:</label></div>' +
+            '<div class="weui-cell__bd">' +
+            '<input class="weui-input" type="datetime-local" value="' + endDate + '" id="eDate">' +
+            '</div>' +
+            '</div>' +
+
+            '<div class="weui-cell">' +
+            '<div class="weui-cell__bd">' +
+            '<textarea class="weui-textarea" placeholder="备注" rows="2" id="remark">' + remark + '</textarea>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+        $.modal({
+            title: "传输装置状态",
+            text: text,
+            buttons: [{
+                text: "保存",
+                onClick: function() {
+                    console.log('确认保存');
+                    var newBdtype = $('#confimBox').find('select').val();
+                    var startDate = $('#sDate').val();
+                    var endDate = $('#eDate').val();
+                    var remark = $('#remark').val();
+                    $(thisElement).attr('bdtype', newBdtype);
+
+                    if (startDate == "" || endDate == "") {
+                        $.toptip('请选择时间', 'warning')
+                        return false;
+                    }
+                    $.showLoading('保存中...');
+
+                    $.ajax({
+                        type: 'post',
+                        url: hostAdd + '/deviceCalibration',
+                        data: 'eqId=' + unitId + '&calibrationId=' + newBdtype + '&startDate=' + startDate + '&endDate=' + endDate + '&remark=' + remark,
+                        dataType: 'json',
+                        async: false,
+                        success: function(data) {
+                            console.log('保存标定', data);
+                            if (data.success) {
+                                $.toptip('操作成功', 'success')
+                            } else {
+                                $.toptip('操作失败', 'error')
+                            };
+                            $.hideLoading();
+                        },
+                        error: function(data) {
+                            console.log(data);
+                            $.hideLoading();
+                        }
+                    });
+                }
+            }, {
+                text: "取消",
+                className: "default",
+                onClick: function() {
+                    console.log('取消')
+                }
+            }, ]
+        });
+
+        event.stopPropagation()
+    }
+</script>

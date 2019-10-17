@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>综合分析-系统分析</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/SystemIndex.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<style type="text/css">
+    section{
+        height: 100%;
+    }
+    section .frameDiv{
+        height: 100%;
+    }
+</style>
+
+<body>
+    <div class="wrapper">        
+         <section>
+            <!--左菜单列表 start-->
+            <div class="menuBox scrollbar-macosx">
+                <ul>
+                    <li class="unit" labpage="System1.html">单位系统分析</li>
+                    <li class="check" labpage="System2.html">查岗分析</li>
+                    <li class="contact" labpage="System3.html">通讯系统分析</li>
+                    <li class="event" labpage="System4.html">事件分析</li>
+                </ul>
+            </div>
+            <!--左菜单列表 end-->
+            <div class="arrow_btn" id="arrowBtn"></div>
+            
+            <div class="frameDiv">
+                <iframe id="frameCont" src="" frameborder="0" width="100%" height="100%" scrolling="0" ></iframe>
+            </div>
+
+        </section>
+    </div>
+   
+
+</body>
+
+<script type="text/javascript">
+
+    $(function(){
+        if(_loginInfo.usertype == 1){
+            $('header').hide();
+            $('.unit').attr('labpage','unitAnalyse.html');
+            //$('#frameCont').attr('src',"unitAnalyse.html");
+        }
+
+        clickevent();
+
+        var module = GetQuery('module');
+        if(module){
+            $('.menuBox li.'+module).click();
+        }
+    });
+
+    function clickevent(){
+
+        //分类点击
+        $('.menuBox li').click(function(){
+            $(this).addClass('active orange').siblings().removeClass('active orange');
+           var page = $(this).attr('labpage')
+            $('#frameCont').attr('src',page);
+        });
+        $('.menuBox li').eq(0).click();
+
+        //单位列表箭头按钮
+        $('#arrowBtn').click(function() {
+            $('.wrapper').toggleClass('no_list');
+        });
+    }
+
+</script>
+</html>

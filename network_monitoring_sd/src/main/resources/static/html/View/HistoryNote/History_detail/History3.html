@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>历史记录-灭火系统</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <style>
+        .table_content table tbody .checkbox {
+            vertical-align: middle;
+            filter: alpha(opacity=0);
+            -moz-opacity: 0;
+            -khtml-opacity: 0;
+            width: 18px;
+            height: 18px;
+            background: url(../../../Content/images/NetInfoStatistic/checkbox.png) no-repeat center;
+            background-size: 100% 100%;
+            margin: auto;
+        }
+        .table_content table tbody .checkbox.active{
+            background: url("../../../Content/images/NetInfoStatistic/checkbox_checked.png") no-repeat center;
+            background-size: 100% 100%;
+        }
+        .table_content table tbody tr.tr_deviceOutline .checkbox {
+            cursor: no-drop;
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+<div class="wrapper">
+
+    <div class="top-search">
+        <form class="layui-form" action="">
+            <!--下拉框-->
+            <div class="layui-inline layui-bg-cyan" id="dealResult">
+                <div class="layui-input-inline">
+                    <select name="modules" lay-verify="required" lay-search="">
+                        <option value="" selected>--选择处理状态--</option>
+                        <option value="1">已处理</option>
+                        <option value="0">未处理</option>
+                    </select>
+                </div>
+            </div>
+            <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off">
+            -
+            <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" autocomplete="off">
+            <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索" autocomplete="off">
+            <input class="submitBtn" type="button" id="btnSearch" value="查询">
+        </form>
+    </div>
+
+    <!--table start-->
+    <div class="table_box table_box2">
+        <div class="list_table">
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="5%">
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="17%">
+                        <col width="17%">
+                        <col width="20%">
+                        <col width="9%">
+                        <col width="12%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th><img class="checkbox" src="../../../Content/images/NetInfoStatistic/checkbox.png" id="checkedall"></th>
+                        <th>序号</th>
+                        <th>误报</th>
+                        <th>单位编号</th>
+                        <th>单位名称</th>
+                        <th>报警时间</th>
+                        <th>描述</th>
+                        <th>处理</th>
+                        <th>处理编号</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="17%">
+                        <col width="17%">
+                        <col width="20%">
+                        <col width="9%">
+                        <col width="12%">
+                    </colgroup>
+                    <tbody id="mainContentTbody">
+                    <!--<tr>-->
+                    <!--<td>1</td>-->
+                    <!--<td>400232323</td>-->
+                    <!--<td>000014</td>-->
+                    <!--<td>上海跨国采购中心办公楼</td>-->
+                    <!--<td>2018-07-24 08:14:43</td>-->
+                    <!--<td>启动(停止)</td>-->
+                    <!--<td>消火栓泵双电源</td>-->
+                    <!--<td class="green">是</td>-->
+                    <!--<td><img src="../../../Content/images/NetInfoStatistic/chuli.png"><span class="underline"onclick="deal(this);">处理</span></td>-->
+                    <!--</tr>-->
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div id="demo7"></div>
+            <img class="dealBt" id="dealBtn" src="../../../Content/images/Public/piliang.png">
+            <img class="exportBtn" id="exportBtn" src="../../../Content/images/Public/exportBT.png">
+        </div>
+
+    </div>
+    <!--table end-->
+</div>
+</body>
+
+<script type="text/javascript">
+    var _ifUsed = 0; //调用page方法的判断
+    var _unitid = GetQuery('unitid');
+    var _buildid = GetQuery('buildid');
+    var _systemid = GetQuery('sysid');
+    var _data = {
+        type:_systemid,
+        pageSize:20,
+        pageNumber:1,
+        dealResult:$('#dealResult').find('dd.layui-this').attr('lay-value')||"",
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#keyWords').val(),
+        type:_systemid,
+        buildId:_buildid,
+        unitId:_unitid
+    };
+
+    $(function(){
+        loadLayuiForm();//调用layui form组件，方法写在public
+        getAlarmSysListData();
+        clickevent();
+        bindEvent();
+    });
+
+    function getAlarmSysListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/history/getInterfaceAlarmList",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            var isDeal= '-';
+            if(data[i].isDeal == "否"){
+                isDeal = '<span class="underline" onclick="deal(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chuli.png" class="icon_deal">处理</span>'
+                var dealCode = '<span>待处理</span>';
+            }
+            if(data[i].isDeal == "是"){
+                var isDeal='<span class="underline" onclick="look(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chakanInfo.png" class="icon_Info" >查看</span>';
+                var dealCode = '<span>'+data[i].alarmCode+'</span>';
+            }
+
+            if(data[i].equipmentName == undefined || data[i].equipmentName == null){
+                data[i].equipmentName = "";
+            }
+
+            html += '<tr id="'+data[i].id+'" class="'+getIfOnineResult(data[i].isDeal).resClass +'">'+
+                '<td><div class="checkbox" id="'+data[i].id+'"></div></td>'+
+                '<td>'+(msg.startRow++)+'</td>'+
+                '<td>'+data[i].dealResult+'</td>'+
+                '<td>'+data[i].unitCode+'</td>'+
+                '<td>'+data[i].unitName+'</td>'+
+                '<td>'+data[i].alarmTime+'</td>'+
+                '<td>'+ data[i].equipmentName +'&nbsp;'+ data[i].alarmValue +'&nbsp;'+ data[i].normalValue +'</td>'+
+                '<td>'+isDeal+'</td>'+
+                '<td class="'+(data[i].isDeal == "是"?"":"red")+'">'+dealCode+'</td>'+
+                '</tr>'
+        }
+
+        $('#mainContentTbody').html(html||"<tr><td colspan='9'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getAlarmSysListData(); //调用接口获取数据
+                    }
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+    function clickevent(){
+        $('#btnSearch').unbind('click').click(function(){
+            _data.keyword = $('#keyWords').val();
+            _data.startDate = $('#sData2').val();
+            _data.endDate = $('#eData2').val();
+            _data.dealResult=$('#dealResult').find('dd.layui-this').attr('lay-value')||"";
+            _ifUsed = 0;
+            getAlarmSysListData();
+        });
+
+        //导出
+        $('#exportBtn').unbind('click').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            var _status = $('#dealResult').find('dd.layui-this').attr('lay-value')||"";
+            var url = _serverIp + "/front/history/exportInterfaceAlarmList?"
+                    +"eqSystem="+_systemid
+                    + "&startDate=" + $('#sData2').val()
+                    + "&endDate=" + $('#eData2').val()
+                    + "&keyword=" + $('#keyWords').val()
+                    +"&unitId=" + _unitid
+                    +"&buildId=" + _buildid
+                    +"&type=" + _systemid
+                    + "&dealResult=" + _status
+            postExport(url)
+        });
+    }
+
+    //批量处理(wo)
+    $('.footer').delegate('#dealBtn', 'click', function() {
+        _partDeviceIds = [];   //每次调用前先清空数据
+        $("#mainContentTbody tr .active").each(function(){
+
+            _partDeviceIds.push($(this).parent().parent().attr("id"));
+        });
+        if(_partDeviceIds == ""){
+            layer.msg("请先选择要处理的信息！");
+            return;
+        }
+        layer.open({
+            type: 2,
+            title: '批量处理',
+            closeBtn: 1,
+            area: ['400px', '280px'],
+            shade: 0.1,
+            offset: ['0%','calc(50% - 250px)'],
+            skin: 'layui-layer-loginRecord',
+            content:'History_dealAll.html?sysid='+_systemid
+
+        });
+    });
+
+    function getIfOnineResult(type){
+        var res = {
+            resClass : "",
+            resIfShow:"none"
+        };
+        if(type == "是"){ // 已处理
+            res = {
+                resClass : "tr_deviceOutline",
+                resIfShow:"block"
+            };
+        }
+        return res;
+    }
+
+    function bindEvent(){
+        // 复选(wo)
+        $('#mainContentTbody').delegate('tr:not(.tr_deviceOutline) .checkbox', 'click', function () {
+            $(this).toggleClass('active');
+        });
+    }
+    //全选操作(wo)
+    var uncheckUrl = "../../../Content/images/NetInfoStatistic/checkbox.png";
+    var checkUrl = "../../../Content/images/NetInfoStatistic/chose.png";
+    $("#checkedall").click(function() {
+        if($(this).attr("src") == uncheckUrl){
+            $(this).attr("src",checkUrl);
+            $("#mainContentTbody tr .checkbox").addClass("active");
+            $("#mainContentTbody tr.tr_deviceOutline .checkbox").removeClass("active");
+        }else{
+            $(this).attr("src",uncheckUrl);
+            $("#mainContentTbody tr .checkbox").removeClass("active");
+        }
+    });
+
+
+    function deal(obj){
+        layer.open({
+            type: 2,
+            title: '报警处理',
+            closeBtn: 1,
+            area:['50%','65%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'History_deal.html?id='+obj
+            //content: 'History_deal.html?ID=' + _id,
+        }); 
+    }
+  //查看
+    function look(obj) {
+        layer.open({
+            type: 2,
+            title: '报警查看',
+            closeBtn: 1,
+            area: ['50%', '65%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'History_deal.html?id=' + obj
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>批量处理</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/HistoryNote/History_deal.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/History_dealAll.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <style>
+        .div2{
+            width: 100%;
+            height: 35px;
+            overflow: hidden;
+            border-top: 1px solid rgb(16, 71, 110);
+            border-bottom: 1px solid rgb(16, 71, 110);
+        }
+        .div2 .div_1{
+            float: left;
+            display: inline-block;
+            width: 15%;
+            line-height: 35px;
+            height: 100%;
+            text-align: center;
+            background: rgba(13, 74, 128, 0.3);
+        }
+        .div2 .div_r{
+            padding-left: 2%;
+            line-height: 30px;
+        }
+        .div2 .div_r img {
+            margin-right: 5px;
+            margin-top: -2px;
+            cursor: pointer;
+        }
+        .div2 .div_r span{
+            margin-right: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .submitBtn{
+            background: url(../../../Content/images/Public/piliang.png)no-repeat center;
+        }
+    </style>
+</head>
+
+<body>
+
+<!--批量处理 弹窗-->
+<div id="deallBox">
+    <div class="top_box">
+        <div class="div1">
+            <div class="div_l">测试</div>
+            <div class="div_r">
+                    <span class="imgbox">
+                        <img src="../../../Content/images/NetInfoStatistic/piliangNoChk.png" labtest="1"><span>是</span>
+                    </span>
+                <span class="imgbox">
+                        <img src="../../../Content/images/NetInfoStatistic/piliangNoChk.png" labtest="0"><span>否</span>
+                    </span>
+            </div>
+        </div>
+
+        <!--<div class="div2">
+            <div class="div_l">报警类型</div>
+            <div class="div_r">
+                <div>
+                    <div class="type type1" labtype="1"></div>&lt;!&ndash;火警&ndash;&gt;
+                    <div class="type type2" labtype="2"></div>&lt;!&ndash;故障&ndash;&gt;
+                    <div class="type type3" labtype="6"></div>&lt;!&ndash;屏蔽&ndash;&gt;
+                    <div class="type type4" labtype="5"></div>&lt;!&ndash;监管&ndash;&gt;
+                </div>
+                <div>
+                    <div class="type type5" labtype="3"></div>&lt;!&ndash;启动&ndash;&gt;
+                    <div class="type type6" labtype="4"></div>&lt;!&ndash;反馈&ndash;&gt;
+                    <div class="type type7" labtype="8"></div>&lt;!&ndash;复位&ndash;&gt;
+                    <div class="type type8" labtype=""></div>&lt;!&ndash;其他&ndash;&gt;
+                </div>
+            </div>
+        </div>-->
+        <div class="div2">
+            <div class="div_1">误报</div>
+            <div class="div_r">
+                    <span class="imgbox">
+                        <img src="../../../Content/images/NetInfoStatistic/piliangNoChk.png" labtest="1"><span>是</span>
+                    </span>
+                <span class="imgbox">
+                        <img src="../../../Content/images/NetInfoStatistic/piliangNoChk.png" labtest="0"><span>否</span>
+                    </span>
+            </div>
+        </div>
+    </div>
+
+    <input class="submitBtn" type="button" value="" >
+</div>
+
+</body>
+<script type="text/javascript">
+    var _unitId = GetQuery('unitId'); //单位
+    var _buildId = GetQuery('buildId'); //区域
+    var _type = GetQuery('type'); //系统
+
+    $(function(){
+
+        domeEvelement();
+
+    });
+
+    /* function getDealResult(isTest,alarmStatus){
+         var data = {
+             isTest:isTest,
+             alarmStatus:alarmStatus,
+             type: _type,
+             unitId: _unitId,
+             buildId: _buildId
+         };
+
+         $.ajax({
+             type: "get",
+             url: _serverIp + "/front/couplet/dealAlarmBatch",
+             data: data,
+             success: function(data) {
+                 //console.log(data);
+                 if (data.success == true) {
+                    layer.msg('处理成功！');
+                     setTimeout(function(){
+                        window.parent.location.reload(true);
+                     },2000)
+                 }
+                 else{
+                     layer.msg(data.obj);
+                 }
+             }
+         })
+     }*/
+    var partDeviceIds = parent._partDeviceIds.join(",");
+
+    function getDealResult(partDeviceIds,isTest,dealResult) {
+        var _systemid = GetQuery('sysid');
+        var type = GetQuery('type');
+        if(isTest == undefined || isTest == null){
+            isTest = "";
+        }
+        if(_systemid == 3 || (_systemid == 5 && type == 'class1') || _systemid == 6 || _systemid == 7 || _systemid == 8){
+            jk = _serverIp + "/front/couplet/dealAlarmBatch?isTest="+isTest+"&alarmStatus=&type="+_type+"&unitId="+_unitId+"&buildId="+_buildId+"&id="+partDeviceIds;
+            // if( _systemid == 5 && type=='class1'){
+            //     //alert('类别1');
+            //     jk = _serverIp + "/front/couplet/dealRTUAlarmBatch?dealInfo=&badDesc=&dealResult="+dealResult+"&isNeedMaintain="+isTest+"&id="+partDeviceIds;
+            // }
+        }else{
+            jk = _serverIp + "/front/couplet/dealRTUAlarmBatch?dealInfo=&badDesc=&dealResult="+dealResult+"&isTest="+isTest+"&id="+partDeviceIds;
+        }
+        $.ajax({
+            url: jk,
+            type: "get",
+            data: '',
+            success: function(data) {
+                if (data.success == true) {
+                    layer.msg('处理成功！');
+                    setTimeout(function(){
+                        window.parent.location.reload(true);
+                    },2000);
+                }else{
+                    layer.msg(data.obj);
+                }
+            }
+        });
+    }
+
+    /*function domeEvelement(){
+        $('.submitBtn').unbind('click').click(function(){
+           var isTest =  $('.imgbox>img.active').attr('labtest');//测试
+            var alarmStatus = $('.div_r .type.active').attr('labtype');
+            getDealResult(isTest,alarmStatus);
+        });
+
+        /!*!//选择报警类型
+        $('.div_r>div>div').unbind('click').click(function(){
+            $('.div_r>div>div').removeClass('active');
+            $(this).addClass('active');
+        });*!/
+
+        //测试是否选择
+        $('.div_r > .imgbox').unbind('click').click(function(){
+            $(this).children('img').addClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangChk.png');
+            $(this).siblings().children('img').removeClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangNoChk.png');
+        });
+    }
+*/
+
+
+    function domeEvelement(){
+        $('.submitBtn').unbind('click').click(function(){
+            var isTest =  $('.div1 .imgbox>img.active').attr('labtest');//测试
+            var dealResult =  $('.div2 .imgbox>img.active').attr('labtest');//误报
+            // var alarmStatus = 1;
+            getDealResult(partDeviceIds,isTest,dealResult);
+        });
+
+       /* //选择报警类型
+        $('.div1>.div_r>div>div').unbind('click').click(function(){
+            $('.div1>.div_r>div>div').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        //选择误报类型
+        $('.div2>.div_r>div>div').unbind('click').click(function(){
+            $('.div2>.div_r>div>div').removeClass('active');
+            $(this).addClass('active');
+        });*/
+
+        //测试是否选择
+        $('.div1>.div_r > .imgbox').unbind('click').click(function(){
+            if($(this).children('img').hasClass('active')){
+                $(this).children('img').removeClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangNoChk.png');
+            }else{
+                $(this).children('img').addClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangChk.png');
+                $(this).siblings().children('img').removeClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangNoChk.png');
+            }
+        });
+
+        //误报是否选择
+        $('.div2>.div_r > .imgbox').unbind('click').click(function(){
+            if($(this).children('img').hasClass('active')){
+                $(this).children('img').removeClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangNoChk.png');
+            }else{
+                $(this).children('img').addClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangChk.png');
+                $(this).siblings().children('img').removeClass('active').attr('src','../../../Content/images/NetInfoStatistic/piliangNoChk.png');
+            }
+        });
+    }
+
+</script>
+
+</html>

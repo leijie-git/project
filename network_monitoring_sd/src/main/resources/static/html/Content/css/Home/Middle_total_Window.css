@@ -1,0 +1,39 @@
+.wrapper{
+	-webkit-display: flex;
+	-moz-display: flex;
+	display: flex;
+	padding: 4% 3% 2% 3%;
+}
+
+.underline{
+	text-decoration: underline;
+}
+.list{
+	width: 18%;
+	height: 100%;
+}
+.content{
+	width: 82%;
+	height: 100%;
+}
+#unitList{
+	width: 100%;
+	height: calc(100% - 40px);
+}
+#unitList .table_box{
+	height: 100%;
+}
+
+.active{
+	background-color: rgba(16, 71, 110, .6);
+}
+/*
+.layui-layer-setwin a{
+	margin-top: -12px;
+}
+
+@media screen (min-width: 1920px){
+	.layui-layer-setwin a{
+		margin-top: -10px;
+	}
+}*/

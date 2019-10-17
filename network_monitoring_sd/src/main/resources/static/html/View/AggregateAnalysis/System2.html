@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>综合分析-系统分析-查岗分析</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/System1.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <style type="text/css">
+        #Chkchart1{
+            position: relative;
+            width: 50%;
+            height: 100%;
+            float: left;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">     
+
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">   
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="selectB name" id="keyWords" type="search" placeholder="请输入关键字搜索">
+                <input class="submitBtn" id="btnSearch" type="button" value="查询">
+
+            </form>
+
+            <div class="timeBTChose">
+                <span>月</span>
+                <span>季</span>
+                <span>年</span>
+            </div>
+        </div>
+
+        <section>
+            <div class="box3">
+                <div id="Chkchart1"></div>
+                <div id="Chkchart2"></div>
+
+                <div class="circleBox">
+                    <div id="ChkTotalData" class="fontSize18">0</div>
+                    <div class="fontSize12">查岗总次数</div>
+                </div>
+            </div>
+
+            <!--table start-->
+            <div class="table_box">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="7%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="11%">
+                                <col width="11%">
+                                <col width="11%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>单位编号</th>
+                                <th>子站号</th>
+                                <th>单位名称</th>
+                                <th>发送成功率</th>
+                                <th>查岗次数</th>
+                                <th>应答次数</th>
+                                <th>在岗率</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="7%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="11%">
+                                <col width="11%">
+                                <col width="11%">
+                            </colgroup>
+                            <tbody id="mainContentTbody">
+                                <!--<tr>-->
+                                    <!--<td>1</td>-->
+                                    <!--<td>400633444</td>-->
+                                    <!--<td>23434</td>-->
+                                    <!--<td>上海夸过采购中心办公楼</td>-->
+                                    <!--<td>88%</td>-->
+                                    <!--<td>14</td>-->
+                                    <!--<td>11</td>-->
+                                    <!--<td>92%</td>-->
+                                <!--</tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div id="demo7"></div>
+                    <img class="exportBtn" id="exportBtn" src="../../Content/images/Public/exportBT.png">
+                </div>
+
+            </div>
+            <!--table end-->
+
+        </section>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var _ifUsed = 0; //调用page方法的判断
+    var _data = {
+        pageSize:20,
+        pageNumber:1,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#keyWords').val()
+    };
+
+    $(function(){
+
+        getUplookCoutData(); //获取统计数据
+        getLookupStatListData();//获取记录列表数据
+
+        clickevent();
+    });
+
+    function getUplookCoutData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getUplookCout",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                var msg = data.obj;
+                var coupletKey = msg.coupletKey || 0;
+                var coupletValue = msg.coupletValue ||0;
+                $('#ChkTotalData').text(coupletValue);
+                loadData1([coupletKey,coupletValue - coupletKey]);
+                loadData2([coupletKey,coupletValue - coupletKey],coupletValue);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getLookupStatListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getLookupStatList",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            var success=0;
+            if(data[i].lookupCount != 0){
+                success = (data[i].answerCount / data[i].lookupCount)*100
+            }
+
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+ data[i].unitCode +'</td>'+
+                    '<td>'+ data[i].childstationnum +'</td>'+
+                    '<td>'+data[i].unitName+'</td>'+
+                    '<td>100%</td>'+
+                    '<td>'+data[i].lookupCount+'</td>'+
+                    '<td>'+data[i].answerCount+'</td>'+
+                    '<td>'+success.toFixed(2)+'%</td>'+
+                    '</tr>'
+        }
+
+        $('#mainContentTbody').html(html||"<tr><td colspan='8'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    //console.log(obj);
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getLookupStatListData(); //调用接口获取数据
+                    }
+
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+    function clickevent(){
+        $('#btnSearch').click(function(){ //查询
+             _ifUsed = 0;
+            _data.startDate = $('#sData2').val();
+            _data.endDate = $('#eData2').val();
+            _data.keyword = $('#keyWords').val();
+            getLookupStatListData();
+        });
+
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            var url = _serverIp + "/front/analysis/exportLookupStatList?"
+                    + "keyword=" + $('#keyWords').val()
+                    + "&startDate=" + $('#sData2').val()
+                    + "&endDate=" + $('#eData2').val();
+            postExport(url)
+        });
+
+        $('.timeBTChose > span').unbind('click').click(function(){ //月季年
+            $(this).addClass('actTime').siblings().removeClass('actTime');
+            var text = $(this).text();
+            if(text == '月'){
+                $('#sData2').val(getNowFormatDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == '季'){
+                $('#sData2').val(getQuarterStartDate());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == "年"){
+                $('#sData2').val(getNowYeartDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }
+            $('#btnSearch').click();
+        });
+    }
+
+
+    //查岗
+    function loadData1(chart1Data){
+        var chart1 = echarts.init(document.getElementById('Chkchart1'));
+        chart1.title = '查岗次数';
+
+        var option = {
+            title: {
+            },
+            backgroundColor: '',
+            legend: {
+                show: false
+            },
+            tooltip: { // 提示框. Can be overwrited by series or data
+                trigger: 'item',
+                formatter: "{b}: {c} ({d}%)"
+            },
+            color: ['#00dfc3', '#f56c20'],
+            series: [
+                {
+                    name: '查岗',
+                    type: 'pie',
+                    center: ['50%', '50%'],
+                    radius: ['55%', '65%'],
+                    hoverAnimation: false,
+                    selectedMode:false,
+                    label: {
+                        normal: {
+                            position: 'outside',
+                            formatter: '{d}%\n{b}'
+                        },
+                    },
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                formatter: '{c}%',
+                                textStyle: {
+//                                    color: '#68a6de',
+                                    fontSize: 12,
+                                }
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 15,
+                            length2: 10
+                            //show: false
+                        }
+                    },
+                    data: [
+                    { value: chart1Data[0], name: '应答' },
+                    { value: chart1Data[1], name: '无应答' }
+                    ],
+                },
+                {
+                name: '',
+                type: 'pie',
+                center: ['50%', '50%'],
+                radius: ['49%', '50%'],
+                itemStyle: { //环内样式
+                    normal: { //默认样式
+                        label: { //标签
+                            show: false,
+                        },
+                        labelLine: {
+                            show: false,
+                        },
+                    },
+                }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                animation: false,
+                data: [{
+                    name: '',
+                    value: 100,
+                    itemStyle: {
+                        normal: {
+                            color: '#316DB6'
+                        },
+                        emphasis: {
+                            color: '#316DB6'
+                        }
+                    },
+                    tooltip: {
+                        show: false,
+                    },
+                    cursor: 'default',
+                }],
+            }
+
+            ]
+        };
+
+        chart1.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            chart1.resize();
+        });
+    }
+
+    //应答
+    function loadData2(data,count){
+    	
+        var chart2 = echarts.init(document.getElementById('Chkchart2'));
+        chart2.title = '应答';
+
+        var myData = ['应答次数', '无应答次数'];
+        var lineData = [count == 0?1:count]
+        var lastYearData = {
+            1: [data[0]]
+        }
+        var thisYearData = {
+            1: [data[1]]
+        }
+        var timeLineData = [1]
+
+        var option = {
+            baseOption: {
+                backgroundColor: '',
+                timeline: {
+                    show: false,
+                    top: 0,
+                    data: []
+                },
+                legend : {
+                    show: false,
+                    top : '5%',
+                    left : '31%',
+                    itemWidth : 22,
+                    itemHeight : 22,
+                    itemGap: 343,
+                    icon : 'horizontal',
+                    textStyle : {
+                        color : '#ffffff',
+                        fontSize : 14,
+                    },
+                    data: ['2017', '2018']
+                },
+                grid: [{
+                    show: false,
+                    left: '25%',
+                    top: '10%',
+                    bottom: '8%',
+                    containLabel: true,
+                    width: '50%'
+                }, {
+                    show: false,
+                    left: '25%',
+                    top: '20%',
+                    bottom: '8%',
+                    width: '0%'
+                }, {
+                    show: false,
+                    left: '25%',
+                    top: '56%',
+                    bottom: '8%',
+                    containLabel: true,
+                    width: '50%'
+                }],
+                xAxis: [{
+                    type: 'value',
+                    //inverse: true, //是否反向
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    position: 'top',
+                    axisLabel: {
+                        show: false
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                }, {
+                    gridIndex: 1,
+                    show: false
+                }, {
+                    gridIndex: 2,
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    position: 'top',
+                    axisLabel: {
+                        show: false
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                }],
+                yAxis: [{
+                    type: 'category',
+                    inverse: true,
+                    position: 'left',
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        show: false
+                    },
+                    data: myData
+                }, {
+                    gridIndex: 1,
+                    type: 'category',
+                    inverse: true,
+                    position: 'left',
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        show: true,
+                        textStyle: {
+                            color: '#ffffff',
+                            fontSize: 14
+                        }
+
+                    },
+                    data: myData.map(function(value) {
+                        return {
+                            value: value,
+                            textStyle: {
+                                align: 'center'
+                            }
+                        }
+                    })
+                }, {
+                    gridIndex: 2,
+                    type: 'category',
+                    inverse: true,
+                    position: 'left',
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        show: false
+
+                    },
+                    data: myData
+                }],
+                series: []
+
+            },
+            options: []
+        }
+
+        option.baseOption.timeline.data.push(timeLineData[0])
+        option.options.push({
+            series: [
+            {
+                type: 'pictorialBar',
+                xAxisIndex: 0,
+                yAxisIndex: 0,
+                symbol: 'rect',
+                itemStyle: {
+                    normal: {
+                        color: 'rgba(3,147,114,0.27)'
+                    }
+                },
+                barWidth: 10,
+                symbolRepeat: true,
+                symbolSize: 12,
+                data: lineData,
+                barGap: '-100%',
+                barCategoryGap: 0,
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function (series)  {
+                            return lastYearData[timeLineData[0]][series.dataIndex]
+                        },
+                        position: 'insideTopRight',
+                        textStyle:{
+                            color: '#ffffff',
+                            fontSize: 14,
+                        },
+                        offset: [0, -25],
+                    }
+                },
+                z: -100,
+                    animationEasing: 'elasticOut',
+                     animationDelay: function (dataIndex, params) {
+                    return params.index * 30;
+                }
+            }, {
+                name: '2017',
+                type: 'pictorialBar',
+                xAxisIndex: 0,
+                yAxisIndex: 0,
+                symbol: 'rect',
+                barWidth: 10,
+                itemStyle: {
+                    normal: {
+                        barBorderRadius: 5,
+                        color: '#4ae7e2'
+                    }
+                },
+                symbolRepeat: true,
+                symbolSize: 12,
+                data: lastYearData[timeLineData[0]],
+                animationEasing: 'elasticOut',
+                animationDelay: function (dataIndex, params) {
+                    return params.index * 30 * 1.1;
+                }
+            },
+            {
+                type: 'pictorialBar',
+                xAxisIndex: 2,
+                yAxisIndex: 2,
+                symbol: 'rect',
+                itemStyle: {
+                    normal: {
+                        color: 'rgba(54,215,182,0.27)'
+                    }
+                },
+                barWidth: 10,
+                symbolRepeat: true,
+                symbolSize: 12,
+                data: lineData,
+                barGap: '-100%',
+                barCategoryGap: 0,
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function (series) {
+                            return thisYearData[timeLineData[0]][series.dataIndex]
+                        },
+                        position: 'insideTopRight',
+                        textStyle:{
+                            color: '#ffffff',
+                            fontSize: 14,
+                        },
+                        offset: [0, -25],
+                    }
+                },
+                z: -100,
+                    animationEasing: 'elasticOut',
+                     animationDelay: function (dataIndex, params) {
+                    return params.index * 30;
+                }
+            }, {
+                name: '2018',
+                type: 'pictorialBar',
+                xAxisIndex: 2,
+                yAxisIndex: 2,
+                symbol: 'rect',
+                barWidth: 10,
+                itemStyle: {
+                    normal: {
+                        barBorderRadius: 5,
+                        color: '#f36e23'
+                    }
+                },
+                symbolRepeat: true,
+                symbolSize: 12,
+                data: thisYearData[timeLineData[0]],
+                animationEasing: 'elasticOut',
+                animationDelay: function (dataIndex, params) {
+                    return params.index * 30 * 1.1;
+                }
+            }
+            ]
+        });
+
+        chart2.setOption(option);
+        window.addEventListener('resize', function () { //宽度自适应
+            chart2.resize();
+        });
+    }
+
+
+</script>
+</html>

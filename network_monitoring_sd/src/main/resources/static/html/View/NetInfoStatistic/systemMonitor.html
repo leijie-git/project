@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>物联</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/NetInfoStatistic/video.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/NetInfoStatistic/systemMonitor.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+
+
+
+<body>
+<div class="wrapper second_module">
+    <section>
+        <!--左菜单列表 start-->
+        <div class="menuBox">
+            <div class="input_box"> <!--搜索-->
+                <input type="text" id="searchUnit" class="search fontSize16" placeholder="搜索联网单位名称" autocomplete="off">
+                <button class="search_btn"></button>
+            </div>
+
+            <ul class="first_ul" style="height:calc(100% - 40px);max-height: inherit">
+
+                <div class="block_header actDiv">所有联网单位( <span class="unitCount"> 0</span> ) <i class="layui-icon icon_triangle">&#xe625;</i></div>
+                <ul class="blocl_content_ul scrollbar-inner" id="allNetUnit">
+                    <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);" class="clickli">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                </ul>
+            </ul>
+        </div>
+        <!--左菜单列表 end-->
+        <div class="arrow_btn" id="arrowBtn"></div>
+
+        <div class="frameDiv">
+            <iframe id="frameCont" src="" frameborder="0" width="100%" height="100%" scrolling="0" ></iframe>
+        </div>
+
+    </section>
+</div>
+
+
+</body>
+
+<script type="text/javascript">
+    var type; //单位type
+    function get(name){//通过参数名获取参数值方法
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+    var ico_num = get('ico_num');//传过来的参数
+    //加载单位所包含的系统的图标点击图片跳转接收参数
+    $(function(){
+
+        //获取所有联网单位列表
+        getAllUnitData();
+
+        clickevent();
+        // $('#frameCont').attr('src','system-iframe/system_index.html?type=' + type);
+    });
+
+    //获取所有联网单位
+    function getAllUnitData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getUnits",
+            data:'unitName='+$('#searchUnit').val(),
+            cache: false,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    showUnitListContent(msg);
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showUnitListContent(msg){
+        var allhtml = "";
+        for(var i = 0 ; i < msg.length;i++){
+            allhtml+='<li title="'+msg[i].unitName+'" id="'+msg[i].unitId+'" data-type="wdsfdsffsd" class="li_unit" >'+msg[i].unitName+'</li>'
+        }
+        $('#allNetUnit').html(allhtml||"<li>暂无单位接入</li>").parent().prev().find('.unitCount').text(msg.length);
+//        $('.block_header').eq(0).click();
+        if( ico_num == null ){
+            $('#allNetUnit .li_unit').eq(0).click();
+        }else{
+            dwid = get('unitId');
+            $('#allNetUnit .li_unit[id="'+dwid+'"]').click();
+        }
+    }
+
+
+
+    function clickevent(){
+        //搜索
+        $('#searchUnit').unbind(" input propertychange").on(" input propertychange",function(){
+            var thisValue = $('#searchUnit').val();
+            var count=0;
+            if(thisValue == ""){
+                $('#allNetUnit>li').show()
+            }
+            else{
+                $('#allNetUnit>li').hide()
+                        .filter(function(index){
+//                            console.log($(this).text().indexOf(thisValue));
+                            if($(this).text().indexOf(thisValue) >= 0){
+                                count = 1;
+                                $(this).show();
+                                return this;
+                            }
+                        }).show();
+            }
+        });
+
+        //分类点击
+        $('.block_header').click(function(){
+            if($(this).hasClass('actDiv')){
+                $(this).parent('.first_ul').removeClass('active');
+                $(this).removeClass('actDiv'); //收缩
+                // $(this).next().slideUp('fast');
+                $(this).parent('.first_ul').css('height',"30px")
+            }else{
+                $(this).parent('.first_ul').addClass('active').siblings().removeClass('active');
+                $(this).addClass('actDiv').parent().siblings().children('.block_header').removeClass('actDiv'); //展开
+                //$(this).next().slideDown('fast').parent().siblings().find('.blocl_content_ul').slideUp('fast');
+                var unitList = $(this).next().find('li').length;
+                var maxContentHeight = $('.menuBox').height() - 90;
+                if(parseInt(unitList)*31 > maxContentHeight){
+                    // $(this).parent('.first_ul').siblings().css('height',"30px");
+                    $(this).parent('.first_ul').css('height',"calc(100% - 40px)")
+                }
+                else{
+                    // $(this).parent('.first_ul').siblings().not('.input_box').css('height',"30px");
+                    $(this).parent('.first_ul').css('height',parseInt(unitList)*30+30 +"px")
+                }
+//                console.log(parseInt(unitList)*30 );
+            }
+        });
+
+
+        //获取点击单位
+        $('.blocl_content_ul').delegate('.li_unit','click',function(){
+            $(this).parents('.menuBox').find('li').removeClass('clickli');
+            $(this).addClass('clickli');
+            var unitId = $(this).attr('id');
+            var type = $(this).attr('data-type');
+            var name = $(this).text();
+            str = '';
+            if(ico_num != null){//判断是参数传递的时候, 为iframe增加一个ico_num参数,继续往下传递
+                str = '&ico_num='+ico_num;
+            }
+            $('#frameCont').attr('src','system-iframe/system_index.html?unitId=' + unitId +str+'&unitname='+escape(name));
+        });
+
+        //搜索
+        $('.search_btn').click(function(){
+            getAllUnitData();
+        });
+        //单位列表箭头按钮
+        $('#arrowBtn').click(function() {
+            $('.wrapper').toggleClass('no_list');
+        });
+    }
+
+
+</script>
+</html>

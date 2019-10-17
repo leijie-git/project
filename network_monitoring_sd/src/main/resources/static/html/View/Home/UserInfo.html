@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/UserInfo.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+</head>
+<body>
+<!--<div class="layer_headerTit">-->
+    <!--<div class="headerTitText fontSize18">查看用户信息</div>-->
+    <!--<div class="btn_layer_close"></div>-->
+<!--</div>-->
+<div class="list_tab">
+    <div class="userInfo active">用户资料</div>
+    <div class="buyServer">所购服务</div>
+</div>
+
+<div class="layer_mainContent fontSize14 ">
+    <div class="user_content scrollbar-inner">
+        <div class="div_list">
+            <div class="list_name">用户名称</div>
+            <div class="list_con" id="account">-</div>
+            <div class="list_name">密码</div>
+            <div class="list_con" id="password">-</div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">姓名</div>
+            <div class="list_con" id="username">-</div>
+            <div class="list_name">联系电话</div>
+            <div class="list_con" id="mobilephone">-</div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">用户性别</div>
+            <div class="list_con" id="sex">-</div>
+            <div class="list_name">用户角色</div>
+            <div class="list_con" id="userrole">-</div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">用户类型</div>
+            <div class="list_con" id="usertype">-</div>
+            <div class="list_name">所属单位</div>
+            <div class="list_con" id="unitName">-</div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">证件类型</div>
+            <div class="list_con" id="certificatestype">-</div>
+            <div class="list_name">证件号码</div>
+            <div class="list_con" id="certificatesno">-</div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">生日</div>
+            <div class="list_con" id="birthday">-</div>
+            <div class="list_name">邮箱</div>
+            <div class="list_con" id="email">-</div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">证书图标</div>
+            <div class="list_con" id="certificatespic" style="width: 85%">
+                <!--<img src="../../Content/images/Home/icon_Certificate.png" class="icon_certi">-->
+                <!--<img src="../../Content/images/Home/icon_Certificate.png" class="icon_certi">-->
+            </div>
+        </div>
+    </div>
+    <div class="server_content">
+        <div class="div_list">
+            <div class="list_name">发布时间</div>
+            <div class="list_con" id="releaseDate">2018-08-16</div>
+            <div class="list_name">使用期限</div>
+            <div class="list_con" id="validityPeriod">2018-08-16 - 2020-07-15</div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">软件版本</div>
+            <div class="list_con" id="version">1.2</div>
+            <div class="list_name">交易记录</div>
+            <div class="list_con"><span class="lookBuyRecord">查看</span></div>
+        </div>
+        <div class="div_list">
+            <div class="list_name">开通服务</div>
+            <div class="list_con" style="width: 85%;" id="serverType">
+                PC<span class="icon_checkbox"></span>
+                APP<span class="icon_checkbox"></span>
+                微信<span class="icon_checkbox"></span>
+                短信<span class="icon_checkbox"></span>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+
+<script>
+    $(function(){
+        getUserInfoData(); //用户资料
+
+        getUserServerData();//所购服务
+
+        domEvelement();
+    });
+
+    function getUserInfoData(){
+
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getUserInfo",
+
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                   // console.log($('.list_con[id]').length);
+                    var msg = data.obj;
+                   // $('#account', parent.document).text(msg.account);
+                    $('.user_content .list_con[id]').each(function(){
+                        var thisid = $(this).attr("id");
+                         if(thisid == "certificatespic"){
+                            if(msg.photo==""){
+                                $('#certificatespic').html("")
+                            }
+                         }
+                         else if(thisid =="sex"){
+                        	 if(msg.sex ==1){
+                                 $(this).text("男"|| "--");
+                             }else if(msg.sex ==0){
+                                 $(this).text("女"|| "--");
+                             }
+                         }  
+                         else if(thisid == "userrole"){
+                             if(msg.userrole =="0"){
+                                 $(this).text("单位负责人"|| "--");
+                             }else if(msg.userrole=="1"){
+                                 $(this).text("单位管理人"|| "--");
+                             }else if(msg.userrole=="2"){
+                                 $(this).text("巡查员"|| "--");
+                             }else if(msg.userrole=="3"){
+                                 $(this).text("工程人员"|| "--");
+                             }else if(msg.userrole=="4"){
+                                 $(this).text("监控人员"|| "--");
+                             }else if(msg.userrole=="5"){
+                                 $(this).text("维保人员"|| "--");
+                             }else if(msg.userrole=="6"){
+                                 $(this).text("监管人员"|| "--");
+                             }
+                         }
+                         else if(thisid == "usertype"){
+                        	 if(msg.usertype =="1"){
+                                 $(this).text("联网单位"|| "--");
+                             }else if(msg.usertype=="0"){
+                                 $(this).text("维保单位"|| "--");
+                             }else{
+                            	 $(this).text("其他"|| "--");
+                             }
+                         }
+                         else{
+                            $(this).text(msg[thisid] || "--");
+                            
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function getUserServerData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getUserServer",
+            data: 'id=',
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    $('.server_content .list_con[id]').each(function(){
+                        var thisid = $(this).attr("id");
+                        if(thisid =="serverType"){
+                           //开通搞服务
+                        }
+                        else{
+                            $(this).text(msg[thisid] || "--");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function domEvelement(){
+        //弹窗关闭按钮
+        $('.btn_layer_close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+        //tab  切换
+        $('.list_tab>div').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            $('.layer_mainContent>div').toggle().toggleClass('scrollbar-inner');
+        });
+
+        //证书图标点击
+        $('.list_con').delegate('.icon_certi','click',function(){
+//            layer.open({
+//                type: 1,
+//                closeBtn: 0,
+//                area:['55%','68%'],
+//                shade: 0.7,
+//                content: $(this)
+//            });
+        });
+
+        //交易记录
+        $('.lookBuyRecord').click(function(){
+            top.layer.open({
+                type: 2,
+                title: '交易记录',
+                closeBtn: 1,
+                area:['55%','68%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: 'BuyRecord.html'
+            });
+        })
+    }
+</script>
+</html>

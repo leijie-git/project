@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzTrainMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzTrain" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="TrainDateS" property="traindates" jdbcType="TIMESTAMP" />
+    <result column="TrainDateE" property="traindatee" jdbcType="TIMESTAMP" />
+    <result column="TrainSite" property="trainsite" jdbcType="NVARCHAR" />
+    <result column="TrainObject" property="trainobject" jdbcType="NVARCHAR" />
+    <result column="JoinTrainUserName" property="jointrainusername" jdbcType="NVARCHAR" />
+    <result column="JoinTrainUserCount" property="jointrainusercount" jdbcType="INTEGER" />
+    <result column="TeacherInfo" property="teacherinfo" jdbcType="NVARCHAR" />
+    <result column="TrainContent" property="traincontent" jdbcType="NVARCHAR" />
+    <result column="TrainResult" property="trainresult" jdbcType="NVARCHAR" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="CreateUser" property="createuser" jdbcType="NVARCHAR" />
+    <result column="DataFromID" property="datafromid" jdbcType="NVARCHAR" />
+    <result column="DataFrom" property="datafrom" jdbcType="INTEGER" />
+    <result column="OtherCreateUserName" property="othercreateusername" jdbcType="NVARCHAR" />
+    <result column="ID" property="id" jdbcType="BIGINT" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

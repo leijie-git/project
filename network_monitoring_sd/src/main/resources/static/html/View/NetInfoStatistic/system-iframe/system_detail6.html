@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="60">  <!--每隔60秒自动刷新页面-->
+    <title>各系统监测-燃气系统</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+<div class="wrapper">
+
+    <div class="top-search">
+        <form class="layui-form" action="">
+            <!--下拉框-->
+            <div class="layui-inline layui-bg-cyan" id="alarmType">
+                <div class="layui-input-inline">
+                    <select name="modules" lay-verify="required" lay-search="">
+                        <option value="">--选择报警类型--</option>
+                        <option value="1,22,23,24,25,26">火警</option>
+                        <option value="2">故障</option>
+                        <option value="3">启动</option>
+                        <option value="4">反馈</option>
+                        <option value="5">监管</option>
+                        <option value="6">屏蔽</option>
+                        <option value="7">恢复</option>
+                        <option value="8">复位</option>
+                    </select>
+                </div>
+            </div>
+            <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off" />
+            -
+            <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" autocomplete="off" />
+            <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索" autocomplete="off">
+            <input class="submitBtn" type="button" id="btnSearch" value="查询">
+        </form>
+    </div>
+
+    <!--table start-->
+    <div class="table_box table_box2">
+        <div class="list_table">
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="5%">
+                        <col width="7%">
+                        <col width="8%">
+                        <col width="15%">
+                        <col width="8%">
+                        <col width="10%">
+                        <col width="20%">
+                        <col width="12%">
+                        <col width="15%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>处理</th>
+                        <th>设备</th>
+                        <th>时间</th>
+                        <th>测试</th>
+                        <th>报警类型</th>
+                        <th>节点</th>
+                        <th>报警分类</th>
+                        <th>报警地点</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="7%">
+                        <col width="8%">
+                        <col width="15%">
+                        <col width="8%">
+                        <col width="10%">
+                        <col width="20%">
+                        <col width="12%">
+                        <col width="15%">
+                    </colgroup>
+                    <tbody id="mainContentTbody">
+                    <!--<tr>-->
+                    <!--<td>1</td>-->
+                    <!--<td><img src="../../../Content/images/NetInfoStatistic/chuli.png"><span class="underline" onclick="deal(this)">处理</span></td>-->
+                    <!--<td>报警主机</td>-->
+                    <!--<td>2018-07-24 08:14:43</td>-->
+                    <!--<td>否</td>-->
+                    <!--<td class="guzhang"><img src="../../../Content/images/NetInfoStatistic/guzhang.png">故障</td>-->
+                    <!--<td class="underline">01号主机0002回路0214节点01楼29层00区</td>-->
+                    <!--<td></td>-->
+                    <!--<td>广场中央地下车库</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div id="demo7"></div>
+            <img class="dealBt" id="dealBtn" src="../../../Content/images/Public/piliang.png">
+            <img class="exportBtn" id="exportBtn" src="../../../Content/images/Public/exportBT.png">
+        </div>
+
+    </div>
+    <!--table end-->
+</div>
+</body>
+
+<script type="text/javascript">
+    var _unitId = GetQuery('unitId'); //单位
+    var _buildId = GetQuery('areaid'); //区域
+    var _type = GetQuery('systemID'); //系统
+    var _unitname = GetQuery('unitname'); //单位名称
+    var _ifUsed = 0; //调用page方法的判断
+    var _data = {
+        pageSize:20,
+        pageNumber:1,
+        keyword:$('#keyWords').val(),
+        unitId:_unitId,
+        buildId:_buildId,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        alarmStatus:$('#alarmType').find('dd.layui-this').attr('lay-value')||"",
+        type:_type
+    };
+
+    $(function(){
+        loadLayuiForm();
+        getAlarmSysListData();
+//        layerPage();
+        clickevent();
+    });
+
+    function getAlarmSysListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/couplet/getFireAlarmList",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+        	var isDeal='<span class="underline" onclick="look(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chakanInfo.png" class="icon_Info" >查看</span>';
+            if(data[i].isdeal == "否"){
+                isDeal = '<span class="underline" onclick="deal(\''+data[i].id+'\');"><img src="../../../Content/images/NetInfoStatistic/chuli.png">处理</span>'
+            }
+
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+isDeal+'</td>'+
+                    '<td>'+data[i].eqName+'</td>'+
+                    '<td>'+data[i].time+'</td>'+
+                    '<td>'+data[i].isTest+'</td>'+
+                    '<td class="'+alarmType(data[i].alarmStatus)+'"><img src="../../../Content/images/NetInfoStatistic/'+alarmType(data[i].alarmStatus)+'.png">'+data[i].alarmStatus+'</td>'+
+                    '<td addressid="'+data[i].addressID+'" class="'+((data[i].addressID&&data[i].addressID!="")?"alarm_desc":"no_alarm_desc")+' align-left">'+data[i].alarmSourcedesc+'</td>'+
+                    '<td>'+data[i].alarmCat+'</td>'+
+                    '<td>'+data[i].alarmWheredesc+'</td>'+
+                    '</tr>'
+        }
+
+        $('#mainContentTbody').html(html||"<tr><td colspan='9'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    if(!isNew){
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        getAlarmSysListData();
+                    }
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+    function clickevent(){
+        $('#btnSearch').click(function(){
+            _data.keyword = $('#keyWords').val();
+            _data.startDate = $('#sData2').val();
+            _data.endDate = $('#eData2').val();
+            _data.alarmStatus=$('#alarmType').find('dd.layui-this').attr('lay-value')||""
+            _ifUsed = 0;
+            getAlarmSysListData();
+        })
+
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1)
+                return;
+            var url = _serverIp + "/front/couplet/exportFireAlarmList?"
+                    + "unitId=" + _unitId
+                    + "&buildId=" + _buildId
+                    + "&type=" + _type
+                    + "&keyword=" + $('#keyWords').val();
+            postExport(url)
+        })
+
+        //批量处理
+        $('.footer').delegate('#dealBtn', 'click', function () {
+            if( $('#mainContentTbody tr:first-child>td').length == 1)
+                return;
+            layer.open({
+                type: 2,
+                title: '批量处理',
+                closeBtn: 1,
+                area:['400px','280px'],
+                shade: 0.1,
+                offset: ['0%','calc(50% - 250px)'],
+                skin: 'layui-layer-loginRecord',
+                content: 'System_dealAll.html?unitId='+_unitId + '&buildId='+_buildId+'&type='+_type
+            });
+        });
+
+        //CRT
+        $('#mainContentTbody').delegate(' tr>td.alarm_desc','click',function(){
+            var addressID = $(this).attr('addressid');
+            top.layer.open({
+                type: 2,
+                title: 'CRT图层浏览',
+                closeBtn: 1,
+                area:['60%','65%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: 'Home/Middle_GetCrt_Window.html?addressID='+addressID+'&unitid='+_unitId
+            });
+        });
+    }
+
+    function deal(obj){
+        var  id = $(this).parents('tr').attr('id');
+
+        top.layer.open({
+            type: 2,
+            title: '报警处理',
+            closeBtn: 1,
+            area:['550px','420px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'NetInfoStatistic/system-iframe/System_deal.html?id='+id
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+    
+    function look(obj){
+        var  id = $(this).parents('tr').attr('id');
+
+        top.layer.open({
+            type: 2,
+            title: '报警查看',
+            closeBtn: 1,
+            area:['550px','380px'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'NetInfoStatistic/system-iframe/System_deal.html?id='+id
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+</script>
+</html>

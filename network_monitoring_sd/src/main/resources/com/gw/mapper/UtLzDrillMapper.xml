@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzDrillMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzDrill" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="DrillDateS" property="drilldates" jdbcType="TIMESTAMP" />
+    <result column="DrillDateE" property="drilldatee" jdbcType="TIMESTAMP" />
+    <result column="DrillSite" property="drillsite" jdbcType="NVARCHAR" />
+    <result column="DrillDepartment" property="drilldepartment" jdbcType="NVARCHAR" />
+    <result column="DrillManager" property="drillmanager" jdbcType="NVARCHAR" />
+    <result column="DrillManagerTel" property="drillmanagertel" jdbcType="NVARCHAR" />
+    <result column="DrillInfo" property="drillinfo" jdbcType="NVARCHAR" />
+    <result column="DrillFile" property="drillfile" jdbcType="NVARCHAR" />
+    <result column="DrillFileShow" property="drillfileshow" jdbcType="NVARCHAR" />
+    <result column="DrillProgramme" property="drillprogramme" jdbcType="NVARCHAR" />
+    <result column="JoinUser" property="joinuser" jdbcType="NVARCHAR" />
+    <result column="JoinUserCount" property="joinusercount" jdbcType="INTEGER" />
+    <result column="DrillResult" property="drillresult" jdbcType="NVARCHAR" />
+    <result column="DrillSummary" property="drillsummary" jdbcType="NVARCHAR" />
+    <result column="AmendOpinion" property="amendopinion" jdbcType="NVARCHAR" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="CreateUser" property="createuser" jdbcType="NVARCHAR" />
+    <result column="DataFromID" property="datafromid" jdbcType="NVARCHAR" />
+    <result column="DataFrom" property="datafrom" jdbcType="INTEGER" />
+    <result column="OtherCreateUserName" property="othercreateusername" jdbcType="NVARCHAR" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

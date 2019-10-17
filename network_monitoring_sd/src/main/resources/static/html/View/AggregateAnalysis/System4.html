@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>综合分析-系统分析-事件分析</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/System1.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">     
+
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">
+                <div class="layui-inline layui-bg-cyan" id="xcDealStatus">
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="" selected="selected">--事件类型--</option>
+                            <option value="1000">组合火警</option>
+                            <option value="1001">潮湿引起故障</option>
+                            <option value="2000">喷淋漏水</option>
+                            <option value="2001">喷淋破损</option>
+                            <option value="1">报备</option>
+                            <option value="2">测试</option>
+                            <option value="3">关机</option>
+                            <option value="4">监控</option>
+                        </select>
+                    </div>
+                </div>
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="selectB name" type="search" id="search" placeholder="请输入关键字搜索">
+                <input class="submitBtn" type="button" value="查询">
+
+            </form>
+
+            <div class="timeBTChose">
+                <span>月</span>
+                <span>季</span>
+                <span>年</span>
+            </div>
+        </div>
+
+        <section>
+            <div class="box3">
+                <div class="Chkchart1">
+                    <div id="Chkchart1"></div>
+                </div>
+
+                <div class="eventbox scrollbar-inner" id="eventCountContent">
+
+                    <!--<div class="eventDiv">-->
+                        <!--<div class="word"><span class="num">1</span> 测&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;试</div>-->
+                        <!--<div class="bar">-->
+                            <!--<div class="barPrograss" style="width: 100%;"></div>-->
+                        <!--</div>-->
+                        <!--<div class="barData fontSize16">12</div>-->
+                    <!--</div>-->
+
+                </div>
+            </div>
+
+            <!--table start-->
+            <div class="table_box">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="7%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="10%">
+                                <col width="15%">
+                                <col width="12%">
+                                <col width="11%">
+                                <col width="11%">
+                                <col width="11%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>事件类型</th>
+                                <th>单位编号</th>
+                                <th>子站号</th>
+                                <th>单位名称</th>
+                                <th>事件记录时间</th>
+                                <th>记录说明</th>
+                                <th>事件结束时间</th>
+                                <th>结束说明</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="7%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="10%">
+                                <col width="15%">
+                                <col width="12%">
+                                <col width="11%">
+                                <col width="11%">
+                                <col width="11%">
+                            </colgroup>
+                            <tbody id="tbodyContent">
+                                <!--<tr id="resfdhgsgd">-->
+                                    <!--<td>4</td>-->
+                                    <!--<td>关机</td>-->
+                                    <!--<td>23434543</td>-->
+                                    <!--<td>0000012</td>-->
+                                    <!--<td>上海夸过采购中心办公楼</td>-->
+                                    <!--<td>2018-07-20 17:34:23</td>-->
+                                    <!--<td><img src="../../Content/images/AggregateAnalysis/icon_luoji.png"><span class="underline" onclick="getLogic(this);">查看逻辑图</span></td>-->
+                                    <!--<td>2018-07-20 17:34:23</td>-->
+                                    <!--<td>&#45;&#45;</td>-->
+                                <!--</tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div id="demo7"></div>
+                    <img class="exportBtn" id="exportBtn" src="../../Content/images/Public/exportBT.png">
+                </div>
+
+            </div>
+            <!--table end-->
+
+        </section>
+    </div>
+
+
+    <!--弹窗-->
+    <div id="LogicBox">
+        <div class="titleBox">
+            <div>
+                <div>
+                    <img src="../../Content/images/NetInfoStatistic/uniticon.png">
+                    <span>报警单位</span>
+                </div>
+                <div id="evenUnitName">苏州思迪信息技术有限公司</div>
+            </div>
+
+            <div>
+                <div>
+                    <img src="../../Content/images/NetInfoStatistic/timeicon.png">
+                    <span>时间结束时间</span>
+                </div>
+                <div id="eventEndTime">2018-07-20 18:23:43</div>
+            </div>
+        </div>
+
+        <div class="contBox">
+            <div class="c_word">
+                <span>逻辑触发图例</span>
+            </div>
+
+            <div id="eventUrl">
+
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var _ifUsed = 0; //调用page方法的判断
+
+    var _listData = {
+        pageNumber:1,
+        pageSize:20,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#search').val(),
+        eventType:$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||""
+    };
+    $(function(){
+        loadLayuiForm();//调用layui form组件，方法写在public
+        clickevent();
+
+        getEventsCountData(); //上面统计
+
+        getEventListData();//下面表格
+
+        //loadData();
+    });
+
+    function clickevent(){
+        $('.submitBtn').click(function(){ //查询
+            getEventsCountData();
+            _listData.startDate = $('#sData2').val();
+            _listData.endDate = $('#eData2').val();
+            _listData.keyword = $('#search').val();
+            _listData.eventType = $('#xcDealStatus').find('dd.layui-this').attr('lay-value')||""
+            getEventListData();
+        });
+
+        $('.timeBTChose > span').click(function(){ //月季年
+            $(this).addClass('actTime').siblings().removeClass('actTime');
+            var _index = $(this).index();
+            timeType = _index;
+//            loadData(); //重新加载数据图表
+//            getTableData();
+        });
+
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#tbodyContent tr:first-child>td').length == 1){
+                return;
+            }
+            var url = _serverIp + "/front/analysis/exportEventList?"
+                    + "keyword=" + $('#search').val()
+                    + "&startDate=" + $('#sData2').val()
+                    + "&endDate=" + $('#eData2').val()
+                    + "&eventType="+$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+            postExport(url)
+        });
+
+        $('.timeBTChose > span').click(function(){ //月季年
+            $(this).addClass('actTime').siblings().removeClass('actTime');
+            var text = $(this).text();
+            if(text == '月'){
+                $('#sData2').val(getNowFormatDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == '季'){
+                $('#sData2').val(getQuarterStartDate());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == "年"){
+                $('#sData2').val(getNowYeartDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }
+            setTimeout(function(){
+                $('.submitBtn').click();
+            },500);
+        });
+    }
+
+    function getEventsCountData(){
+        var data = {
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:$('#search').val(),
+            eventType:$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||""
+        };
+
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/eventsCount",
+            data:data,
+            success: function (data) {
+                //console.log(data);
+                if(data.success){
+                    var eventData = [],dataTotal=0;
+                    var msg = data.obj;
+                    for(var i = 0 ; i < msg.length;i++){
+                        eventData.push({"name":msg[i].coupletKey,'value':msg[i].coupletValue});
+                        dataTotal += Number(msg[i].coupletValue);
+                    }
+
+                    if(dataTotal != 0){
+                        $('.Chkchart1').html('<div id="Chkchart1"></div>');
+                        loadData(eventData,dataTotal);
+                        loadTreeListContent(eventData,dataTotal);
+                    }
+                    else{
+                        $('.Chkchart1').text('暂无数据');
+                        $('#eventCountContent').text('暂无数据');
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function loadTreeListContent(data,dataTotal){
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<div class="eventDiv">' +
+                    '<div class="word"><span class="num">'+(i+1)+'</span> '+data[i].name+'</div>' +
+                    '<div class="bar">' +
+                    '<div class="barPrograss" style="width: '+(data[i].value /dataTotal*100 )+'%;"></div>' +
+                    '</div>' +
+                    '<div class="barData fontSize16">'+data[i].value+'</div>' +
+                    '</div>'
+        }
+        $('#eventCountContent').html(html)
+    }
+
+    //事件饼图
+    function loadData(data,dataTotal){
+        //console.log(data);
+//        console.log(dataTotal)
+        var chart1 = echarts.init(document.getElementById('Chkchart1'));
+//        chart1.clear();
+        chart1.title = '事件总数';
+        var lengendData = [];
+        for(var i = 0 ; i < data.length;i++){
+            lengendData.push(data[i].name);
+        }
+        var option = {
+            tooltip : {
+                formatter:"{b}:{c}",
+                show:true
+            },
+            color:["#875EE2","#FB4A52","#FF980C","#14D374","#079FEB","#CBC9CE","#12B9CC","#F46ADA","#4475C2","#015BF9"],
+            legend: {
+                //orient: 'vertical',
+                x: 'center',
+                //y: 'bottom',
+                data: lengendData,
+                type:'scroll',
+                //orient:'vertical',
+                inactiveColor: '#777',
+                //right: '2%',
+                bottom: '1%',
+                itemWidth:8,
+                itemHeight:8,
+                pageIconSize:12,
+                pageIconColor:'#21AFF7',
+                pageIconInactiveColor:'#2073BF',
+                pageTextStyle:{
+                    color: '#418ACE'
+                },
+                textStyle: {
+                    color:'#BDC6E3',
+                    fontSize: 12
+                }
+            },
+            series : [
+                {
+                    name: '事件分析',
+                    type: 'pie',
+                    radius :['55%','68%'],
+                    center: ['50%', '50%'],
+                    hoverAnimation:false,
+                    selectedOffset:5,
+                    stillShowZeroSum:false,
+                    label:{
+                        normal:{
+                            show:true,
+                            formatter: '{d}%'
+//                            color:"#6696C7"
+                        },
+//                        emphasis:{
+//                            formatter: [
+//                                '{a|{c}}',
+//                                '{b|}',
+//                                '{x|{b}（{d}%）}'
+//                            ].join('\n'),
+//                            rich: {
+//                                a: {
+//                                    color: '#fff',
+//                                    fontSize: 20,
+//                                    fontWeight:'bold',
+//                                    height: 30,
+//                                    align:'center',
+//                                    padding:[0,60],
+//                                    backgroundColor:'#053160'
+//                                },
+//                                b: {
+//                                    height:1,
+//                                    width:'100%',
+//                                    borderWidth:1,
+//                                    align:'left',
+//                                    borderColor:'rgba(114, 165, 212,0.3)'
+//                                },
+//                                x: {
+//                                    fontSize: 14,
+//                                    lineHeight: 30,
+//                                    color:"#72A5D4",
+//                                    padding:[5,10],
+//                                    align:'center',
+//                                    backgroundColor:'#053160'
+//                                },
+//                            }
+//                        }
+                    },
+                    labelLine:{
+                        normal:{
+                            show:true,
+                            length:5,
+                            length2:10
+                        },
+                        emphasis:{
+                            show:true,
+
+                            lineStyle:{
+                                color:"#77A2CD"
+                            }
+                        }
+                    },
+                    data:data
+                },
+                {
+                    name: '事件分析',
+                    type: 'pie',
+                    radius :['47%','48%'],
+                    center: ['50%', '50%'],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'center',
+                            formatter: [
+                                '{a|'+dataTotal+'}',
+                                '{b|}',
+                                '{x|事件总数}'
+                            ].join('\n'),
+                            rich: {
+                                a: {
+                                    color: '#EEBF00',
+                                    fontSize: 20,
+                                    fontWeight:'bold',
+                                    height: 30
+                                },
+                                b: {
+                                    height:1,
+                                    width:'100%',
+                                    borderWidth:1,
+                                    align:'left',
+                                    borderColor:'rgba(153, 200, 242,0.5)'
+                                },
+                                x: {
+                                    fontSize: 12,
+                                    lineHeight: 20,
+                                    padding:10
+
+                                },
+                            }
+                        },
+                        emphasis: {
+                            show: true
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    hoverAnimation:false,
+                    data:[
+                        {value:dataTotal, name:'',itemStyle:{normal:{color:'#84B7E2'}},tooltip:{show:false}}
+                    ]
+                }
+            ]
+        };
+
+        chart1.setOption(option);
+        window.addEventListener('resize', function () { //宽度自适应
+            chart1.resize();
+        });
+
+        function eConsole(param) {
+        　　//alert(option.series[0].data.length);
+        　　//alert(option.series[0].data[i]);
+        　　//alert(param.dataIndex) // 获取当前点击索引，
+        　　//alert(param.dataIndex);
+        　　clickFunc(param.dataIndex);//执行点击效果
+        }
+
+
+        chart1.on("mouseover", eConsole);
+    }
+
+    function clickFunc(dataIndex){
+        $('.eventbox .eventDiv').eq(dataIndex).click();
+        $('.eventbox .eventDiv').eq(dataIndex).addClass('eventActive').siblings().removeClass('eventActive');
+//         getTableData(); //表格数据重载
+    }
+
+    //表格数据加载
+    function getEventListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getEventList",
+            data:_listData,
+            success: function (data) {
+                //console.log(data);
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+               getEventListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    function getEventListContent(msg){
+        var data = msg.list;
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            var isimg = "";
+            if(data[i].eventUrl !=""){
+                isimg = '<img src="../../Content/images/AggregateAnalysis/icon_luoji.png"><span class="underline" onclick="getLogic(\''+data[i].eventUrl+'\',\''+data[i].endTime+'\',\''+data[i].unitName+'\');">查看逻辑图</span>'
+            }
+
+            html += '<tr id="'+data[i].id+'">' +
+                    '<td>'+(msg.startRow++)+'</td>' +
+                    '<td>'+data[i].eventTypeName+'</td>' +
+                    '<td>'+data[i].unitCode+'</td>' +
+                    '<td>'+data[i].childStationNum+'</td>' +
+                    '<td class="align-left">'+data[i].unitName+'</td>' +
+                    '<td>'+data[i].startTime+'</td>' +
+                    '<td>'+isimg+'</td> ' +
+                    '<td>'+data[i].endTime+'</td> ' +
+                    '<td>'+data[i].endReason+'</td> ' +
+                    '</tr>'
+        }
+        $('#tbodyContent').html(html || "<tr><td colspan='9'>暂无数据</td></tr>");
+    }
+
+    //重置分页
+    function layerPage(count) {
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+//                console.log(obj)
+                    if(!isNew){
+                        _listData.pageNumber = obj.curr;
+                        _listData.pageSize = obj.limit;
+                        getEventListData();
+                    }
+                }
+            });
+        })
+    }
+
+    function getLogic(url,endtime,unitname){
+        //var id = $(obj).parents('tr').attr('id');
+        $('#eventUrl').html('<img src="../../Content/images/event/'+url+'.png">');
+        $('#evenUnitName').text(unitname);
+        $('#eventEndTime').text(endtime);
+        layer.open({
+            type: 1,
+            title: '逻辑组合报警',
+            closeBtn: 1,
+            area:['55%','68%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: $('#LogicBox')
+        });
+    }
+
+
+</script>
+</html>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitUserExperienceMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitUserExperience" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="company_addr" property="companyAddr" jdbcType="VARCHAR" />
+    <result column="job" property="job" jdbcType="VARCHAR" />
+    <result column="Entry_date" property="entryDate" jdbcType="TIMESTAMP" />
+    <result column="Quit_date" property="quitDate" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="card" property="card" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getUserExperienceList"  resultType="com.gw.unit.data.UserExperienceOutData" parameterType="com.gw.unit.data.UserExperienceInData">
+  	SELECT
+		e.card,
+		e.company_addr companyAddr,
+		e.company_name companyName,
+		CONVERT (VARCHAR, e.Entry_date, 23)entryDate,
+		e.ID id,
+		e.job job,
+		CONVERT (VARCHAR, e.Quit_date, 23)quitDate,
+		e.remark remark
+	FROM
+		UT_Unit_User_Experience e
+	<where>
+		e.user_id = #{userId}
+		<if test="companyName != null and companyName != ''">
+			and e.company_name like '%${companyName}%'
+		</if>
+		<if test="card != null and card != ''">
+			AND e.card like '%${card}%'
+		</if>
+	</where>
+	ORDER BY e.ID DESC
+  </select>
+  <select id="getUserExperience"  resultType="com.gw.front.lookup.data.FrontUserExperienceOutData" parameterType="java.lang.String">
+  	SELECT
+		e.card,
+		e.company_addr companyAddr,
+		e.company_name companyName,
+		e.Entry_date entryDate,
+		e.ID id,
+		e.job job,
+		e.Quit_date quitDate,
+		e.remark remark
+	FROM
+		UT_Unit_User_Experience e
+		WHERE e.user_id = #{infoId}
+		order by e.id desc;
+  </select>
+  <delete id="deleteByUserId">
+  	DELETE FROM UT_Unit_User_Experience WHERE user_id=#{userId}
+  </delete>
+</mapper>

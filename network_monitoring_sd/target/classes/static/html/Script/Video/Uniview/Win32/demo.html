@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>demo.xhtml</title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand"> 
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="keywords" content="enter,your,keywords,here" />
+		<meta http-equiv="description" content="A short description of this page." />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<style type="css/text">
+            *{padding:0px; margin:0px;}
+            html,body{height: 100%; border: 0px;}
+            body{ margin:0px auto;font-size:12px;font-family: "Microsoft YaHei", \5FAE\8F6F\96C5\9ED1, Arial, Helvetica, sans-serif;background-color: #F4F5F7;}
+			button{width: 70px;}
+        </style>
+    	<script type="text/javascript" src="plugins/jquery-1.10.2.min.js"></script>
+    	<script type="text/javascript" src="plugins/jquery-ui-1.10.3.min.js"></script>
+		<script type="text/javascript" src="common.js"></script>
+		<script type="text/javascript" src="jquery.min.js"></script>
+		<script type="text/javascript" src="jquery.blockUI.js"></script>
+	</head>
+	<body>
+        <table>
+            <tr>
+                <td>Camera IP:</td>
+                <td><input type="text" id="cameraIp" value="206.10.252.53"/></td>
+                <td>port:</td>
+                <td><input type="text" id="port" value="80"/></td>
+				<td>username:</td>
+                <td><input type="text" id="userName" value="admin"/></td>
+                <td>password:</td>
+                <td><input type="text" id="password" value="123456"/></td>
+            </tr>
+            <tr>
+                <td>Volume: </td>
+                <td><input type="text" id="Volume" value="200"/></td>
+                <td>channel ID：</td>
+                <td><input type="text" id="channelID" value="1"/></td>
+				<td>Preset ID：</td>
+                <td><input type="text" id="PresetID" value="1"/></td>
+				<td>Days ago：</td>
+                <td><input type="text" id="Day" value="1"/></td>
+            </tr>
+			<tr>
+				<td colspan="2" align="right">
+					<button type="button" id="login" onclick="login()" style="width:100px;height:25px;">login</button>
+					<button type="button" id="logout" onclick="logout()" style="width:100px;height:25px;" disabled="disabled">login out</button>
+				</td>
+				<td colspan="3" align="right" >
+					<button type="button" id="NW" style="width:50px;height:25px;" onclick="PTZ_NW()" disabled="disabled">NW</button>
+					<button type="button" id="UP" style="width:50px;height:25px;" onclick="PTZ_UP()" disabled="disabled">UP</button>
+					<button type="button" id="NE" style="width:50px;height:25px;" onclick="PTZ_NE()" disabled="disabled">NE</button>
+				</td>
+				<td colspan="3" align="right" >
+					<SPAN style="text-align:center">Query:</SPAN>
+					<button type="button" id="CommnQuery" style="width:100px;height:25px;" onclick="CommnQuery()" disabled="disabled">Common</button>
+					<button type="button" id="EventQuery" style="width:100px;height:25px;" onclick="EventQuery()" disabled="disabled">Event</button>
+					<button type="button" id="FindNextFile" style="width:120px;height:25px;" onclick="FindNextFile()" disabled="disabled">Find Next File</button>
+					<button type="button" id="FindClose" style="width:120px;height:25px;" onclick="FindClose()" disabled="disabled">Close Find</button>
+					
+				</td>	
+			</tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <button type="button" onclick="startVideo()" id="start" style="width:100px;height:25px;" disabled="disabled">Open live</button>
+                    <button type="button" onclick="stopVideo()" id="stop" style="width:100px;height:25px;" disabled="disabled">Close live</button>
+                </td>  
+				<td colspan="3" align="right">
+					<button type="button" id="L" style="width:50px;height:25px;"  onclick="PTZ_Left()" disabled="disabled">L</button>
+					<button type="button" id="Stop" style="width:50px;height:25px;" onclick="PTZ_Stop()" disabled="disabled">Stop</button>
+					<button type="button" id="R" style="width:50px;height:25px;" onclick="PTZ_Right()" disabled="disabled">R</button>
+				</td>
+				<td colspan="3" align="right">
+				<SPAN style="text-align:center">play back:</SPAN>
+					<button type="button" id="playbackbytime" style="width:100px;height:25px;" onclick="playbackbytime()" disabled="disabled">by time</button>
+					<button type="button" id="stopplayback" style="width:100px;height:25px;" onclick="stopplayback()" disabled="disabled">Stop</button>
+				</td>
+            </tr>
+			<tr>
+                <td colspan="2" align="right">
+					<button type="button" onclick="startRecord()" id="startRecord" style="width:100px;height:25px;" disabled="disabled">Start record</button>
+                    <button type="button" onclick="stopRecord()"  id="stopRecord" style="width:100px;height:25px;" disabled="disabled">Stop record</button>
+                </td>  
+				<td colspan="3" align="right">
+					<button type="button" id="SW" style="width:50px;height:25px;" onclick="PTZ_SW()" disabled="disabled">SW</button>
+					<button type="button" id="DN" style="width:50px;height:25px;" onclick="PTZ_DN()" disabled="disabled">DN</button>
+					<button type="button" id="SE" style="width:50px;height:25px;" onclick="PTZ_SE()" disabled="disabled">SE</button>
+				</td>
+				<td colspan="3" align="right">
+				<SPAN style="text-align:center">download:</SPAN>
+					<button type="button" id="downloadbytime" style="width:100px;height:25px;" onclick="downloadbytime()" disabled="disabled">by time</button>
+					<button type="button" id="stopdownload" style="width:100px;height:25px;" onclick="stopdownload()" disabled="disabled">Stop</button>
+				</td>
+            </tr>
+			<tr>
+				<td colspan="2" align="right">
+					<button type="button" onclick="opensound()" id="opensound" style="width:100px;height:25px;" disabled="disabled">Open sound</button>
+                    <button type="button" onclick="closesound()"  id="closesound" style="width:100px;height:25px;" disabled="disabled">Close sound</button>
+					<button type="button" onclick="Getsound()"  id="getsound" style="width:100px;height:25px;" disabled="disabled">Get sound</button>
+                </td> 		
+				<td colspan="3" align="right">
+				<SPAN style="text-align:center">preset:</SPAN>
+					<button type="button" id="SetPreset" style="width:50px;height:25px;" onclick="PTZ_SetPreset()" disabled="disabled">Set</button>
+					<button type="button" id="GotoPreset" style="width:50px;height:25px;" onclick="PTZ_GotoPreset()" disabled="disabled">Goto</button>
+					<button type="button" id="DeletePreset" style="width:50px;height:25px;" onclick="PTZ_DeletePreset()" disabled="disabled">Delete</button>
+				</td>
+				<td colspan="3" align="right">
+				<SPAN style="text-align:center">progress:</SPAN>
+					<button type="button" id="GetProgress" style="width:100px;height:25px;" onclick="GetProgress()" disabled="disabled">Get</button>
+					<button type="button" id="SetProgress" style="width:100px;height:25px;" onclick="SetProgress()" disabled="disabled">Set</button>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="right">
+					<button type="button" onclick="setsound()" id="setsound" style="width:100px;height:25px;" disabled="disabled">Set sound</button>
+                    <button type="button" id="snatchPic" onclick="snatchPic()" style="width:100px;height:25px;" disabled="disabled">Snapshot</button>
+                </td>  
+				<td colspan="3" align="right">
+				</td>
+				<td colspan="3" align="right">
+					<button type="button" id="Resume" style="width:100px;height:25px;" onclick="Resume()" disabled="disabled">Resume</button>
+					<button type="button" id="Pause" style="width:100px;height:25px;" onclick="Pause()" disabled="disabled">Pause</button>
+				</td>
+			</tr>
+			<tr>
+                <td>URL:</td>
+                <td><input type="text" id="URL" value="http://ezcloud.uniview.com/"/></td>
+                <td>User/Dev name:</td>
+                <td><input type="text" id="CloudUsername" value="j00504"/></td>
+                <td>Password:</td>
+                <td><input type="text" id="CloudPassword" value="fb58dc95b011a5efd7879717feff598d"/></td>
+            </tr>
+			<tr>
+				<td colspan="2" align="right">
+					<button type="button" id="Cloudlogin" onclick="Cloudlogin()" style="width:100px;height:25px;">Cloud login</button>
+					<button type="button" id="GetCloudDevList" onclick="GetCloudDevList()" style="width:100px;height:25px;" disabled="disabled">Get Dev List</button>
+				</td>
+			</tr>
+			<tr>
+                <td>Dev name:</td>
+                <td><input type="text" id="CloudDevname" value="Device0001"/></td>
+                <td>Password:</td>
+                <td><input type="text" id="CloudDevPassword" /></td>
+            </tr>
+			<tr>
+				<td colspan="1" align="right">
+					<button type="button" id="Devlogin" onclick="Devlogin()" style="width:100px;height:25px;" disabled="disabled">Dev login</button>
+				</td>
+			</tr>
+            <tr>
+                <td colspan="6" height="400px;">
+					<div id="playerContainer" style="height: 1px;">
+					</div>
+                </td>
+            </tr>
+        </table>
+    <script type="text/javascript">
+	/******************************************************功能变量、方法****************************************************/
+	var sdk_viewer = null; // 控件（插件）对象
+	var isLogin = false;
+	var Main = {
+	    EventMap : ""
+	}
+	Main.EventMap = (function(){
+    var closure = {
+        formatExceotionCode: function(u32ExceptionCode){
+            u32ExceptionCode = u32ExceptionCode.split(',');
+            return parseInt(u32ExceptionCode, 10);
+        },
+        formatTaskNo: function(u32Task_No){
+            u32Task_No = u32Task_No.split(',');
+            return parseInt(u32Task_No, 10);
+        }
+    };
+    return {
+		/* 告警事件上报 */
+		__200:function(strAlarmInfo){
+			//alert(strAlarmInfo);
+		}
+      };
+    })();
+	
+	var cfg = {
+          id: "player",                    //加载的activex控件id
+          container: "playerContainer",    //控件/插件的父节点
+          name: "sdk_viewer",              //实例对象的名称，用于设置napi上报事件的入参
+          events: Main.EventMap,           //控件事件map
+          stPortInfo: {
+              szDeviceIp: "",
+              szLocalIp: "",
+          },                                  //端口信息     
+          stUserInfo: {                        //用户登录信息
+              User: "",
+              Password: ""
+          },
+          maxWnd: 64,                       //控件动态创建窗格的个数，不小于最大通道路数,默认64路 (可选) 
+          focusColor: 'ffcc00',             //窗格获得焦点时的边框颜色，注意：参数形如'xxxxxx'，为颜色的16进制，以b g r 顺序，而不是r g b (可选) 
+          unfocusColor: '747d7d',           //窗格未获得焦点时的边框颜色，注意：参数形如'xxxxxx'，为颜色的16进制，以b g r 顺序，而不是r g b (可选) 
+          backgColor: '373737',             //控件背景色，注意：参数形如'xxxxxx'，为颜色的16进制，以b g r 顺序，而不是r g b (可选)
+         // noCreateWnd: 'true'           
+    }
+   
+   //流类型
+   var StreamType =
+   {
+      LIVE: 0,    //实况流
+      PICTRUE: 1, //抓拍流（jpeg）
+      MJPEG: 2,    //照片流
+      IMAGE_TYPE_PLATE: 3, //过车图片流
+      PIC_VIEW: 4 //图片查看
+    };
+	
+	var PtzCmd ={
+		TILTUP:        	     0x0402,       // 向上
+		TILTDOWN:            0x0404,       // 向下
+		PANRIGHT:            0x0502,       // 向右
+		PANLEFT:             0x0504,       // 向左
+		LEFTUP:              0x0702,       // 左上
+		LEFTDOWN:            0x0704,       // 左下
+		RIGHTUP:             0x0802,       // 右上
+		RIGHTDOWN:           0x0804,       // 右下
+		ALLSTOP:             0x0901       // 全停命令字 
+	}
+     var PresetCmd = {
+		SET_PRESET:           0,            // 设置预置位
+		CLE_PRESET:           1,            // 清除预置位
+		GOTO_PRESET:          2             // 转到预置位
+	 }
+	 
+	 var LiveStream = {
+		LIVE_STREAM_INDEX_MAIN:    0,   // 主流
+		LIVE_STREAM_INDEX_AUX:     1,   // 辅流
+		LIVE_STREAM_INDEX_THIRD:   2    // 第三流
+	 }
+	 
+	 var Protocal = {
+		TRANSPROTOCAL_RTPTCP:      1,         //TCP
+		TRANSPROTOCAL_RTPUDP:      2          // UDP
+	 }
+	 
+	 var MediaFileFormat = {
+		MEDIA_FILE_MP4:            0,           // mp4格式的媒体文件
+		MEDIA_FILE_TS:             1            // TS格式的媒体文件  TS media file */
+	 }
+	 
+	 var PictureFormat = {
+		PICTURE_BMP:               0,                  // 图片格式为bmp格式
+		PICTURE_JPG:               1                   // 图片格式为jpg格式
+	 }
+	 
+	 var EventType ={
+		ALL:                       0,        // 所有的存储
+		MOTIONDETECTION:           4,        // 运动检测事件存储
+		DIGITALINPUT:              5,        // 数字输入事件存储 
+		VIDEOLOSS:                 7,        // 视频丢失事件存储
+		INVALID:                   0xFF      // 无效值
+	}  
+    var PlayControl ={
+	    NETDEV_PLAY_CTRL_PLAY:             0,           /* 开始播放  Play */
+		NETDEV_PLAY_CTRL_PAUSE:            1,           /* 暂停播放  Pause */
+		NETDEV_PLAY_CTRL_RESUME:           2,           /* 恢复播放  Resume */
+		NETDEV_PLAY_CTRL_GETPLAYTIME:      3,           /* 获取播放进度  Obtain playing time */
+		NETDEV_PLAY_CTRL_SETPLAYTIME:      4,           /* 设置播放进度  Configure playing time */
+		NETDEV_PLAY_CTRL_GETPLAYSPEED:     5,           /* 获取播放速度  Obtain playing speed */
+		NETDEV_PLAY_CTRL_SETPLAYSPEED:     6,           /* 设置播放速度  Configure playing speed */
+		NETDEV_PLAY_CTRL_SINGLE_FRAME:     7            /* 设置单帧播放  Configure single frame playing speed */
+	}	
+    
+	/**********************************************************************************************************/
+	
+	/****************************************初始化控件begin****************************************/
+	var resultList = [];
+        cfg["stUserInfo"]["User"] = document.getElementById("userName").value;         // 用户名
+        cfg["stUserInfo"]["Password"] = document.getElementById("password").value;      // 密码
+        cfg["stPortInfo"]["szDeviceIp"] = document.getElementById("cameraIp").value;   // 相机IP
+       
+        $("#playerContainer").show();
+    	sdk_viewer = new Utils.Player(cfg);                                       //初始化控件 
+        var retcode = sdk_viewer.execFunction("NetSDKSetPlayWndNum" , 4);         //分屏 
+        if(0!=retcode){
+            alert("实况窗口实例化失败");
+        }
+    var DeviceHandle = -1;
+	var CloudHandle = -1;
+    /****************************************初始化控件end****************************************/
+    function login() {
+		var SDKRet = sdk_viewer.execFunction("NETDEV_Login", document.getElementById("cameraIp").value, document.getElementById("port").value, document.getElementById("userName").value, document.getElementById("password").value);
+		if(-1 == SDKRet)
+		{
+			alert("登录失败");
+		}
+        else{ 
+		    var result = JSON.parse(SDKRet);
+		    DeviceHandle = result.UserID;
+            document.getElementById("start").disabled = false;
+            document.getElementById("login").disabled = true;
+            document.getElementById("logout").disabled = false;
+			document.getElementById("CommnQuery").disabled = false;
+			document.getElementById("EventQuery").disabled = false;
+			document.getElementById("playbackbytime").disabled = false;
+			document.getElementById("stopplayback").disabled = false;
+			document.getElementById("downloadbytime").disabled = false;
+			document.getElementById("stopdownload").disabled = false;
+			document.getElementById("GetProgress").disabled = false;
+			document.getElementById("SetProgress").disabled = false;
+			document.getElementById("Resume").disabled = false;
+			document.getElementById("Pause").disabled = false;
+		    $("#playerContainer").css("height", "400px");
+            
+	        isLogin = true;
+	    }
+       
+    }
+    
+    // 注销控件
+    function logout() {
+		sdk_viewer.execFunction("NETDEV_Logout", DeviceHandle);
+		DeviceHandle = -1;
+        document.getElementById("login").disabled = false;
+		document.getElementById("logout").disabled = true;
+        document.getElementById("start").disabled = true;
+        document.getElementById("stop").disabled = true;
+		document.getElementById("snatchPic").disabled = true;
+		document.getElementById("startRecord").disabled = true;
+		document.getElementById("stopRecord").disabled = true;
+		document.getElementById("NW").disabled = true;
+		document.getElementById("UP").disabled = true;
+		document.getElementById("NE").disabled = true;
+		document.getElementById("L").disabled = true;
+		document.getElementById("R").disabled = true;
+		document.getElementById("Stop").disabled = true;
+		document.getElementById("SW").disabled = true;
+		document.getElementById("DN").disabled = true;
+		document.getElementById("SE").disabled = true;
+		document.getElementById("setsound").disabled = true;
+		document.getElementById("opensound").disabled = true;
+		document.getElementById("closesound").disabled = true;
+		document.getElementById("SetPreset").disabled = true;
+		document.getElementById("GotoPreset").disabled = true;
+		document.getElementById("DeletePreset").disabled = true;
+    }
+	
+	function Cloudlogin()
+	{
+		var SDKRet = -1;
+		var SDKRet = sdk_viewer.execFunction("NETDEV_LoginCloud", document.getElementById("URL").value,document.getElementById("CloudUsername").value, document.getElementById("CloudPassword").value);
+		if(-1 == SDKRet)
+		{
+			alert("云登录失败");
+		}
+        else{
+		CloudHandle = SDKRet;
+		document.getElementById("Cloudlogin").disabled = true;
+		document.getElementById("Devlogin").disabled = false;
+		document.getElementById("GetCloudDevList").disabled = false;
+		
+		}
+	}
+	function GetCloudDevList()
+	{
+	    var SDKRet = sdk_viewer.execFunction("NETDEV_GetCloudDevList", CloudHandle);
+		if(1 != SDKRet)
+		{
+			alert(SDKRet);
+		}
+		else{
+			alert("设备发现失败");
+		}
+	}
+	function Devlogin()
+	{
+		var SDKRet = 0;
+		var dataMap = {
+                      szDeviceName:document.getElementById("CloudDevname").value,
+                      szDevicePassword:document.getElementById("CloudDevPassword").value,
+					  dwT2UTimeout:0
+					  }
+
+        jsonStr = JSON.stringify(dataMap);
+		var SDKRet = sdk_viewer.execFunction("NETDEV_LoginCloudDev", CloudHandle, jsonStr);
+		if(-1 == SDKRet)
+		{
+			alert("设备登录失败");
+		}
+        else{
+		    var result = JSON.parse(SDKRet);
+		    DeviceHandle = result.UserID;	
+		    document.getElementById("start").disabled = false;
+            document.getElementById("logout").disabled = false;
+			document.getElementById("CommnQuery").disabled = false;
+			document.getElementById("EventQuery").disabled = false;
+			document.getElementById("playbackbytime").disabled = false;
+			document.getElementById("stopplayback").disabled = false;
+			document.getElementById("downloadbytime").disabled = false;
+			document.getElementById("stopdownload").disabled = false;
+			document.getElementById("GetProgress").disabled = false;
+			document.getElementById("SetProgress").disabled = false;
+			document.getElementById("Resume").disabled = false;
+			document.getElementById("Pause").disabled = false;
+		    $("#playerContainer").css("height", "400px");
+            
+	        DevisLogin = true;
+		
+		}
+	}
+  
+  /************************************************实况 相关**************************************************/	  
+    // 启流
+    function startVideo() {
+	    var dataMap = {
+                      dwChannelID:document.getElementById("channelID").value, 
+                      dwStreamType:LiveStream.LIVE_STREAM_INDEX_MAIN,
+					  dwLinkMode:Protocal.TRANSPROTOCAL_RTPTCP,
+					  dwFluency:0
+                      }
+
+        jsonStr = JSON.stringify(dataMap);
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		
+		var retcode = sdk_viewer.execFunction("NETDEV_RealPlay", parseInt(ResourceId), DeviceHandle, jsonStr);
+        if (0 != retcode) {
+                alert("播放实况失败。");
+        } 
+		else {        
+            document.getElementById("start").disabled = false;
+            document.getElementById("stop").disabled = false;
+			document.getElementById("snatchPic").disabled = false;
+		    document.getElementById("startRecord").disabled = false;
+			document.getElementById("NW").disabled = false;
+		    document.getElementById("UP").disabled = false;
+			document.getElementById("NE").disabled = false;
+		    document.getElementById("L").disabled = false;
+		    document.getElementById("R").disabled = false;
+		    document.getElementById("Stop").disabled = false;
+		    document.getElementById("SW").disabled = false;
+		    document.getElementById("DN").disabled = false;
+			document.getElementById("SE").disabled = false;
+			document.getElementById("opensound").disabled = false;
+			document.getElementById("SetPreset").disabled = false;
+			document.getElementById("GotoPreset").disabled = false;
+			document.getElementById("DeletePreset").disabled = false;
+        }
+    }
+    
+    // 停流
+    function stopVideo() {
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+        var retcode = sdk_viewer.execFunction("NETDEV_StopRealPlay", parseInt(ResourceId));  //关闭视频流  
+        if (0 != retcode) {
+            alert("停流失败。");
+        } 
+		else {           
+            document.getElementById("start").disabled = false;
+            document.getElementById("stop").disabled = true;
+			document.getElementById("snatchPic").disabled = true;
+		    document.getElementById("startRecord").disabled = true;
+		    document.getElementById("stopRecord").disabled = true;
+			document.getElementById("NW").disabled = true;
+		    document.getElementById("UP").disabled = true;
+			document.getElementById("NE").disabled = true;
+		    document.getElementById("L").disabled = true;
+		    document.getElementById("R").disabled = true;
+		    document.getElementById("Stop").disabled = true;
+		    document.getElementById("SW").disabled = true;
+		    document.getElementById("DN").disabled = true;
+			document.getElementById("SE").disabled = true;
+			document.getElementById("setsound").disabled = true;
+			document.getElementById("opensound").disabled = true;
+			document.getElementById("closesound").disabled = true;
+			document.getElementById("SetPreset").disabled = true;
+			document.getElementById("GotoPreset").disabled = true;
+			document.getElementById("DeletePreset").disabled = true;
+        }
+    }
+    
+	// 截屏
+	function snatchPic() {
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_CapturePicture", parseInt(ResourceId), "C:\\NETDEV\\Pic\\netDev", PictureFormat.PICTURE_JPG);
+		var msg = "snatchPic success path C:\\NETDEV\\Pic\\netDev";
+		if (0 != retcode) {
+			msg = "snatchPic fail";
+		} 
+		alert(msg);
+	}
+	
+	//开始本地录像
+	function startRecord(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_SaveRealData",parseInt(ResourceId),"C:\\NETDEV\\Record\\netDev",MediaFileFormat.MEDIA_FILE_MP4);
+	    if(0!=retcode){
+	       alert("start fail ");
+	    }else{
+	       document.getElementById("startRecord").disabled = true;
+		   document.getElementById("stopRecord").disabled = false;
+		}
+	}
+	
+	//停止本地录像
+	function stopRecord(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_StopSavaRealData", parseInt(ResourceId));
+	    if(0!=retcode){
+	        alert("stop fail");
+	    }
+	    else{
+	       document.getElementById("startRecord").disabled = false;
+		   document.getElementById("stopRecord").disabled = true;
+	       alert("Save path C:\\NETDEV\\Record\\netDev");
+	    }
+	}
+	
+	//播放音频
+	function opensound(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_OpenSound",parseInt(ResourceId));//打开声音 
+	    if(0!=retcode){
+	      alert("Open sound fail");
+	    }
+	    else{
+	      document.getElementById("opensound").disabled = true;
+		  document.getElementById("closesound").disabled = false;
+		  document.getElementById("setsound").disabled = false;
+		  document.getElementById("getsound").disabled = false;
+	    }
+	}
+	
+	//停止播放音频
+	function closesound(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_CloseSound",parseInt(ResourceId));   //停止声音 
+	    if(0!=retcode){
+	        alert("Close sound fail");
+	    }
+	    else{
+	       document.getElementById("opensound").disabled = false;
+		   document.getElementById("closesound").disabled = true;
+		   document.getElementById("setsound").disabled = true;	
+		   document.getElementById("getsound").disabled = true;	   
+	    }
+	}
+	
+	function setsound(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_SetSoundVolume",parseInt(ResourceId), document.getElementById("Volume").value);   //停止声音 
+	    if(0!=retcode){
+	        alert("Set sound fail");
+	    }
+	}
+	
+	function Getsound(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_GetSoundVolume",parseInt(ResourceId));   //停止声音 
+	    if(-1==retcode){
+	        alert("Set sound fail");
+	    }
+		else
+		{
+			var msg = "Vloume:";
+			msg += retcode;
+			alert(msg);
+		}
+	}
+	
+	/******************** 云台控制 ***************************/
+	function PTZ_NW(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.LEFTUP,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_UP(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.TILTUP,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_Stop(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.ALLSTOP,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_NE(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.RIGHTUP,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_Left(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.PANLEFT,5);
+		if(0!= retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_Right(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.PANRIGHT,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_SW(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.LEFTDOWN,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_DN(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.TILTDOWN,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_SE(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZControl",parseInt(ResourceId),PtzCmd.RIGHTDOWN,5);
+		if(0 != retcode)
+		{
+			alert("ptz control fail");
+		}
+    }
+	
+	function PTZ_SetPreset(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZPreset",parseInt(ResourceId),PresetCmd.SET_PRESET,document.getElementById("PresetID").value, document.getElementById("PresetID").value);
+		if(0 != retcode)
+		{
+			alert("Preset control fail");
+		}
+    }
+
+	function PTZ_GotoPreset(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZPreset",parseInt(ResourceId),PresetCmd.GOTO_PRESET,document.getElementById("PresetID").value, document.getElementById("PresetID").value);
+		if(0 != retcode)
+		{
+			alert("Preset control fail");
+		}
+    }
+
+	function PTZ_DeletePreset(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var retcode = sdk_viewer.execFunction("NETDEV_PTZPreset",parseInt(ResourceId),PresetCmd.CLE_PRESET,document.getElementById("PresetID").value, document.getElementById("PresetID").value);
+		if(0 != retcode)
+		{
+			alert("Preset control fail");
+		}
+    }
+	
+	/******************** 回放 ***************************/	
+	var PlayBackHandle = -1;
+	var FindHandle = -1;
+	var PlayBackBeginTime = -1;
+	var PlayBackEndTime = -1;
+	var DownLoadHandle = -1;
+	function getLocalTime(nS){     
+		return new Date(parseInt(nS) * 1000).toLocaleString().substr(0,17)   
+							}     
+ 
+	function EventQuery(){
+		var vBeginTime = (new Date().getTime())/1000;
+		var vEndTime = (new Date().getTime())/1000 - 24*3600;
+		var dataMap = {
+					  szFileName:0,
+                      dwChannelID:document.getElementById("channelID").value, 
+                      dwFileType:EventType.ALL,
+					  tBeginTime:vBeginTime,
+					  tEndTime:vEndTime
+                      }
+
+        jsonStr = JSON.stringify(dataMap);
+		var SDKRet = sdk_viewer.execFunction("NETDEV_FindFile",DeviceHandle,jsonStr);
+		if(-1 != SDKRet)
+		{
+			FindHandle = SDKRet;
+			document.getElementById("FindNextFile").disabled = false;
+			alert("Find OK!Please Click 'Find Next File' button to Get File");
+		}
+		else{
+			alert("Not find");
+		}
+		
+    }
+	
+	function CommnQuery(){
+		var vBeginTime = (new Date().getTime())/1000;
+		var vEndTime = (new Date().getTime())/1000 - 24*3600;
+		var dataMap = {
+					  szFileName:0,
+                      dwChannelID:document.getElementById("channelID").value, 
+                      dwFileType:EventType.ALL,
+					  tBeginTime:vBeginTime,
+					  tEndTime:vEndTime
+                      }
+
+        jsonStr = JSON.stringify(dataMap);
+	    var SDKRet = sdk_viewer.execFunction("NETDEV_FindFile",DeviceHandle,jsonStr);
+		if(-1 != SDKRet)
+		{
+			FindHandle = SDKRet;
+			document.getElementById("FindNextFile").disabled = false;
+			alert("Find OK!Please Click 'Find Next File' button to Get File");
+		}
+		else{
+			alert("Not find");
+		}
+    }
+	
+	function FindNextFile()
+	{
+		var SDKRet = sdk_viewer.execFunction("NETDEV_FindNextFile",FindHandle);
+		if(-1 != SDKRet)
+		{
+			var result = JSON.parse(SDKRet);
+		    PlayBackBeginTime = result.tBeginTime;
+			PlayBackEndTime = result.tEndTime;
+			var dataMap = {
+					  BeginTime:getLocalTime(PlayBackBeginTime),
+                      EndTime:getLocalTime(PlayBackEndTime)
+                      }
+
+        jsonStr = JSON.stringify(dataMap);
+		alert(jsonStr);	
+			
+		}
+		else
+		{
+			alert("Not find");
+		}
+	
+	}
+	
+	function playbackbytime(){
+		var dataMap = {
+					  dwChannelID:document.getElementById("channelID").value, 
+					  tBeginTime:PlayBackBeginTime,
+					  tEndTime:PlayBackEndTime,
+					  dwLinkMode:Protocal.TRANSPROTOCAL_RTPTCP,
+					  dwFileType:EventType.ALL,
+					  dwDownloadSpeed:3
+                      }
+        jsonStr = JSON.stringify(dataMap);
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_PlayBack", parseInt(ResourceId), DeviceHandle,jsonStr);
+		if(-1 == retcode)
+		{
+			alert("playback fail");
+		}
+    }
+	
+	function stopplayback(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+	    var retcode = sdk_viewer.execFunction("NETDEV_StopPlayback", ResourceId);
+		if(0 != retcode)
+		{
+			alert("stop fail");
+		}
+    }
+	
+	function downloadbytime(){
+		var dataMap = {
+					  dwChannelID:document.getElementById("channelID").value, 
+					  tBeginTime:PlayBackBeginTime,
+					  tEndTime:PlayBackEndTime,
+					  dwLinkMode:Protocal.TRANSPROTOCAL_RTPTCP,
+					  dwFileType:EventType.ALL,
+					  dwDownloadSpeed:3
+                      }
+		jsonStr = JSON.stringify(dataMap);
+	    var retcode = sdk_viewer.execFunction("NETDEV_GetFileByTime",DeviceHandle ,jsonStr , "C:\\NETDEV_\\DownLoad\\netDev", MediaFileFormat.MEDIA_FILE_MP4);
+		if(-1 == retcode)
+		{
+			alert("Download fail");
+		}
+		DownLoadHandle = retcode;
+		alert("Downloading ... Please click 'stop download'button to save file")
+		
+    }
+	
+	function stopdownload(){
+	    var retcode = sdk_viewer.execFunction("NETDEV_StopDownload",DownLoadHandle);
+		if(0 != retcode)
+		{
+			alert("stop fail");
+		}
+		alert("Download succeed! path C:\\NETDEV_\\DownLoad\\netDev")
+    }
+	
+	function GetProgress(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var dataMap = {
+					  pulTime:0,
+					  pulSpeed:0
+                      }
+		jsonStr = JSON.stringify(dataMap);
+	    var SDKRet = sdk_viewer.execFunction("NETDEV_PlayBackControl",parseInt(ResourceId),PlayControl.NETDEV_PLAY_CTRL_GETPLAYTIME ,jsonStr);
+		if(-1 != SDKRet)
+		{
+			var result = JSON.parse(SDKRet);
+		    var PlayTime = result.PlayTime;
+			alert(PlayTime);
+		}
+		else{
+			alert("Not find");
+		}
+    }
+	
+	function SetProgress(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var dataMap = {
+					  pulTime:0,
+					  pulSpeed:20
+                      }
+		jsonStr = JSON.stringify(dataMap);
+	    var SDKRet = sdk_viewer.execFunction("NETDEV_PlayBackControl",parseInt(ResourceId),PlayControl.NETDEV_PLAY_CTRL_SETPLAYTIME ,jsonStr);
+		if(-1 == SDKRet)
+		{
+			alert("Set Play Time Fail");
+		}
+
+    }
+	
+	function Resume(){
+		var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var dataMap = {
+					  pulTime:0,
+					  pulSpeed:0
+                      }
+		jsonStr = JSON.stringify(dataMap);
+	    var SDKRet = sdk_viewer.execFunction("NETDEV_PlayBackControl",parseInt(ResourceId),PlayControl.NETDEV_PLAY_CTRL_RESUME ,jsonStr);
+		if(-1 == SDKRet)
+		{
+			alert("Resume Fail");
+		}
+	}
+	
+	function Pause(){
+	    var ResourceId = sdk_viewer.execFunction("NetSDKGetFocusWnd");
+		var dataMap = {
+					  pulTime:0,
+					  pulSpeed:0
+                      }
+		jsonStr = JSON.stringify(dataMap);
+	    var SDKRet = sdk_viewer.execFunction("NETDEV_PlayBackControl",parseInt(ResourceId),PlayControl.NETDEV_PLAY_CTRL_PAUSE ,jsonStr);
+		if(-1 == retcode)
+		{
+			alert("Pause fail");
+		}
+    }
+	
+	 function AlarmInfoCallback(alarminfo){
+		alert("hello");
+	 }
+    </script>
+	</body>
+</html>

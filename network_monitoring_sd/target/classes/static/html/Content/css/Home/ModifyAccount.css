@@ -1,0 +1,36 @@
+.layer_mainContent{
+    height: calc(94% - 28px);
+    /*margin: 0;*/
+}
+.server_content{
+    display: flex;
+    -webkit-align-content: center;
+    align-content: center;
+}
+.layer_mainContent .div_list{
+    margin: 3px 0;
+}
+.list_name{
+    width: 25%;
+}
+.list_con{
+    width: 75%;
+}
+.inputTxt{
+    width: 75%;
+    border: none;
+    background: none;
+    color: #C2DCFD;
+    margin-right: 3%;
+}
+
+.modifyTxt{
+    border: 1px #075989 solid;
+    padding: 2px 5px;
+}
+
+.modify{
+    color: #3DF9FF;
+    text-decoration: underline;
+    cursor: pointer;
+}

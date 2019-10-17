@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="../Content/css/public.css" />
+	<script src="../Script/jquery-1.11.0.js"></script>
+	<script src="../Script/layer/layer.js"></script>
+	<script src="../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../Script/public.js"></script>
+
+    <!-- <script src="main.js"></script> -->
+    <style>
+	    .btn_opt {
+		       float: left;
+			    color: #fff;
+			    font-size: .9rem;
+			    padding: .3rem 1rem;
+			    border-radius: 5px;
+			    margin-left: 5%;
+			    margin-top: 1rem;
+			    background: #08a2de;
+			    border: none;
+			    outline: none;
+			    cursor: pointer;
+		}
+		.btn_opt.stop{
+			 background: #f4aa69;
+		}
+		.layui-layer-confirm{
+			/*background: red;*/
+		    /*background: url(/Content/images/iframe/unitFile/Contract_bg.png) no-repeat center center scroll;*/
+    		background-size: 100% 100%;
+		}
+		.layui-layer-confirm .layui-layer-title{
+			       background: #0D3451;
+				    color: #fff;
+				    border: 1px #08a1dd solid;
+/* 				    border-bottom: none; */
+		}
+		
+    </style>
+</head>
+
+<body>
+    <!--<header>-->
+        <!--<span>实时视频</span>-->
+        <!--<i onclick="closeMe();">×</i>-->
+    <!--</header>-->
+<!--         <object class="video_box" id="idcontainer" classid="clsid:54FC7795-1014-4BF6-8BA3-500C61EC1A05"> -->
+<!--             <iframe id="camera" style="width: 100%;height: 100%"></iframe> -->
+
+<!--         </object> -->
+<main style="display:block;text-align:center;width:100%;height:calc(100% - 3rem);">
+<object classid="clsid:54FC7795-1014-4BF6-8BA3-500C61EC1A05" id="EZUIKit" style="width:90%;height:100%;margin:0 auto" name="EZUIKit" ></object>
+</main>
+    
+<!--     <button class="btn_opt" id="play" onclick="">保存</button> -->
+    <button class="btn_opt" id="" status="1" onclick="play(this);">开始播放</button>
+    <button class="btn_opt" id="talking" style="display:none;" status="1" onclick="talk(this);">开启对讲</button>
+    <button type="button" class="btn_opt" onmousedown="StartUpPTZCtrl(this)" onmouseup="StopUpPTZCtrl(this)" style="display:none" id="ptzupbtn">上</button>
+	<button type="button" class="btn_opt" onmousedown="StartLeftPTZCtrl(this)" onmouseup="StopLeftPTZCtrl(this)" style="display:none" id="ptzleftbtn">左</button>
+	<button type="button" class="btn_opt" onmousedown="StartRightPTZCtrl(this)" onmouseup="StopRightPTZCtrl(this)" style="display:none" id="ptzrightbtn">右</button>
+	<button type="button" class="btn_opt" onmousedown="StartDownPTZCtrl(this)" onmouseup="StopDownPTZCtrl(this)" style="display:none" id="ptzdownbtn">下</button>
+</body>
+
+</html>
+<script>
+    /*开启语音对讲卡顿*/
+    window.onbeforeunload=function(e){
+        var talking = $('#talking');
+        talking.hasClass('stop') && talk(talking.get(0));
+        // if( $('#talking').hasClass('stop') ){
+        //     talk($('#talking').get(0));
+        // }
+    }
+    function talk(ele){
+		var status = $(ele).attr("status");
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res;
+		if(status==1){
+		    res = playOcx.StartTalk();
+		    if(0 != res){
+		    	alert("StartTalk Error！");
+		    }else{
+		    	$(ele).attr('status',0).text('停止对讲').addClass('stop');
+		    }
+		}else{
+			res = playOcx.StopTalk();
+			if(0 != res){
+				alert("StopTalk Error！");
+			}else{
+				$(ele).attr('status',1).text('开启对讲').removeClass('stop');
+			}
+		}
+	}
+	function play(ele){
+		var status = $(ele).attr("status");
+		if(status==1){
+			startPlay(ele);
+		}else{
+			stopPlay(ele);
+		}
+	}
+</script>
+
+<script>
+    // alert($('html').css('font-size'));
+    // alert(window.innerWidth);
+    //ptz command
+	var cmd_up = 0;
+	var cmd_down = 1;
+	var cmd_left = 2;
+	var cmd_right = 3;
+	//ptz action
+	var action_start 	= 0;
+	var action_stop = 1;
+	//ptz speed
+	var ptz_speed = 7;
+    var _unitID = GetQuery('unitID');
+
+    var token = GetQuery('token');
+    var appKey = GetQuery('appKey');
+    var userName = GetQuery('serialnumber');
+    var reserve = 1;
+    $(function() {
+    	TestActiveX();
+    	//loadUnitVideo();
+    });
+
+    function TestActiveX()
+	{
+		try {  
+			var ax = new ActiveXObject("EZOPENUIACTIVEXK.EzOpenUIActiveXKCtrl.1");  
+		} catch(e) {
+			layer.confirm(
+					'未安装ActiveX(IE),按“确定”键进行下载，下载安装以后请刷新页面！',
+					{btn: ['确定', '取消'] ,skin: 'layui-layer-confirm',area:['350px','180px'],title: '<img src="../Content/images/Home/logout_tip.png" class="icon_signOut">提示'},
+					function(index){
+						layer.close(index);
+						// window.open("https://open.ys7.com/mobile/download.html");                 //在另外新建窗口中打开窗口
+						window.location.href = _serverIp + "/common/download/NetVideoActiveX23";                 //直接进行下载插件
+					}
+			);
+		}  
+	}
+
+    function startPlay(ele){
+    	var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.InitWithAppKey(appKey);
+		if(0 != res)
+		{
+			alert("Init appkey Error!");
+			return;
+		}
+		res = playOcx.SetAccessToken(token);
+		if(0 != res)
+		{
+			alert("Init accesstoken Error!");
+			return;
+		}
+		//开始播放, 播放结果 根据 PluginEventHandler 回调函数
+		var res = playOcx.StartPlay("ezopen://open.ys7.com/"+userName+"/"+reserve+".hd.live");
+		if(0 != res)
+		{
+			alert("startplay failed! check ezurl!");
+			return ;
+		}
+		$(ele).attr('status',0).text('停止播放').addClass('stop');
+		$("#talking").css("display","block");
+		$("#ptzupbtn").css("display","block");
+		$("#ptzleftbtn").css("display","block");
+		$("#ptzrightbtn").css("display","block");
+		$("#ptzdownbtn").css("display","block");
+    }
+    
+    function stopPlay(ele) {
+		//清理播放结果窗口
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.StopPlay();
+		if(0 != res)
+		{
+			alert("StopPlay Error！");
+		}else{
+			$(ele).attr('status',1).text('开始播放').removeClass('stop');
+			$("#talking").css("display","none");
+			$("#ptzupbtn").css("display","none");
+			$("#ptzleftbtn").css("display","none");
+			$("#ptzrightbtn").css("display","none");
+			$("#ptzdownbtn").css("display","none");
+		}
+	}
+    
+    function StartUpPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_up, action_start, ptz_speed);
+		if(0 != res)
+		{
+			alert("StartUpPTZCtrl Error！");
+		}
+		$("#ptzupbtn").addClass('stop');
+	}
+	
+	function StopUpPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_up, action_stop, ptz_speed);
+		if(0 != res)
+		{
+			alert("StopUpPTZCtrl Error！");
+		}
+		$("#ptzupbtn").removeClass('stop');
+	}
+	
+	function StartDownPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_down, action_start, ptz_speed);
+		if(0 != res)
+		{
+			alert("StartDownPTZCtrl Error！");
+		}
+		$("#ptzdownbtn").addClass('stop');
+	}
+	
+	function StopDownPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_down, action_stop, ptz_speed);
+		if(0 != res)
+		{
+			alert("StopDownPTZCtrl Error！");
+		}
+		$("#ptzdownbtn").removeClass('stop');
+	}
+	
+	function StartLeftPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_left, action_start, ptz_speed);
+		if(0 != res)
+		{
+			alert("StartLeftPTZCtrl Error！");
+		}
+		$("#ptzleftbtn").addClass('stop');
+	}
+	
+	function StopLeftPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_left, action_stop, ptz_speed);
+		if(0 != res)
+		{
+			alert("StopLeftPTZCtrl Error！");
+		}
+		$("#ptzleftbtn").removeClass('stop');
+	}
+	
+	function StartRightPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_right, action_start, ptz_speed);
+		if(0 != res)
+		{
+			alert("StartRightPTZCtrl Error！");
+		}
+		$("#ptzrightbtn").addClass('stop');
+	}
+	
+	function StopRightPTZCtrl() {
+		var playOcx = document.getElementById("EZUIKit");//得到控件引用
+		var res = playOcx.PTZCtrl(cmd_right, action_stop, ptz_speed);
+		if(0 != res)
+		{
+			alert("StopRightPTZCtrl Error！");
+		}
+		$("#ptzrightbtn").removeClass('stop');
+	}
+</script>
+

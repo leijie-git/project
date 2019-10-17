@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>灭火系统-曲线图1</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail_chart.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <style type="text/css">
+        .submitBtn{
+            margin-left: 10px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="wrapper">
+        <div class="top-search">
+            <form class="layui-form" action="">
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" autocomplete="off">
+                <input class="submitBtn" type="button" id="btnSearch" value="查询">
+            </form>
+        </div>
+
+        <div id="chart"></div>
+    </div>
+
+</body>
+<script>
+
+    var name = GetQuery('name');
+
+    $(function(){
+
+        getInterfaceDataHistoryData();
+       // getChart();
+        //loadChart();
+
+        $('.submitBtn').click(function(){
+            getInterfaceDataHistoryData();
+        });
+    });
+
+    function getInterfaceDataHistoryData(){
+        var data={
+            deviceId: GetQuery('ID'),
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val()
+        };
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/couplet/getInterfaceDataHistory",
+            data:data,
+            success: function (msg) {
+                //console.log(msg);
+                if(msg.success == true){
+                    var data = msg.obj;
+                    var xZhou=[];
+                    var seriseData=[];
+                    for(var i = 0 ; i < data.length ; i++){
+                        var dataValue = [];
+                        for(var k = 0 ; k < data[i].statData.length; k++){
+                            dataValue.push(data[i].statData[k].coupletValue)
+                        }
+                        seriseData.push({
+                            name: data[i].detialName,
+                            type: 'line',
+                            step: 'start',
+                            data:dataValue
+                        });
+                    }
+
+                    for(var k = 0 ; k < data[0].statData.length; k++){
+                        xZhou.push(data[0].statData[k].coupletKey);
+                    }
+                    getChart(xZhou,seriseData);
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+
+    function isA(value){
+        if(value == 0){
+            return "正常";
+        }else{
+            return "异常";
+        }
+    }
+
+    function getChart(xZhou,seriseData){
+        var Chart = echarts.init(document.getElementById('chart'));
+        //Chart.title = '';
+        //var title='参考值: 0.20-0.80Mp';
+        //var sysname='喷淋管网压力';
+
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                },
+                formatter: function(param){
+                    var txt= param[0].name +"<br>";
+                    for(var i = 0 ; i < param.length ; i++){
+                        txt += param[i].seriesName + ": " + isA(param[i].data) + "<br>"
+                    }
+                    return txt;
+                }
+            },
+            backgroundColor: ' ',
+            color: ['rgba(90, 230, 245,.7)','#33cc00','#FFA500'],
+            grid: {
+                left: '12%',
+                top: '15%',
+                bottom: '15%',
+                containLabel: false
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    splitArea:{
+                        interval: 1
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#8cb1d9',
+                            fontSize: 10
+                        }
+                    },
+                    axisLabel: {
+                        //interval:0,
+                        rotate:10
+                    },
+                    //name: '('+SJAnalogUnit+')',
+                    data: xZhou
+                }
+            ],
+            dataZoom: [{
+                type: 'inside',
+                show: true,
+                xAxisIndex: [0],
+                left: '9%',
+                bottom: -5,
+                start: 10,
+                end: 90, //初始化滚动条
+                textStyle: {
+                    color: '#fff'
+                }
+            }],
+            yAxis: [
+                {
+                    //type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#8cb1d9',
+                            fontSize: 10
+                        },
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#184570'
+                        }
+                    },
+                    type: 'category',
+                    axisLabel: {
+                        interval: 0,
+                    },
+                    data: ['正常', '异常'],
+                }
+            ],
+            series: seriseData
+        };
+        Chart.setOption(option);
+        window.addEventListener('resize', function () { //宽度自适应
+            Chart.resize();
+        });
+
+    }
+
+</script>
+</html>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitVideoMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitVideo" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="VideoClass" property="videoclass" jdbcType="INTEGER" />
+    <result column="VideoType" property="videotype" jdbcType="INTEGER" />
+    <result column="IP" property="ip" jdbcType="NVARCHAR" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="UserName" property="username" jdbcType="NVARCHAR" />
+    <result column="Password" property="password" jdbcType="NVARCHAR" />
+    <result column="Position" property="position" jdbcType="NVARCHAR" />
+    <result column="PosCode" property="poscode" jdbcType="NVARCHAR" />
+    <result column="PlugInType" property="plugintype" jdbcType="NVARCHAR" />
+    <result column="Manufactor" property="manufactor" jdbcType="NVARCHAR" />
+    <result column="Brand" property="brand" jdbcType="NVARCHAR" />
+    <result column="name" property="name" jdbcType="NVARCHAR" />
+    <result column="Remark" property="remark" jdbcType="NVARCHAR" />
+    <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+    <result column="BuildID" property="buildid" jdbcType="BIGINT" />
+    <result column="BuildAreaID" property="buildareaid" jdbcType="BIGINT" />
+    <result column="serialNumber" property="serialnumber" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getList" resultType="com.gw.unit.data.VideoOutData" parameterType="com.gw.unit.data.VideoInData">
+  SELECT
+    a.ID ID,
+    a.UnitID UnitId,
+    b.BuildingName BuildingName,
+    a.BuildId buildID,
+    a.BuildAreaId buildAreaID,
+    c.BuildAreaName BuildAreaName,
+    a.VideoClass VideoClass,
+    a.VideoType videoType,
+    a.name name,
+    a.IP IP,
+    a.Port Port,
+    a.UserName UserName,
+    a.Password Password,
+    a.POSITION POSITION,
+    a.PosCode poscode,
+    a.PlugInType PlugInType,
+    a.Manufactor Manufactor,
+    a.Brand Brand,
+    a.Remark Remark,
+    a.Lastupdate lastUpdate,
+    d.UnitName unitName,
+    a.serialNumber serialnumber
+	FROM
+	    UT_Unit_Video a
+	LEFT JOIN UT_Unit_Build b ON a.BuildId = b.ID
+	LEFT JOIN UT_Unit_BuildArea c ON a.BuildAreaId = c.ID
+	left join UT_Unit_BaseInfo d on d.id = a.UnitID
+	<where>
+	1=1
+		<if test="unitId != null and unitId != ''">
+			AND a.UnitID = #{unitId}
+		</if>
+	<if test="name!=null and name != ''">
+		and  a.name like '%${name}%'
+    </if>
+    <if test="port!=null">
+        and a.Port = #{port}
+    </if>
+    <if test="ip!=null and ip != ''">
+        and a.IP like '%${ip}%'
+    </if>
+    <if test="userName!=null and userName != ''">
+        and a.UserName like '%${userName}%'
+    </if>
+    <if test="unitName!=null and unitName != ''">
+        and d.UnitName like '%${unitName}%'
+    </if>
+    </where>
+    ORDER BY a.ID DESC
+  </select>
+  <update id="update" parameterType="com.gw.unit.data.VideoInData">
+    UPDATE UT_Unit_Video
+		<set> 
+		<if test="buildId != null">
+		  BuildID=#{buildId},
+		</if>
+		<if test="buildId != null">
+          UnitID=#{unitId},
+        </if>
+		<if test="name != null">
+          name=#{name},
+        </if>
+		<if test="buildAreaId != null">
+		  BuildAreaID = #{buildAreaId},
+		</if>
+		<if test="plugInType != null">
+		  PlugInType = #{plugInType},
+		</if>
+		<if test="videoType != null">
+		  VideoType = #{videoType},
+		</if>
+		<if test="port != null">
+		  Port = #{port},
+		</if>
+		<if test="userName != null and userName!=''">
+		  UserName = #{userName},
+		</if>
+		<if test="password != null and password!=''">
+		  Password = #{password},
+		</if>
+		<if test="position != null and position!=''">
+		  Position = #{position},
+		</if>
+		<if test="manufactor != null and manufactor!=''">
+		  Manufactor = #{manufactor},
+		</if>
+		<if test="brand != null and brand!=''">
+		  Brand = #{brand},
+		</if>
+		<if test="remark != null and remark!=''">
+		  Remark = #{remark},
+		</if>
+		<if test="poscode != null and poscode!=''">
+		  PosCode = #{poscode},
+		</if>
+		<if test="lastUpdate != null">
+		  Lastupdate = #{lastUpdate},
+		</if>
+		<if test="serialnumber != null and serialnumber !=''">
+		  serialNumber = #{serialnumber},
+		</if>
+          IP = #{ip}
+		</set>
+	where
+	   ID = #{id}
+  </update>
+  
+  
+  <resultMap id="videoMap" type="com.gw.front.couplet.data.FrontCoupletBuildAreaOutData" >
+    <id column="BuildAreaName" property="buildAreaName" jdbcType="NVARCHAR" />
+    <collection property="videos" ofType="com.gw.front.couplet.data.FrontCoupletVideoOutData">
+	    <result column="VideoClass" property="videoclass" jdbcType="INTEGER" />
+	    <result column="VideoType" property="videotype" jdbcType="INTEGER" />
+	    <result column="IP" property="ip" jdbcType="NVARCHAR" />
+	    <result column="Port" property="port" jdbcType="INTEGER" />
+	    <result column="UserName" property="username" jdbcType="NVARCHAR" />
+	    <result column="Password" property="password" jdbcType="NVARCHAR" />
+	    <result column="Position" property="position" jdbcType="NVARCHAR" />
+	    <result column="PosCode" property="poscode" jdbcType="NVARCHAR" />
+	    <result column="PlugInType" property="plugintype" jdbcType="BIGINT" />
+	    <result column="Manufactor" property="manufactor" jdbcType="NVARCHAR" />
+	    <result column="Brand" property="brand" jdbcType="NVARCHAR" />
+	    <result column="name" property="name" jdbcType="NVARCHAR" />
+	    <result column="serialNumber" property="serialnumber" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  
+  <select id="getUnitBuildAreas" resultMap="videoMap">
+  	SELECT
+		a.BuildAreaName buildAreaName,
+		b.VideoClass videoclass,
+		b.VideoType videotype,
+		b.IP ip,
+		b.Port port,
+		b.UserName username,
+		b.Password password,
+		b.POSITION POSITION,
+		b.PosCode poscode,
+		b.PlugInType plugintype,
+		b.Manufactor manufactor,
+		b.Brand brand,
+		b.name name,
+		b.serialNumber serialnumber
+	FROM
+		UT_Unit_BuildArea a
+	INNER JOIN UT_Unit_Video b ON a.ID = b.BuildAreaID
+	LEFT JOIN UT_Unit_Build c ON a.BuildID = c.ID
+	WHERE
+		c.UnitID = #{unitId} and b.VideoType = 3
+		<if test="buildName != null and buildName != ''">
+			and a.BuildAreaName like '%${buildName}%'
+		</if>
+  </select>
+  <select id="getUnitVideoInfo" resultType="com.gw.front.unit.data.FrontUnitVideoOutData">
+	  SELECT 
+	  	b.id,
+		b.VideoClass videoclass,
+		b.VideoType videotype,
+		b.IP ip,
+		b.Port port,
+		b.UserName username,
+		b.Password password,
+		b.POSITION POSITION,
+		b.PosCode poscode,
+		b.PlugInType plugintype,
+		b.Manufactor manufactor,
+		b.Brand brand,
+		b.name name,
+		b.serialNumber serialnumber,
+	    b.UnitID unitId
+	FROM
+		UT_Unit_Video b
+	WHERE
+		b.UnitID = #{unitId}
+		and b.VideoType = 1
+		AND b.IP IS NOT NULL
+		<if test="name != null and name != ''">
+			b.name like '%${name}%'
+		</if>
+  </select>
+  <select id="getPointVideoList" resultType="com.gw.device.data.PointVideoOutData" parameterType="com.gw.device.data.PointVideoInData">
+  	SELECT
+		a.ID,
+		a.name,
+		a.IP,
+		a.Brand,
+		a.Port,
+		a.UserName,
+		a.Password,
+		a.Manufactor,
+		a.[Position],
+		a.PlugInType,
+		a.PosCode poscode,
+		a.UnitID unitId,
+		b.UnitName unitName,
+		a.serialNumber serialnumber
+	FROM
+		UT_Unit_Video a
+	left join UT_Unit_BaseInfo b on a.UnitID=b.id
+	WHERE
+		VideoType = 4
+
+
+	  <if test="unitId !=null and unitId!=''">
+		  and  a.UnitID = #{unitId}
+	  </if>
+
+	<if test="name != null and name != ''">
+		AND a.name LIKE '%${name}%'
+	</if>
+	<if test="ip != null and ip != ''">
+		AND a.IP LIKE '%${ip}%'
+	</if>
+	<if test="brand != null and brand != ''">
+		AND a.Brand LIKE '%${brand}%'
+	</if>
+	<if test="unitName != null and unitName != ''">
+		AND b.UnitName LIKE '%${unitName}%'
+	</if>
+	order by a.id desc
+  </select>
+  <select id="getPointVideoSelect" resultType="com.gw.device.data.PointVideoOutData">
+  	SELECT
+		ID,
+		name
+	FROM
+		UT_Unit_Video
+	WHERE
+		VideoType = 4
+		and UnitId = #{unitId}
+  </select>
+  
+  <select id="getVideoDetail" resultType="com.gw.front.index.data.FrontVideoOutData" >
+       SELECT top 1
+       		b.UnitID unitId,
+            b.VideoClass videoClass,
+            b.VideoType videoType,
+            b.IP ip,
+            b.Port port,
+            a.BuildAreaName buildingName,
+            c.BuildingName buildAreaName,
+            b.UserName userName,
+            b.Password password,
+            b.POSITION position,
+            b.PosCode poscode,
+            b.PlugInType plugInType,
+            b.Manufactor manufactor,
+            b.Brand brand,
+            b.serialNumber serialnumber
+        FROM
+            UT_Unit_Video b
+        LEFT JOIN  UT_Unit_BuildArea a ON b.BuildAreaID = a.ID
+        LEFT JOIN  UT_Unit_Build c ON b.BuildID = c.ID
+        <where>
+            <if test="videoID !=null and videoID!=''">
+                b.ID = #{videoID}
+            </if>
+        </where>
+  </select>
+</mapper>

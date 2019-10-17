@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>维保巡查</title>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/WeibaoInspect/detailLayer.css" rel="stylesheet" type="text/css" />
+    <style>
+        .icon_resultDetail{
+            width: 40px;
+            height: auto;
+            margin: 3px;
+            cursor: pointer;
+        }
+        .picListBox{
+
+        }
+        .picListBox>td{
+            height: 60px!important;
+        }
+        .td_piclistbox>div{
+            width: 100%;
+            height: 80px;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!--<span class="close" id="close">X</span>-->
+        <!--<div class="header">维保处理详情</div>-->
+        <div class="content">
+            <div class="detail_box">
+                <ul>
+                    <li>
+                        <div class="title"><span>1</span>确认及上报</div>
+                        <div class="table_wrap scrollbar-inner">
+                            <table id="list0">
+                                <tr>
+                                    <td>上报人员</td>
+                                    <td class="repaireKey" labkey="wbclr"></td>
+                                </tr>
+                                <tr>
+                                    <td>数据来源</td>
+                                    <td class="repaireKey" labkey="dateFrom"></td>
+                                </tr>
+                                <tr>
+                                    <td>隐患内容</td>
+                                    <td class="repaireKey" labkey="checkInfo"></td>
+                                </tr>
+                                <tr>
+                                    <td>上报时间</td>
+                                    <td class="repaireKey" labkey="createtime"></td>
+                                </tr>
+                                <tr class="picListBox">
+                                    <td>隐患照片</td>
+                                    <td class="td_piclistbox ">
+                                        <div class="scrollbar-inner" >
+                                            <div class="repaireKey" labkey="repairPicList"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="title"><span>2</span>维修验收</div>
+                        <div class="table_wrap scrollbar-inner">
+                            <table id="list1">
+                                <tr>
+                                    <td>维修人员</td>
+                                    <td class="repaireKey" labkey="dealName"></td>
+                                </tr>
+                                <tr>
+                                    <td>维修说明</td>
+                                    <td class="repaireKey" labkey="dealInfo"></td>
+                                </tr>
+                                <tr>
+                                    <td>维修时间</td>
+                                    <td class="repaireKey" labkey="dealDate"></td>
+                                </tr>
+                                <tr class="picListBox">
+                                    <td>维修照片</td>
+                                    <td class="td_piclistbox ">
+                                        <div class=" scrollbar-inner">
+                                            <div class="repaireKey" labkey="repairDetailPicList"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script>
+$(function() {
+    //$('.scrollbar-inner').scrollbar();
+    //绑定事件
+   // bindEvent();
+
+    getRepaireDetail();
+});
+
+function getRepaireDetail(){
+    var isAsync = true,lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "get",
+        url: _serverIp + "/front/maintenance/getRepairDetail",
+        data:'repairId='+GetQuery('id'),
+        success: function (data) {
+            if(data.success){
+                getRepaireDetailContent(data.obj);
+            }
+        },
+        complete: function () {
+            if (isAsync){
+                layer.close(lid);
+            }
+        }
+    });
+}
+function getRepaireDetailContent(data){
+    $('.repaireKey').each(function(){
+        var key = $(this).attr('labkey');
+        if(key == "repairPicList" || key == "repairDetailPicList" ){
+           var imgData = data[key];
+           var img = "";
+//            console.log(data["repairPicList"]);
+           for(var k = 0 ; k < imgData.length;k++){
+               img += '<img src="'+imgData[k]+'" onclick="showBigPic(this)"/>';
+               //img+='<img src="../../Content/images/1542693894888.png" class="icon_resultDetail" width="50" height="50" onclick="showBigPic(this)">';
+               //img += '<img src="../../Content/images/Home/2D.png" class="icon_resultDetail" width="50" height="50">'
+           }
+           $(this).html(img);
+        }else{
+            $(this).text(data[key]).attr('title',data[key])
+        }
+    });
+}
+
+//查看大图
+function showBigPic(obj){
+    getBigPicInfo(obj)
+}
+
+//绑定事件
+function bindEvent() {
+    //关闭弹窗
+    $('#close').on('click', function() {
+        var index = window.parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    });
+}
+</script>
+
+</html>

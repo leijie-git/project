@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.AlarmStatusMapper">
+
+    <!--auto generated Code-->
+    <resultMap id="AllColumnMap" type="com.gw.mapper.entity.AlarmStatus">
+        <result column="alarm_status" property="alarmStatus"/>
+        <result column="alarm_name" property="alarmName"/>
+    </resultMap>
+
+    <!--auto generated Code-->
+    <sql id="all_column">
+        id,
+        alarm_status,
+        alarm_name
+    </sql>
+
+    <select id="getAlarmStatus" resultMap="AllColumnMap">
+    select * from
+    alarm_status_code
+</select>
+</mapper>

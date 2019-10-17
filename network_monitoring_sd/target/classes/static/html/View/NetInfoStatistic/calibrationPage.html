@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/NetInfoStatistic/calibrationPage.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+    <div class="div_colspan">
+        <div class="span_name">事件类型</div>
+        <form class="layui-form" action="" autocomplete="off">
+            <div class="layui-inline layui-bg-cyan" id="deviceSys" >
+                <div class="layui-input-inline">
+                    <select name="modules" lay-verify="required" id="calibraType" lay-search="">
+                        <option value="5">无</option>
+                        <option value="1">报备</option>
+                        <option value="2">测试</option>
+                        <option value="3">关机</option>
+                        <option value="4">监控</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="div_colspan">
+        <div class="span_name">开始时间</div>
+        <input class="selectTime" id="startTime" onfocus="var d5222 = $dp.$('startTime'); WdatePicker({ skin: 'whyGreen', maxDate: '#F{$dp.$D(\'endTime\')}',onpicked: function () { d5222.focus(); } })" autocomplete="off">
+    </div>
+    <div class="div_colspan">
+        <div class="span_name">结束时间</div>
+        <input class="selectTime" id="endTime" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'startTime\')|| \'%y-%M-%d\'}'})" autocomplete="off">
+    </div>
+    <div class="div_colspan">
+        <div class="span_name">备注</div>
+        <textarea class="remark_content"></textarea>
+    </div>
+    <input class="submitBtn" type="button" value="保存">
+<script>
+    var _id = GetQuery('id');
+    var _calibrationId = GetQuery('calibrationId');
+    if(_calibrationId !="" ){
+    	$('#calibraType').find('option[value='+_calibrationId+']').attr('selected','selected');
+    	loadLayuiForm();//调用layui form组件，方法写在public
+    }
+    else{
+    	loadLayuiForm();
+    }
+    $(function(){
+        //
+        getListInfoData(); //获取已有详情内容
+        bingEvent();
+
+    });
+
+     function getListInfoData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getDeviceCalibration",
+            data:'eqId='+_id,
+            async:isAsync,
+            success: function (data) {
+                if(!data.success){
+                    return;
+                }
+                var msg = data.obj;    
+                
+                $('#startTime').val(msg.startDate);
+                $('#endTime').val(msg.endDate);
+                $('.remark_content').text(msg.remark);
+                
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+ 
+
+    function bingEvent(){
+        $('.submitBtn').unbind('click').click(function(){
+            if($('#startTime').val() =="" &&  $('#endTime').val() !="" ){
+                $('#startTime').val(getNowFormatDate())
+            }
+
+            var data = {
+                eqId:_id,
+                startDate:$('#startTime').val(),
+                endDate:$('#endTime').val(),
+                remark:$('.remark_content').val(),
+                calibrationId:$('#calibraType').val()
+                
+            };
+
+            var isAsync = true,lid = 0;
+            if (isAsync)
+                lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+            $.ajax({
+                type: "get",
+                url: _serverIp + "/front/couplet/updateDeviceCalibration",
+                data:data,
+                async:isAsync,
+                success: function (data) {
+                    //console.log(data);
+                    if(data.success){
+                        window.parent.location.reload();
+                    }
+                },
+                complete: function () {
+                    if (isAsync){
+                        layer.close(lid);
+                    }
+                }
+            });
+        })
+    }
+</script>
+</body>
+</html>

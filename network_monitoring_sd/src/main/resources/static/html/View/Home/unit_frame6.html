@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位详细资料 - 巡检记录</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/UnitDetail.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+    <!--table start-->
+    <div class="table_box"  style="height: 99%;padding: 0 1%">
+        <div class="list_table"style="height:100%;" >
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="5%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="5%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="15%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>单位名称</th>
+                            <th>单位编号</th>
+                            <th>地址</th>
+                            <th>责任人</th>
+                            <th>联系电话</th>
+                            <th>结束时间</th>
+                            <th>开始时间</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="5%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="15%">
+                    </colgroup>
+                    <tbody id="mainContentTbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--table end-->
+</body>
+<script type="text/javascript">
+    $(function(){
+        getUnitBaseInfo('');
+    });
+
+    function getUnitBaseInfo(unitid){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getUnitInfo",
+            data:'unitId=' + unitid,
+            success: function (data) {
+                var msg = data.obj
+                //console.log(data);
+                if (data.success == true) {
+                    var html='<tr id="743dsad45">' +
+                            '<td>1</td>' +
+                            '<td>'+msg.unitName+'</td>' +
+                            '<td>'+msg.unitName+'</td>' +
+                            '<td>'+msg.unitName+'</td>' +
+                            '<td>'+msg.unitName+'</td>' +
+                            '<td>'+msg.unitName+'</td>' +
+                            '<td>'+msg.unitName+'</td>' +
+                            '<td>'+msg.unitName+'</td>' +
+                            '</tr>'
+                    $('#mainContentTbody').html(html||"<tr><td colspan='8'>暂无。。。</td></tr>")
+                }
+            }
+        });
+    }
+
+</script>
+</html>

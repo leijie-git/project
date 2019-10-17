@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>报警处理弹窗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+	<link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/crtpage.css" rel="stylesheet" type="text/css"/>
+    <style>
+        .scroll-wrapper > .scroll-content{
+            /*min-height: calc(100% + 20px);*/
+        }
+    </style>
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/public.js"></script>
+</head>
+<body>
+<div class="div-name fontSize16"></div>
+<button class="btn_video" labip="">视频</button>
+<div class="wrap_crt scrollbar-inner">
+    <div id="wrap_img">
+        <div id="imgDiv" onmousewheel="return bbimg(this)">
+<!--             <img src="../../Content/images/Login/loginBg.png" id="img"> -->
+        </div>
+    </div>
+</div>
+<script src="../../Script/udraggable/jquery.udraggable.js"></script>
+<script src="../../Script/udraggable/jquery.event.ue.js"></script>
+<script>
+    var _addressID = GetQuery('addressID');
+    var _imgrtstr = "";
+    var _pointPercentY = 0, _pointPercentX = 0;
+    var _w = 0; _h = 0; //图片的宽高
+    var _unitid = GetQuery('unitid');
+    $(function(){
+
+       // _imgrtstr = $("#imgts").attr("src");
+        getCrtData();
+        domEvelement();
+    });
+
+    function getCrtData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getOneCRT",
+            data:"addressID="+_addressID,
+            success: function (data) {
+                //console.log(data);
+               if (data.success) {
+                	var msg = data.obj;
+                    if(!msg||msg == ""){
+                        $('.btn_video').addClass("no_video");
+                        return;
+                    }
+                   $('.div-name').text(msg.name);
+                   $('.btn_video').addClass(msg.videoId != ""?"has_video":"no_video").attr('labid',msg.videoId);
+                    
+                    //4/16修改 start 
+                   if( parseFloat(msg.bgHeight) > parseFloat($('.crtbox').height())){ //如果背景图超出容器,则缩小到与容器高度一样大小
+                        var less = parseFloat($('.crtbox').height()) / parseFloat(msg.bgHeight);
+                        $('#imgDiv').css({ 'height': msg.bgHeight*less + 'px', 'width': msg.ggWidth*less + 'px' });
+                    }else{
+                        $('#imgDiv').css({ 'height': msg.bgHeight + 'px', 'width': msg.ggWidth + 'px' });
+                    }
+                    //4/16修改 end 
+
+                   $('#wrap_img').attr({'crtbgheight':msg.bgHeight,'crtbgwidth':msg.ggWidth});
+                   _w = $('#imgDiv').width();
+                   _h = $('#imgDiv').height();
+// 					var left = (msg.xaxis/msg.ggWidth*100).toFixed(2);
+// 					var top = (msg.yaxis/msg.bgHeight*100).toFixed(2);
+                    var html = '<img src="'+msg.buildAreaImg+'" id="img">' +
+                //    var html = '<img id="img" src="http://www.sd-xfjc.com:8085/file/upload/pictures/2018/12/12/08/951a94106496454f885caf017fd18a0e/1544575638691.jpg">' +
+                            '<div class="dot" style="top: '+msg.yaxis+'; left: '+msg.xaxis+'; position: absolute; background-image: url(/image/crt/'+msg.codeValue+'_1.png);">' +
+                            getCRTTips(msg)+
+                            '</div>';
+                    $('#imgDiv').html(html);
+
+                   $('#wrap_img').css({'top':-($('.dot').position().top - $('.wrap_crt').innerHeight() / 2)+'px','left':-($('.dot').position().left - $('.wrap_crt').innerWidth() / 2)+'px'});
+
+                }
+            }
+        });
+    }
+
+    //点位tips
+    function getCRTTips(data){
+        var html = ' <div class="wrap_dotInfo"><div class="div_info">'
+                + '<table cellpadding="0" cellspacing="0" align="center" class="table-detail">'
+                + ' <colgroup><col width="50%" /><col width="50%" /></colgroup>'
+                + ' <tbody><tr><th>部位号</th><td>' + data.partcode + '</td></tr><tr><th>设备名称</th><td>' + data.eqname + '</td></tr><tr><th>真实地址</th><td>' + data.adress + '</td></tr></tbody>'
+                + '</table></div><div class="triangle"></div></div>';
+        return html;
+    }
+
+    function getVideoInfoData(id){
+        top.layer.open({
+            type: 2,
+            title: '视频',
+            closeBtn: 1,
+            area:['65%','70%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content:'/html/View/Home/Middle_GetCrt_camera.html?video='+id+'&unitid='+_unitid
+        });
+    }
+    
+    //图片缩放
+    function bbimg(o) {
+       if (e.stopPropagation) { //这是取消冒泡
+            e.stopPropagation();
+        } else{
+           e.cancelBubble = true;
+        };
+
+        var zoom = parseInt(o.style.scale, 10) || 100;
+        zoom += event.wheelDelta / 12;
+
+        if (zoom > 30)
+            o.style.scale = zoom + '%';
+
+        var crtbgheight = $('#wrap_img').attr('crtbgheight')
+        var crtbgwidth = $('#wrap_img').attr('crtbgwidth')
+
+        $('#imgDiv').css({ 'height':  crtbgheight*zoom/100 + 'px', 'width': crtbgwidth*zoom/100 + 'px' });
+        _w = $('#imgDiv').width();
+        _h = $('#imgDiv').height();
+    }
+
+    //图片拖拽
+    $('#wrap_img ').udraggable({
+        drag: function (e, ui) {
+            $('#imgDiv').css({ 'width': _w, 'height': _h })
+        }
+    });
+
+
+    function domEvelement(){
+        //////设备
+        $('.rank_list>div').click(function () {
+            $(this).addClass('active').siblings().removeClass('active')
+        });
+
+        /////点位选中
+        $('#imgDiv').delegate('.dot', 'click', function () {
+
+        });
+
+        $('.btn_video').click(function(){
+            if(!$(this).hasClass('has_video')){
+                return;
+            }
+            var id = $(this).attr('labid');
+
+            getVideoInfoData(id);
+
+        })
+
+    }
+</script>
+</body>
+</html>

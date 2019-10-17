@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitImportMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitImport" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="ImportName" property="importname" jdbcType="NVARCHAR" />
+    <result column="ImportSite" property="importsite" jdbcType="NVARCHAR" />
+    <result column="Floor" property="floor" jdbcType="INTEGER" />
+    <result column="Height" property="height" jdbcType="DECIMAL" />
+    <result column="BuildingStructure" property="buildingstructure" jdbcType="NVARCHAR" />
+    <result column="Used" property="used" jdbcType="NVARCHAR" />
+    <result column="DTCount" property="dtcount" jdbcType="INTEGER" />
+    <result column="OutCount" property="outcount" jdbcType="INTEGER" />
+    <result column="HZWXX" property="hzwxx" jdbcType="NVARCHAR" />
+    <result column="BuildArea" property="buildarea" jdbcType="DECIMAL" />
+    <result column="NHLevel" property="nhlevel" jdbcType="NVARCHAR" />
+    <result column="FireInfo" property="fireinfo" jdbcType="NVARCHAR" />
+    <result column="IsDXFYZDX" property="isdxfyzdx" jdbcType="INTEGER" />
+    <result column="IsHZFSHRYSWD" property="ishzfshryswd" jdbcType="INTEGER" />
+    <result column="IsHZHSSD" property="ishzhssd" jdbcType="INTEGER" />
+    <result column="IsYFSHZ" property="isyfshz" jdbcType="INTEGER" />
+    <result column="IsOther" property="isother" jdbcType="INTEGER" />
+    <result column="FHBZSLQK" property="fhbzslqk" jdbcType="NVARCHAR" />
+    <result column="IsBZP" property="isbzp" jdbcType="INTEGER" />
+    <result column="IsYHQHYJHHW" property="isyhqhyjhhw" jdbcType="INTEGER" />
+    <result column="IsFSP" property="isfsp" jdbcType="INTEGER" />
+    <result column="IsYSQT" property="isysqt" jdbcType="INTEGER" />
+    <result column="IsYDP" property="isydp" jdbcType="INTEGER" />
+    <result column="IsZXWXW" property="iszxwxw" jdbcType="INTEGER" />
+    <result column="IsYRYT" property="isyryt" jdbcType="INTEGER" />
+    <result column="IsFSX" property="isfsx" jdbcType="INTEGER" />
+    <result column="IsQT" property="isqt" jdbcType="INTEGER" />
+    <result column="IsYRGT" property="isyrgt" jdbcType="INTEGER" />
+    <result column="ImportImageName" property="importimagename" jdbcType="NVARCHAR" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+    <result column="BuildID" property="buildid" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getList" resultType="com.gw.unit.data.KeyPartsOutData" parameterType="com.gw.unit.data.KeyPartsInData">
+    SELECT
+	    a.ID id,
+	    a.UnitID unitId,
+	    b.UnitName unitName,
+	    a.BuildArea buildArea,
+	    a.BuildID buildId,
+	    a.ImportName importName,
+	    a.ImportSite importSite,
+	    a.Floor floor,
+	    a.Height height,
+	    a.BuildingStructure buildingStructure,
+	    a.Used used,
+	    a.DTCount dtCount,
+	    a.OutCount outCount,
+	    a.HZWXX HZWXX,
+	    a.NHLevel NHLevel,
+	    a.FireInfo FireInfo,
+	    a.IsDXFYZDX IsDXFYZDX,
+	    a.IsHZFSHRYSWD IsHZFSHRYSWD,
+	    a.IsHZHSSD IsHZHSSD,
+	    a.IsYFSHZ IsYFSHZ,
+	    a.IsOther IsOther,
+	    a.FHBZSLQK FHBZSLQK,
+	    a.IsBZP IsBZP,
+	    a.IsYHQHYJHHW IsYHQHYJHHW,
+	    a.IsFSP IsFSP,
+	    a.IsYSQT IsYSQT,
+	    a.IsYDP IsYDP,
+	    a.IsZXWXW IsZXWXW,
+	    a.IsYRYT IsYRYT,
+	    a.IsFSX IsFSX,
+	    a.IsQT IsQT,
+	    a.IsYRGT IsYRGT
+    FROM
+        UT_Unit_Import a
+    LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+    <where>
+    		(b.isDelete = 0 OR b.isDelete is NULL)
+        <if test="ImportSite!=null and ImportSite!=''">
+            and a.ImportSite like '%${ImportSite}%'
+          
+        </if>
+        <if test="ImportName!=null and ImportName!=''">
+            and a.ImportName like '%${ImportName}%'
+          
+        </if>
+         <if test="unitName!=null and unitName!=''">
+            and b.UnitName like '%${unitName}%'
+        </if>
+        <if test="UnitId != null and UnitId != ''">
+        	AND b.ID = #{UnitId}
+        </if>
+    </where>
+    ORDER BY a.ID DESC
+  </select>
+</mapper>

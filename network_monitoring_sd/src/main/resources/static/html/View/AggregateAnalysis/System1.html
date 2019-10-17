@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>综合分析-系统分析-单位系统分析</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/System1.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">     
+
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">   
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索">
+                <input class="submitBtn" type="button" value="查询">
+            </form>
+
+            <div class="timeBTChose">
+                <span>月</span>
+                <span>季</span>
+                <span>年</span>
+            </div>
+        </div>
+
+        <section>
+            <div class="box1">
+                <div class="wordleft"><img src="../../Content/images/AggregateAnalysis/wordleft.png"></div>
+                <div id="chart"></div>
+            </div>
+
+            <div class="box2 scrollbar-inner">
+                <div class="chartdiv chart1">
+                    <div class="title">火灾报警系统设备异常率</div>
+                    <div class="cont"id="chart1" ></div>
+                </div>
+                <div class="chartdiv chart2">
+                    <div class="title">灭火系统设备异常率</div>
+                    <div class="cont" id="chart2"></div>
+                </div>
+                <div class="chartdiv chart3">
+                    <div class="title">电气火灾设备异常率</div>
+                    <div class="cont" id="chart3"></div>
+                </div>
+                <div class="chartdiv chart4">
+                    <div class="title">视频监控接入率</div>
+                    <div class="cont" id="chart4"></div>
+                </div>
+                <div class="chartdiv chart5">
+                    <div class="title">防火分隔设备异常率</div>
+                    <div class="cont" id="chart5"></div>
+                </div>
+                <div class="chartdiv chart6">
+                    <div class="title">防排烟系统设备异常率</div>
+                    <div class="cont" id="chart6"></div>
+                </div>
+                <div class="chartdiv chart7">
+                    <div class="title">气体系统设备异常率</div>
+                    <div class="cont" id="chart7"></div>
+                </div>
+                <div class="chartdiv chart8">
+                    <div class="title">燃气系统设备异常率</div>
+                    <div class="cont" id="chart8"></div>
+                </div>
+                <div class="chartdiv chart9">
+                    <div class="title">应急疏散设备异常率</div>
+                    <div class="cont" id="chart9"></div>
+                </div>
+                <div class="chartdiv chart10">
+                    <div class="title">无线烟感设备异常率</div>
+                    <div class="cont" id="chart10"></div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+
+<script type="text/javascript">
+    var timeType; //月季年
+    var Stime='',Etime='',name=''; //开始时间,结束时间,关键字
+
+
+    $(function(){
+        getAlarmCoutChartData();
+
+        getAlarmStatBySystemChartData();
+
+        clickevent();
+    });
+
+    function getAlarmCoutChartData(){
+        var _countData = {
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val()
+        };
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getAlarmCout",
+            data:_countData,
+            success: function (data) {
+                //console.log(data);
+                if(data.success == true){
+                    var msg = data.obj;
+                    var total = Number(msg.fireCount||0)+Number(msg.waterCount||0)+Number(msg.eleCount||0)+Number(msg.splitCount||0)+Number(msg.smokeCount||0)+Number(msg.gaseousCount||0)+Number(msg.gasCount||0)+Number(msg.emergencyCount||0)+Number(msg.smokeFeelingCount||0);
+                    if(total == 0){
+                    	total = 1;
+                    }
+                     //var data = [((msg.fireCount||0)/total*100).toFixed(2),((msg.waterCount||0)/total*100).toFixed(2),((msg.eleCount||0)/total*100).toFixed(2),((msg.splitCount||0)/total*100).toFixed(2),((msg.smokeCount||0)/total*100).toFixed(2),((msg.gaseousCount||0)/total*100).toFixed(2),((msg.gasCount||0)/total*100).toFixed(2),((msg.emergencyCount||0)/total*100).toFixed(2),((msg.smokeFeelingCount||0)/total*100).toFixed(2)]
+                    //var data = [((msg.fireCount||0)),((msg.waterCount||0)),((msg.eleCount||0)),((msg.splitCount||0)),((msg.smokeCount||0)),((msg.gaseousCount||0)),((msg.gasCount||0)),((msg.emergencyCount||0)),((msg.smokeFeelingCount||0))]
+                    //data: ['报警系统', '灭火系统', '电气火灾','防火分隔','防排烟系统','气体系统','燃气系统','应急疏散','无线烟感'],
+                    var data = [
+                        {name:"报警系统",value:((msg.fireCount||0)/total*100).toFixed(2),labValue:msg.fireCount||0},
+                        {name:"灭火系统",value:((msg.waterCount||0)/total*100).toFixed(2),labValue:msg.waterCount||0},
+                        {name:"电气火灾",value:((msg.eleCount||0)/total*100).toFixed(2),labValue:msg.eleCount||0},
+                        {name:"防火分隔",value:((msg.splitCount||0)/total*100).toFixed(2),labValue:msg.splitCount||0},
+                        {name:"防排烟系统",value:((msg.smokeCount||0)/total*100).toFixed(2),labValue:msg.smokeCount||0},
+                        {name:"气体系统",value:((msg.gaseousCount||0)/total*100).toFixed(2),labValue:msg.gaseousCount||0},
+                        {name:"燃气系统",value:((msg.gasCount||0)/total*100).toFixed(2),labValue:msg.gasCount||0},
+                        {name:"应急疏散",value:((msg.emergencyCount||0)/total*100).toFixed(2),labValue:msg.emergencyCount||0},
+                        {name:"无线烟感",value:((msg.smokeFeelingCount||0)/total*100).toFixed(2),labValue:msg.smokeFeelingCount||0},
+                    ]
+                    loadData1(data,total)
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getAlarmStatBySystemChartData(){
+
+        var _chartData = {
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:$('#keyWords').val()
+        };
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getAlarmStatBySystem",
+            data:_chartData,
+            success: function (data) {
+                //console.log(data);
+                if(data.success == true){
+                    var msg = data.obj;
+                    showChartData(msg);
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showChartData(msg){
+        //火灾自动报警系统
+        var  fire = getKeyData(msg.fireCount);
+        loadData2('chart1',fire[0],fire[1]);
+        //灭火系统设备异常率
+        var water = getKeyData(msg.waterCount);
+        loadData2('chart2',water[0],water[1]);
+        //电气火灾设备异常率
+        var elect = getKeyData(msg.eleCount);
+        loadData2('chart3',elect[0],elect[1]);
+        //视频监控接入率
+        var video = getKeyData(msg.videoCount);
+        loadData2('chart4',video[0],video[1]);
+        //防火分隔设备异常率
+        var split = getKeyData(msg.splitCount);
+        loadData2('chart5',split[0],split[1]);
+        //防排烟系统设备异常率
+        var smoke = getKeyData(msg.smokeCount);
+        loadData2('chart6',smoke[0],smoke[1]);
+        //气体系统设备异常率
+        var gaseous = getKeyData(msg.gaseousCount);
+        loadData2('chart7',gaseous[0],gaseous[1]);
+        //燃气系统设备异常率
+        var gas = getKeyData(msg.gasCount);
+        loadData2('chart8',gas[0],gas[1]);
+        //应急疏散设备异常率
+        var emergency = getKeyData(msg.emergencyCount);
+        loadData2('chart9',emergency[0],emergency[1]);
+        //无线烟感设备异常率
+        var smokeFeeling = getKeyData(msg.smokeFeelingCount);
+        loadData2('chart10',smokeFeeling[0],smokeFeeling[1]);
+    }
+
+    function getKeyData(key){
+        var name = [],value=[];
+        for(var i = 0 ; i < key.length ; i++){
+            name.push(key[i].coupletKey);
+            value.push(key[i].coupletValue);
+        }
+        return [name,value]
+    }
+
+
+    function loadData1(chart1Data,total){
+        var anotherData=[];
+
+        for(var i = 0 ; i<chart1Data.length;i++){
+            anotherData.push(100)
+        }
+       // console.log(chart1Data)
+        var chart = echarts.init(document.getElementById('chart'));
+        var option = {
+            color: ['#3398DB'],
+            tooltip: {
+                formatter:function(params){
+                   // console.log(params);
+                    return '异常率:'+params[0].value+'% <br/> 异常数:'+params[0].data.labValue
+                },
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            textStyle: {
+                color: 'rgb(140, 177, 217)',
+                fontSize: 10
+            },
+            grid: {
+                left: '2%',
+                right: '2%',
+                top: 35,
+                bottom: 6,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    axisLine: {
+                        lineStyle: { color: '#235985' }
+                    },
+                    data: ['报警系统', '灭火系统', '电气火灾','防火分隔','防排烟系统','气体系统','燃气系统','应急疏散','无线烟感'],
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: { color: '#0B2E4C' }
+                    },
+                    splitLine: {
+                        lineStyle: { color: '#235985' }
+                    },
+                    name: '单位：%'
+                }
+            ],
+            series: [
+                {
+                    name: '单位系统异常率',
+                    type: 'bar',
+                    barWidth: '28%',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    { offset: 0, color: '#155cb4' },
+                                    { offset: 0.5, color: '#4383dd' },
+                                    { offset: 1, color: '#629bf5' }
+                                ]
+                            )
+                        },
+                        emphasis: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    { offset: 0, color: '#155cb4' },
+                                    { offset: 0.5, color: '#4383dd' },
+                                    { offset: 1, color: '#165cb4' }
+                                ]
+                            )
+                        }
+                    },
+                    data: chart1Data
+                },
+                {
+                    name: '单位系统异常率',
+                    type: 'bar',
+                    barWidth: '28%',
+                    barGap: '-100%',
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(8,70,131,.6)'
+                        },                       
+                    },
+                    data: anotherData
+                }
+            ]
+        };
+        chart.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            chart.resize();
+        });
+
+    }
+
+    function loadData2(id,xData,chart1Data){
+        var _color=[],realData=[];
+
+        for(var i = 0 ; i<chart1Data.length;i++){
+            realData.push({value:chart1Data[i],name:xData[i]});
+        }
+
+        if(id=='chart1'){ //火灾报警系统设备异常率
+            _color=['#f54f4d', '#ff9a0c','#cbc9c8','#16b7c9','#f16ed8','#4376c5','#0657f1','#885ee4'];
+        }else if(id=='chart2'){ //灭火系统设备异常率
+            _color=['#2b81da', '#4376c5','#16b7c9','#0657f1','#ff9a0c','#23dfc1','#4376c5','#885ee4','#f54f4d'];
+
+        }else if(id=='chart3'){ //电气火灾设备异常率
+            _color=['#ff9a0c', '#885ee4','#16b7c9','#23dfc1','#f54f4d'];
+        }else if(id=='chart4'){ //视频接入率
+            _color=['#0657f1', '#dd9c0a'];
+
+        }else if(id=='chart5'){ //防火分隔设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5'];
+
+        }else if(id=='chart6'){ //防排烟系统设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5','#885ee4','#f54f4d'];
+
+        }else if(id=='chart7'){ //气体系统设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5','#885ee4'];
+
+        }else if(id=='chart8'){ //燃气系统设备异常率
+            _color=['#0657f1','#4376c5','#885ee4'];
+
+        }else if(id=='chart9'){ //应急疏散设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5'];
+
+        }else{ //无线烟感设备异常率
+            _color=['#16b7c9', '#2b81da','#0657f1','#4376c5','#885ee4','#f54f4d'];
+        }
+
+        if(realData.length == 0){
+            $('#'+id).parent('.chartdiv').hide();
+//            $('#'+id).html('暂无数值...');
+            return
+        }
+        $('#'+id).parent('.chartdiv').show();
+        var chart1 = echarts.init(document.getElementById(id));
+        chart1.clear();
+        chart1.title = '火灾报警系统设备异常率';
+
+
+        var option = {
+            title: {
+            },
+            backgroundColor: 'rgba(16, 71, 110,.6)',
+            tooltip: { // 提示框. Can be overwrited by series or data
+                trigger: 'item',
+                formatter: "{b}: {c}",
+                confine:true
+            },
+            legend: {
+                //orient: 'vertical',
+                x: 'center',
+                //y: 'bottom',
+                data: xData,
+                type:'scroll',
+                //orient:'vertical',
+                inactiveColor: '#777',
+                //right: '2%',
+                bottom: '1%',
+                itemWidth:8,
+                itemHeight:8,
+                pageIconSize:12,
+                pageIconColor:'#21AFF7',
+                pageIconInactiveColor:'#2073BF',
+                pageTextStyle:{
+                    color: '#418ACE'
+                },
+                textStyle: {
+                    color:'#BDC6E3',
+                    fontSize: 12
+                }
+            },
+            color: _color,
+            series: [
+                {
+                    name: '异常率',
+                    type: 'pie',
+                    selectedMode: 'single',
+                    center: ['50%', '45%'],
+                    radius: ['28%', '40%'],
+                    hoverAnimation: false,
+                    selectedOffset:0,
+                    label: {
+                        normal: {
+                            position: 'outside'
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                formatter: '{d}%',
+                                textStyle: {
+                                    color: '#68a6de',
+                                    fontSize: 10,
+                                }
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 5,
+                            length2:5
+                        }
+                    },
+                    data: realData
+                },
+                {
+                name: '',
+                type: 'pie',
+                center: ['50%', '45%'],
+                radius: ['24%', '25%'],
+                itemStyle: { //环内样式
+                    normal: { //默认样式
+                        label: { //标签
+                            show: false,
+                        },
+                        labelLine: {
+                            show: false,
+                        },
+                    },
+                }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                animation: false,
+                data: [{
+                    name: '',
+                    value: 100,
+                    itemStyle: {
+                        normal: {
+                            color: '#316DB6'
+                        },
+                        emphasis: {
+                            color: '#316DB6'
+                        }
+                    },
+                    tooltip: {
+                        show: false,
+                    },
+                    cursor: 'default',
+                }],
+            }
+
+            ]
+        };
+
+        chart1.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            chart1.resize();
+        });
+    }
+
+
+    function clickevent(){
+        $('.chartdiv ').height($('.chartdiv ').height()).width($('.chartdiv ').width())
+
+        $('.submitBtn').click(function(){ //查询
+            getAlarmCoutChartData(); //重新加载数据图表
+            getAlarmStatBySystemChartData();
+        });
+
+        $('.timeBTChose > span').click(function(){ //月季年
+            $(this).addClass('actTime').siblings().removeClass('actTime');
+            var text = $(this).text();
+            if(text == '月'){
+                $('#sData2').val(getNowFormatDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == '季'){
+                $('#sData2').val(getQuarterStartDate());
+                $('#eData2').val(getNowFormatDate());
+            }else if(text == "年"){
+                $('#sData2').val(getNowYeartDateStart());
+                $('#eData2').val(getNowFormatDate());
+            }
+            getAlarmCoutChartData(); //重新加载数据图表
+            getAlarmStatBySystemChartData();
+//            loadData(); //重新加载数据图表
+//            getTableData();
+        });
+    }
+
+</script>
+</html>

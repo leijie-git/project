@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseCodegroupMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseCodegroup" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="CodeGroupID" property="codegroupid" jdbcType="BIGINT" />
+    <result column="CodeGroupKey" property="codegroupkey" jdbcType="NVARCHAR" />
+    <result column="CodeGroupName" property="codegroupname" jdbcType="NVARCHAR" />
+    <result column="SortOrder" property="sortorder" jdbcType="INTEGER" />
+    <result column="Memo" property="memo" jdbcType="NVARCHAR" />
+    <result column="IsDeleted" property="isdeleted" jdbcType="BIT" />
+    <result column="Adder" property="adder" jdbcType="NVARCHAR" />
+    <result column="AddDate" property="adddate" jdbcType="TIMESTAMP" />
+    <result column="Updater" property="updater" jdbcType="NVARCHAR" />
+    <result column="UpdateDate" property="updatedate" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <select id="getListByGroupKey" resultType="com.gw.systemManager.data.CodeOutData">
+    SELECT
+	    a.CodeGroupID codegroupid,
+	    b.CodeID codeid,
+	    b.CodeName codename,
+	    b.CodeValue codevalue,
+	    b.Memo memo,
+	    b.SortOrder sortorder,
+	    b.Adder adder,
+	    b.AddDate adddate,
+	    b.Updater updater,
+	    b.UpdateDate updatedate
+    FROM
+        UT_Base_CodeGroup a
+    LEFT JOIN UT_Base_Code b ON a.CodeGroupID = b.CodeGroupID
+    <where>
+        b.IsDeleted = 0
+        <if test="codeGroupKey!=null and codeGroupKey!=''">
+          and a.CodeGroupKey = #{codeGroupKey}
+        </if>
+    </where>
+  </select>
+  
+  <select id="selectAllCodeGroup" resultType="com.gw.systemManager.data.CodeGroupOutData">
+  	SELECT
+		c.CodeGroupID,
+		c.CodeGroupKey,
+		c.CodeGroupName,
+		c.IsDeleted,
+		c.Memo
+	FROM
+		UT_Base_CodeGroup c
+	<where>
+		<if test="codeGroupName != null and codeGroupName != ''">
+			AND c.CodeGroupName like '%${codeGroupName}%'
+		</if>
+		<if test="codeGroupKey != null and codeGroupKey != ''">
+			AND c.CodeGroupKey like '%${codeGroupKey}%'
+		</if>
+	</where>
+	ORDER BY c.CodeGroupID DESC
+  </select>
+  
+  <select id="getCodeGroupSelectList" resultType="com.gw.systemManager.data.CodeGroupOutData">
+  	SELECT
+		c.CodeGroupID,
+		c.CodeGroupName
+	FROM
+		UT_Base_CodeGroup c
+	WHERE
+		c.IsDeleted = 0
+  </select>
+</mapper>

@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>接警详情</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/AlarmDetails.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+	<script type="text/javascript" src="../../Script/realTimeData.js"   charset="utf-8"></script> <!--实时-->
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+	<div class="wrapper">
+		<!--左-->
+		<div class="left_alarm_box_shadow">
+			<div class="box_alarm_block">
+
+				<div class="box_block_tit">
+					<p class="fontSize16">单位资料</p>
+				</div>
+
+				<!--左1-->
+				<div class="left_block_fire1" id="unitBaseInfo">
+					<div class="box_block_legend fontSize14">
+						基本信息
+					</div>
+
+					<div class="box_block_content">
+						<ul class="box_ul scrollbar-inner">
+							<li>
+								<span>单位编号</span>
+								<span class="info-text" id="unitcode"></span>
+							</li>
+							<li>
+								<span>单位名称</span>
+								<span class="info-text" id="unitname"></span>
+							</li>
+							<li>
+								<span>单位地址</span>
+								<span>
+									<span class="info-text" id="unitaddress"></span>
+									<img src="../../Content/images/Home/icon_dialog.png" class="ico_line">
+								</span>
+							</li>
+							<li>
+								<span>技术支持</span>
+								<span></span>
+							</li>
+							<li>
+								<span>用户代表</span>
+								<span></span>
+							</li>
+							<li>
+								<span>行政归属</span>
+								<span></span>
+							</li>
+							<li>
+								<span>企业类型</span>
+								<span></span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<!--左2-->
+				<div class="left_block_fire2" id="userDeviceInfo">
+
+					<div class="box_block_legend fontSize14">
+						用户传输设备信息
+					</div>
+
+					<div class="box_block_content">
+						<ul class="box_ul scrollbar-inner">
+							<li>
+								<span>设备名称</span>
+								<span id="name" class="deviceTxt"></span>
+							</li>
+							<li>
+								<span>当前状态</span>
+								<span class="IsOnline deviceTxt" id="deviceStatus"></span>
+								<!-- <span class="IsOnline red">离线</span> -->
+							</li>
+							<li>
+								<span>型号</span>
+								<span id="deviceModel" class="deviceTxt"></span>
+							</li>
+							<li>
+								<span>上线时间</span>
+								<span id="createdate" class="deviceTxt"></span>
+							</li>
+							<li>
+								<span>厂家</span>
+								<span></span>
+							</li>
+							<li>
+								<span>软硬件版本</span>
+								<span><span id="softVersion" class="deviceTxt"></span>/<span id="version" class="deviceTxt"></span></span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<!--左3-->
+				<div class="left_block_fire3" id="otherDeviceInfo">
+					<div class="box_block_legend fontSize14">
+						报警主机及其它设备信息
+					</div>
+
+					<div class="box_block_content scrollbar-inner">
+						<ul class="box_ul ">
+							<!--<li>-->
+								<!--<span>设备名称</span>-->
+								<!--<span>xxx</span>-->
+							<!--</li>-->
+							<!--<li>-->
+								<!--<span>状态</span>-->
+								<!--&lt;!&ndash; <span class="IsOnline lightBlue">在线</span> &ndash;&gt;-->
+								<!--<span class="IsOnline orange">离线</span>-->
+							<!--</li>-->
+							<!--<li>-->
+								<!--<span>制造商</span>-->
+								<!--<span>SD-12325</span>-->
+							<!--</li>-->
+							<!--<li>-->
+								<!--<span>设配器</span>-->
+								<!--<span>C00021</span>-->
+							<!--</li>-->
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>		
+
+		<div class="arrow_btn_left" id="arrowBtn_left"></div>
+
+		<!--中-->
+		<div class="middlleBox">
+			<div class="middlw_block_fire">
+
+				<div class="box_block_tit">
+					<p class="fontSize16">汇总信息</p>
+				</div>
+
+				<div class="mainbox">
+					<div class="middle_block1" id="statisticalInfo">
+						<div class="unitbox" data_msg='1'>
+							<img src="../../Content/images/Home/icon1.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18"><span class="statisticCount" id="onLine"></span>/<span class="statisticCount" id="total"></span></b></div>
+								<div class="dataword">在线/总数</div>
+							</div>
+						</div>
+						<div class="box" data_msg='2'>
+							<img src="../../Content/images/Home/icon2.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18 statisticCount" id="fireAlarm"></b></div>
+								<div class="dataword">火警</div>
+							</div>
+						</div>
+						<div class="box" data_msg='3'>
+							<img src="../../Content/images/Home/icon3.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18 statisticCount" id="concern"></b></div>
+								<div class="dataword">关注</div>
+							</div>
+						</div>
+						<div class="box" data_msg='4'>
+							<img src="../../Content/images/Home/icon4.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18 statisticCount" id="report"></b></div>
+								<div class="dataword">报备</div>
+							</div>
+						</div>
+						<div class="box" data_msg='5'>
+							<img src="../../Content/images/Home/icon5.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18 statisticCount" id="test"></b></div>
+								<div class="dataword">测试</div>
+							</div>
+						</div>
+						<div class="box" data_msg='6'>
+							<img src="../../Content/images/Home/icon6.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18 statisticCount" id="fault"></b></div>
+								<div class="dataword">故障</div>
+							</div>
+						</div>
+						<div class="box" data_msg='7'>
+							<img src="../../Content/images/Home/icon7.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18 statisticCount" id="startUp"></b></div>
+								<div class="dataword">启动</div>
+							</div>
+						</div>
+						<div class="box" data_msg='8'>
+							<img src="../../Content/images/Home/icon8.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize18 statisticCount" id="feedBack"></b></div>
+								<div class="dataword">反馈</div>
+							</div>
+						</div>
+						<div class="box" data_msg='9'>
+							<img src="../../Content/images/Home/icon9.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize20 statisticCount" id="supervise"></b></div>
+								<div class="dataword">监管</div>
+							</div>
+						</div>
+						<div class="box" data_msg='10'>
+							<img src="../../Content/images/Home/icon10.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize20 statisticCount" id="shield"></b></div>
+								<div class="dataword">屏蔽</div>
+							</div>
+						</div>
+						<div class="box" data_msg='11'>
+							<img src="../../Content/images/Home/icon11.png">
+							<div class="databox">
+								<div class="datadata"><b class="fontSize20 statisticCount" id="reset"></b></div>
+								<div class="dataword">复位</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="middle_block2">
+						<div class="block2_left">
+							<div class="lightSpan fontSize16">实时报警信息</div>
+							<div class="timelyAlarmCount fontSize18">
+								<!--<span>1</span>-->
+								<!--<span>1</span>-->
+								<!--<span>1</span>-->
+								<!--条-->
+							</div>
+							<!--<span class="number number1">0</span>-->
+							<!--<span class="number number2">1</span>-->
+							<!--<span class="number number3">1</span>-->
+							<!--<span>条</span>-->
+						</div>
+
+						<div class="block2_right">
+							<div class="iconB9 green">
+								<img src="../../Content/images/Home/iconB9.png" title="服务网站连接正常">
+							</div>
+							<!-- <div class="iconB9 red">
+								<img src="../../Content/images/Home/iconB9.png" title="服务网站连接异常">
+							</div> -->
+							<div class="iconB8 green">
+								<img src="../../Content/images/Home/iconB8.png" title="推送中心连接正常">
+							</div>
+							<!-- <div class="iconB8 red">
+								<img src="../../Content/images/Home/iconB8.png" title="推送中心连接异常">
+							</div> -->
+							<!-- <div class="iconB7">
+								<img src="../../Content/images/Home/iconB7.png" title="设置实时报警接受选项">
+							</div>
+							<div class="iconB6">
+								<img src="../../Content/images/Home/iconB6.png" title="交接班">
+							</div>
+							<div class="iconB5">
+								<img src="../../Content/images/Home/iconB5.png" title="收起或展开单位资料">
+							</div>
+							<div class="iconB4">
+								<img src="../../Content/images/Home/iconB4.png" title="标记为已处理并清空列表">
+							</div>
+							<div class="iconB3">
+								<img src="../../Content/images/Home/iconB3.png" title="把当前单位[晋中市烟草专卖局综合楼消控室]标定为测试单位">
+							</div>
+							<div class="iconB2">
+								<img src="../../Content/images/Home/iconB2.png" title="把当前单位[晋中市烟草专卖局综合楼消控室]标定为报备单位">
+							</div>
+							<div class="iconB1">
+								<img src="../../Content/images/Home/iconB1.png" title="把当前单位[晋中市烟草专卖局综合楼消控室]添加到关注列表">
+							</div> -->
+						</div>
+					</div>
+
+					<!--table-->
+					<div class="middle_block3">
+						<!--table start-->
+			            <div class="table_box">
+			                <div class="list_table">
+			                    <div class="table_header">
+			                        <table>
+			                            <colgroup>
+			                                <col width="5%">
+			                                <col width="10%">
+			                                <col width="6%">
+			                                <col width="15%">
+			                                <col width="5%">
+			                                <col width="14%">
+			                                <col width="15%">
+			                                <col width="15%">
+			                                <col width="5%">
+			                            </colgroup>
+			                            <thead>
+				                            <tr>
+				                                <th>序号</th>
+				                                <th>单位编号</th>
+				                                <th>子站号</th>
+				                                <th>单位名称</th>
+				                                <th>类型</th>
+				                                <th>警情描述</th>
+				                                <th>接警时间</th>
+				                                <th>报警时间</th>
+				                                <th>测试</th>
+				                            </tr>
+			                            </thead>
+			                        </table>
+			                    </div>
+			                    <div class="table_content scrollbar-inner">
+			                        <table cellpadding="0" cellspacing="0" class="tbody">
+			                            <colgroup>
+			                                <col width="5%">
+			                                <col width="10%">
+			                                <col width="6%">
+			                                <col width="15%">
+			                                <col width="5%">
+			                                <col width="14%">
+			                                <col width="15%">
+			                                <col width="15%">
+			                                <col width="5%">
+			                            </colgroup>
+			                            <tbody id="mainTable">
+			                                <!--<tr id="ywgerf">-->
+			                                    <!--<td>1</td>-->
+			                                    <!--<td class="underline" onclick="UnitDetail(this);">40002323243</td>-->
+			                                    <!--<td>343423</td>-->
+			                                    <!--<td class="underline childname" onclick="getLeftListData(this);">上海跨国采购中心办公楼</td>-->
+			                                    <!--<td>类型</td>-->
+			                                    <!--<td class="underline" onclick="getCrt(this);">警情描述</td>-->
+			                                    <!--<td>2018-09-08 23:26</td>-->
+			                                    <!--<td>2018-09-08 23:26</td>-->
+			                                    <!--<td>测试</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr id="trewer">-->
+			                                    <!--<td>2</td>-->
+			                                    <!--<td class="underline" onclick="UnitDetail(this);">40002323243</td>-->
+			                                    <!--<td>343423</td>-->
+			                                    <!--<td class="underline childname" onclick="getLeftListData(this);">上海跨国采购中心办公楼</td>-->
+			                                    <!--<td>类型</td>-->
+			                                    <!--<td class="underline" onclick="getCrt(this);">警情描述</td>-->
+			                                    <!--<td>2018-09-08 23:26</td>-->
+			                                    <!--<td>2018-09-08 23:26</td>-->
+			                                    <!--<td>测试</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr id="654gfsd">-->
+			                                    <!--<td>3</td>-->
+			                                    <!--<td class="underline" onclick="UnitDetail(this);">40002323243</td>-->
+			                                    <!--<td>343423</td>-->
+			                                    <!--<td class="underline childname" onclick="getLeftListData(this);">上海跨国采购中心办公楼</td>-->
+			                                    <!--<td>类型</td>-->
+			                                    <!--<td class="underline" onclick="getCrt(this);">警情描述</td>-->
+			                                    <!--<td>2018-09-08 23:26</td>-->
+			                                    <!--<td>2018-09-08 23:26</td>-->
+			                                    <!--<td>测试</td>-->
+			                                <!--</tr>-->
+			                                
+			                            </tbody>
+			                        </table>
+			                    </div>
+			                </div>
+
+			                <div class="footer">
+			                    <div id="demo7"></div>
+			                </div>
+
+			            </div>
+			            <!--table end-->
+
+					</div>
+				</div>
+				
+			</div>
+		</div>
+
+		<div class="arrow_btn_right" id="arrowBtn_right"></div>
+
+		<!--右-->
+		<div class="right_alarm_box_shadow">
+			<div class="box_alarm_block">
+
+				<!--右1-->
+				<div class="right_block_fire1">
+					<div class="box_block_tit">
+						<p class="fontSize16">联系电话</p>
+					</div>
+					<div class="box_block_content">
+						<!--table start-->
+			            <div class="table_box">
+			                <div class="list_table">
+			                    <div class="table_header">
+			                        <table>
+			                            <colgroup>
+			                                <col width="40%">
+			                                <col width="60%">
+			                            </colgroup>
+			                            <thead>
+				                            <tr>
+				                                <th>姓名</th>
+				                                <th>电话</th>
+				                            </tr>
+			                            </thead>
+			                        </table>
+			                    </div>
+			                    <div class="table_content scrollbar-inner">
+			                        <table cellpadding="0" cellspacing="0" class="tbody">
+			                            <colgroup>
+			                                <col width="40%">
+			                                <col width="60%">
+			                            </colgroup>
+			                            <tbody id="right1Table">
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                <!--<tr>-->
+			                                    <!--<td>王李鹏</td>-->
+			                                    <!--<td>13454345345</td>-->
+			                                <!--</tr>-->
+			                                
+			                            </tbody>
+			                        </table>
+			                    </div>
+			                </div>
+			            </div>
+			            <!--table end-->
+					</div>
+				</div>
+
+				<!--右2-->
+				<div class="right_block_fire2" id="unitListByType1">
+					<div class="box_block_tit">
+						<p class="fontSize16">关注单位 ( <span class="totalList"></span>个 )</p>
+					</div>
+					<div class="box_block_content">
+						<!--table start-->
+			            <div class="table_box">
+			                <div class="list_table">
+			                    <div class="table_header">
+			                        <table>
+			                            <colgroup>
+			                                <col width="35%">
+			                                <col width="35%">
+			                                <col width="30%">
+			                            </colgroup>
+			                            <thead>
+				                            <tr>
+				                                <th>单位编号</th>
+				                                <th>单位名称</th>
+				                                <th>操作</th>
+				                            </tr>
+			                            </thead>
+			                        </table>
+			                    </div>
+			                    <div class="table_content scrollbar-inner">
+			                        <table cellpadding="0" cellspacing="0" class="tbody">
+			                            <colgroup>
+			                                <col width="35%">
+			                                <col width="35%">
+			                                <col width="30%">
+			                            </colgroup>
+			                            <tbody class="mainContentTbody">
+			                                <!--<tr id="retyewtmnbnn">-->
+			                                    <!--<td class="underline" onclick="UnitNumber(this);">12444410</td>-->
+			                                    <!--<td class="underline unitname" onclick="UnitName(this);">慧鹏科技</td>-->
+			                                    <!--<td class="underline" onclick="unflow(this);">取消关注</td>-->
+			                                <!--</tr>-->
+
+			                            </tbody>
+			                        </table>
+			                    </div>
+			                </div>
+			            </div>
+			            <!--table end-->
+					</div>
+				</div>
+				
+				<!--右3-->
+				<div class="right_block_fire3" id="unitListByType2">
+					<div class="box_block_tit">
+						<p class="fontSize16">报备单位 ( <span class="totalList"></span>个 )</p>
+					</div>
+					<div class="box_block_content">
+						<!--table start-->
+			            <div class="table_box">
+			                <div class="list_table">
+			                    <div class="table_header">
+			                        <table>
+			                            <colgroup>
+			                                <col width="35%">
+			                                <col width="35%">
+			                                <col width="30%">
+			                            </colgroup>
+			                            <thead>
+				                            <tr>
+				                                <th>单位编号</th>
+				                                <th>单位名称</th>
+				                                <th>操作</th>
+				                            </tr>
+			                            </thead>
+			                        </table>
+			                    </div>
+			                    <div class="table_content scrollbar-inner">
+			                        <table cellpadding="0" cellspacing="0" class="tbody">
+			                            <colgroup>
+			                                <col width="35%">
+			                                <col width="35%">
+			                                <col width="30%">
+			                            </colgroup>
+			                            <tbody class="mainContentTbody">
+			                                <!--<tr id="966787676dd">-->
+			                                    <!--<td class="underline" onclick="ReportUnit(this);">12444410</td>-->
+			                                    <!--<td class="underline unitname" onclick="getContactTableData(this);">慧鹏科技</td>-->
+			                                    <!--<td class="underline " onclick="unflow(this);">取消关注</td>-->
+			                                <!--</tr>-->
+			                            </tbody>
+			                        </table>
+			                    </div>
+			                </div>
+			            </div>
+			            <!--table end-->
+					</div>
+				</div>
+
+				<!--右4-->
+				<div class="right_block_fire4" id="unitListByType3">
+					<div class="box_block_tit">
+						<p class="fontSize16">测试单位 ( <span class="totalList"></span>个 )</p>
+					</div>
+					<div class="box_block_content">
+						<!--table start-->
+			            <div class="table_box">
+			                <div class="list_table">
+			                    <div class="table_header">
+			                        <table>
+			                            <colgroup>
+			                                <col width="35%">
+			                                <col width="35%">
+			                                <col width="30%">
+			                            </colgroup>
+			                            <thead>
+				                            <tr>
+				                                <th>单位编号</th>
+				                                <th>单位名称</th>
+				                                <th>操作</th>
+				                            </tr>
+			                            </thead>
+			                        </table>
+			                    </div>
+			                    <div class="table_content scrollbar-inner">
+			                        <table cellpadding="0" cellspacing="0" class="tbody">
+			                            <colgroup>
+			                                <col width="35%">
+			                                <col width="35%">
+			                                <col width="30%">
+			                            </colgroup>
+			                            <tbody class="mainContentTbody">
+			                                <!--<tr id="74345">-->
+			                                    <!--<td class="underline" onclick="TestUnit(this);">12444410</td>-->
+			                                    <!--<td class="underline unitname" onclick="getContactTableData(this);">慧鹏科技</td>-->
+			                                    <!--<td class="underline" onclick="unflow(this);">取消关注</td>-->
+			                                <!--</tr>-->
+			                            </tbody>
+			                        </table>
+			                    </div>
+			                </div>
+			            </div>
+			            <!--table end-->
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+
+</body>
+
+<script type="text/javascript">
+	var _unitid='',_AlarmCount=$('#timelyAlarmCount', top.document).text();; //单位id \ 实时报警数
+	var _type = localStorage.getItem("myswatch") || ""; //报警类型
+	$(function(){
+		getLineHeight(); //行高调整
+		getLeftUnit(); //获取左侧单位资料
+
+		clickEvent(); //各点击事件
+
+		window.addEventListener('resize', function () { //宽度自适应
+			getLineHeight(); //行高调整
+        });
+
+		$('.timelyAlarmCount').html(getAlarmCount(_AlarmCount)+"条");
+		getTimelyAlarmList();//获取实时报警数据列表
+		//getUnitInfoByIdData(_loginInfo.unitid);//左1-单位资料
+		getStatisticalInfoData();//汇总信息
+
+		getUnitListByStateData(4);//关注单位
+		getUnitListByStateData(1);//报备单位
+		getUnitListByStateData(2);//测试单位
+
+	});
+	//实时
+	setInterval(function(){
+		var timelyAlarmCount = $('#timelyAlarmCount', top.document).text();
+		var type = localStorage.getItem("myswatch")|| "";
+		if(_AlarmCount != timelyAlarmCount){
+			_AlarmCount = timelyAlarmCount;
+			$('.timelyAlarmCount').html(getAlarmCount(count)+"条");
+			getTimelyAlarmList();
+		}
+		if(_type != type){
+			_type = type;
+			getTimelyAlarmList();
+		}
+	},1000);
+
+	/////////////////获取实时报警数据列表
+	function getTimelyAlarmList(){
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/homeIndex/getAlarmInfo",
+			data:"type="+_type,
+			success: function (data) {
+				//console.log(data);
+				if (data.success == true) {
+					var msg = data.obj;
+					showListContent(msg)
+				}
+			}
+		});
+	}
+
+	function showListContent(data){
+		var html = "";
+		for(var i = 0 ; i < data.length;i++){
+			html +='<tr id="'+data[i].unitId+'">' +
+					'<td>'+(i+1)+'</td>' +
+					'<td class="underline" onclick="UnitDetail(this);">'+(data[i].unitCode || "--")+'</td>' +
+					'<td>'+data[i].childStationNum+'</td>' +
+					'<td class="underline childname align-left" onclick="getLeftListData(\''+data[i].unitId+'\');">'+data[i].unitName+'</td>' +
+					'<td>'+data[i].alarmStatus+'</td>' +
+					'<td class="underline align-left" onclick="getCrt(this);">'+data[i].alarmDevicedesc+'</td>' +
+					'<td>'+data[i].dealtime+'</td>' +
+					'<td>'+data[i].time+'</td>' +
+					'<td>'+data[i].isTest+'</td>' +
+					'</tr>'
+		}
+		$('#mainTable').html(html||"<tr><td colspan='9'>暂无数据...</td></tr>");
+		$('#mainTable tr>td').each(function(){$(this).attr('title',$(this).text())});
+		if(data.length == 0){
+			$('#unitBaseInfo ul').html("无单位信息")
+			$('#userDeviceInfo ul').html("无设备信息")
+			$('#otherDeviceInfo ul').html("无设备信息")
+		}
+		else{
+			getLeftListData(data[0].unitId);
+
+		}
+	}
+
+	/////////////////左1-单位资料
+	function getUnitInfoByIdData(unitId){
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/unit/getUnitInfoById",
+			data:"unitId="+unitId,
+			success: function (msg) {
+				//console.log(data);
+				if (msg.success == true) {
+					var data = msg.obj;
+					if(data == ""){
+						$('#unitBaseInfo ul').html("无单位信息")
+						return;
+					}
+					$('#unitBaseInfo .info-text').each(function(){
+						$(this).text(data[$(this).attr('id')] || "-");
+					})
+				}
+			}
+		});
+	}
+	/////////////////左2-用户传输设备信息
+	function getNetDeviceList(unitId){
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/homeIndex/getNetDeviceListByUnitId",
+			data:"unitId="+unitId +"&type=2",
+			success: function (msg) {
+				if (msg.success == true) {
+					var data = msg.obj;
+					if(data == "" || data.length == 0){
+						$('#userDeviceInfo ul').html("无设备信息");
+						return;
+					}
+					var html = "";
+					for(var i = 0 ; i < data.length ; i ++){
+						html += '<li class="box_first_tip"><span>设备名称</span><span>'+data[i].deviceName+'</span></li>' +
+								'<li><span>状态</span><span class="IsOnline orange">'+data[i].deviceStatus+'</span></li>' +
+								'<li><span>制造商</span><span>'+data[i].manufacturerCode+'</span></li>' +
+								'<li><span>设配器</span><span>'+data[i].deviceCode+'</span></li>'
+					}
+					$('#userDeviceInfo ul').html(html);
+				}
+			}
+		});
+	}
+	/////////////////左3-报警主机及其它设备信息
+	function getOtherNetDeviceList(unitId){
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/homeIndex/getNetDeviceListByUnitId",
+			data:"unitId="+unitId +"&type=",
+			success: function (msg) {
+				if (msg.success == true) {
+					var data = msg.obj;
+					if(data == "" || data.length == 0){
+						$('#otherDeviceInfo ul').html("无设备信息");
+						return;
+					}
+					var html = "";
+					for(var i = 0 ; i < data.length ; i ++){
+						html += '<li class="box_first_tip"><span>设备名称</span><span>'+data[i].deviceName+'</span></li>' +
+								'<li><span>状态</span><span class="IsOnline orange">'+data[i].deviceStatus+'</span></li>' +
+								'<li><span>制造商</span><span>'+data[i].manufacturerCode+'</span></li>' +
+								'<li><span>设配器</span><span>'+data[i].deviceCode+'</span></li>'
+					}
+					$('#otherDeviceInfo ul').html(html);
+				}
+			}
+		});
+	}
+
+	/////////////////中间 - 汇总信息
+	function getStatisticalInfoData(){
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/homeIndex/getStatisticalInfo",
+			success: function (msg) {
+				//console.log(data);
+				if (msg.success == true) {
+					var data = msg.obj;
+					$('#statisticalInfo .statisticCount').each(function(){
+						var lab = $(this).attr('id');
+						$(this).text(data[lab]||0)
+					})
+				}
+			}
+		});
+	}
+
+	/////////////////右 - 联系电话
+	function getUnitUserByUnitIdData(unitId){
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/homeIndex/getUnitUserByUnitId",
+			data:"unitId="+unitId,
+			success: function (msg) {
+				if (msg.success == true) {
+					var data = msg.obj;
+
+					var html="";
+					for(var i = 0 ; i < data.length; i++){
+						html += '<tr>' +
+								'<td>'+data[i].username+'</td>' +
+								'<td>'+data[i].mobilephone+'</td>' +
+								'</tr>'
+					}
+					$('#right1Table').html(html || "<tr colspan='2'>暂无信息</tr>")
+				}
+			}
+		});
+	}
+
+	/////////////////右-关注单位、报备单位（1）、测试单位（0）
+	function getUnitListByStateData(type){
+		var data = {
+			alarmStatus:"",
+			calibrationType:type,
+			deviceStatus:""
+		};
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/homeIndex/getUnitListByState",
+			data:data,
+			success: function (msg) {
+				//console.log(data);
+				if (msg.success == true) {
+					var data = msg.obj;
+					showUnitListTbodyContent(data,type);
+				}
+			}
+		});
+	}
+	function showUnitListTbodyContent(data,type){
+		var wraCon = $('#unitListByType'+(type == 2?1:(type == 1?2:3)));
+		wraCon.find('.totalList').text(data.length);
+		var html = "";
+		for(var i = 0 ; i < data.length ; i++){
+			html += '<tr id="'+data[i].unitId+'">' +
+					'<td class="underline" onclick="UnitDetail(this);">'+data[i].unitCode+'</td>' +
+					'<td class="underline unitname" onclick="getLeftListData(\''+data[i].unitId+'\');">'+data[i].unitName+'</td>' +
+					'<td class="underline" onclick="unflow(this,'+type+');">取消关注</td>' +
+					'</tr>'
+		}
+		wraCon.find('.mainContentTbody').html(html || '<tr colspan="3">暂无数据</tr>');
+		wraCon.find('.mainContentTbody>tr>td').each(function(){
+			$(this).attr('title',$(this).text());
+		})
+	}
+	///////////////取消关注
+	function unflow(obj,type){
+		var _id = $(obj).parents('tr').attr('id');
+
+		layer.confirm('确定取消关注吗?', {
+			btn: ['是', '否'] //按钮
+		}, function () { //是
+			$.ajax({
+				type: "get",
+				url: _serverIp + "/front/homeIndex/cancelConcern",
+				data:"unitId="+_id,
+				success: function (msg) {
+					//console.log(data);
+					if (msg.success == true) {
+						layer.msg('设置成功');
+						getUnitListByStateData(type)
+					}
+				}
+			});
+		}, function () { //否
+
+		});
+
+	}
+
+	//中间表格-单位名称的点击
+	function getLeftListData(unitid){
+		getUnitInfoByIdData(unitid);//单位资料
+		getNetDeviceList(unitid);//用户传输设备信息
+		getOtherNetDeviceList(unitid);//报警主机及其它设备信息
+		getUnitUserByUnitIdData(unitid);//联系电话
+	}
+
+
+	function getLineHeight(){ //行高调整
+		// var h1 = $('.ulA li').height();
+		// $('.ulA li').css('line-height',h1 + 'px');
+
+		// var h2 = $('.ulB li').height();
+		// $('.ulB li').css('line-height',h2 + 'px');
+
+		// var h3 = $('.ulC li').height();
+		// $('.ulC li').css('line-height',h3 + 'px');
+
+		var h4 = $('.middle_block2 .block2_left').height();
+		$('.middle_block2 .block2_left').css('line-height',h4 + 'px');
+	}
+
+	
+//左侧部分各方法
+	function getLeftUnit(){ //左侧单位资料信息
+
+	}
+
+//中间部分各方法
+	function UnitDetail(obj){ //中间表格-单位编号弹窗
+		var id = $(obj).parents('tr').attr('id');
+		var childname = $(obj).siblings('.childname').text(); 
+
+		top.layer.open({
+            type: 2,
+            title: '['+ childname + '] 详细资料',
+            closeBtn: 1,
+            area:['75%','80%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'Home/Middle_UnitDetail_Window.html?unitid='+id+'&unitname='+escape(childname)
+        });
+	}
+
+	function getCrt(obj){ //中间表格-警情描述弹窗-CRT图层浏览
+		var _id = $(obj).parents('tr').attr('id');
+		
+		layer.open({
+            type: 2,
+            title: 'CRT图层浏览',
+            closeBtn: 1,
+            area:['60%','65%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'Middle_GetCrt_Window.html'
+        });
+	}
+
+
+
+//右侧部分各方法
+	function UnitNumber(obj){ //关注单位列表-单位编号点击
+		var _id = $(obj).parents('tr').attr('id');
+		var _unitname = $(obj).siblings('.unitname').text(); 
+
+		layer.open({
+            type: 2,
+            title: '['+ _unitname + '] 详细资料',
+            closeBtn: 1,
+            area:['60%','65%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'Right_FollowUnit_Window.html'
+        });
+	}
+
+	function ReportUnit(obj){ //右侧报备单位列表-单位编号点击
+
+	}
+	
+	function TestUnit(obj){ //右侧测试单位列表-单位编号点击
+
+	}
+
+	function UnitName(obj){ //关注单位/报备单位/测试单位/ - 单位名称点击
+		var _id = $(obj).parents('tr').attr('id');	
+		getLeftUnit();	
+
+	}
+
+	/////////////////获取联系电话表格
+
+
+	function getTypePoint(){}/////报警实时-首页控方法
+	function getFireAlarmData(){}/////报警实时-首页左1火警
+
+
+
+    //各点击事件
+	function clickEvent(){
+		$('#statisticalInfo>div').click(function(){ //中间汇总信息顶部11个按钮的点击
+			var _msgtype = $(this).attr('data_msg');
+			var _unitname =$(this).find('.dataword').text();
+			if(_unitname == '在线/总数'){
+				_unitname='所有报警信息';
+			}
+			var alarmStatus; //在线总数
+			var calibrationType; //标定类型
+
+			if(_msgtype == 1){ //在线/总数
+				alarmStatus = '';
+				calibrationType = '';
+			}else if(_msgtype == 3){ //关注
+				alarmStatus = '';
+				calibrationType = 4;
+			}else if(_msgtype == 4){ //报备
+				alarmStatus = '';
+				calibrationType = 1;
+			}else if(_msgtype == 5){ //测试
+				alarmStatus = '';
+				calibrationType = 2;
+			}else if(_msgtype == 2){ //火警
+				alarmStatus = 1;
+				calibrationType = '';
+			}else if(_msgtype == 6){ //故障
+				alarmStatus = 2;
+				calibrationType = '';
+			}else if(_msgtype == 7){ //启动
+				alarmStatus = 3;
+				calibrationType = '';
+			}else if(_msgtype == 8){ //反馈
+				alarmStatus = 4;
+				calibrationType = '';
+			}else if(_msgtype == 9){ //监管
+				alarmStatus = 5;
+				calibrationType = '';
+			}else if(_msgtype == 10){ //屏蔽
+				alarmStatus = 6;
+				calibrationType = '';
+			}else if(_msgtype == 11){ //复位
+				alarmStatus = 8;
+				calibrationType = '';
+			}
+			//报警记录弹窗
+			layer.open({
+	            type: 2,
+	            title: '[ '+ _unitname + ' ] -- 单位报警记录',
+	            closeBtn: 1,
+	            area:['98%','98%'],
+	            shade: 0.1,
+	            skin: 'layui-layer-loginRecord',
+	            content: 'Middle_total_Window.html?alarmStatus=' + alarmStatus + '&calibrationType=' + calibrationType
+        	});
+
+		});
+	}
+
+</script>
+</html>

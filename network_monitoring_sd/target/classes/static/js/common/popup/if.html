@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./animate.css">
+    <link rel="stylesheet" href="./popup.css">
+    <script src="./jquery.min.js"></script>
+</head>
+<body>
+<button class="show">显示</button>
+<p id="p">人旬人有大</p>
+</body>
+<script src="./popup.js"></script>
+<script>
+    $(".show").click(function () {
+        MyIframe.getIframe({
+            iframeID: "#iframe1",//iframe的id，必须
+            oFormID: "#f",//iframe里要选择的元素id，必须
+            url: "./ifoth.html",//iframe的url，必须
+            heder:"这是放头部信息",
+            headerInfo:"这是一个测试",//头部信息
+            closeB:true,//是否创建退出按钮
+            clearIframe:true,//是否需要每次清除iframe，默认为false
+            clickOut:false,//点击透明层是否关闭弹窗
+//            zIndex:10,
+//          width:300,//可选
+//          height:400,//可选
+            btn: [//要添加的按钮，可选
+                {
+                    text: "保存",
+                    fn: function (f) {//按钮click事件，参数回返的是iframe中的元素
+//                    f.submit()
+                        console.log(f)
+                    }
+                }
+            ],
+            getFather:{//iframe子框内的元素获取父框中的数据
+                eleID:"#bt",//iframe子框中的元素id
+                currentEle:"p",//当前页面中的元素
+                fn:function (o,e) {//o返回当前页面的window对象,e是当前页面中的元素
+//                    console.log(e.html())
+                    o.aaaaa()
+                }
+            }
+        })
+    })
+</script>
+</html>

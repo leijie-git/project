@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gw.mapper.UtLzRepairPlanMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzRepairPlan">
+        <!--@mbg.generated-->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="unitID" property="unitID" jdbcType="BIGINT"/>
+        <result column="buildID" property="buildID" jdbcType="BIGINT"/>
+        <result column="buildAreaID" property="buildAreaID" jdbcType="BIGINT"/>
+        <result column="isGenerate" property="isGenerate" jdbcType="INTEGER"/>
+        <result column="planName" property="planName" jdbcType="VARCHAR"/>
+        <result column="executorID" property="executorID" jdbcType="BIGINT"/>
+        <result column="planStartTime" property="planStartTime" jdbcType="DATE"/>
+        <result column="createTime" property="createTime" jdbcType="DATE"/>
+        <result column="planStartTime" property="planStartTime" jdbcType="DATE"/>
+        <result column="badDesc" property="badDesc" jdbcType="VARCHAR"/>
+        <result column="repairSite" property="repairSite" jdbcType="VARCHAR"/>
+        <result column="lastupdate" property="lastupdate" jdbcType="DATE"/>
+        <result column="planStartTime" property="planStartTime" jdbcType="DATE"/>
+    </resultMap>
+
+    <select id="getRepairList" resultType="com.gw.repairr.data.RepairData" parameterType="com.gw.repairr.data.RepairData">
+    SELECT
+        a.ID,
+        a.unitID,
+        a.buildID,
+        a.buildAreaID,
+        a.isGenerate,
+        a.planName,
+        a.executorID,
+        CONVERT(varchar(100), a.planStartTime, 23) planStartTime,
+        CONVERT(varchar(100), a.planEndTime, 23) planEndTime,
+        a.badDesc,
+        a.repairSite,
+        b1.UnitName,
+        b2.BuildingName,
+        b3.BuildAreaName,
+		b4.UserName
+    FROM
+        UT_LZ_RepairPlan a
+    LEFT JOIN UT_Unit_BaseInfo b1 ON a.unitID = b1.ID
+    LEFT JOIN UT_Unit_Build b2 ON a.buildID = b2.ID
+    LEFT JOIN UT_Unit_BuildArea b3 ON a.buildAreaID = b3.ID
+	LEFT JOIN UT_Unit_User b4 ON a.executorID = b4.ID
+    <where>
+        <if test="unitID!=null and unitID!=''">
+            charindex(rtrim(a.unitID), #{unitID})>0
+        </if>
+        <if test="UnitName!=null and UnitName!=''">
+            AND b1.UnitName LIKE '%${UnitName}%'
+        </if>
+        <if test="planName!=null and planName!=''">
+            AND a.planName LIKE '%${planName}%'
+        </if>
+        <if test="buildID!=null and buildID!=''">
+            AND a.buildID = #{buildID}
+        </if>
+        <if test="buildAreaID!=null and buildAreaID!=''">
+            AND a.buildAreaID = #{buildAreaID}
+        </if>
+        <if test="executorID!=null and executorID!=''">
+            AND a.executorID = #{executorID}
+        </if>
+        <if test="planStartTime!=null and planStartTime!=''">
+            AND a.planStartTime >= #{planStartTime}
+        </if>
+        <if test="planEndTime!=null and planEndTime!=''">
+            AND a.planEndTime &lt;= #{planEndTime}
+        </if>
+    </where>
+        ORDER BY a.unitID ASC ,a.buildID ASC,a.buildAreaID ASC,a.createTime DESC
+    </select>
+    <select id="getMaintenanceUserBynetworkingID" parameterType="com.gw.generatereport.GenerateMaintenanceUserData" resultType="com.gw.generatereport.GenerateMaintenanceUserData">
+        SELECT
+        DISTINCT
+        a.ManageID ManageID,
+        b.id userID,
+        b.UserName UserName
+        from UT_Maintenance_ReUnit a
+        LEFT JOIN UT_Unit_User b on a.ManageID=b.UnitID
+        where
+        1=1
+        <if test="UnitID!=null and UnitID!=''">
+            and	a.ManageID= #{UnitID}
+        </if>
+    </select>
+    <select id="getEquipmentList" resultType="com.gw.repairr.data.EquipmentListData">
+		SELECT
+        a.ID,
+        a.EqName,
+        a.InstallPosition,
+        c.ClassName,
+        b.name,
+        d.BuildingName
+        FROM
+        UT_EQ_Equipment a
+        LEFT JOIN UT_Unit_NetDevice b ON a.NetDeviceID = b.ID
+        LEFT JOIN UT_Base_EqClass c ON a.EqClassID = c.ID
+        LEFT JOIN UT_Unit_Build d ON a.BuildID = d.ID
+        LEFT JOIN UT_Base_EqSystem e ON a.EqSystemID = e.ID
+        LEFT JOIN UT_Unit_BaseInfo f ON a.UnitID = f.ID
+        WHERE
+        1=1 and  a.unitid = #{UnitID}
+            and
+            (a.isDelete = 0 OR a.isDelete is NULL)
+            AND (f.isDelete = 0 OR f.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+        ORDER BY a.ID DESC
+    </select>
+    <select id="getPlanList" resultType="com.gw.repairr.data.MaintenanceTaskData" parameterType="com.gw.repairr.data.MaintenanceTaskData">
+SELECT
+	a.id planID,
+	a.planName,
+	a.unitID UnitID,
+	a.BuildID,
+	a.buildAreaID,
+	b1.UnitName,
+	b2.BuildingName,
+	b3.BuildAreaName,
+	b4.UserName
+FROM
+	UT_LZ_RepairPlan a
+LEFT JOIN UT_Unit_BaseInfo b1 ON a.unitID = b1.ID
+LEFT JOIN UT_Unit_Build b2 ON a.buildID = b2.ID
+LEFT JOIN UT_Unit_BuildArea b3 ON a.buildAreaID = b3.ID
+LEFT JOIN UT_Unit_User b4 ON a.executorID = b4.ID
+        <where>
+        <if test="UnitID!=null and UnitID!=''">
+            charindex(rtrim(a.unitID), #{UnitID})>0
+        </if>
+        </where>
+    </select>
+    <select id="getUnitList" resultType="com.gw.repairr.data.RepairData" parameterType="com.gw.repairr.data.RepairData">
+(
+	SELECT
+		a.UnitID unitID,
+		b.UnitName
+	FROM
+		UT_Maintenance_ReUnit a
+	LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+	WHERE
+		(b.isDelete = 0 OR b.isDelete IS NULL)
+        <if test="unitID!=null and unitID!=''">
+            AND a.ManageID = #{unitID}
+        </if>
+)
+UNION
+	(
+		SELECT
+			id unitID,
+			UnitName
+		FROM
+			UT_Unit_BaseInfo
+		WHERE
+			(isDelete = 0 OR isDelete IS NULL)
+        <if test="unitID!=null and unitID!=''">
+            AND id = #{unitID}
+        </if>
+	)
+ORDER BY
+	UnitID DESC
+    </select>
+</mapper>

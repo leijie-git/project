@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        .wrap_page{
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        #videoIframe{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .btn_bigPic{
+            width: 60px;
+            height: 46px;
+            background: url(../../Content/images/Home/btn_showNormal.png) no-repeat center / 100% 100%;
+            /* background-size: 30px; */
+            position: absolute;
+            right: 2%;
+            bottom: 5%;
+            transition: right .5s;
+            -webkit-transition: right .5s;
+            cursor: pointer;
+            background-color: #162F36;
+            border-radius: 5px;
+        }
+        .btn_cutPic{
+            width: 60px;
+            height: 46px;
+            background: url(../../Content/images/NetInfoStatistic/icon_cutPicture.png) no-repeat center / 100% 100%;
+             background-size: 44px;
+            position: absolute;
+            right: 2%;
+            bottom: calc(6% + 50px);
+            transition: right .5s;
+            -webkit-transition: right .5s;
+            cursor: pointer;
+            background-color: #162F36;
+            border-radius: 5px;
+        }
+        .istips{
+            position: absolute;
+            right: 2%;
+            bottom: calc(6% + 110px);
+            font-size: 14px;
+            color: red;
+        }
+    </style>
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/Capture/jquery.md5.js"></script>
+    <script src="../../Script/Capture/jquery.json-2.3.min.js?v=20150926"></script>
+    <script src="../../Script/Capture/niuniucapture.js?v=20171108"></script>
+    <script src="../../Script/Capture/capturewrapper.js?v=20171108"></script>
+</head>
+<body>
+<div class="wrap_page">
+    <iframe id="videoIframe" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>
+    <div class="istips"></div>
+    <div class="btn_cutPic" title="截图" onclick="StartCapture();"></div>
+    <div class="btn_bigPic" title="退出全屏"></div>
+    <div id="images" ><img id="imgshow" style="display:none;" border="0" /></div>
+    <input type="checkbox" id="autoupload" value="1" checked style="display:none">
+    <div id="downloadNotice" style="display:none;"></div>
+</div>
+</body>
+
+<script>
+$(function(){
+    var ip = GetQuery('ip');
+    var port = GetQuery('port');
+    var userName = GetQuery('userName');
+    var password = GetQuery('password');
+    var deviceType = GetQuery('deviceType');
+    var unitid = GetQuery('unitid');
+
+    var token = GetQuery('token');
+    var appKey = GetQuery('appKey');
+    var serialnumber = GetQuery('serialnumber');
+
+    var videoIframeSrc="";
+    if(deviceType == 2){
+        if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+            videoIframeSrc = '../iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+        }else{
+            videoIframeSrc = '../UnitManage/video_a.html?ip='+escape(ip)
+        }
+    }else if(deviceType == 0 || deviceType== 1|| deviceType== 9 ){
+        videoIframeSrc = '../camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)
+    }
+    $('#videoIframe').attr('src',videoIframeSrc);
+
+    $('.btn_bigPic').unbind('click').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+    });
+
+    Init();//用于初始化牛牛截图控件
+})
+
+</script>
+</html>

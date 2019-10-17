@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtFireStationMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtFireStation" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="water_gun" property="waterGun" jdbcType="INTEGER" />
+    <result column="water_belt" property="waterBelt" jdbcType="INTEGER" />
+    <result column="safety_rope" property="safetyRope" jdbcType="INTEGER" />
+    <result column="hydrant_wrench" property="hydrantWrench" jdbcType="INTEGER" />
+    <result column="fire_extinguisher" property="fireExtinguisher" jdbcType="INTEGER" />
+    <result column="bright_light" property="brightLight" jdbcType="INTEGER" />
+    <result column="fire_axe" property="fireAxe" jdbcType="INTEGER" />
+    <result column="fire_helmet" property="fireHelmet" jdbcType="INTEGER" />
+    <result column="clothing" property="clothing" jdbcType="INTEGER" />
+    <result column="boots" property="boots" jdbcType="INTEGER" />
+    <result column="safety_belt" property="safetyBelt" jdbcType="INTEGER" />
+    <result column="fire_gloves" property="fireGloves" jdbcType="INTEGER" />
+    <result column="integrated_respirator" property="integratedRespirator" jdbcType="INTEGER" />
+    <result column="loudspeaker" property="loudspeaker" jdbcType="INTEGER" />
+    <result column="patrol_car" property="patrolCar" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="BIGINT" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+    <result column="power_id" property="powerId" jdbcType="BIGINT"/> 
+  </resultMap>
+  <select id="getFireStationList" resultType="com.gw.firePower.data.FireStationManageOutData">
+	  SELECT
+		a.ID,
+		a.name,
+		a.water_gun waterGun,
+		a.water_belt waterBelt,
+		a.safety_rope safetyRope,
+		a.hydrant_wrench hydrantWrench,
+		a.fire_extinguisher fireExtinguisher,
+		a.bright_light brightLight,
+		a.fire_axe fireAxe,
+		a.fire_helmet fireHelmet,
+		a.clothing,
+		a.boots,
+		a.safety_belt safetyBelt ,
+		a.fire_gloves fireGloves,
+		a.integrated_respirator integratedRespirator,
+		a.loudspeaker,
+		a.patrol_car patrolCar,
+		a.remark,
+		a.power_id powerId,
+		b.name powerName,
+		b.type
+	FROM
+		UT_fire_station a
+	LEFT JOIN UT_Fire_Power b ON a.power_id = b.ID
+	<where>
+		<if test="fireStationName != null and fireStationName != ''">
+			b.name like '%${fireStationName}%'
+		</if>
+		<if test="name != null and name != ''">
+			and a.name like '%${name}%'
+		</if>
+	</where>
+	ORDER BY a.ID DESC
+  </select>
+  <select id="getFireEquipmentList" resultType="com.gw.firePower.data.FireStationManageOutData">
+    SELECT
+        a.ID,
+        a.name,
+        a.water_gun waterGun,
+        a.water_belt waterBelt,
+        a.safety_rope safetyRope,
+        a.hydrant_wrench hydrantWrench,
+        a.fire_extinguisher fireExtinguisher,
+        a.bright_light brightLight,
+        a.fire_axe fireAxe,
+        a.fire_helmet fireHelmet,
+        a.clothing,
+        a.boots,
+        a.safety_belt safetyBelt ,
+        a.fire_gloves fireGloves,
+        a.integrated_respirator integratedRespirator,
+        a.loudspeaker,
+        a.patrol_car patrolCar,
+        a.remark,
+        a.power_id powerId,
+        b.name powerName,
+        b.type
+    FROM
+        UT_fire_station a
+    LEFT JOIN UT_Fire_Power b ON a.power_id = b.ID
+    <if test="unitID != null">
+        WHERE b.unit_id = #{unitID}
+    </if>
+  </select>
+  <select id="getFirePowerDetail" resultType="com.gw.firePower.data.FireStationManageOutData">
+    SELECT
+        sum(a.water_gun) waterGun,
+        sum(a.water_belt) waterBelt,
+        sum(a.safety_rope) safetyRope,
+        sum(a.hydrant_wrench) hydrantWrench,
+        sum(a.fire_extinguisher) fireExtinguisher,
+        sum(a.bright_light) brightLight,
+        sum(a.fire_axe) fireAxe,
+        sum(a.fire_helmet) fireHelmet,
+        sum(a.clothing) clothing,
+        sum(a.boots) boots,
+        sum(a.safety_belt) safetyBelt,
+        sum(a.fire_gloves) fireGloves,
+        sum(a.integrated_respirator) integratedRespirator,
+        sum(a.loudspeaker) loudspeaker,
+        sum(a.patrol_car) patrolCar,
+        a.power_id powerId
+    FROM
+        UT_fire_station a
+ 
+    <if test="powerID != null">
+        WHERE a.power_id = #{powerID}
+    </if>
+     GROUP BY a.power_id
+  </select>
+</mapper>

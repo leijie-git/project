@@ -1,0 +1,42 @@
+html,body{
+    background: rgba(0,0,0,0);
+    padding: 0;
+
+}
+.header{
+    width: 100%;
+    padding: 0 10px;
+    height: 25%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.ico_login{
+    height: 92%;
+}
+.user_name{
+    width: calc(100% - 40px);
+}
+.ico_close{
+    height: 75%;
+    cursor: pointer;
+}
+.login_content{
+    width: 100%;
+    height: 75%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 0 10px 5px;
+    color: #759FD1;
+}
+.login_content>div{
+    width: 100%;
+}
+.login_content>div>.con{
+    color: #C6E1F4;
+}

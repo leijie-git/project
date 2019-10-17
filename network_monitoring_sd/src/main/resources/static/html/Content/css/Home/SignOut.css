@@ -1,0 +1,41 @@
+.layer_mainContent{
+    height: 100%;
+    width: 100%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-content: center;
+    align-content: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    text-align: center;
+}
+.layer_mainContent>div{
+    width: 100%;
+    height: 40px;
+}
+.confirm{
+    color: #5ABAEC;
+}
+.layer_mainContent>div>button{
+    width: 75px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #60C2E7;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    margin: 0 8px;
+    cursor: pointer;
+}
+.btn_submit{
+    color: #EED153!important;
+    background: url(../../images/Home/mapMarkerTypeTab_active.png);
+    background-size: 100% 100%;
+}
+.btn_cancel{
+    background: url(../../images/Home/mapMarkerTypeTab.png);
+    background-size: 100% 100%;
+}

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtSquadronMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtSquadron" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="high_spray" property="highSpray" jdbcType="INTEGER" />
+    <result column="water_tank" property="waterTank" jdbcType="INTEGER" />
+    <result column="foam" property="foam" jdbcType="INTEGER" />
+    <result column="dry_powder" property="dryPowder" jdbcType="INTEGER" />
+    <result column="ladder_Ladder" property="ladderLadder" jdbcType="INTEGER" />
+    <result column="a_foam" property="aFoam" jdbcType="INTEGER" />
+    <result column="rescue_vehicle" property="rescueVehicle" jdbcType="INTEGER" />
+    <result column="climbing_platform" property="climbingPlatform" jdbcType="INTEGER" />
+    <result column="pressure_smoke" property="pressureSmoke" jdbcType="INTEGER" />
+    <result column="combatants" property="combatants" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="BIGINT" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+    <result column="power_id" property="powerId" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getSquadronList" resultType="com.gw.firePower.data.SquadronOutData">
+  	SELECT
+		a.ID,
+		a.name,
+		a.high_spray highSpray,
+		a.water_tank waterTank,
+		a.foam,
+		a.dry_powder dryPowder,
+		a.ladder_Ladder ladderLadder,
+		a.a_foam aFoam,
+		a.rescue_vehicle rescueVehicle,
+		a.climbing_platform climbingPlatform,
+		a.pressure_smoke pressureSmoke,
+		a.combatants,
+		a.remark,
+		b.ID powerId,
+		b.name powerName,
+		b.type
+	FROM
+		UT_Squadron a
+	LEFT JOIN UT_Fire_Power b ON a.power_id = b.ID
+	<where>
+		<if test="name != null and name != ''">
+			a.name like '%${name}%'
+		</if>
+		<if test="powerName != null and powerName != ''">
+			and b.name like '%${powerName}%'
+		</if>
+	</where>
+	ORDER BY a.ID DESC
+  </select>
+  <select id="getFireSquadronPowerDetail" resultType="com.gw.firePower.data.SquadronOutData">
+    SELECT
+        sum(a.high_spray) highSpray,
+        sum(a.water_tank) waterTank,
+        sum(a.foam) foam,
+        sum(a.dry_powder) dryPowder,
+        sum(a.ladder_Ladder) ladderLadder,
+        sum(a.a_foam) aFoam,
+        sum(a.rescue_vehicle) rescueVehicle,
+        sum(a.climbing_platform) climbingPlatform,
+        sum(a.pressure_smoke) pressureSmoke,
+        sum(a.combatants) combatants,
+        b.ID powerId,
+        b.name powerName
+    FROM
+        UT_Squadron a
+    LEFT JOIN UT_Fire_Power b ON a.power_id = b.ID
+
+    <where>
+	    <if test="powerID != null">
+	         a.power_id = #{powerID}
+	    </if>
+    </where>
+    GROUP BY b.ID, b.name
+  </select>
+</mapper>

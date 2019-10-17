@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title></title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+    <script src="https://open.ys7.com/sdk/js/1.1/ezuikit.js"></script>
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+
+    <style>
+        #myPlayer {
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+        }
+        
+        #myPlayer source {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="wrap" style="width:100%;height: 100%;">
+
+        <!-- <input type="hidden" id="hidip" value="45ca73f5292e442da034500de9c6b34e.hd" /> -->
+
+        <video id="myPlayer" data- poster=" " controls playsinline webkit-playsinline autoplay>
+                    <source class="play_a" src="" type="rtmp/flv" />
+                    <source class="play_b" src="" type="application/x-mpegURL" />
+                </video>
+    </div>
+
+
+</body>
+
+</html>
+<script>
+    // var _ip = $("#hidip").val(); //IP
+    var _ip = GetQuery('ip'); //IP
+    console.log(_ip);
+
+    $(function() {
+        $("#myPlayer").find(".play_a").attr("src", "rtmp://rtmp.open.ys7.com/openlive/" + _ip);
+        $("#myPlayer").find(".play_b").attr("src", "http://hls.open.ys7.com/openlive/" + _ip + ".m3u8");
+        var player = new EZUIPlayer('myPlayer'); //执行视频
+    });
+</script>

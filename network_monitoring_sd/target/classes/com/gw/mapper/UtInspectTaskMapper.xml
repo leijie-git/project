@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtInspectTaskMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtInspectTask">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="NFCCode" property="nfccode" jdbcType="NVARCHAR"/>
+        <result column="SiteCode" property="sitecode" jdbcType="NVARCHAR"/>
+        <result column="SiteName" property="sitename" jdbcType="NVARCHAR"/>
+        <result column="SiteDesc" property="sitedesc" jdbcType="NVARCHAR"/>
+        <result column="OrderIndex" property="orderindex" jdbcType="INTEGER"/>
+        <result column="Remark" property="remark" jdbcType="NVARCHAR"/>
+        <result column="TaskStart" property="taskstart" jdbcType="TIMESTAMP"/>
+        <result column="TaskEnd" property="taskend" jdbcType="TIMESTAMP"/>
+        <result column="IsInspect" property="isinspect" jdbcType="INTEGER"/>
+        <result column="InspectTime" property="inspecttime" jdbcType="TIMESTAMP"/>
+        <result column="InspectUserID" property="inspectuserid" jdbcType="NVARCHAR"/>
+        <result column="IsOK" property="isok" jdbcType="INTEGER"/>
+        <result column="UnitID" property="unitid" jdbcType="BIGINT"/>
+        <result column="PlanDetialID" property="plandetialid" jdbcType="BIGINT"/>
+        <result column="SiteID" property="siteid" jdbcType="BIGINT"/>
+        <result column="SiteClassID" property="siteclassid" jdbcType="BIGINT"/>
+        <result column="ExpirationTime" property="expirationtime" jdbcType="TIMESTAMP"/>
+        <result column="IsChange" property="ischange" jdbcType="INTEGER"/>
+        <result column="IsReceive" property="isreceive" jdbcType="INTEGER"/>
+        <result column="ChangeUserID" property="changeuserid" jdbcType="NVARCHAR"/>
+        <result column="Remark" property="remark" jdbcType="NVARCHAR"/>
+        <result column="ReceiveUserID" property="receiveuserid" jdbcType="TIMESTAMP"/>
+        <result column="ReceiveTime" property="receivetime" jdbcType="TIMESTAMP"/>
+        <result column="supervisorID" property="supervisorid" jdbcType="NVARCHAR"/>
+        <result column="siteCount" property="sitecount" jdbcType="INTEGER"/>
+        <result column="okCheckCount" property="okcheckcount" jdbcType="NVARCHAR"/>
+        <result column="ReceiveStatus" property="receivestatus" jdbcType="NVARCHAR"/>
+
+
+    </resultMap>
+    <select id="getList" resultType="com.gw.inspect.data.InspectTaskOutData"
+            parameterType="com.gw.inspect.data.InspectTaskInData">
+        SELECT
+        a.ID id,
+        a.UnitID unitid,
+        a.PlanDetialID plandetialid,
+        a.SiteID siteid,
+        a.SiteClassID siteclassid,
+        a.NFCCode nfccode,
+        a.SiteCode sitecode,
+        a.SiteName sitename,
+        a.SiteDesc sitedesc,
+        a.OrderIndex orderindex,
+        a.Remark remark,
+        CONVERT (VARCHAR, a.TaskStart, 120) taskstart,
+        CONVERT (VARCHAR, a.TaskEnd, 120) taskend,
+        a.IsInspect isinspect,
+        a.InspectTime inspecttime,
+        a.IsOK isok,
+        a.siteCount siteCount,
+        a.okCheckCount okCheckCount,
+        a.ReceiveStatus ReceiveStatus,
+        a.supervisorID supervisorID,
+        b.UserName supervisorName,
+        e.UserName InspectUserName,
+        a.InspectUserID InspectUserID
+        FROM
+        UT_Inspect_Task a
+        LEFT JOIN UT_Inspect_PlanDetial c ON a.PlanDetialID = c.ID
+        LEFT JOIN UT_Inspect_Plan d ON c.PlanID = d.ID
+        INNER JOIN UT_Unit_User b ON a.supervisorID = b.ID
+        INNER JOIN UT_Unit_User e ON a.InspectUserID = e.ID
+        <where>
+            1=1
+            <if test="planid!=null and planid!=''">
+                and c.PlanID = #{planid}
+            </if>
+
+            <if test="sitecode!=null and sitecode!=''">
+                and SiteCode like '%${sitecode}%'
+            </if>
+            <if test="sitename!=null and sitename!=''">
+                and SiteName like '%${sitename}%'
+            </if>
+            <if test="taskstart !=null and taskstart!=''">
+                and CONVERT(VARCHAR,TaskEnd,23) &gt;= #{taskstart}
+            </if>
+            <if test="taskend !=null and taskend !=''">
+                and CONVERT(VARCHAR,TaskStart,23) &lt;= #{taskend}
+            </if>
+            <if test="InspectUserName !=null and InspectUserName !=''">
+                and e.UserName like '%${InspectUserName}%'
+            </if>
+            <if test="supervisorName !=null and supervisorName !=''">
+                and b.UserName like '%${supervisorName}%'
+            </if>
+        </where>
+
+    </select>
+    <select id="getUserTaskList" resultType="com.gw.wechat.data.PhoneTaskDetailOutData"
+            parameterType="com.gw.inspect.data.DownLoadTaskInData">
+        select
+        a.ID taskid,
+        a.UnitID unitid,
+        a.PlanDetialID plandetailid,
+        e.ID,
+        e.SiteID siteid,
+        e.SiteClassID siteclassid,
+        e.SiteClassDetialID siteClassDetailid,
+        a.SiteCode sitecode,
+        CONVERT (VARCHAR, a.TaskStart, 120) starttime,
+        CONVERT (VARCHAR, a.TaskEnd, 120) endtime,
+        a.SiteName sitename,
+        b.PlanID planid,
+        a.OrderIndex orderindex,
+        a.InspectUserID inspectuserid,
+        d.PlanName planname,
+        c.InspectCycleType inspectcycletype,
+        a.ChangeUserID changeuserid,
+        a.ReceiveUserID receiveuserid,
+        a.IsChange ischange,
+        a.IsReceive isreceive,
+        CONVERT (VARCHAR, a.ChangeTime, 120) changetime,
+        CONVERT (VARCHAR, a.ReceiveTime, 120) receivetime,
+        a.NFCCode nfcCode,
+        a.ReceiveStatus receiveStatus
+        from
+        UT_Inspect_Base_Rel e
+        LEFT JOIN UT_Inspect_Task a ON a.SiteID = e.SiteID
+        left join UT_Inspect_PlanDetial b on a.PlanDetialID = b.ID
+        left join UT_Inspect_Site c on a.SiteID = c.ID
+        left join UT_Inspect_Plan d on b.PlanID = d.ID
+        <where>
+            1=1
+            <if test="taskId != null and taskId != ''">
+                and a.ID =#{taskId}
+            </if>
+            <if test="taskId == null or taskId == ''">
+                and a.IsInspect is null
+            </if>
+            <if test="inspectuserid!=null and inspectuserid!=''">
+                and a.InspectUserID = #{inspectuserid} and a.ReceiveStatus in (0,1,3)
+                <if test="receiveuserid != null and receiveuserid != ''">
+                    or a.ReceiveUserID = #{receiveuserid} AND a.ReceiveStatus in (1,2)
+                </if>
+            </if>
+            <if test="supervisorID!=null and supervisorID!=''">
+                and a.supervisorID = #{supervisorID}
+            </if>
+            <if test='userRole==2'>
+                and
+                a.TaskStart &gt;= (dateadd(ms,0,DATEADD(dd, DATEDIFF(dd,0,getdate()), 0))) and a.TaskEnd &lt;=
+                dateadd(ms,-3,DATEADD(dd, DATEDIFF(dd,-1,getdate()), 0))
+            </if>
+            <if test='userRole==0'>
+                and
+                a.TaskStart &gt;= dateadd(month, datediff(month, 0, getdate()), 0) and a.TaskEnd &lt;=
+                dateadd(ms,-3,DATEADD(mm, DATEDIFF(m,0,getdate())+1, 0))
+            </if>
+        </where>
+        order by a.ID desc
+    </select>
+    <select id="getSiteClassDetail" resultType="com.gw.wechat.data.SiteClassDetailOutData">
+        select distinct
+        b.ID,
+        b.CheckInfo checkInfo,
+        b.CheckMethod checkMethod
+        from
+        UT_Inspect_Base_Rel a
+        left join UT_Base_SiteClassDetial b on a.SiteClassDetialID = b.ID
+        <where>
+            a.SiteID = #{id}
+        </where>
+    </select>
+
+
+    <select id="getReceiveTaskList" resultType="com.gw.wechat.data.PhoneTaskDetailOutData">
+        select
+        a.ID taskid,
+        a.UnitID unitid,
+        a.PlanDetialID plandetailid,
+        a.SiteID siteid,
+        a.SiteClassID siteclassid,
+        a.SiteCode sitecode,
+        CONVERT (VARCHAR, a.TaskStart, 120) starttime,
+        CONVERT (VARCHAR, a.TaskEnd, 120) endtime,
+        a.SiteName sitename,
+        b.PlanID planid,
+        a.OrderIndex orderindex,
+        a.InspectUserID inspectuserid,
+        d.PlanName planname,
+        c.InspectCycleType inspectcycletype,
+        a.ChangeUserID changeuserid,
+        a.ReceiveUserID receiveuserid,
+        a.IsChange ischange,
+        a.IsReceive isreceive,
+        CONVERT (VARCHAR, a.ChangeTime, 120) changetime,
+        CONVERT (VARCHAR, a.ReceiveTime, 120) receivetime
+        from
+        UT_Inspect_Task a
+        left join UT_Inspect_PlanDetial b ON a.PlanDetialID = b.ID
+        left join UT_Inspect_Site c ON a.SiteID = c.ID
+        left join UT_Inspect_Plan d ON b.PlanID = d.ID
+        <where>
+            a.IsInspect is NULL
+            <if test="inspectcycleType!=null and inspectcycleType!=''">
+                <if test="inspectcycleType!=4">
+                    and c.InspectCycleType = #{inspectcycleType}
+                </if>
+                <if test="inspectcycleType==4">
+                    and c.InspectCycleType in (0,1,2,3)
+                </if>
+            </if>
+            <if test="type!=null and type!=''">
+                and IsChange = 1
+                and IsReceive = 0
+                <if test="type==0">
+                    <if test="userID!=null and userID!=''">
+                        and a.ChangeUserID = #{userID}
+                    </if>
+
+                </if>
+                <if test="type==1">
+                    <if test="userID!=null and userID!=''">
+                        and a.ReceiveUserID = #{userID}
+                    </if>
+                </if>
+            </if>
+        </where>
+        order by a.ID desc
+    </select>
+    <select id="getNowMouthTask" resultType="com.gw.mapper.entity.UtInspectTask">
+    select
+    *
+	from
+	    UT_Inspect_Task
+	WHERE
+	    TaskEnd &gt;= (
+	        select
+	            dateadd(
+	                dd ,- DAY (getdate()) + 1,
+	                getdate()
+	            )
+	    )
+	AND TaskStart &lt;= (
+	    select
+	        dateadd(
+	            ms ,- 3,
+	            DATEADD(
+	                mm,
+	                DATEDIFF(m, 0, getdate()) + 1,
+	                0
+	            )
+	        )
+	)
+  </select>
+
+    <select id="getMouthTask" resultType="com.gw.mapper.entity.UtInspectTask">
+    select
+    *
+    from
+        UT_Inspect_Task
+    WHERE
+        TaskEnd &gt;= #{startTime}
+    AND TaskStart &lt;= #{endTime}
+    and UnitID = #{unitID}
+  </select>
+
+    <select id="getTaskCount" resultType="com.gw.wechat.data.TaskSheetOutData">
+  select
+       SUM(CASE WHEN  a.ChangeUserID = #{userId} THEN 1 ELSE 0 END) AS changeCount,
+       SUM(CASE WHEN  a.ReceiveUserID = #{userId} THEN 1 ELSE 0 END) AS receviceCount
+    from
+        UT_Inspect_Task a
+    where
+        a.IsInspect is NULL
+        and IsChange = 1
+        and IsReceive = 0
+  </select>
+
+    <select id="getPlandetialidById" resultType="com.gw.mapper.entity.UtInspectTask"
+            parameterType="com.gw.mapper.entity.UtInspectTask">
+    select
+    PlanDetialID
+    from
+        UT_Inspect_Task
+    WHERE
+     ID = #{id}
+  </select>
+</mapper>

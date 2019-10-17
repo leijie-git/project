@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtNetEquipmentMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtNetEquipment" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+    <result column="BuildID" property="buildid" jdbcType="BIGINT" />
+    <result column="BuildAreaID" property="buildareaid" jdbcType="BIGINT" />
+    <result column="EqSystemID" property="eqsystemid" jdbcType="BIGINT" />
+    <result column="NetDeviceID" property="netdeviceid" jdbcType="BIGINT" />
+    <result column="EqType" property="eqtype" jdbcType="INTEGER" />
+    <result column="EqCode" property="eqcode" jdbcType="NVARCHAR" />
+    <result column="EqName" property="eqname" jdbcType="NVARCHAR" />
+    <result column="InstallSite" property="installsite" jdbcType="NVARCHAR" />
+    <result column="PointX" property="pointx" jdbcType="INTEGER" />
+    <result column="PointY" property="pointy" jdbcType="INTEGER" />
+    <result column="AlarmPushUserID" property="alarmpushuserid" jdbcType="NVARCHAR" />
+    <result column="AlarmPushUserName" property="alarmpushusername" jdbcType="NVARCHAR" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="CreateUser" property="createuser" jdbcType="BIGINT" />
+    <result column="LastUpdateDate" property="lastupdatedate" jdbcType="TIMESTAMP" />
+    <result column="LastUpdateUser" property="lastupdateuser" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtInspectPlandetialMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtInspectPlandetial" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="PlanID" property="planid" jdbcType="BIGINT" />
+    <result column="SiteID" property="siteid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="TaskUserID" property="taskuserid" jdbcType="VARCHAR" />
+    <result column="TaskUserName" property="taskusername" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getDetailBySiteID" resultMap="BaseResultMap">
+    SELECT
+        PlanID,
+        SiteID,
+        ID,
+        Status,
+        TaskUserID,
+        TaskUserName
+    FROM
+        UT_Inspect_PlanDetial
+    WHERE
+        ID = #{ plandetialid }
+  </select>
+  <delete id="deleteByPlanID">
+  delete 
+  from 
+    UT_Inspect_PlanDetial
+    
+  where 
+    PlanID = #{planid}
+    </delete>
+
+    <update id="updateStatusById" parameterType="com.gw.mapper.entity.UtInspectPlandetial">
+	UPDATE
+	   UT_Inspect_PlanDetial
+	   SET
+	       Status = 0
+	WHERE
+	   ID = #{id}
+  </update>
+</mapper>

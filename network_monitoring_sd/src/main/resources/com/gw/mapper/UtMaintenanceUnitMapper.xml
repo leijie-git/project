@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtMaintenanceUnitMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtMaintenanceUnit">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="UnitCode" property="unitcode" jdbcType="NVARCHAR"/>
+        <result column="UnitName" property="unitname" jdbcType="NVARCHAR"/>
+        <result column="Address" property="address" jdbcType="NVARCHAR"/>
+        <result column="Contacts" property="contacts" jdbcType="NVARCHAR"/>
+        <result column="Telephone" property="telephone" jdbcType="NVARCHAR"/>
+        <result column="PointX" property="pointx" jdbcType="NVARCHAR"/>
+        <result column="PointY" property="pointy" jdbcType="NVARCHAR"/>
+        <result column="Remark" property="remark" jdbcType="NVARCHAR"/>
+        <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP"/>
+        <result column="CreateUserID" property="createuserid" jdbcType="BIGINT"/>
+        <result column="PID" property="pid" jdbcType="BIGINT"/>
+        <result column="ProviceID" property="proviceid" jdbcType="BIGINT"/>
+        <result column="CityID" property="cityid" jdbcType="BIGINT"/>
+        <result column="RegionID" property="regionid" jdbcType="BIGINT"/>
+        <result column="TownID" property="townid" jdbcType="BIGINT"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="logoUrl" property="logourl" jdbcType="VARCHAR"/>
+        <result column="mainType" property="mainType" jdbcType="INTEGER"/>
+        <result column="systemNumber" property="systemNumber" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="edit" resultType="com.gw.unit.data.MaintenanceUnitOutData">
+  	SELECT
+	u.ID,
+	u.UnitCode,
+	u.UnitName,
+	u.Address,
+	u.Contacts,
+	u.Telephone,
+	u.Remark,
+	u.PointX,
+	u.PointY
+	FROM
+	UT_Maintenance_Unit u
+  </select>
+
+    <select id="getMaintenanceUnit" resultType="com.gw.unit.data.MaintenanceUnitOutData">
+  	SELECT
+		a.Address,
+		a.CityID,
+		a.Contacts,
+		a.email,
+		a.ID,
+		a.PID,
+		a.PointX,
+		a.PointY,
+		a.ProviceID,
+		a.RegionID,
+        a.TownID,
+		a.Remark,
+		a.Telephone,
+		a.UnitCode,
+		a.UnitName
+	FROM
+		UT_Maintenance_Unit a
+	WHERE
+		a.ID = #{unitId}
+  </select>
+    <select id="getMaintenanceUnitById" resultType="com.gw.front.unit.data.FrontUnitInfoOutData">
+  	SELECT
+        a.Address                unitaddress,
+        a.CityID                 cityid,
+        a.Contacts               legalpersonname,
+        a.email                  email,
+        a.ID                     id,
+		a.PointX + ',' +a.PointY unitpoint,
+        a.ProviceID              proviceid,
+        a.RegionID               regionid,
+        a.TownID                 townid,
+		a.Remark,
+        a.Telephone              phone,
+        a.UnitCode               unitcode,
+        a.UnitName               unitname
+	FROM
+		UT_Maintenance_Unit a
+	WHERE
+		a.ID = #{id}
+  </select>
+    <select id="getMaintenanceUnitList" resultType="com.gw.unit.data.MaintenanceUnitOutData"
+            parameterType="com.gw.unit.data.MaintenanceUnitInData">
+        SELECT
+        UnitCode,
+        UnitName,
+        Address,
+        Contacts,
+        Telephone,
+        PointX,
+        PointY,
+        Remark,
+        ID,
+        ProviceID,
+        CityID,
+        RegionID,
+        TownID,
+        email,
+        logoUrl,
+        systemNumber
+        FROM
+        UT_Maintenance_Unit
+        <where>
+            <if test="unitname != null and unitname != ''">
+                AND UnitName like '%${unitname}%'
+            </if>
+            <if test="unitcode != null and unitcode != ''">
+                AND UnitCode like '%${unitcode}%'
+            </if>
+            <if test="mainType != null and mainType != ''">
+                AND mainType =#{mainType}
+            </if>
+        </where>
+        ORDER BY ID DESC
+    </select>
+    <select id="getMaintenanceUnitSelectList" resultType="com.gw.unit.data.MaintenanceUnitOutData">
+  	SELECT
+		ID,
+		UnitName
+	FROM
+		UT_Maintenance_Unit
+  </select>
+    <select id="selectSystemNumber" resultType="java.lang.Integer"
+                      parameterType="com.gw.unit.data.MaintenanceUnitInData">
+  	SELECT
+		count(systemNumber) systemNumber
+	FROM
+		UT_Maintenance_Unit
+  </select>
+
+
+    <!--通过单位名称查询单位编号-->
+    <select id="selectUnitIDByUnitName" resultType="java.lang.String" parameterType="java.lang.String">
+       select id from UT_Unit_BaseInfo u where UnitName= #{UnitName}
+
+
+    </select>
+
+</mapper>

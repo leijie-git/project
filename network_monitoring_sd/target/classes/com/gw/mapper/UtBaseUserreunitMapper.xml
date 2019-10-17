@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseUserreunitMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseUserreunit" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="user_id" property="userId" jdbcType="BIGINT" />
+    <id column="unit_id" property="unitId" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <select id="getUserReUnit" resultType="com.gw.unit.data.GetUserUnitsData">
+  	SELECT
+		a.ID id,
+		a.UnitName unitName
+	FROM
+		UT_Unit_BaseInfo a
+	<if test="userId != 1">
+		LEFT JOIN UT_Base_UserReUnit b ON b.unit_id = a.ID
+	</if>
+	WHERE
+		(a.isDelete = 0 OR a.isDelete is NULL)
+		<if test="userId != 1">
+			and b.user_id = #{userId}
+		</if>
+	<if test="unitName != null and unitName != ''">
+		AND a.UnitName like '%${unitName}%'
+	</if>
+	order by a.id desc
+  </select>
+  
+  <select id="getUserNotReUnit" resultType="com.gw.unit.data.GetUserUnitsData">
+  	SELECT DISTINCT
+		a.ID id,
+		a.UnitName unitName
+	FROM
+		UT_Unit_BaseInfo a
+	LEFT JOIN UT_Maintenance_ReUnit b ON a.ID = b.UnitID
+	LEFT JOIN UT_Unit_User c ON c.UnitID = b.ManageID
+	WHERE
+			c.ID = #{userId}
+	AND a.ID NOT IN(
+		SELECT
+				unit_id
+			FROM
+				UT_Base_UserReUnit
+			WHERE
+				user_id = #{userId}
+	)
+	AND (a.isDelete = 0 OR a.isDelete is NULL)
+	<if test="unitName != null and unitName != ''">
+		AND a.UnitName like '%${unitName}%'
+	</if>
+	order by a.id desc 
+  </select>
+  
+  <delete id="deleteByUserId">
+  	DELETE
+	FROM
+		UT_Base_UserReUnit
+	WHERE
+		user_id = #{userId}
+  </delete>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtDevicestatusStatMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtDevicestatusStat" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="unit_id" property="unitId" jdbcType="BIGINT" />
+    <result column="online" property="online" jdbcType="INTEGER" />
+    <result column="outline" property="outline" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getdeviceStatList" resultType="com.gw.front.index.data.FrontUtDevicestatusStatOutData">
+  	SELECT
+		createDate,
+		SUM (online) online,
+		SUM (outline) outline
+	FROM
+		(
+			SELECT
+				CONVERT (VARCHAR, a.create_date, 23) createDate,
+				a.unit_id,
+				AVG (a.online) online,
+				AVG (a.outline) outline
+			FROM
+				UT_devicestatus_stat a
+			<if test="userId != 1">
+				LEFT JOIN UT_Base_UserReUnit b ON a.unit_id = b.unit_id
+			</if>
+			<where>
+				<if test="userId != 1">
+					 b.user_id = #{userId}
+				</if>
+				<if test="startDate != null and startDate != ''">
+					AND a.create_date >= #{startDate}
+				</if>
+				<if test="endDate != null and endDate != ''">
+					AND a.create_date &lt;= #{endDate}
+				</if>
+			</where>
+			GROUP BY CONVERT(VARCHAR,a.create_date,23),a.unit_id
+		) m
+	GROUP BY
+		createDate
+	  	order by createDate
+  </select>
+</mapper>

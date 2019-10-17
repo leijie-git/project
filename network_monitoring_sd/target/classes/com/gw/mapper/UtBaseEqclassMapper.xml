@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseEqclassMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseEqclass" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="ClassCode" property="classcode" jdbcType="INTEGER" />
+    <result column="ClassName" property="classname" jdbcType="NVARCHAR" />
+    <result column="ClassType" property="classtype" jdbcType="INTEGER" />
+    <result column="AreaCode" property="areacode" jdbcType="NVARCHAR" />
+    <result column="ClassImg" property="classimg" jdbcType="NVARCHAR" />
+    <result column="ImgWidth" property="imgwidth" jdbcType="DECIMAL" />
+    <result column="ImgHeight" property="imgheight" jdbcType="DECIMAL" />
+    <result column="MonitorNum" property="monitornum" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="Remark" property="remark" jdbcType="NVARCHAR" />
+    <result column="IsDelete" property="isdelete" jdbcType="INTEGER" />
+    <result column="SortOrder" property="sortorder" jdbcType="INTEGER" />
+    <result column="Cycle" property="cycle" jdbcType="INTEGER" />
+    <result column="CycleUnit" property="cycleunit" jdbcType="INTEGER" />
+    <result column="Frequency" property="frequency" jdbcType="INTEGER" />
+    <result column="CycleInfo" property="cycleinfo" jdbcType="NVARCHAR" />
+    <result column="MinCycleInfo" property="mincycleinfo" jdbcType="NVARCHAR" />
+    <result column="InspectCycle" property="inspectcycle" jdbcType="INTEGER" />
+    <result column="InspectCycleUnit" property="inspectcycleunit" jdbcType="INTEGER" />
+    <result column="InspectFrequency" property="inspectfrequency" jdbcType="INTEGER" />
+    <result column="EqSystemID" property="eqsystemid" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getArrayList" resultType="com.gw.device.data.EqClassOutData">
+  select
+	  classname,
+	  id,
+	  eqsystemid,
+	  ClassCode
+  from 
+    UT_Base_EqClass
+    <where>
+    <if test="systemID!=null">
+    EqSystemID = #{systemID}
+    </if>
+    </where>
+  </select>
+  
+  <select id="getPageList" resultType="com.gw.device.data.EqClassOutData">
+  	SELECT
+  		a.EqSystemName eqsystemname,
+		e.ID,
+		e.AreaCode,
+		e.ClassCode,
+		e.ClassImg,
+		e.ClassName,
+		e.ClassType,
+		e.Cycle,
+		e.CycleInfo,
+		e.CycleUnit,
+		e.EqSystemID,
+		e.Frequency,
+		e.InspectCycle,
+		e.InspectCycleUnit,
+		e.InspectFrequency,
+		e.MinCycleInfo,
+		e.IsDelete,
+		e.MonitorNum,
+		e.Remark,
+		e.Status
+	FROM
+		UT_Base_EqClass e
+	LEFT JOIN UT_Base_EqSystem a ON e.EqSystemID = a.ID
+	<if test="classname != null and classname != ''">
+	 	WHERE e.ClassName like '%${classname}%'
+	</if>
+	ORDER BY e.ID DESC
+  </select>
+</mapper>

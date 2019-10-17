@@ -1,0 +1,299 @@
+/*物联的首页*/
+body{
+	padding: 0;
+	margin: 0;
+	background: none;
+}
+.wrapper{
+	width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /*padding: 8px 5px 0 5px;*/
+    /*background: url(../../images/AggregateAnalysis/bigbox.png) center center / 100% 100% no-repeat;*/
+}
+
+/*头部*/
+header{
+	width: 100%;
+	height: 4.5%;
+	overflow: hidden;
+	-webkit-display: flex;
+	display: flex;
+	justify-content: flex-start;
+}
+
+header>div{
+	display: inline-block;
+    margin-right: 15px;
+    height: 100%;
+    text-align: center;
+    cursor: pointer;
+    padding-left: 20px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+header .h1{
+	width: 5%;
+    background-image: url(../../images/NetInfoStatistic/headerBT1.png);
+}
+
+header .h2{	
+	width: 5%;
+    background-image: url(../../images/NetInfoStatistic/headerBT2.png);
+}
+
+header .h3{
+	width: 6.8%;
+    background-image: url(../../images/NetInfoStatistic/headerBT3.png);	
+}
+header .h4{
+    width: 6.8%;
+    background-image: url(../../images/NetInfoStatistic/headerBT4.png);
+}
+
+
+header .h1.active {
+    background-image: url(../../images/NetInfoStatistic/headerBT1_click.png);
+}
+
+header .h2.active {
+    background-image: url(../../images/NetInfoStatistic/headerBT2_click.png);
+}
+
+header .h3.active {
+    background-image: url(../../images/NetInfoStatistic/headerBT3_click.png);
+}
+header .h4.active{
+    background-image: url(../../images/NetInfoStatistic/headerBT4_click.png);
+}
+
+/*@media screen and (max-width: 1600px){*/
+    /*header .h3{*/
+        /*width: 7.5%;*/
+    /*}*/
+    /*header .h2,*/
+    /*header .h1{*/
+        /*width: 5.5%;*/
+    /*}*/
+/*}*/
+
+
+/*主体内容框架*/
+section {
+    width: 100%;
+    height: calc(100% - 35px);
+    /*padding-top: 10px;*/
+}
+
+@media screen and (max-width: 1366px){
+    section{
+        height: calc(100% - 30px);        
+    }
+}
+
+
+.underline{
+    text-decoration: underline;
+}
+
+.lightgreen{
+    color: #04dbd3;
+}
+.red{
+    color: #db4e56;
+}
+
+
+/*设备型号资料 弹窗*/
+#eqMsgBox{
+    width: 100%;
+    height: 288px;
+    padding: 10px 2%;
+    overflow-y: auto;
+}
+
+#eqMsgBox > div{
+    width: 100%;
+    height: 30px;
+    margin: 3px 0;
+}
+
+.eqmodelDiv{
+    float: left;
+    display: inline-block;
+    width: 35%;
+    height: 100%;
+    line-height: 30px;
+    color: #fff;
+    background-color: #0e4881;
+    text-align: center;
+}
+
+.detailDiv{
+    float: left;
+    display: inline-block;
+    width: 65%;
+    height: 100%;
+    line-height: 30px;
+    padding-left: 10%;
+    background-color: rgba(16, 71, 110,.3);
+}
+.detailDiv form{
+    width: 100%;
+    height: 26px;
+    line-height: 26px;
+    margin: 0 auto;
+}
+
+.detailDiv form .layui-inline{
+    box-shadow: none!important;
+    margin-left: 0!important;
+}
+.detailDiv form input{
+    width: 100%!important;
+    height: 26px!important;
+    margin: 0!important;
+}
+.detailDiv > img{
+    width: 24px;
+    margin-right: 5px;
+}
+.detailDiv > span{
+    display: inline-block;
+    cursor: pointer;
+}
+
+
+
+/*设备离在线情况 弹窗*/
+#IsOnlineBox{
+    width: 100%;
+    padding: 4.5% 2% 2% 2%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.online_topDiv{
+    width: 100%;
+    height: auto;
+}
+
+.inline_fir{
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    margin-bottom: 5px;
+} 
+
+.inline_fir .name{
+    float: left;
+    display: inline-block;
+    width: 11%;
+    height: 30px;
+    text-align: center;
+    background-color: #0e4881;
+}
+
+.inline_fir .cont{
+    float: left;
+    display: inline-block;
+    width: 89%;
+    height: 30px;
+    text-align: left;
+    padding: 0 10%;
+    background-color: rgba(16, 71, 110, 0.3);
+}
+
+.online_sec{   
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+}
+
+.online_sec .name{
+    float: left;
+    display: inline-block;
+    height: 30px;
+    width: 11%;
+    background-color: #0e4881;
+    text-align: center;
+}
+
+.online_sec .cont{
+    float: left;
+    display: inline-block;
+    height: 30px;
+    width: 22%;
+    text-align: left;
+    padding: 0 10%;
+    background-color: rgba(16, 71, 110, 0.3);
+
+}
+
+.online_ContDiv{
+    width: 100%;
+    height: calc(100% - 110px);
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.online_ContDiv .title{
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #0e457e;
+    border-top: 1px solid #6ED1FA;
+    border-bottom: 1px solid #6ED1FA;
+}
+
+.online_ContDiv .table_box{
+    height: calc(100% - 30px)!important;
+}
+
+
+
+/*图像资料弹窗*/
+#imgbox{
+    width: 100%;
+    height: 100%;
+}
+
+.layui-form-select dl dd, .layui-form-select .layui-input{
+    width: 100%!important;
+}
+
+
+
+/*Chrome下*/
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.scrollStyle::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: rgba(0,0,0,0);
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.scrollStyle::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background: rgba(3,94,138,.2);
+}
+/*定义滑块，内阴影及圆角*/
+.scrollStyle::-webkit-scrollbar-thumb {
+    height: 20px;        
+    background: rgba(3,94,138,.8);
+
+}
+
+/*IE下滚动条样式*/
+.scrollStyle{
+    scrollbar-base-color: #035e8a; /*滑块颜色*/
+    scrollbar-3dlight-color: #035e8a;
+    scrollbar-highlight-color: #035e8a;
+    scrollbar-track-color: #336699; /*背景色*/
+    scrollbar-arrow-color: #373F6E; /*箭头颜色*/
+    scrollbar-shadow-color: #373F6E;
+    scrollbar-dark-shadow-color: #035e8a;
+}

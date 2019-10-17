@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitBuildMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitBuild" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="BuildingName" property="buildingname" jdbcType="NVARCHAR" />
+    <result column="BuildingType" property="buildingtype" jdbcType="NVARCHAR" />
+    <result column="UserType" property="usertype" jdbcType="NVARCHAR" />
+    <result column="FireRiskGrade" property="fireriskgrade" jdbcType="NVARCHAR" />
+    <result column="RefractoryGrade" property="refractorygrade" jdbcType="NVARCHAR" />
+    <result column="StructureType" property="structuretype" jdbcType="NVARCHAR" />
+    <result column="BuildDate" property="builddate" jdbcType="TIMESTAMP" />
+    <result column="BuildingHeight" property="buildingheight" jdbcType="DECIMAL" />
+    <result column="BuildingArea" property="buildingarea" jdbcType="DECIMAL" />
+    <result column="BuildingOccupyarea" property="buildingoccupyarea" jdbcType="DECIMAL" />
+    <result column="StdFloorArea" property="stdfloorarea" jdbcType="DECIMAL" />
+    <result column="OverGroundFloors" property="overgroundfloors" jdbcType="DECIMAL" />
+    <result column="OverGroundArea" property="overgroundarea" jdbcType="DECIMAL" />
+    <result column="UnderGroundFloors" property="undergroundfloors" jdbcType="DECIMAL" />
+    <result column="UnderGroundArea" property="undergroundarea" jdbcType="DECIMAL" />
+    <result column="TunnelHeight" property="tunnelheight" jdbcType="DECIMAL" />
+    <result column="TunnelLength" property="tunnellength" jdbcType="DECIMAL" />
+    <result column="FireRoomPosition" property="fireroomposition" jdbcType="NVARCHAR" />
+    <result column="RefugeNum" property="refugenum" jdbcType="INTEGER" />
+    <result column="RefugeArea" property="refugearea" jdbcType="DECIMAL" />
+    <result column="RefugePosition" property="refugeposition" jdbcType="NVARCHAR" />
+    <result column="SafeExitNum" property="safeexitnum" jdbcType="INTEGER" />
+    <result column="SafeExitPosition" property="safeexitposition" jdbcType="NVARCHAR" />
+    <result column="SafeExitType" property="safeexittype" jdbcType="NVARCHAR" />
+    <result column="FireElevatorNum" property="fireelevatornum" jdbcType="INTEGER" />
+    <result column="FireElevatorWeight" property="fireelevatorweight" jdbcType="DECIMAL" />
+    <result column="DailyPersonNum" property="dailypersonnum" jdbcType="INTEGER" />
+    <result column="AccommodatePersonMaxnum" property="accommodatepersonmaxnum" jdbcType="INTEGER" />
+    <result column="StoreMaterialName" property="storematerialname" jdbcType="NVARCHAR" />
+    <result column="StoreMaterialNum" property="storematerialnum" jdbcType="INTEGER" />
+    <result column="StoreMaterialNature" property="storematerialnature" jdbcType="NVARCHAR" />
+    <result column="StoreMaterialForm" property="storematerialform" jdbcType="NVARCHAR" />
+    <result column="StoreVolume" property="storevolume" jdbcType="DECIMAL" />
+    <result column="MainMaterial" property="mainmaterial" jdbcType="NVARCHAR" />
+    <result column="MainProduct" property="mainproduct" jdbcType="NVARCHAR" />
+    <result column="NearBuildingSituation" property="nearbuildingsituation" jdbcType="NVARCHAR" />
+    <result column="BuildingElevationMap" property="buildingelevationmap" jdbcType="NVARCHAR" />
+    <result column="BuildingPlan" property="buildingplan" jdbcType="NVARCHAR" />
+    <result column="FacilitiesPlan" property="facilitiesplan" jdbcType="NVARCHAR" />
+    <result column="Address" property="address" jdbcType="NVARCHAR" />
+    <result column="AutoFireFacilities" property="autofirefacilities" jdbcType="NVARCHAR" />
+    <result column="Floors" property="floors" jdbcType="DECIMAL" />
+    <result column="EvacuationStirNum" property="evacuationstirnum" jdbcType="DECIMAL" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+    <result column="WBUnitID" property="wbunitid" jdbcType="BIGINT" />
+    <result column="IDFromData" property="idfromdata" jdbcType="BIGINT" />
+  </resultMap>
+    <select id="getList" resultType="com.gw.build.data.BuildOutData" parameterType="com.gw.build.data.BuildInData">
+    SELECT
+        a.ID ID,
+	    a.UnitID UnitID,
+	    a.WBUnitID WBUnitID,
+	    a.IDFromData IDFromData,
+	    a.BuildingName BuildingName,
+	    a.BuildingType BuildingType,
+	    a.UserType UserType,
+	    a.FireRiskGrade FireRiskGrade,
+	    a.RefractoryGrade RefractoryGrade,
+	    a.StructureType StructureType,
+	    a.BuildDate BuildDate,
+	    a.BuildingHeight BuildingHeight,
+	    a.BuildingArea BuildingArea,
+	    a.BuildingOccupyarea BuildingOccupyarea,
+	    a.StdFloorArea StdFloorArea,
+	    a.OverGroundFloors OverGroundFloors,
+	    a.OverGroundArea OverGroundArea,
+	    a.UnderGroundFloors UnderGroundFloors,
+	    a.UnderGroundArea UnderGroundArea,
+	    a.TunnelHeight TunnelHeight,
+	    a.TunnelLength TunnelLength,
+	    a.FireRoomPosition FireRoomPosition,
+	    a.RefugeNum RefugeNum,
+	    a.RefugeArea RefugeArea,
+	    a.RefugePosition RefugePosition,
+	    a.SafeExitNum SafeExitNum,
+	    a.SafeExitPosition SafeExitPosition,
+	    a.SafeExitType SafeExitType,
+	    a.FireElevatorNum FireElevatorNum,
+	    a.FireElevatorWeight FireElevatorWeight,
+	    a.DailyPersonNum DailyPersonNum,
+	    a.AccommodatePersonMaxnum AccommodatePersonMaxnum,
+	    a.StoreMaterialName StoreMaterialName,
+	    a.StoreMaterialNum StoreMaterialNum,
+	    a.StoreMaterialNature StoreMaterialNature,
+	    a.StoreMaterialForm StoreMaterialForm,
+	    a.StoreVolume StoreVolume,
+	    a.MainMaterial MainMaterial,
+	    a.MainProduct MainProduct,
+	    a.NearBuildingSituation NearBuildingSituation,
+	    a.BuildingElevationMap BuildingElevationMap,
+	    a.BuildingPlan BuildingPlan,
+	    a.FacilitiesPlan FacilitiesPlan,
+	    a.Address Address,
+	    a.AutoFireFacilities AutoFireFacilities,
+	    a.Floors Floors,
+	    a.EvacuationStirNum EvacuationStirNum,
+	    b.UnitName unitName
+	FROM
+	    UT_Unit_Build a
+	    LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+		<if test="buildingName!=null and buildingName != ''">
+		   and BuildingName LIKE '%${buildingName}%'
+	    </if>
+	    <if test="BuildingType !=null and BuildingType!=''">
+		   AND BuildingType LIKE '%${ BuildingType }%'
+		</if>
+		<!-- <if test="UserType != null and UserType!=''">
+		   AND UserType LIKE '%${UserType }%'
+		</if>
+		<if test="FireRiskGrade != null and FireRiskGrade!=''">
+		   AND FireRiskGrade LIKE '%${FireRiskGrade }%'
+		</if> -->
+		<if test="unitName!=null and unitName!=''">
+		  and b.UnitName like '%${unitName}%'
+		</if>
+		<if test="UnitID!=null and UnitID!=''">
+          and a.UnitID = #{UnitID}
+        </if>
+	</where>
+	ORDER BY a.ID DESC
+    </select>
+    <select id="getUnitBuilds" resultType="com.gw.front.unit.data.FrontUnitBuildOutData" parameterType="com.gw.front.unit.data.FrontUnitInData">
+	    SELECT
+	        a.ID ID,
+		    b.unitCode unitCode,
+		    a.BuildingName BuildingName,
+		    a.BuildingType BuildingType,
+		    a.Address address,
+		    floor(ISNULL(a.overGroundFloors, 0)+ISNULL(a.underGroundFloors, 0)) floors,
+		   	a.refugeArea refugeArea,
+		   	a.overGroundFloors overGroundFloors,
+		   	a.underGroundFloors underGroundFloors
+		FROM
+		    UT_Unit_Build a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID=b.id
+		<where>
+				(b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="buildingName!=null and buildingName != ''">
+			   and a.BuildingName LIKE '%${buildingName}%'
+		    </if>
+			<if test="unitId !=null and unitId!=''">
+			  and a.UnitID = #{unitId}
+			</if>
+		</where>
+    </select>
+    <select id="getUnitBuildInfoById" resultType="com.gw.front.unit.data.FrontUnitBuildOutData" parameterType="java.lang.String">
+	    SELECT
+		    IDFromData IDFromData,
+		    BuildingName BuildingName,
+		    BuildingType BuildingType,
+		    UserType UserType,
+		    FireRiskGrade FireRiskGrade,
+		    RefractoryGrade RefractoryGrade,
+		    StructureType StructureType,
+		    BuildDate BuildDate,
+		    BuildingHeight BuildingHeight,
+		    BuildingArea BuildingArea,
+		    BuildingOccupyarea BuildingOccupyarea,
+		    StdFloorArea StdFloorArea,
+		    OverGroundFloors OverGroundFloors,
+		    OverGroundArea OverGroundArea,
+		    UnderGroundFloors UnderGroundFloors,
+		    UnderGroundArea UnderGroundArea,
+		    TunnelHeight TunnelHeight,
+		    TunnelLength TunnelLength,
+		    FireRoomPosition FireRoomPosition,
+		    RefugeNum RefugeNum,
+		    RefugeArea RefugeArea,
+		    RefugePosition RefugePosition,
+		    SafeExitNum SafeExitNum,
+		    SafeExitPosition SafeExitPosition,
+		    SafeExitType SafeExitType,
+		    FireElevatorNum FireElevatorNum,
+		    FireElevatorWeight FireElevatorWeight,
+		    DailyPersonNum DailyPersonNum,
+		    AccommodatePersonMaxnum AccommodatePersonMaxnum,
+		    StoreMaterialName StoreMaterialName,
+		    StoreMaterialNum StoreMaterialNum,
+		    StoreMaterialNature StoreMaterialNature,
+		    StoreMaterialForm StoreMaterialForm,
+		    StoreVolume StoreVolume,
+		    MainMaterial MainMaterial,
+		    MainProduct MainProduct,
+		    NearBuildingSituation NearBuildingSituation,
+		    BuildingElevationMap BuildingElevationMap,
+		    BuildingPlan BuildingPlan,
+		    FacilitiesPlan FacilitiesPlan,
+		    Address Address,
+		    AutoFireFacilities AutoFireFacilities,
+		    Floors Floors,
+		    EvacuationStirNum EvacuationStirNum
+		FROM
+		    UT_Unit_Build
+		where id = #{unitId}
+    </select>
+    <select id="getBuilds" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData">
+    	SELECT
+			a.ID coupletKey,
+			a.BuildingName coupletValue
+		FROM
+			UT_Unit_Build a
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+			WHERE
+				b.user_id = #{userId}
+		</if>
+    </select>
+    <select id="getBuildByUnitId" resultType="com.gw.build.data.BuildOutData" >
+    	SELECT
+		a.ID ID,
+		a.BuildingName BuildingName
+	FROM
+		UT_Unit_Build a
+		LEFT JOIN
+		UT_Unit_BaseInfo b ON b.ID = a.UnitID
+	WHERE
+		(b.isDelete = 0 OR b.isDelete IS NULL)
+		AND UnitID = #{unitId}
+    </select>
+
+
+
+
+
+
+	<!--根据建筑名称查询id-->
+	<select id="selectIdByBuildName" parameterType="java.lang.String" resultType="java.lang.Long" >
+		SELECT
+		a.ID
+		FROM
+		UT_Unit_Build a
+		WHERE
+		BuildingName=#{BuildingName}
+
+	</select>
+
+</mapper>

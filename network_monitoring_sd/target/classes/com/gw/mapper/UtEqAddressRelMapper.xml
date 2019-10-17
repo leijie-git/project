@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtEqAddressRelMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtEqAddressRel" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="eqid" property="eqid" jdbcType="BIGINT" />
+    <result column="partcode" property="partcode" jdbcType="VARCHAR" />
+    <result column="adress" property="adress" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="EqSystemID" property="eqsystemid" jdbcType="BIGINT" />
+    <result column="xAxis" property="xaxis" jdbcType="VARCHAR" />
+    <result column="yAxis" property="yaxis" jdbcType="VARCHAR" />
+    <result column="BuildAreaID" property="buildareaid" jdbcType="BIGINT" />
+    <result column="pointType" property="pointtype" jdbcType="BIGINT" />
+    <result column="videoId" property="videoid" jdbcType="BIGINT" />
+    <result column="unitId" property="unitId" jdbcType="BIGINT" />
+    <result column="isUploadA" jdbcType="INTEGER" property="isuploada" />
+    <result column="isUploadB" jdbcType="INTEGER" property="isuploadb" />
+  </resultMap>
+  
+  <select id="getAllAddressRel" resultType="com.gw.device.data.AddressRelOutData">
+  	SELECT
+		a.adress,
+		a.eqid,
+		a.ID,
+		a.name,
+		a.partcode,
+		a.remark,
+		a.xAxis,
+		a.yAxis,
+		e.UnitID unitid,
+		n.name netdevicename,
+		b.UnitName unitname,
+		a.BuildAreaID buildareaid,
+		c.ID buildId,
+		a.pointType pointtype,
+		a.videoId,
+		a.EqSystemID
+	FROM
+		Ut_EQ_address_rel a
+	LEFT OUTER JOIN UT_EQ_Equipment e ON a.eqid = e.ID
+	LEFT OUTER JOIN UT_Unit_NetDevice n ON e.NetDeviceID = n.ID 
+	LEFT OUTER JOIN UT_Unit_BaseInfo b ON e.UnitID = b.ID
+	LEFT OUTER JOIN UT_Unit_BuildArea d ON d.ID = a.BuildAreaID
+	LEFT OUTER JOIN UT_Unit_Build c ON c.ID = d.BuildID
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			and (n.isDelete = 0 OR n.isDelete is NULL)
+			and (e.isDelete = 0 OR e.isDelete is NULL)
+		<if test="eqid != null and eqid != ''">
+			and a.eqid = #{eqid}
+		</if>
+		<if test="unitName != null and unitName != ''">
+			AND b.UnitName like '%${unitName}%'
+		</if>
+	</where>
+	ORDER BY a.ID DESC
+  </select>
+  
+  <select id="getEquipmentSelect" resultType="com.gw.device.data.EquipmentSelectData">
+  	SELECT
+		e.ID id,
+		e.EqName eqname
+	FROM
+		UT_EQ_Equipment e
+	LEFT OUTER JOIN UT_Unit_NetDevice n ON e.NetDeviceID = n.ID
+	WHERE
+		n.DeviceIndex = 1
+	AND e.unitid = ${unitid}
+	AND (e.isDelete = 0 OR e.isDelete is NULL)
+	AND (n.isDelete = 0 OR n.isDelete is NULL)
+  </select>
+  <select id="getCTRListByUnitID" resultType="com.gw.front.unit.data.FrontUnitCRTOutData">
+    SELECT
+        a.adress,
+        a.eqid,
+        a.ID,
+        a.name,
+        a.partcode,
+        a.remark,
+        a.EqSystemID,
+        a.xAxis,
+        a.yAxis
+    FROM
+        Ut_EQ_address_rel a
+    LEFT OUTER JOIN UT_EQ_Equipment b ON a.eqid = b.ID
+    where
+    	(b.isDelete = 0 OR b.isDelete is NULL)
+    <if test="unitID != null and unitID != ''">
+        AND b.UnitID = #{unitID}
+    </if>
+    ORDER BY a.ID DESC
+  </select>
+  <select id="getAddressRelByBuildAreaId" resultType="com.gw.device.data.AddressRelOutData" parameterType="com.gw.device.data.CRTInData">
+  	SELECT
+		a.ID id,
+		a.eqid,
+		a.partcode,
+		a.name+'-'+a.adress adress,
+		a.name,
+		a.xAxis xaxis,
+		a.yAxis yaxis,
+		a.BuildAreaID buildareaid,
+		a.pointType codeid,
+		a.EqSystemID eqsystemid,
+		a.remark remark,
+		a.videoId,
+		b.EqSystemName eqsystemname
+	FROM
+		Ut_EQ_address_rel a
+	LEFT JOIN UT_Base_EqSystem b ON b.ID = a.EqSystemID
+	WHERE
+		a.BuildAreaID = #{buildAreaId}
+	<if test="keyword != null and keyword != ''">
+		and (a.partcode like '%${keyword}%' or a.adress like '%${keyword}%')
+	</if>
+  </select>
+  <update id="updateEqAddressRel" parameterType="com.gw.mapper.entity.UtEqAddressRel">
+  	UPDATE Ut_EQ_address_rel
+	SET 
+	 adress = #{adress},
+	 name = #{name},
+	 remark = #{remark}
+	WHERE
+		id = #{id}
+  </update>
+  <select id="getUnitOneCRT" resultType="com.gw.front.unit.data.FrontUnitCRTOutData" >
+	 SELECT
+	    a.ID id,
+	    a.adress adress,
+	    a.name eqname,
+	    a.xAxis xAxis,
+	    a.yAxis yAxis,
+	    a.partcode partcode,
+	    c.CodeValue codeValue,
+	    b.BuildAreabg buildAreaImg,
+	    b.BgWidth ggWidth,
+	    b.BgHeight bgHeight,
+	    b.ID buildAreaId,
+	    a.videoId videoId,
+	    a.EqSystemID EqSystemID
+	FROM Ut_EQ_address_rel a 
+    LEFT JOIN UT_Unit_BuildArea b ON a.BuildAreaID = b.ID
+    LEFT JOIN UT_Base_Code c ON a.pointType = c.CodeID
+    where
+	       a.BuildAreaID = #{buildAreaID}
+  </select>
+  
+  <select id="getOneCRT" resultType="com.gw.front.unit.data.FrontUnitCRTOutData" >
+     SELECT
+        a.ID id,
+        e.UnitName+'>>'+d.BuildingName+'>>'+b.BuildAreaName name,
+        a.adress adress,
+        ISNULL(a.name, f.EqName) eqname,
+        a.xAxis xAxis,
+        a.yAxis yAxis,
+        c.CodeValue codeValue,
+        b.BuildAreabg buildAreaImg,
+        b.BgWidth ggWidth,
+        b.BgHeight bgHeight,
+        b.ID buildAreaId,
+        a.videoId videoId,
+        a.EqSystemID EqSystemID,
+        a.partcode partcode
+    FROM Ut_EQ_address_rel a 
+    LEFT JOIN UT_Unit_BuildArea b ON a.BuildAreaID = b.ID
+    LEFT JOIN UT_Base_Code c ON a.pointType = c.CodeID
+    LEFT JOIN UT_Unit_Build d ON b.BuildID = d.ID
+    LEFT JOIN UT_Unit_BaseInfo e ON b.UnitID = e.ID
+    LEFT JOIN UT_EQ_Equipment f ON a.eqid = f.ID
+    where
+           a.ID = #{addressID}
+  </select>
+  
+  <select id="getCRTList" resultType="com.gw.front.unit.data.FrontUnitCRTOutData" >
+     SELECT
+        a.ID id,
+        e.UnitName+'>>'+d.BuildingName+'>>'+b.BuildAreaName name,
+        a.adress adress,
+        ISNULL(a.name, f.EqName) eqname,
+        a.xAxis xAxis,
+        a.yAxis yAxis,
+        c.CodeValue codeValue,
+        b.BuildAreabg buildAreaImg,
+        b.BgWidth ggWidth,
+        b.BgHeight bgHeight,
+        b.ID buildAreaId,
+        a.videoId videoId,
+        a.EqSystemID EqSystemID,
+        a.partcode partcode,
+        a.isUploadA isuploada,
+        a.isUploadB isuploadb,
+        b.UnitID unitID,
+        g.OwnerCode ownercode,
+        g.ID netdeviceid
+    FROM Ut_EQ_address_rel a 
+    LEFT JOIN UT_Unit_BuildArea b ON a.BuildAreaID = b.ID
+    LEFT JOIN UT_Base_Code c ON a.pointType = c.CodeID
+    LEFT JOIN UT_Unit_Build d ON b.BuildID = d.ID
+    LEFT JOIN UT_Unit_BaseInfo e ON d.UnitID = e.ID
+    LEFT JOIN UT_EQ_Equipment f ON a.eqid = f.ID
+    LEFT JOIN UT_Unit_NetDevice g ON g.ID = f.NetDeviceID
+    <where>
+       <if test="addressID!=null and addressID!=''">
+            a.ID = #{addressID}
+       </if>
+       <if test="unitID!=null and unitID!=''">
+            and b.UnitID = #{unitID}
+       </if>
+    </where>
+  </select>
+  
+  <select id="getaddressRelByPartCode" resultType="com.gw.front.unit.data.FrontUnitCRTOutData">
+      SELECT top 1
+        a.ID id,
+        a.adress adress,
+        a.xAxis xAxis,
+        a.yAxis yAxis,
+        a.videoId videoId,
+        a.EqSystemID EqSystemID,
+        a.partcode partcode,
+        a.isUploadA isuploada,
+        a.isUploadB isuploadb,
+        n.OwnerCode ownercode,
+        n.ID netdeviceid
+    FROM
+        Ut_EQ_address_rel a
+    LEFT OUTER JOIN UT_EQ_Equipment e ON a.eqid = e.ID
+    LEFT OUTER JOIN UT_Unit_NetDevice n ON e.NetDeviceID = n.ID 
+    <where>
+            (n.isDelete = 0 OR n.isDelete is NULL)
+            and (e.isDelete = 0 OR e.isDelete is NULL)
+        <if test="partCode != null and partCode != ''">
+            and a.partcode = #{partCode}
+        </if>
+        <if test="eqId != null and eqId != ''">
+            AND e.ID = #{eqId}
+        </if>
+    </where>
+  </select>
+    <!--根据主机ID查询当前主机的所有点位-->
+    <select id="getPointByEqid" parameterType="java.lang.String" resultType="com.gw.mapper.entity.AddresselHostpointOut">
+  SELECT
+	d.UnitName unitName,
+	e.BuildingName buildingName,
+	f.BuildAreaName buildAreaName,
+	a.name name,
+	c.partcode partcode,
+	c.adress  adress,
+	c.pointType pointType,
+	a.is_independent is_independent,
+	c.remark remark
+FROM
+	UT_Unit_NetDevice a
+LEFT JOIN UT_EQ_Equipment b ON a.id = b.NetDeviceID
+LEFT JOIN Ut_EQ_address_rel c ON b.id = c.eqid
+LEFT JOIN UT_Unit_BaseInfo d ON d.id = a.UnitID
+LEFT JOIN UT_Unit_Build e ON a.unitId = e.unitId
+LEFT JOIN UT_Unit_BuildArea f ON c.BuildAreaID = f.id
+WHERE
+	a.id = #{id}
+	and c.id is not null
+
+
+
+
+
+
+
+
+
+    </select>
+</mapper>

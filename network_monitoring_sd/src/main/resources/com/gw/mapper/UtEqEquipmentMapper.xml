@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtEqEquipmentMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtEqEquipment">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="ProtocolType" property="protocoltype" jdbcType="INTEGER"/>
+        <result column="EqName" property="eqname" jdbcType="NVARCHAR"/>
+        <result column="EqModel" property="eqmodel" jdbcType="NVARCHAR"/>
+        <result column="PartCode" property="partcode" jdbcType="NVARCHAR"/>
+        <result column="LoopCode" property="loopcode" jdbcType="NVARCHAR"/>
+        <result column="PositionNumber" property="positionnumber" jdbcType="NVARCHAR"/>
+        <result column="InstallDate" property="installdate" jdbcType="TIMESTAMP"/>
+        <result column="InstallPosition" property="installposition" jdbcType="NVARCHAR"/>
+        <result column="PointX" property="pointx" jdbcType="NVARCHAR" />
+        <result column="PointY" property="pointy" jdbcType="NVARCHAR" />
+        <result column="Manufacturer" property="manufacturer" jdbcType="NVARCHAR" />
+        <result column="ManufacturerPhone" property="manufacturerphone" jdbcType="NVARCHAR" />
+        <result column="Brand" property="brand" jdbcType="NVARCHAR" />
+        <result column="ValidityDate" property="validitydate" jdbcType="TIMESTAMP" />
+        <result column="ProductDate" property="productdate" jdbcType="TIMESTAMP" />
+        <result column="Supplier" property="supplier" jdbcType="NVARCHAR" />
+        <result column="PointCode" property="pointcode" jdbcType="NVARCHAR" />
+        <result column="Status" property="status" jdbcType="INTEGER" />
+        <result column="StatusTime" property="statustime" jdbcType="TIMESTAMP" />
+        <result column="UseTime" property="usetime" jdbcType="TIMESTAMP" />
+        <result column="PipeDiameter" property="pipediameter" jdbcType="DECIMAL" />
+        <result column="EqCapacity" property="eqcapacity" jdbcType="DECIMAL" />
+        <result column="EqFlow" property="eqflow" jdbcType="DECIMAL" />
+        <result column="EqLift" property="eqlift" jdbcType="DECIMAL" />
+        <result column="PipeType" property="pipetype" jdbcType="NVARCHAR" />
+        <result column="EqSpace" property="eqspace" jdbcType="DECIMAL" />
+        <result column="AirVolume" property="airvolume" jdbcType="DECIMAL" />
+        <result column="EqPower" property="eqpower" jdbcType="DECIMAL" />
+        <result column="EqChangeDate" property="eqchangedate" jdbcType="TIMESTAMP" />
+        <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP" />
+        <result column="OwnerCode" property="ownercode" jdbcType="BIGINT" />
+        <result column="SystemType" property="systemtype" jdbcType="BIGINT" />
+        <result column="SystemAdd" property="systemadd" jdbcType="BIGINT" />
+        <result column="DataFrom" property="datafrom" jdbcType="INTEGER" />
+        <result column="DataFromID" property="datafromid" jdbcType="NVARCHAR" />
+        <result column="IsNeedInspect" property="isneedinspect" jdbcType="INTEGER" />
+        <result column="QRCode" property="qrcode" jdbcType="NVARCHAR" />
+        <result column="Floors" property="floors" jdbcType="INTEGER" />
+        <result column="EqSystemID" property="eqsystemid" jdbcType="BIGINT" />
+        <result column="EqClassID" property="eqclassid" jdbcType="BIGINT" />
+        <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+        <result column="BuildID" property="buildid" jdbcType="BIGINT" />
+        <result column="BuildAreaID" property="buildareaid" jdbcType="BIGINT" />
+        <result column="NetDeviceID" property="netdeviceid" jdbcType="BIGINT" />
+        <result column="isDelete" jdbcType="INTEGER" property="isdelete" />
+        <result column="BuildImgbg" property="buildImgbg" jdbcType="NVARCHAR" />
+    </resultMap>
+    <select id="getList" resultType="com.gw.equipment.data.EquipmentFacOutData" parameterType="com.gw.equipment.data.EquipmentFacInData">
+        SELECT
+        a.ID,
+        a.EqSystemID,
+        a.EqClassID,
+        a.UnitID,
+        a.BuildID,
+        a.BuildAreaID,
+        a.NetDeviceID,
+        a.ProtocolType,
+        a.EqName,
+        a.EqModel,
+        a.PartCode,
+        a.LoopCode,
+        a.PositionNumber,
+        a.InstallDate,
+        a.InstallPosition,
+        a.PointX,
+        a.PointY,
+        a.Manufacturer,
+        a.ManufacturerPhone,
+        a.Brand,
+        a.ValidityDate,
+        a.ProductDate,
+        a.Supplier,
+        a.PointCode,
+        a.Status,
+        a.StatusTime,
+        a.UseTime,
+        a.PipeDiameter,
+        a.EqCapacity,
+        a.EqFlow,
+        a.EqLift,
+        a.PipeType,
+        a.EqSpace,
+        a.AirVolume,
+        a.EqPower,
+        a.EqChangeDate,
+        a.Lastupdate,
+        b.OwnerCode,
+        a.SystemType,
+        a.SystemAdd,
+        a.DataFrom,
+        a.DataFromID,
+        a.IsNeedInspect,
+        a.pointVideoId,
+        a.QRCode,
+        a.Floors,
+        a.BuildImgbg buildImgbg,
+        c.ClassName,
+        b.name,
+        d.BuildingName,
+        b.DeviceIndex,
+        e.EqSystemCode,
+        c.ClassCode,
+        f.UnitName
+        FROM
+        UT_EQ_Equipment a
+        LEFT JOIN UT_Unit_NetDevice b ON a.NetDeviceID = b.ID
+        LEFT JOIN UT_Base_EqClass c ON a.EqClassID = c.ID
+        LEFT JOIN UT_Unit_Build d ON a.BuildID = d.ID
+        LEFT JOIN UT_Base_EqSystem e ON a.EqSystemID = e.ID
+        LEFT JOIN UT_Unit_BaseInfo f ON a.UnitID = f.ID
+        <where>
+        1=1
+            <if test="unitid !=null and unitid!=''">
+                and  a.unitid = #{unitid}
+            </if>
+            and
+            (a.isDelete = 0 OR a.isDelete is NULL)
+            AND (f.isDelete = 0 OR f.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            <if test="eqclassid !=null and eqclassid!=''">
+                and  a.EqClassID = #{eqclassid}
+            </if>
+            <if test="eqsystemid !=null and eqsystemid!=''">
+                and  a.EqSystemID = #{eqsystemid}
+            </if>
+            <if test="eqname!=null and eqname!=''">
+                and  EqName like '%${eqname}%'
+            </if>
+            <if test="netdeviceid!=null and netdeviceid!=''">
+                and  b.ID = #{netdeviceid}
+            </if>
+            <if test="netDeviceName!=null and netDeviceName!=''">
+                and  b.name = #{netDeviceName}
+            </if>
+            <if test="ownercode !=null and ownercode!=''">
+                and  b.OwnerCode = #{ownercode}
+            </if>
+            <if test="partcode!=null and partcode!=''">
+                and  PartCode = #{partcode}
+            </if>
+            <if test="unitName!=null and unitName!=''">
+                and  f.UnitName like '%${unitName}%'
+            </if>
+        </where>
+        ORDER BY a.ID DESC
+    </select>
+    <select id="getAreaAssociatedEquipment" resultType="com.gw.equipment.data.EquipmentFacOutData">
+  	SELECT
+		a.ID id,
+		a.EqName eqname
+	FROM
+		UT_EQ_Equipment a
+	WHERE a.BuildAreaID = #{buildAreaId}
+	AND (a.isDelete = 0 OR a.isDelete is NULL)
+  </select>
+    <select id="getListByNetDeviceid" resultType="com.gw.equipment.data.EquipmentFacOutData">
+    SELECT
+     a.ID id,
+     a.EqName eqname,
+     a.EqSystemID eqsystemid,
+     a.UnitID unitid
+     FROM
+        UT_EQ_Equipment a
+    WHERE a.NetDeviceID = #{netdeviceid}
+    AND (a.isDelete = 0 OR a.isDelete is NULL)
+  </select>
+
+    <select id="getEquipmentRunningData" resultType="com.gw.openApi.common.data.out.DeviceRunningData">
+        SELECT
+        a.ID netDeviceId,
+        CASE WHEN c.DeviceStatus in (1,18,34) THEN 1 ELSE 0 END deviceStatus,
+        c.DeviceStatus originalStatus
+        FROM
+        UT_Unit_NetDevice a
+        LEFT JOIN ${database}.dbo.sd_devices c ON b.OwnerCode = c.OwnerCode
+        AND b.DeviceIndex = c.DeviceIndex
+        AND (b.DeviceNo = c.DeviceNo or b.DeviceIndex=2)
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="netDeviceId!=null and netDeviceId!=''">
+            and a.ID = #{netDeviceId}
+        </if>
+    </select>
+    <select id="getBaseEquipmentList" resultType="com.gw.openApi.common.data.out.EquipmentBaseData">
+        SELECT DISTINCT
+        a.ID eqId,
+        a.NetDeviceID netDeviceId,
+        b.name netDeviceName,
+        a.EqName eqName,
+        a.EqSystemID eqSystemId,
+        d.ClassName eqClassName
+        FROM
+        UT_EQ_Equipment a
+        LEFT JOIN UT_Unit_NetDevice b ON a.NetDeviceID = b.ID
+        LEFT JOIN UT_Base_EqClass d ON a.EqClassID = d.ID
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        and a.NetDeviceID = #{netDeviceId}
+    </select>
+    <select id="getUnitEquipmentList" resultType="com.gw.openApi.common.data.out.UnitDeviceOutData">
+        SELECT
+        a.ID eqId,
+        a.NetDeviceID netDeviceId,
+        a.EqName eqName,
+        c.CodeValue eqModelName,
+        b.DeviceIndex deviceType,
+        b.OwnerCode ownerCode,
+        e.UnitName
+        FROM
+        UT_EQ_Equipment a
+        LEFT JOIN UT_Unit_NetDevice b ON a.NetDeviceID = b.ID
+        LEFT JOIN UT_Base_Code c ON b.EquipmentModel = c.CodeID
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="unitId!=null and unitId!=''">
+            and a.UnitID = #{unitId}
+        </if>
+        <if test="deviceName!=null and deviceName!=''">
+            b.name like '%${deviceName}%'
+        </if>
+        <if test="deviceType!=null and deviceType!=''">
+            and b.DeviceIndex = #{deviceType}
+        </if>
+    </select>
+
+    <select id="getBuildImgbg" resultType="com.gw.equipment.data.EquipmentFacOutData" >
+          SELECT
+            a.ID id,
+            a.PointX pointx,
+            a.PointY pointy,
+            a.BuildImgbg BuildImgbg
+        FROM
+            UT_EQ_Equipment a
+        WHERE
+            a.ID = #{id}
+    </select>
+</mapper>

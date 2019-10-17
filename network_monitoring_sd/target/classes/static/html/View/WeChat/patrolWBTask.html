@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>维保任务</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+</head>
+
+<body>
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <a class="weui-navbar__item weui-bar__item--on nav1" href="#tab1">
+            未完成
+          </a>
+            <a class="weui-navbar__item" href="#tab2">
+            已完成
+          </a>
+        </div>
+        <div class="weui-tab__bd">
+            <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+                <!-- <div class="weui-form-preview" onclick="openDetail()">
+                    <div class="weui-form-preview__bd">
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">单位名称</label>
+                            <span class="weui-form-preview__value">电动打蛋机</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">报警类型</label>
+                            <span class="weui-form-preview__value">名字名字名字</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">位置</label>
+                            <span class="weui-form-preview__value">xxxx位置</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">报警时间</label>
+                            <span class="weui-form-preview__value">2018-10-10 10:13:12</span>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <div id="tab2" class="weui-tab__bd-item">
+                <!-- <div class="weui-form-preview">
+                    <div class="weui-form-preview__bd">
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">单位名称</label>
+                            <span class="weui-form-preview__value">22222</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">报警类型</label>
+                            <span class="weui-form-preview__value">名字名字名字</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">位置</label>
+                            <span class="weui-form-preview__value">xxxx位置</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">报警时间</label>
+                            <span class="weui-form-preview__value">2018-10-10 10:13:12</span>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+    var status;
+
+    $(function() {
+        // $('.weui-navbar > a').click(function(){
+        //     if($(this).hasClass('nav1')){
+        //         status = 0;
+        //     }else{
+        //         status = 3;
+        //     }
+        //     getData();
+        // })
+
+    });
+
+    function openDetail() {
+        self.location.href = "patrolWBTaskDetail.html?id="
+    };
+</script>
+</html>

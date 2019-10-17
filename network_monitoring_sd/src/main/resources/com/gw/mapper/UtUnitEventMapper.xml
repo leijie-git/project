@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitEventMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitEvent" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="OwnerCode" property="ownercode" jdbcType="NVARCHAR" />
+    <result column="EventID" property="eventid" jdbcType="BIGINT" />
+    <result column="StartTime" property="starttime" jdbcType="TIMESTAMP" />
+    <result column="EndTime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="StartReason" property="startreason" jdbcType="NVARCHAR" />
+    <result column="EndReason" property="endreason" jdbcType="NVARCHAR" />
+    <result column="Reserve" property="reserve" jdbcType="NVARCHAR" />
+    <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP" />
+    <result column="DeviceIndex" property="deviceindex" jdbcType="INTEGER" />
+    <result column="DeviceNo" property="deviceno" jdbcType="INTEGER" />
+    <result column="UnitId" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="eventsCount" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData" parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+	SELECT
+		a.EventID coupletKey,
+		COUNT (a.id) coupletValue
+	FROM
+		UT_Unit_Event a
+	LEFT JOIN UT_Unit_BaseInfo unit ON a.UnitId = unit.ID
+	<if test="userId != 1">
+		LEFT JOIN UT_Base_UserReUnit b ON a.UnitId = b.unit_id
+	</if>
+	WHERE
+		isnull(unit.isDelete,0) = 0
+		<if test="userId != 1">
+			and b.user_id = #{userId}
+		</if>
+	<if test="eventType != null and eventType != ''">
+		AND a.EventID = #{eventType}
+	</if>
+	<if test="startDate != null and startDate != ''">
+		AND a.StartTime >= #{startDate}
+	</if>
+	<if test="endDate != null and endDate != ''">
+		AND a.StartTime &lt;= #{endDate}
+	</if>
+	<if test="keyword != null and keyword != ''">
+		AND unit.UnitName LIKE '%${keyword}%'
+	</if>
+	<if test="unitId != null and unitId != ''">
+		AND a.UnitId = #{unitId}
+	</if>
+	GROUP BY
+		a.EventID
+	UNION ALL
+		SELECT
+			a.EventID coupletKey,
+			COUNT (a.id) coupletValue
+		FROM
+			${database}.dbo.sd_ownerevent a
+		LEFT JOIN UT_Unit_BaseInfo_Relation b ON a.ownercode = b.SoureAddress
+	   <if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit c ON b.UnitID = c.unit_id
+		</if>
+		LEFT JOIN UT_Unit_BaseInfo unit ON b.UnitID = unit.ID
+		WHERE
+		    isnull(unit.isDelete,0) = 0
+		    <if test="userId != 1">
+				and c.user_id = #{userId}
+		    </if>
+		and a.EventID in (1000,1001,2000,2001)
+		<if test="eventType != null and eventType != ''">
+			AND a.EventID = #{eventType}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			AND a.StartTime >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.StartTime &lt;= #{endDate}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND unit.UnitName LIKE '%${keyword}%'
+		</if>
+		<if test="unitId != null and unitId != ''">
+			AND unit.ID = #{unitId}
+		</if>
+		GROUP BY
+			a.EventID
+  </select>
+  <select id="getEventList" resultType="com.gw.front.analysis.data.FrontAnalysisEventOutData" parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+	SELECT
+		a.EventID eventTypeName,
+		unit.UnitCode unitCode,
+		unit.UnitName unitName,
+		unit.ChildStationNum childStationNum,
+		CONVERT (VARCHAR, a.StartTime, 23) startTime,
+		CONVERT (VARCHAR, a.EndTime, 23) endTime,
+		CONVERT (VARCHAR, a.EndReason, 120) endReason
+	FROM
+		UT_Unit_Event a
+	LEFT JOIN UT_Unit_BaseInfo unit ON a.UnitId = unit.ID
+	<if test="userId != 1">
+		LEFT JOIN UT_Base_UserReUnit b ON a.UnitId = b.unit_id
+	</if>
+	WHERE
+		isnull(unit.isDelete,0) = 0
+		<if test="userId != 1">
+			and b.user_id = #{userId}
+		</if>
+	<if test="eventType != null and eventType != ''">
+		AND a.EventID = #{eventType}
+	</if>
+	<if test="startDate != null and startDate != ''">
+		AND a.StartTime >= #{startDate}
+	</if>
+	<if test="endDate != null and endDate != ''">
+		AND a.StartTime &lt;= #{endDate}
+	</if>
+	<if test="keyword != null and keyword != ''">
+		AND unit.UnitName LIKE '%${keyword}%'
+	</if>
+	<if test="unitId != null and unitId != ''">
+		AND a.UnitId = #{unitId}
+	</if>
+	UNION ALL
+		SELECT
+			a.EventID eventTypeName,
+			unit.UnitCode unitCode,
+			unit.UnitName unitName,
+			unit.ChildStationNum childStationNum,
+			CONVERT (VARCHAR, a.StartTime, 120) startTime,
+			CONVERT (VARCHAR, a.EndTime, 120) endTime,
+			CONVERT (VARCHAR, a.EndReason, 120) endReason
+		FROM
+			${database}.dbo.sd_ownerevent a
+		LEFT JOIN UT_Unit_BaseInfo_Relation b ON a.ownercode = b.SoureAddress
+	    <if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit c ON b.UnitID = c.unit_id
+		</if>
+		LEFT JOIN UT_Unit_BaseInfo unit ON b.UnitID = unit.ID
+		WHERE
+		    isnull(unit.isDelete,0) = 0
+		    <if test="userId != 1">
+				and c.user_id = #{userId}
+		    </if>
+		and a.EventID in (1000,1001,2000,2001)
+		<if test="eventType != null and eventType != ''">
+			AND a.EventID = #{eventType}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			AND a.StartTime >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.StartTime &lt;= #{endDate}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND unit.UnitName LIKE '%${keyword}%'
+		</if>
+		<if test="unitId != null and unitId != ''">
+			AND unit.ID = #{unitId}
+		</if>
+  </select>
+</mapper>

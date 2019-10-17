@@ -1,0 +1,154 @@
+/*各系统监测- 系统/区域iframe*/
+body{
+	margin: 0;
+	background: none;
+    padding: 0 10px 0 6px;
+}
+.wrapper{
+	width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /*background: url(../../images/NetInfoStatistic/iframeBG.png)no-repeat center;*/
+    /*background-size: 100% 100%;*/
+    justify-content: center;
+}
+
+
+/*顶部导航*/
+nav{
+    width: 100%;
+    height: 50px; 
+    padding-top: 12px;   
+}
+nav > form{
+    -webkit-display: flex;
+    display: flex;
+    justify-content: flex-start;
+}
+
+nav form .navbt{
+    padding: 0 12px 0 30px;
+    height: 30px;
+    line-height: 30px;
+    color: #a3d8fa;
+    background-color: transparent;
+    text-align: center;
+    background-size: 100% 100%;
+    cursor: pointer;
+    margin-left: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: none;
+    /*padding-left: 20px;*/
+}
+
+.layui-bg-cyan{
+    margin-right: 5px;
+}
+
+nav .bt1{
+    /*width: 100px;*/
+    background: url(../../images/NetInfoStatistic/nav1.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt2{
+    background: url(../../images/NetInfoStatistic/nav2.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt3{
+    background: url(../../images/NetInfoStatistic/nav3.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt4{
+    background: url(../../images/NetInfoStatistic/nav4.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt5{
+    background: url(../../images/NetInfoStatistic/nav5.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt6{
+    background: url(../../images/NetInfoStatistic/nav6.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt7{
+    background: url(../../images/NetInfoStatistic/nav7.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt8{
+    background: url(../../images/NetInfoStatistic/nav8.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .bt9{
+    background: url(../../images/NetInfoStatistic/nav9.png) no-repeat center;
+    background-size: 100% 100%;
+}
+nav .btOther{
+    background: url(../../images/NetInfoStatistic/navother.png) no-repeat center;
+    background-size: 100% 100%;
+}
+
+nav .bt1.active{
+    background: url(../../images/NetInfoStatistic/nav1_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt2.active{
+    background: url(../../images/NetInfoStatistic/nav2_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt3.active{
+    background: url(../../images/NetInfoStatistic/nav3_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt4.active{
+    background: url(../../images/NetInfoStatistic/nav4_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt5.active{
+    background: url(../../images/NetInfoStatistic/nav5_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt6.active{
+    background: url(../../images/NetInfoStatistic/nav6_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt7.active{
+    background: url(../../images/NetInfoStatistic/nav7_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt8.active{
+    background: url(../../images/NetInfoStatistic/nav8_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .bt9.active{
+    background: url(../../images/NetInfoStatistic/nav9_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+nav .btOther.active{
+    background: url(../../images/NetInfoStatistic/navother_click.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+
+.selectA{
+    margin-right: 25px;
+}
+
+/*下面*/
+section{
+    overflow: hidden;
+    width: 100%;
+    height: calc(100% - 50px);
+    /*background-color: rgba(4,31,60,.6);*/
+}
+

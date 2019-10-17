@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>各系统监测</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/NetInfoStatistic/system_moreLayer.css" rel="stylesheet" type="text/css" />
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+    <div class="wrapped">
+        <span class="close" id="close">X</span>
+        <div class="header"><span id="unitName"></span>——<span id="sysType"></span>更多接口数据</div>
+
+        <div class="top-search">
+            <form class="layui-form" action="">
+                <input class="selectTime timeStart" id="sData1" onfocus="var d5222 = $dp.$('eData1'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData1\')||\'%y-%M-%d\'}' })" autocomplete="off"/> -
+                <input class="selectTime timeEnd" id="eData1" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData1\')}', maxDate: '%y-%M-%d' })" autocomplete="off"/>
+                <input class="submitBtn"   type="button" value="查询">
+            </form>
+        </div>
+
+        <div class="list_table">
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead class="fontSize16">
+                        <tr>
+                            <th>序号</th>
+                            <th>系统</th>
+                            <th>信号名称</th>
+                            <th>信号类型</th>
+                            <th>子号</th>
+                            <th>端口索引</th>
+                            <th>参考范围</th>
+                            <th>单位</th>
+                            <th>当前值</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <tbody class="fontSize14" id="mainContentTbody">
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <div id="demo7" style="position: absolute;bottom: 15px;"></div>
+            <img class="exportBtn" id="exportBtn" src="../../../Content/images/Public/exportBT.png">
+        </div>
+    </div>
+</body>
+<script>
+    var _ifUsed=0;
+    var _data = {
+        pageNumber: 1,
+        pageSize: 20,
+        startDate:'',
+        endDate:'',
+        type: GetQuery('type'),
+        unitId: GetQuery('unitId'),
+        buildId: GetQuery('buildId')
+    };
+$(function() {
+    $('#sysType').text(GetQuery('type') == 1?"灭火系统":"电气火灾")
+    getSysMoreListData();
+
+    //绑定事件
+    bindEvent();
+
+});
+
+function getSysMoreListData(){
+    var isAsync = true,
+            lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "post",
+        url: _serverIp + "/front/couplet/getWaterMoreList ",
+        data: _data,
+        success: function(data) {
+            //console.log(data);
+            if (_ifUsed == 0) {
+                layerPage(data.total);
+                _ifUsed = 1;
+            }
+            showListContent(data);
+        },
+        complete: function() {
+            if (isAsync) {
+                layer.close(lid);
+            }
+        }
+    })
+}
+
+function showListContent(msg){
+    var data = msg.list;
+    var html = "";
+
+    for(var i = 0 ; i < data.length ; i++){
+        $('#unitName').text(data[0].unitName||"-");
+        html +='<tr>' +
+                    '<td>'+(msg.startRow++)+'</td>' +
+                    '<td>'+data[i].eqSystemName+'</td>' +
+                    '<td>'+data[i].equipmentDetialName+'</td>' +
+                    '<td>'+data[i].ioType+'</td>' +
+                    '<td>'+data[i].deviceNo+'</td>' +
+                    '<td>'+data[i].ioPort+'</td>' +
+                    '<td>'+data[i].analogdown+'~'+data[i].analogup+'</td>' +
+                    '<td>'+data[i].unitName+'</td>' +
+                    '<td>'+data[i].currentValue+'</td>' +
+                    '<td><span class="look">查看</span></td>' +
+                '</tr>'
+    }
+    $('#mainContentTbody').html(html||"<tr><td colspan='10'>暂无数据...</td></tr>")
+}
+
+function layerPage(count){
+    layui.use(['laypage', 'layer'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer;
+        laypage.render({
+            elem: 'demo7'
+            ,count: count
+            ,limit:20
+            ,prev: '<em>&lt;</em>'
+            ,next: '<em>&gt;</em>'
+            ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+            ,jump: function(obj,isNew){
+                if (!isNew) {
+                    _data.pageNumber = obj.curr;
+                    _data.pageSize = obj.limit;
+                    //console.log(_curr)
+                    getSysMoreListData(); //调用接口获取数据
+                }
+
+            }
+        });
+    })
+    //完整功能
+
+}
+
+//绑定事件
+function bindEvent() {
+    //关闭弹窗
+    $('#close').click(function() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    });
+
+    //查询
+    $('.submitBtn').unbind('click').bind('click',function(){
+        _data.startDate = $('sData1').val();
+        _data.endDate = $('eData1').val();
+        _ifUsed=0;
+        getSysMoreListData();
+    });
+
+    //导出
+    $('.btn_export').click(function(){
+        if( $('#mainContentTbody tr:first-child>td').length == 1){
+            return;
+        }
+        var url = _serverIp + "/front/homeIndex/exportLoginLogs?"
+                +"pageSize="+_data.pageSize
+                +"&pageNumber="+_data.pageNumber
+                +"&unitId="+GetQuery('unitId')
+                +"&type="+GetQuery('type')
+                +"&startDate="
+                +"&endDate="
+                +"&buildId="+GetQuery('buildId');
+
+        postExport(url)
+    })
+}
+</script>
+
+</html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--<classPathEntry location="C:\Users\Administrator\.m2\repository\com\microsoft\sqlserver\sqljdbc4\4.0\sqljdbc4-4.0.jar" />-->
+    <properties resource="application.properties"/>
+    <context id="SqlserverContext" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="com.gw.common.BaseMapper"/>
+        </plugin>
+
+
+        <!-- 生成数据库字段注释及自定义注释 【扩展插件】 -->
+        <commentGenerator type="com.gw.common.RemarksCommentGenerator">
+            <!-- 格式化java代码 -->
+            <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+            <!-- 格式化XML代码 -->
+            <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="${spring.datasource.driver-class-name}"
+                        connectionURL="${spring.datasource.url}"
+                        userId="${spring.datasource.username}"
+                        password="${spring.datasource.password}">
+        </jdbcConnection>
+
+        <!-- 对于生成的pojo所在包 -->
+        <javaModelGenerator targetPackage="${targetModelPackage}"
+                            targetProject="${targetJavaProject}"/>
+
+        <!-- 对于生成的mapper所在目录 -->
+        <sqlMapGenerator targetPackage="${targetXMLPackage}"
+                         targetProject="${targetResourcesProject}"/>
+
+        <!-- 配置mapper对应的java映射 -->
+        <javaClientGenerator targetPackage="${targetMapperPackage}"
+                             targetProject="${targetJavaProject}"
+                             type="XMLMAPPER"/>
+
+        <table tableName="ut_rpc_defination" enableCountByExample="false" enableSelectByExample="false"
+               enableDeleteByExample="false" enableUpdateByExample="false" selectByExampleQueryId="false"></table>
+
+    </context>
+</generatorConfiguration>

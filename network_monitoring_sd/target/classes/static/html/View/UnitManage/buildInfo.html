@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/swiper/css/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/UnitManage/unitData.css" rel="stylesheet" type="text/css" />
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/swiper/js/swiper.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../Script/public.js"></script>
+</head>
+<body>
+
+
+<table class="table1 fontSize14" style="padding: 20px 3%;">
+    <tr>
+        <td>建筑名称</td>
+        <td class="valueTxt" id="buildingName"></td>
+        <td>建筑结构</td>
+        <td  class="valueTxt" id="structureType"></td>
+        <td>耐火等级</td>
+        <td  class="valueTxt" id="refractoryGrade"></td>
+    </tr>
+    <tr>
+        <td>建筑层数</td>
+        <td  class="valueTxt" id="allGroundFloors">19</td>
+        <td>地上层数</td>
+        <td  class="valueTxt" id="overGroundFloors"></td>
+        <td>地下层数</td>
+        <td  class="valueTxt" id="underGroundFloors"></td>
+    </tr>
+    <tr>
+        <td>占地面积</td>
+        <td ><span  class="valueTxt" id="buildingOccupyarea">0</span>㎡</td>
+        <td>建筑面积</td>
+        <td><span  class="valueTxt" id="buildingArea">0</span>㎡</td>
+        <td>建筑使用类型</td>
+        <td  class="valueTxt" id="buildingType"></td>
+    </tr>
+    <tr>
+        <td>避难层数量</td>
+        <td><span  class="valueTxt" id="refugeNum">0</span></td>
+        <td>避难层面积</td>
+        <td colspan="3"><span  class="valueTxt" id="refugeArea">0</span>㎡</td>
+    </tr>
+</table>
+
+<script>
+    $(function(){
+        getbuildBaseInfo();
+    });
+
+    function getbuildBaseInfo(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitBuildInfoById",
+            data:'buildId='+GetQuery('buildid'),
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    $('.valueTxt').each(function(){
+                        var key = $(this).attr('id');
+                        if(key == "allGroundFloors"){
+                            $(this).text((msg.overGroundFloors + msg.underGroundFloors))
+                        }
+                        else
+                            $(this).text(msg[key] ||"--");
+                    })
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitBaseinfoRelationMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitBaseinfoRelation">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="SoureAddress" property="soureaddress" jdbcType="NVARCHAR"/>
+        <result column="IsGB" property="isgb" jdbcType="INTEGER"/>
+        <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP"/>
+        <result column="UnitID" property="unitid" jdbcType="BIGINT"/>
+        <result column="SystemID" property="systemid" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <select id="selectBaseinfoRelationByUnitId" resultType="com.gw.unit.data.UnitBaseInfoRelationOutData">
+  	SELECT
+		b.UnitName,
+		r.ID,
+		r.SoureAddress,
+		r.UnitID unitid
+	FROM
+		UT_Unit_BaseInfo_Relation r
+	LEFT OUTER JOIN UT_Unit_BaseInfo b ON r.UnitID = b.ID
+	WHERE
+		r.UnitID = #{unitId}
+	AND (b.isDelete = 0 OR b.isDelete is NULL)
+	ORDER BY
+		r.ID DESC
+  </select>
+
+    <select id="getImportList" resultType="com.gw.device.data.NetDeviceOutData">
+  	SELECT
+  		d.ID id,
+		d.DeviceName devicename,
+		d.OwnerCode ownercode,
+		d.DeviceIndex deviceindex,
+		d.DeviceNo deviceno
+	FROM
+		${databaseName}.dbo.sd_devices d
+	INNER JOIN (
+		SELECT
+			c.OwnerCode,
+			c.DeviceIndex,
+			c.DeviceNo
+		FROM
+			${databaseName}.dbo.sd_devices c
+		WHERE
+			c.OwnerCode IN (
+				SELECT
+					a.SoureAddress
+				FROM
+					UT_Unit_BaseInfo_Relation a
+				WHERE
+					a.UnitID = #{unitId}
+			)
+		EXCEPT
+			SELECT
+				b.OwnerCode,
+				b.DeviceIndex,
+				b.DeviceNo
+			FROM
+				UT_Unit_NetDevice b
+			WHERE
+				b.UnitID = #{unitId}
+			AND (b.isDelete = 0 OR b.isDelete is NULL)
+	) e ON d.OwnerCode = e.OwnerCode
+	AND d.DeviceIndex = e.DeviceIndex
+	AND d.DeviceNo = e.DeviceNo
+  </select>
+    <select id="soureaddressSelect" resultType="com.gw.unit.data.UnitBaseInfoRelationOutData">
+  	SELECT
+		SoureAddress soureaddress
+	FROM
+		UT_Unit_BaseInfo_Relation
+	WHERE
+		UnitID = #{unitid}
+  </select>
+    <select id="getBaseinfoRelationFromOthers" resultType="com.gw.unit.data.UnitBaseInfoRelationOutData">
+  	SELECT DISTINCT
+		b.code unitcode,
+		c.OwnerCode soureaddress
+	FROM
+		DB_FireProtection.dbo.Base_Company b
+	LEFT JOIN ${databaseName}.dbo.newsd_companyrelationdevice a ON a.companyid = b.CompanyId
+	LEFT JOIN ${databaseName}.dbo.sd_devices c ON c.ID = a.deviceid
+	WHERE c.OwnerCode IS NOT NULL
+  </select>
+    <select id="getAllUnitRel" resultType="com.gw.unit.data.UnitBaseInfoRelationOutData"
+            parameterType="com.gw.unit.data.UnitBaseInfoRelationInData">
+        SELECT
+        b.UnitName unitname,
+        r.ID id,
+        r.SoureAddress soureaddress,
+        r.UnitID unitid
+        FROM
+        UT_Unit_BaseInfo_Relation r
+        LEFT OUTER JOIN UT_Unit_BaseInfo b ON r.UnitID = b.ID
+        <where>
+		1=1
+		<if test="unitid!=null and unitid!=''">
+			and r.UnitID = #{unitid}
+		</if>
+
+
+		<!-- 		b.NetworkStatus=1 -->
+        and  (b.isDelete = 0 OR b.isDelete is NULL)
+        <if test="soureaddress != null and soureaddress != ''">
+            AND r.SoureAddress like '%${soureaddress}%'
+        </if>
+        <if test="unitname != null and unitname != ''">
+            AND b.UnitName like '%${unitname}%'
+        </if>
+		</where>
+        ORDER BY
+        r.ID DESC
+    </select>
+
+    <!--提供根据单位查询单位用户接口-->
+
+    <select id="selectAccountByUnitID" parameterType="java.lang.String"
+            resultType="com.gw.unit.data.NetworkingUserOutData">
+        SELECT
+        r.userName Account,
+        r.ID id
+        FROM
+        UT_Unit_User r
+        LEFT JOIN UT_Base_UserReUnit u ON r.id = u.user_id
+        WHERE
+        1=1
+        <if test="role != null and role != ''">
+            and r.UserRole=#{role}
+        </if>
+        <if test="UnitID != null and UnitID != ''">
+            and r.UnitID = #{UnitID}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gw.mapper.NetRequestLogMapper">
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.NetRequestLog">
+    <!--@mbg.generated-->
+    <id column="req_id" jdbcType="BIGINT" property="reqId" />
+    <result column="req_host" jdbcType="VARCHAR" property="reqHost" />
+    <result column="req_url" jdbcType="VARCHAR" property="reqUrl" />
+    <result column="req_method" jdbcType="VARCHAR" property="reqMethod" />
+    <result column="req_body" jdbcType="VARCHAR" property="reqBody" />
+    <result column="res_status" jdbcType="VARCHAR" property="resStatus" />
+    <result column="res_body" jdbcType="VARCHAR" property="resBody" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    req_id, req_host, req_url, req_method, req_body, res_status, res_body, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from net_request_log
+    where req_id = #{reqId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from net_request_log
+    where req_id = #{reqId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="req_id" keyProperty="reqId" parameterType="com.gw.mapper.entity.NetRequestLog" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into net_request_log (req_host, req_url, req_method, 
+      req_body, res_status, res_body, 
+      create_date)
+    values (#{reqHost,jdbcType=VARCHAR}, #{reqUrl,jdbcType=VARCHAR}, #{reqMethod,jdbcType=VARCHAR}, 
+      #{reqBody,jdbcType=VARCHAR}, #{resStatus,jdbcType=VARCHAR}, #{resBody,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="req_id" keyProperty="reqId" parameterType="com.gw.mapper.entity.NetRequestLog" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into net_request_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="reqHost != null">
+        req_host,
+      </if>
+      <if test="reqUrl != null">
+        req_url,
+      </if>
+      <if test="reqMethod != null">
+        req_method,
+      </if>
+      <if test="reqBody != null">
+        req_body,
+      </if>
+      <if test="resStatus != null">
+        res_status,
+      </if>
+      <if test="resBody != null">
+        res_body,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="reqHost != null">
+        #{reqHost,jdbcType=VARCHAR},
+      </if>
+      <if test="reqUrl != null">
+        #{reqUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="reqMethod != null">
+        #{reqMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="reqBody != null">
+        #{reqBody,jdbcType=VARCHAR},
+      </if>
+      <if test="resStatus != null">
+        #{resStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="resBody != null">
+        #{resBody,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gw.mapper.entity.NetRequestLog">
+    <!--@mbg.generated-->
+    update net_request_log
+    <set>
+      <if test="reqHost != null">
+        req_host = #{reqHost,jdbcType=VARCHAR},
+      </if>
+      <if test="reqUrl != null">
+        req_url = #{reqUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="reqMethod != null">
+        req_method = #{reqMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="reqBody != null">
+        req_body = #{reqBody,jdbcType=VARCHAR},
+      </if>
+      <if test="resStatus != null">
+        res_status = #{resStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="resBody != null">
+        res_body = #{resBody,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where req_id = #{reqId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gw.mapper.entity.NetRequestLog">
+    <!--@mbg.generated-->
+    update net_request_log
+    set req_host = #{reqHost,jdbcType=VARCHAR},
+      req_url = #{reqUrl,jdbcType=VARCHAR},
+      req_method = #{reqMethod,jdbcType=VARCHAR},
+      req_body = #{reqBody,jdbcType=VARCHAR},
+      res_status = #{resStatus,jdbcType=VARCHAR},
+      res_body = #{resBody,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where req_id = #{reqId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位详细资料 - 位置信息</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/UnitDetail.css" rel="stylesheet" type="text/css"/>
+    <style>
+        .labmap{
+            width: 98%;
+            height: 98%;;
+           margin: auto;
+        }
+    </style>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=uAVQruFnlAevcIBVA89lt02GH5kLkUXd"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+</head>
+<body>
+<div class="labmap map" id="map"></div>
+</body>
+<script type="text/javascript">
+    var mapData = {
+        map: new BMap.Map('map'),
+        zoom: 15,
+        j: "103.136943",
+        w: "38.066285"
+    };
+	$(function(){
+        getUnitBaseInfoData();
+	});
+    //////////////单位资料
+    function getUnitBaseInfoData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitInfoById",
+            data:'unitId='+GetQuery('unitid'),
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    //位置地图
+                    mapData.j=(msg.unitpoint).split(',')[0];mapData.w=(msg.unitpoint).split(',')[1];
+                    initMap();
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //////////////位置地图
+    function initMap() {
+        mapData.map = new BMap.Map('map');
+        var point = new BMap.Point(mapData.j, mapData.w);
+        mapData.map.centerAndZoom(point, mapData.zoom);
+//        mapData.map.setCurrentCity(_loginInfo.mapcenter);
+        mapData.map.enableScrollWheelZoom(true); //开启鼠标滚轮事件
+        if(mapData.j&&mapData.w){
+            var marker = new BMap.Marker(new BMap.Point(mapData.j, mapData.w)); //创建点
+            mapData.map.addOverlay(marker); //添加点
+        }
+    }
+</script>
+</html>

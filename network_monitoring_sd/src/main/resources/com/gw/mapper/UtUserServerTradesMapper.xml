@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUserServerTradesMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUserServerTrades" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="trade_time" property="tradeTime" jdbcType="TIMESTAMP" />
+    <result column="trade_user" property="tradeUser" jdbcType="VARCHAR" />
+    <result column="trade_amount" property="tradeAmount" jdbcType="VARCHAR" />
+    <result column="str1" property="str1" jdbcType="VARCHAR" />
+    <result column="str2" property="str2" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

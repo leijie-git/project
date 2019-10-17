@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位分析-事件分析弹窗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+<link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+<link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+<link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+<link href="../../Content/css/AggregateAnalysis/UnitPageIndex.css" rel="stylesheet" type="text/css"/>
+
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/Echarts/echarts.min.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+    <div class="wrapper" style="padding: 4% 2% 2% 2%;width: 100%;height: 100%;overflow: hidden;background: none;">
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">
+                <!--下拉框-->
+                <div class="layui-inline layui-bg-cyan" id="xcDealStatus">
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="">--事件类型--</option>
+                            <option value="1000">组合火警</option>
+                            <option value="1001">潮湿引起故障</option>
+                            <option value="2000">喷淋漏水</option>
+                            <option value="2001">喷淋破损</option>
+                            <option value="1">报备</option>
+                            <option value="2">测试</option>
+                            <option value="3">关机</option>
+                            <option value="4">监控</option>
+                        </select>
+                    </div>
+                </div>
+
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+
+
+
+                <input class="selectB" id="search" type="search" placeholder="请输入关键字搜索">
+                <input class="submitBtn" type="button" value="查询">
+            </form>
+        </div>
+        
+        <!--table start-->
+        <div class="table_box table_box2">
+            <div class="list_table">
+                <div class="table_header">
+                    <table>
+                        <colgroup>
+                            <col width="5%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="15%">
+                            <col width="20%">
+                            <col width="20%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>事件类型</th>
+                                <th>事件记录事件</th>
+                                <th>记录说明</th>
+                                <th>事件结束时间</th>
+                                <th>结束说明</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="table_content scrollbar-inner">
+                    <table cellpadding="0" cellspacing="0" class="tbody">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="15%">
+                            <col width="20%">
+                            <col width="20%">
+                        </colgroup>
+                        <tbody id="tbodyContent">
+                            <!--<tr>-->
+                                <!--<td>1</td>-->
+                                <!--<td>测试</td>-->
+                                <!--<td>2018-04-23 14:23:43</td>-->
+                                <!--<td><img src="../../Content/images/AggregateAnalysis/icon_luoji.png"><span class="underline" onclick="getUnitLogicWindow(this);">查看逻辑图</span></td>-->
+                                <!--<td>2018-04-23 14:23:43</td>-->
+                                <!--<td>分类页面用户取消关注</td>-->
+                            <!--</tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div id="demo7" style="padding-top: 15px;"></div>
+                <img class="exportBtn" id="exportBtn" src="../../Content/images/Public/exportBT.png">
+            </div>
+
+        </div>
+        <!--table end-->
+    </div>
+
+    <!--弹窗-->
+    <div id="LogicBox">
+        <div class="titleBox">
+            <div>
+                <div>
+                    <img src="../../Content/images/NetInfoStatistic/uniticon.png">
+                    <span>报警单位</span>
+                </div>
+                <div id="evenUnitName">苏州思迪信息技术有限公司</div>
+            </div>
+
+            <div>
+                <div>
+                    <img src="../../Content/images/NetInfoStatistic/timeicon.png">
+                    <span>时间结束时间</span>
+                </div>
+                <div id="eventEndTime">2018-07-20 18:23:43</div>
+            </div>
+        </div>
+
+        <div class="contBox">
+            <div class="c_word">
+                <span>逻辑触发图例</span>
+            </div>
+
+            <div id="eventUrl">
+
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+<script>
+    var _unitid = GetQuery('unitid');
+    var _ifUsed = 0; //调用page方法的判断
+    var _data = {
+        unitId:_unitid,
+        pageNumber:1,
+        pageSize:20,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val(),
+        keyword:$('#search').val(),
+        eventType:$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||""
+    };
+
+    $(function(){
+        loadLayuiForm();//调用layui form组件，方法写在public
+        domEvelement();
+        getUnitListData();
+    });
+
+    function getUnitListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getEventList",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                getEventListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getEventListContent(msg){
+        var data = msg.list;
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            var isimg = "";
+            if(data[i].eventUrl !=""){
+                isimg = '<img src="../../Content/images/AggregateAnalysis/icon_luoji.png"><span class="underline" onclick="getLogic(\''+data[i].eventUrl+'\',\''+data[i].endTime+'\',\''+data[i].unitName+'\');">查看逻辑图</span>'
+            }
+            html += '<tr>' +
+                    '<td>'+(msg.startRow++)+'</td>' +
+                    '<td>'+data[i].eventTypeName+'</td>' +
+                    '<td>'+data[i].startTime+'</td>' +
+                    '<td>'+isimg+'</td> ' +
+                    '<td>'+data[i].endTime+'</td>' +
+                    '<td>'+data[i].endReason+'</td>' +
+                    '</tr>'
+        }
+        $('#tbodyContent').html(html || "<tr><td colspan='6'>暂无数据</td></tr>");
+    }
+
+    function domEvelement(){
+        $('.submitBtn').click(function(){ //查询
+            _data.startDate = $('#sData2').val();
+            _data.endDate = $('#eData2').val();
+            _data.keyword = $('#search').val();
+            _data.eventType = $('#xcDealStatus').find('dd.layui-this').attr('lay-value')||""
+            getUnitListData();
+        });
+
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#tbodyContent tr:first-child>td').length == 1){
+                return;
+            }
+            var url = _serverIp + "/front/analysis/exportEventList?"
+                    + "keyword=" + $('#search').val()
+                    + "&startDate=" + $('#sData2').val()
+                    + "&endDate=" + $('#eData2').val()
+                    + "$eventType="+$('#xcDealStatus').find('dd.layui-this').attr('lay-value')||"";
+            postExport(url)
+        });
+    }
+
+
+    //重置分页
+    function layerPage(_count) {
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage,
+                    layer = layui.layer;
+            laypage.render({
+                elem: 'demo7',
+                count: _count,
+                layout: ['count', 'prev', 'page', 'next' ],
+                limit: 20,
+                prev: '<em>&lt;</em>',
+                next: '<em>&gt;</em>',
+                jump: function(obj, isNew) {
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        getUnitListData();
+                    }
+                }
+            });
+        });
+    }
+
+
+    function getLogic(url,endtime,unitname){
+//        var id = $(obj).parents('tr').attr('id');
+        $('#eventUrl').html('<img src="../../Content/images/event/'+url+'.png">');
+        $('#evenUnitName').text(unitname);
+        $('#eventEndTime').text(endtime);
+        layer.open({
+            type: 1,
+            title: '逻辑组合报警',
+            closeBtn: 1,
+            area:['80%','90%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: $('#LogicBox')
+        });
+    }
+    
+</script>
+</html>

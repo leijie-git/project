@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灭火器管理</title>
+    <!--<link href="../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>-->
+    <!--<link href="../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>-->
+    <!--<link href="../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>-->
+
+    <!--<link href="../Content/css/public.css" rel="stylesheet" type="text/css"/>-->
+    <!--<link href="../Content/css/Index.css" rel="stylesheet" type="text/css"/>-->
+    <link href="../../js/common/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../Script/jquery-1.11.0.js"></script>
+    <script src="../../js/common/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <!--<script src="../../Script/public.js"></script>-->
+    <!--<script src="../Script/Index.js"></script>-->
+
+    <!--<script src="../Script/Echarts/echarts.min.js"></script>-->
+    <!--<script src="../Script/layui/layui.js"></script>-->
+    <!--<script src="../Script/layer/layer.js"></script>-->
+    <!--<script src="../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>-->
+    <!--<script src="../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>-->
+    <style>
+        .center{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="center">灭火器信息</h3>
+        <div class="row center" id="Info"></div>
+    </div>
+</body>
+</html>
+<script>
+    function GetUrlParam(paraName) {
+        var url = document.location.toString();
+        var arrObj = url.split("?");
+
+        if (arrObj.length > 1) {
+            var arrPara = arrObj[1].split("&");
+            var arr;
+
+            for (var i = 0; i < arrPara.length; i++) {
+                arr = arrPara[i].split("=");
+
+                if (arr != null && arr[0] == paraName) {
+                    return arr[1];
+                }
+            }
+            return "";
+        }
+        else {
+            return "";
+        }
+    }
+    var id = GetUrlParam('id');
+    var html = "";
+
+    function getdata(){
+        $.ajax({
+            url: "http://"+ location.host +"/wechat/getExpireExtinguisherById?id="+id,
+            type: "get",
+            success: function (data) {
+                if(data.success){
+                    var List = data.obj;
+                    var extinguisherType = List.extinguisherType!="" ? List.extinguisherType : "暂无数据";
+                    var extinguisherPosition = List.extinguisherPosition!="" ? List.extinguisherPosition : "暂无数据";
+                    var productDate = List.productDate!="" ? List.productDate : "暂无数据";
+                    var fullDate = List.fullDate!="" ? List.fullDate : "暂无数据";
+                    var jcDate = List.jcDate!="" ? List.jcDate : "暂无数据";
+                    var validityDate = List.validityDate!="" ? List.validityDate : "暂无数据";
+                    var eqChangeDate = List.eqChangeDate!="" ? List.eqChangeDate : "暂无数据";
+                    html = '<div class="center">灭火剂类型：'+ extinguisherType +'</div>'+
+                        '<div class="center">灭火器位置：'+ extinguisherPosition +'</div>'+
+                        '<div class="center">出厂时间：'+ productDate +'</div>'+
+                        '<div class="center">填充时间：'+ fullDate +'</div>'+
+                        '<div class="center">检测时间：'+ jcDate +'</div>'+
+                        '<div class="center">报废时间：'+ validityDate +'</div>'+
+                        '<div class="center">药剂到期时间：'+ eqChangeDate +'</div>'
+                }
+                $("#Info").html(html||"<div>暂无数据...</div>");
+            }
+        });
+    }
+    getdata();
+
+</script>

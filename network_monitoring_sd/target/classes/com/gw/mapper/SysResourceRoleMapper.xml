@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.SysResourceRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.SysResourceRole" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="RESOURCE_ID" property="resourceId" jdbcType="BIGINT" />
+    <result column="ROLE_ID" property="roleId" jdbcType="BIGINT" />
+  </resultMap>
+   <select id="selectResourceListByRoleId" parameterType="java.lang.Long" resultType="java.lang.String" >
+    select
+    RESOURCE_ID
+    from sys_resource_role
+    where ROLE_ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+    <insert id="insertBatch" >
+    insert into sys_resource_role (RESOURCE_ID, ROLE_ID) 
+    <foreach collection="resource" item="item" index="index"  separator="," close=";">
+     values(${item}, #{roleId})
+    </foreach>
+  </insert>
+   <delete id="deleteByRoleId" parameterType="java.lang.Long" >
+    DELETE
+    FROM sys_resource_role
+    WHERE ROLE_ID = #{id,jdbcType=BIGINT}
+  </delete>
+</mapper>

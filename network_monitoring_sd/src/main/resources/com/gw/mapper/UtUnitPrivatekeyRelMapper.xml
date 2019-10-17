@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitPrivatekeyRelMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitPrivatekeyRel" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="private_key" property="privateKey" jdbcType="VARCHAR"/>
+    <result column="unit_id" property="unitId" jdbcType="BIGINT"/>
+  </resultMap>
+  <select id="privatekeyList" resultType="com.gw.systemManager.data.UnitPrivatekeyRelOutData" parameterType="com.gw.systemManager.data.UnitPrivatekeyRelInData">
+  	SELECT DISTINCT
+		private_key privateKey
+	FROM
+		UT_Unit_Privatekey_REL
+	<where>
+		<if test="privateKey != null and privateKey != ''">
+			AND private_key like '%${privateKey}%'
+		</if>
+	</where>
+  </select>
+  <select id="getAssociatedUnit" parameterType="com.gw.systemManager.data.UnitPrivatekeyRelInData" resultType="com.gw.systemManager.data.UnitPrivatekeyRelOutData">
+  	SELECT
+  		a.ID,
+		b.ID unitId,
+		b.UnitName
+	FROM
+		UT_Unit_Privatekey_REL a
+	LEFT JOIN UT_Unit_BaseInfo b ON a.unit_id = b.ID
+	<where>
+		a.private_key = #{privateKey}
+		<if test="unitName != null and unitName != ''">
+			AND b.UnitName like '%${unitName}%'
+		</if>
+		AND b.ID IS NOT NULL
+	</where>
+  </select>
+  <select id="getUnassociatedUnit" parameterType="com.gw.systemManager.data.UnitPrivatekeyRelInData" resultType="com.gw.systemManager.data.UnitPrivatekeyRelOutData">
+  	SELECT
+		a.ID unitId,
+		a.UnitName unitName
+	FROM
+		UT_Unit_BaseInfo a
+	WHERE
+		a.ID NOT IN (
+			SELECT
+				b.unit_id
+			FROM
+				UT_Unit_Privatekey_REL b
+			WHERE
+				b.private_key = #{privateKey}
+			AND
+				b.unit_id IS NOT NULL
+		)
+	<if test="unitName != null and unitName != ''">
+		AND a.UnitName like '%${unitName}%'
+	</if>
+  </select>
+</mapper>

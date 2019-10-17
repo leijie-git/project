@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer"/>
+    <title>消防安全管理平台</title>
+    <link href="../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css" />
+    <link href="../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../Content/css/Login.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="wrap_content">
+        <a id="gwUrl" href="http://www.sdtec.cn/" target="_blank" ><img src="/file/upload/logo.png" class="logo"></a>
+        <div class="login">
+           <form autocomplete="off">
+               <span class="username_icon"></span>
+               <span class="password_icon"></span>
+               <span class="icon_verify icon_name_verify"></span>
+               <span class="icon_verify icon_psd_verify"></span>
+               <span class="icon_verify icon_code_verify"></span>
+               <input type="text" class="input_txt username" id="account" placeholder="账号" autocomplete="off">
+               <input type="password" class="input_txt password" id="password" placeholder="密码">
+               <div class="code">
+                   <input type="text" class="input_txt code_input" id="codeInput">
+                   <div class="code_img" id="codeImg"></div>
+                   <!-- <canvas class="code_img" id="codeImg"></canvas> -->
+                   <div class="code_icon" id="codeIcon"></div>
+               </div>
+               <input type="checkbox" id="rememb" checked>
+               <label class="rememb_text" for="rememb">记住密码</label>
+<!--                <a href="#" class="forget">忘记密码？</a> -->
+               <button type="button" class="btn_submit" id="submitBtn">登录</button>
+           </form>
+            <div class="box_code" >
+                <!--<div class="box_code_name">手机下载App</div>-->
+                <div class="box_code_main" id="qrcode"></div>
+            </div>
+        </div>
+        <div class="foot fontSize16">
+            <a href="http://www.sdtec.cn/" target="_blank" id="jsProviders"></a> 提供技术支持&emsp;&emsp;版本 V1.0.0.1&emsp;<a id="record" href="http://www.miitbeian.gov.cn/" target="_blank" ></a>
+        </div>
+    </div>
+    <span id="showIpInfo" style="display:none;"></span>
+</body>
+<script src="../Script/jquery-1.11.0.js"></script>
+<script src="../Script/public.js"></script>
+<script type="text/javascript" src="../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../Script/layer/layer.js"></script>
+<script src="../Script/gVerify.js"></script>
+<!-- <script src="http://whois.pconline.com.cn/ip.js"></script> -->
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script src="/js/common/qrcode/jquery.qrcode.min.js"></script>
+<script>
+$(function() {
+    $('.logo').attr('src',_serverIp + "/file/upload/logo.png")
+	getStatic();
+    getAccountInfo();
+    //绑定事件
+    bindEvent();
+//    console.log($('#rememb:checked'))
+
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) {
+            // loginVerify();
+            $('#submitBtn').trigger('click');
+        }
+    });
+
+    $("#qrcode").qrcode({
+    	render:"canvas",
+    	text:_serverIp+"/html/View/downloadAPP.html",
+	   	width: "75", //宽度
+  	    height:"68"//高度
+	});
+//     labelIp("showIpInfo");
+    
+});
+
+function getStatic(){
+    $.ajax({
+        type: "get",
+        url: _serverIp + "/getStatic",
+        success: function (data) {
+            if (data.success) {
+            	var obj = data.obj;
+                document.title = obj.title;
+                $("#gwUrl").attr('href',obj.gwUrl);
+                $("#record").attr('href',obj.record);
+                $("#record").text(obj.recordAddress);
+                $("#jsProviders").text(obj.providers);
+                $("#jsProviders").attr('href',obj.gwUrl);
+            }
+        }
+    });
+}
+
+function getAccountInfo() {
+    var loginInfo = JSON.parse(localStorage.getItem("LoginInfo")); //将字符串转化成数组
+    if (loginInfo == null || loginInfo == undefined) {
+        return;
+    }
+    if (loginInfo.isRemember == 1) {
+        $('#account').val(loginInfo.account);
+        $('#password').val(loginInfo.password);
+        $('.icon_verify:not(.icon_code_verify)').show();
+    } else {
+        $('#account').val();
+        $('#password').val();
+    }
+}
+//绑定事件
+function bindEvent() {
+    //验证码
+    var verifyCode = new GVerify({
+        id:'codeImg',
+        type:'letter'//blend:数字字母混合类型、number:纯数字、letter:纯字母
+    });
+
+    $('#submitBtn').click(function() {
+        var res = verifyCode.validate($("#codeInput").val());
+        if (res) {
+            loginVerify();
+        } else {
+            $('.icon_code_verify').show().addClass('false');
+            //layer.msg("验证码错误");
+            if($('#account').val() == ""){
+                $('.icon_name_verify').show().addClass('false');
+            }
+            if($('#password').val() == ""){
+                $('.icon_psd_verify').show().addClass('false');
+            }
+        }
+    });
+    //刷新验证码
+    $('#codeIcon').click(function() {
+        verifyCode.refresh();
+        if($('#codeInput').val() != ""){
+            $('.icon_code_verify').show().addClass('false');
+        }
+    });
+
+    //用户名、密码、验证码输入框焦点事件
+    $('.input_txt').unbind(" input propertychange").on(" input propertychange",function(){
+        var thisValue = $(this).val();
+        var type = $(this).attr('id');
+        var data = {
+            account:$('#account').val(),
+            password:$('#password').val()
+        };
+        if(type == "account"){
+            data.account = thisValue;
+            getCheckAccountResult(data)
+        }
+        if(type == "password"){
+            data.password = thisValue;
+            getCheckAccountResult(data)
+        }
+        if(type == "codeInput"){
+            var res = verifyCode.options.code.toLowerCase();
+
+            if (res == thisValue.toLowerCase()) {
+                $('.icon_code_verify').show().removeClass('false');
+            } else {
+                $('.icon_code_verify').show().addClass('false');
+            }
+        }
+    });
+}
+
+function getCheckAccountResult(data){
+    $.ajax({
+        type: "post",
+        url: _serverIp + "/front/start/checkAccount",
+        data: data,
+        success: function(data) {
+            if (data.success == true) {
+                if(data.obj.isAccount == 1)
+                    $('.icon_name_verify').show().addClass('false');
+                else
+                    $('.icon_name_verify').show().removeClass('false');
+
+                if($('#password').val() != ""){
+                    if(data.obj.isPassword == 1)
+                        $('.icon_psd_verify').show().addClass('false');
+                    else
+                        $('.icon_psd_verify').show().removeClass('false');
+                }
+
+
+            }
+        }
+    });
+}
+
+//登录验证
+function loginVerify() {
+//    console.log($('#rememb:checked'))
+    var isAsync = true,
+        lid = 0;
+    if (isAsync)
+        lid = layer.msg('登录中...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "post",
+        url: _serverIp + "/front/start/login",
+        data: 'account=' + $('#account').val() + "&password=" + $('#password').val()+"&ip="+returnCitySN['cip'],
+        success: function(data) {
+
+            if (data.success == true) {
+                var loginInfo = data.obj;
+                loginInfo.password = $('#password').val();
+                loginInfo.isRemember = $('#rememb:checked').length;
+                //var loginInfo = { "account": $('#account').val(), "password": $('#password').val(), "id": data.obj.id, 'unitid': data.obj.unitid, "isRemember": $('#rememb:checked').length,"username":data.obj.username,"" };
+                //localStorage.removeItem("LoginInfo");
+                window.localStorage.clear();
+                localStorage.setItem("LoginInfo", JSON.stringify(loginInfo));
+                if (data.obj.usertype == 0) {
+                    window.location.href = "Index.html"
+                } else if (data.obj.usertype == 1) {
+                    window.location.href = "ModuleTwo/Index.html"
+                }
+            } else {
+                layer.msg(data.msg)
+            }
+        },
+        complete: function() {
+            if (isAsync) {
+                layer.close(lid);
+            }
+        }
+    });
+}
+</script>
+
+</html>

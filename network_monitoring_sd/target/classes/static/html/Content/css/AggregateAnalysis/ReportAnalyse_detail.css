@@ -1,0 +1,159 @@
+.top-search>form {
+    float: left;
+    width: auto;
+    margin-top: 5px;
+}
+.top-search{
+    overflow: hidden;
+}
+
+.wrap_module{
+    text-align: center;
+    padding-left: 1%;
+    width: 99%;
+}
+.detailcont{
+    background: rgba(7, 51, 109,0.4);
+    overflow: hidden;
+    background: -webkit-linear-gradient(left, #041f3c 0%, #043465 50%, #041f3c 100%);
+    background: linear-gradient(to right, #041f3c 0%, #043465 50%, #041f3c 100%);
+}
+.titleDes{
+    margin-top: 1rem;
+    text-align: left;
+}
+#unitData{
+    width: 100%;
+    height: 50px;
+    color: #55AFFA;
+    text-align: center;
+    padding-top: 20px;
+    margin-bottom: 8px;
+    position: relative;
+    background-image: url(../../images/UnitManage/title1.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: bottom;
+}
+.table1,
+.table2{
+    width: 100%;
+    border-spacing: 5px;
+    table-layout: fixed;
+}
+.table1 tr,
+.table2 tr{
+    width: 100%;
+}
+.table1 td,
+.table2 td{
+    height: 30px;
+}
+.table2 td:nth-child(2n-1) {
+    color: #7BA5D1;
+    background: rgba(13, 74, 128, 0.8);
+    text-align: center;
+}
+.table1 td:nth-child(2n-1){
+    width: 15%;
+    color: #7BA5D1;
+    background: rgba(13, 74, 128, 0.8);
+    text-align: right;
+    padding-right: 15px;
+}
+
+.table1 td:nth-child(2n),
+.table2 td:nth-child(2n) {
+    color: #fff;
+    background: rgba(13, 74, 128, 0.3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.table1 td:nth-child(2n),
+.aligncenter{
+    text-align: center;
+}
+.table2 span{
+    display: inline-block;
+    width: 48%;
+    text-align: center;
+}
+.table2 span:first-child{
+    border-right: 1px solid #7BA5D1;
+}
+.chartDiv{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background: url(../../images/AggregateAnalysis/chagangHdBg.png)no-repeat center;
+    background-size: 100% 100%;
+}
+.chartDiv>.chartbox_l,
+.chartDiv>.chartbox_r
+{
+    float: left;
+    width: calc(50% - 5px);
+    height: 100%;
+    text-align: center;
+}
+.chartDiv .chartbox_l{
+    margin-right: 5px;
+}
+#fireTable,
+#fireAlarmTable{
+    table-layout: initial;
+    border: 1px solid #1082E3;
+    border-spacing: 0;
+}
+#fireTable th,
+#fireAlarmTable th{
+    text-align: center;
+    color: #7AA4D9;
+    background-color: rgba(16, 71, 110, .8);
+    height: 37px;
+}
+.chartDiv3{
+    width: 100%;
+    height: 250px;
+    text-align: center;
+    margin-bottom: 5px;
+    background: rgba(16, 71, 110, .8);
+}
+.printBt{
+    width: 60px;
+    height: 30px;
+    line-height: 30px;
+    border: none;
+    outline: none;
+    text-align: center;
+    background: url(../../images/Public/search.png) no-repeat center;
+    background-size: 100% 100%;
+    cursor: pointer;
+    color: #a3d8fa;
+    background-color: transparent;
+    float: right;
+    margin-right: 20px;
+    margin-top: 3px;
+    margin-left: 20px;
+}
+.exportBtnAnalyse{
+    position: absolute;
+    width: 80px;
+    top: 6px;
+    right: 15px;
+    cursor: pointer;
+}
+#chart1>div img{
+    display: none;
+}
+#chart2>div img{
+    display: none;
+}
+#chart3>div img{
+    display: none;
+}
+#Chkchart>div img{
+    display: none;
+}

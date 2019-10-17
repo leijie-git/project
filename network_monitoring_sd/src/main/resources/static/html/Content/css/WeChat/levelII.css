@@ -1,0 +1,40 @@
+body {
+    background-color: #f2f2f2;
+}
+
+#recordList {
+    margin-top: 0;
+}
+
+.weui-cell {
+    flex-wrap: wrap;
+}
+
+.weui-cell__hd {
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.weui-cell__bd {
+    font-size: 14px;
+    color: #666;
+}
+
+.weui-cell__hd button {
+    float: right;
+    padding: 3px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.weui-cell__hd button.reply_lose {
+    background-color: #ff0022;
+    color: #fff;
+    border: 1px solid #ff0022;
+}
+
+.weui-cell__hd button.reply_success {
+    color: #2ba3ff;
+    border: 1px solid #2ba3ff;
+    background-color: #fff;
+}

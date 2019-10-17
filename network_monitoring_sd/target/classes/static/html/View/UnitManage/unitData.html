@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>单位资料</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/swiper/css/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/Home/crtpage.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/UnitManage/unitData.css" rel="stylesheet" type="text/css" />
+    
+    <link href="../../Content/css/Home/firePowerDeviceInfo.css" rel="stylesheet" type="text/css"/>
+    <style>
+    .VRfull{
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        z-index: 1;
+        background-image: url(../../Content/images/UnitManage/map1.png);
+        background-size: 100% 100%;
+        cursor: pointer;
+        width: 34px;
+        height: 28px;
+        line-height: 26px;
+        border: 1px solid #32ceff;
+        text-align: center;
+        user-select: none;
+    }
+    .map_box.full .VRfull{
+        background-image: url(../../Content/images/UnitManage/map2.png);
+        background-size: 100% 100%;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <ul class="nav fontSize16">
+            <li class="active"><a href="#unitData">单位资料</a></li>
+            <li><a href="#buildingInfo">建筑信息</a></li>
+            <li><a href="#keySite">消防安全重点部位</a></li>
+            <li><a href="#danger">单位危险品</a></li>
+            <li class="unitMapPoint"><a href="#siteMap">位置地图</a></li>
+            <li><a href="#video">视频</a></li>
+            <li><a href="#registerStaff">注册人员</a></li>
+            <li><a href="#monitorStaff">值班人员</a></li>
+            <li><a href="#firehouse">微型消防站</a></li>
+        </ul>
+        <div class="content scrollbar-inner">
+            <!-- 单位资料-->
+            <div id="unitData" class="title fontSize18">
+                 单位资料
+            </div>
+            <table class="table1 fontSize14" id="unitBaseInfo">
+                <tr>
+                    <td>单位编码</td>
+                    <td id="unitcode" class="valueTxt">-</td>
+                    <td>子站号</td>
+                    <td id="childstationnum" class="valueTxt">-</td>
+                    <td>单位危险等级</td>
+                    <td id="unitdangerlevel" class="valueTxt">-</td>
+                </tr>
+                <tr>
+                    <td>单位名称</td>
+                    <td id="unitname" class="valueTxt">-</td>
+                    <td  class="">单位地址</td>
+                    <td class="" id="unitAddress"></td>
+                    <td>行政区域</td>
+                    <td id="administrativedivision" class="valueTxt">-</td>
+                </tr>
+                <tr>
+                    <td>技术代表</td>
+                    <td id="technicalrepresentative" class="valueTxt"></td>
+                    <td>用户代表</td>
+                    <td id="userrepresentative" class="valueTxt"></td>
+                    <td>安全监管级别</td>
+                    <td id="superviselevel" class="valueTxt">-</td>
+                </tr>
+                <tr>
+                    <td>联网状态</td>
+                    <td class="valueTxt red" id="networkstatus">-</td>
+                    <td>入网时间</td>
+                    <td id="onlinedate" class="valueTxt">-</td>
+                    <td>单位成立时间</td>
+                    <td id="establishmenttime" class="valueTxt">-</td>
+                </tr>
+                <tr>
+                    <td>安全责任人身份证号</td>
+                    <td id="saferesponsiblepersoncard" class="valueTxt">-</td>
+                    <td>安全管理员姓名</td>
+                    <td id="safemanagername" class="valueTxt">-</td>
+                    <td class="">安全管理员电话</td>
+                    <td class=" txtTell" phoneLab="safemanagerphone"></td>
+                </tr>
+                <tr>
+                    <td>组织机构代码</td>
+                    <td  class="valueTxt" id="orgCode" phoneLab="valueTxt"></td>
+                    <td>单位电话</td>
+                    <td class="txtTell" phoneLab="phone">-</td>
+                    <td>消防管辖单位</td>
+                    <td id="administunit" class="valueTxt">-</td>
+                </tr>
+                <tr>
+                    <td>企业法人身份证号</td>
+                    <td id="legalppersoncard" class="valueTxt">-</td>
+                    <td>企业法人姓名</td>
+                    <td id="legalpersonname" class="valueTxt">-</td>
+                    <td>企业法人电话</td>
+                    <td class="txtTell" phoneLab="legalpersonphone">-</td>
+                </tr>
+                <tr>
+                    <td>单位类别</td>
+                    <td id="unittype" class="valueTxt"></td>
+                    <td>企业类型</td>
+                    <td id="supervisetype" class="valueTxt"></td>
+                    <td>感应点位</td>
+                    <td id="inductionpointcount" class="valueTxt">-</td>
+                </tr>
+                <!--<tr>-->
+                    <!--<td>职工数</td>-->
+                    <!--<td id="staffcount" class="valueTxt">-</td>-->
+                    <!--<td>总资产</td>-->
+                    <!--<td><span id="fixedassets" class="valueTxt">0</span>（万元）</td>-->
+                    <!--<td>短信接收</td>-->
+                    <!--<td id="messagePhone" class="valueTxt">-</td>-->
+                <!--</tr>-->
+                <tr>
+                    <td>维保单位</td>
+                    <td id="maintenanceunitname" class="valueTxt"></td>
+                    <td>维保单位负责人</td>
+                    <td id="maintenanceunituser" class="valueTxt"></td>
+                    <td>维保单位负责人电话</td>
+                    <td id="maintenanceunitphone" class="txtTell" phoneLab="maintenanceunitphone"></td>
+                </tr>
+                <tr>
+                    <td>监测单位</td>
+                    <td id="monitorunitname" class="valueTxt"></td>
+                    <td>监测单位负责人</td>
+                    <td id="monitorunituser" class="valueTxt"></td>
+                    <td>监测单位负责人电话</td>
+                    <td id="monitorunitphone" class="txtTell" phoneLab="monitorunitphone"></td>
+                </tr>
+                <tr>
+                    <td>火灾等级</td>
+                    <td id="firerating" class="valueTxt">-</td>
+                    <td>单位比邻情况</td>
+                    <td id="unitproximity">
+                        <!---->
+                    </td>
+                    <td>消防合同文书</td>
+                    <td id="xfcontractbook"></td>
+                </tr>
+            </table>
+
+            <!-- 建筑信息-->
+            <div id="buildingInfo" class="title fontSize18">建筑信息</div>
+            <div class="wrap_buildBox" style="width:100%;height: auto; overflow: hidden">
+                <table class="table2" id="buildTableBox" >
+                    <colgroup>
+                        <col width="10%">
+                        <col width="20%">
+                        <col width="15%">
+                        <col width="25%">
+                        <col width="15%">
+                        <col width="15%">
+                    </colgroup>
+                    <thead class="fontSize16">
+                    <tr>
+                        <th>序号</th>
+                        <th>建筑名称</th>
+                        <th>单位编码</th>
+                        <th>建筑地址</th>
+                        <th>建筑楼层总高度</th>
+                        <th>避难层总面积</th>
+                    </tr>
+                    </thead>
+                </table>
+                <div class="wrap_buildTbodyContent">
+                    <table class="table2" >
+                        <colgroup>
+                            <col width="10%">
+                            <col width="20%">
+                            <col width="15%">
+                            <col width="25%">
+                            <col width="15%">
+                            <col width="15%">
+                        </colgroup>
+                            <tbody class="fontSize14" id="buildTbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="footer" style="height: 40px">
+                <div id="demo1" style="position: absolute;bottom: 5px;left: 10px;width: calc(100% - 70px)"></div>
+                <!--<img class="exportBtn" id="exportBtn" src="../../Content/images/Public/exportBT.png">-->
+            </div>
+
+            <!-- 消防安全重点部位-->
+            <div id="keySite" class="title fontSize18">消防安全重点部位</div>
+            <table class="table1 fontSize14">
+                <tr>
+                    <td>重点部位</td>
+                    <td colspan="5" id="UnitImport"></td>
+                </tr>
+            </table>
+
+            <!-- 危险品-->
+            <div id="danger" class="title fontSize18">单位危险品</div>
+            <table class="table1 fontSize14" id="dangerousTbody"></table>
+            <!-- 位置地图-->
+            <div id="siteMap" class="title fontSize18">位置地图</div>
+            <div class="map_box" id="mapBox">
+                <div class="map_top">
+                    <div class="btn_group">
+                        <button id="plane" class="active">平面地图</button>
+                        <button id="satellite">卫星地图</button>
+                        <button id="panorama">全景地图</button>
+                        <button id="unitCRT">单位CRT</button>
+                        <button id="VRmap">VR实景地图</button>
+                    </div>
+                </div>
+                <ul class="labmap map_btn" id="mapBtn">
+                    <li id="full"></li>
+                    <li id="2D">2D</li>
+                    <li id="position"></li>
+                    <li id="zoomUp">+</li>
+                    <li id="zoomDown">-</li>
+                </ul>
+                <div class="labmap map" id="map"></div>
+                <form class="layui-form labcrt" action="" autocomplete="off">
+                    <div class="layui-inline layui-bg-cyan" id="buildList">
+                        <div class="layui-input-inline">
+                            <select name="modules"  lay-verify="required" lay-search="" id="areaSelect"></select>
+                        </div>
+                    </div>
+                    <input class="submitBtn" type="button" id="btnSearch" value="查询">
+                </form>
+                <div class="map labcrt scrollbar-inner crtbox">
+                    <div id="wrap_img">
+                        <div id="imgDiv" onmousewheel="return bbimg(this)">
+                            <!--             <img src="../../Content/images/Login/loginBg.png" id="img"> -->
+                        </div>
+                    </div>
+                </div>
+                <!-- VR -->
+                <div class="labVR map" style="position: relative;padding: 5px;display: none;">
+                    <div class="VRfull"></div>
+                </div>
+            </div>
+            <!-- 视频-->
+            <div id="video" class="title fontSize18">视频</div>
+            <div class="video_wrap">
+                <div class="video_box">
+                    <iframe src="unitVideoPage.html" id="videoFrame" frameborder="0" width="100%" height="100%" scrolling="0" style="width: 100%;height: 100%"></iframe>
+                    <!--<iframe id="videoFrame" frameborder="0" width="100%" height="100%" scrolling="0" style="width: 100%;height: 100%"></iframe>-->
+                    <!--<div class="video" style="display: none">-->
+                        <!--<span class="veido_text1">该单位暂无视频录入</span>-->
+                    <!--</div>-->
+                </div>
+            </div>
+            <!-- 注册人员-->
+            <div id="registerStaff" class="title fontSize18">注册人员</div>
+            <table class="table2">
+                <thead class="fontSize16">
+                    <tr>
+                        <th>序号</th>
+                        <th>用户名</th>
+                        <th>姓名</th>
+                        <th>用户类型</th>
+                        <th>用户角色</th>
+                        <th>联系电话</th>
+                    </tr>
+                </thead>
+                <tbody class="fontSize14" id="UnitXFZTbody"></tbody>
+            </table>
+            <!-- 值班人员-->
+            <div id="monitorStaff" class="title fontSize18">值班人员</div>
+            <table class="table2">
+                <colgroup>
+                    <col width="22%">
+                    <col width="26%">
+                    <col width="26%">
+                    <col width="26%">
+                </colgroup>
+                <thead class="fontSize16">
+                    <tr>
+                        <th>序号</th>
+                        <th>用户名</th>
+                        <th>联系电话</th>
+                        <th>身份证</th>
+                    </tr>
+                </thead>
+                <tbody class="fontSize14" id="dutyUserTbody">
+                    <tr>
+                        <td>1</td>
+                        <td>消防室</td>
+                        <td>15959299495</td>
+                        <td>440583199505022406</td>
+                        <td>消控室外线电话</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>李华明</td>
+                        <td>15959299495</td>
+                        <td>440583199505022406</td>
+                        <td>白班值班人员</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>李明杰</td>
+                        <td>15959299495</td>
+                        <td>440583199505022406</td>
+                        <td>夜班值班人员</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>万峰桧</td>
+                        <td>15959299495</td>
+                        <td>440583199505022406</td>
+                        <td>消防责任人</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- 微型消防站-->
+            <div id="firehouse" class="title fontSize18">微型消防站</div>
+            <div class="firehouse_box">
+                <div class="firehouse_photo swiper-container">
+                    <!--<div class="swiper-wrapper">-->
+                        <!--&lt;!&ndash;<div class="swiper-slide" style="background-image:url(../../Content/images/UnitManage/firehouse1.jpg)"></div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="swiper-slide" style="background-image:url(../../Content/images/UnitManage/firehouse2.jpg)"></div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="swiper-slide" style="background-image:url(../../Content/images/UnitManage/firehouse3.jpg)"></div>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash; 如果需要分页器 &ndash;&gt;-->
+                    <!--<div class="swiper-pagination"></div>-->
+                </div>
+                <div class="firehouse_table">
+                    <div class="list_table">
+                        <div class="table_header">
+                            <table>
+                                <colgroup>
+                                    <col width="30%">
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="30%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="total fontSize18" colspan="4">消防站共:<span id="eqTotal"></span>个</th>
+                                    </tr>
+                                    <tr class="fontSize16">
+                                        <th>名称</th>
+                                        <th>联系人</th>
+                                        <th>联系方式</th>
+                                        <th>地址</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="table_content scrollbar-inner">
+                            <table cellpadding="0" cellspacing="0" class="tbody">
+                                <colgroup>
+                                    <col width="30%">
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="30%">
+                                </colgroup>
+                                <tbody class="fontSize14" id="eqListTbody">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="list_table">
+                        <div class="table_header">
+                            <table>
+                                <colgroup>
+                                    <col width="33.3333%">
+                                    <col width="33.3333%">
+                                    <col width="33.3333%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="total fontSize18" colspan="3">消防设备</th>
+                                    </tr>
+<!--                                     <tr class="fontSize16"> -->
+<!--                                         <th>职位</th> -->
+<!--                                         <th>姓名</th> -->
+<!--                                         <th>电话</th> -->
+<!--                                     </tr> -->
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="table_content fireDeviceContent scrollbar-inner" id="wrapFireDeviceDescNum">
+		                    <div class="wrap_content" id="fireDeviceDescNum">
+		                        <div class="div_device"><div class="dh" id="waterGun">水枪</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="waterBelt">水带</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="safetyRope">安全绳</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="hydrantWrench">消火栓扳手</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="fireExtinguisher">灭火器</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="brightLight">强光照明灯</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="fireAxe">消防斧</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="fireHelmet">消防头盔</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="clothing">消防员灭火防护服</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="boots">消防员灭火防护靴</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="safetyBelt">消防安全腰带</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="fireGloves">消防手套</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="integratedRespirator">消防过滤式综合防毒面具</div><div class="dd">0个</div></div>
+		                        <div class="div_device"><div class="dh" id="loudspeaker">扩音器</div><div class="dd">0个</div></div>
+		                        <!-- <div class="div_device"><div class="dh" id="patrolCar">消防巡逻车</div><div class="dd">0个</div></div> -->
+		                        <!--<div class="div_device"><div class="dh" id="remark">备注</div><div class="dd"></div></div>-->
+		                    </div>		                   		                
+                        </div>
+                        <div class="table_content fireDeviceContent scrollbar-inner" id="wrapFireDeviceDescNum2">
+                           <div class="wrap_content" id="fireDeviceDescNum2">
+                                <div class="div_device"><div class="dh" id="highSpray">高喷消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="waterTank">水罐消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="foam">泡沫消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="dryPowder">干粉消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="ladderLadder">云梯消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="afoam">A类泡沫消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="rescueVehicle">抢险救援车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="climbingPlatform">登高平台消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="pressureSmoke">正负压排烟消防车</div><div class="dd"></div></div>
+                                <div class="div_device"><div class="dh" id="combatants">作战人员</div><div class="dd"></div></div>
+                                <!--<div class="div_device"><div class="dh" id="remark">备注</div><div class="dd"></div></div>-->
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="footer">-->
+            <!--<div id="demo7"></div>-->
+            <!--<img class="exportBtn" id="exportBtn" src="../../Content/images/Public/exportBT.png">-->
+        <!--</div>-->
+    </div>
+
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<!-- 百度地图 -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=uAVQruFnlAevcIBVA89lt02GH5kLkUXd"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../../Script/swiper/js/swiper.min.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+<script src="../../Script/udraggable/jquery.udraggable.js"></script>
+<script src="../../Script/udraggable/jquery.event.ue.js"></script>
+<script src="../../Script/public.js"></script>
+<!--<script src="../../Script/UnitManageMap.js"></script>-->
+<script>
+    var mapLevel = _loginInfo.mapLevel;
+    if(mapLevel == "" || mapLevel == undefined){
+        mapLevel = 11;
+    }
+    var mapData = {
+        map: new BMap.Map('map'),
+        zoom: mapLevel,
+        j: "",
+        w: ""
+    };
+    var _mySwiper="";
+    var _ifBuildUsed= 0;
+    var _unitid = GetQuery('unitid');
+    var _buildData = {
+        pageNumber:1,
+        pageSize:20,
+        startDate:"",
+        endDate:"",
+        unitId:_unitid
+    };
+    var aTop = [];//锚点坐标
+    var _cetwidth = 0; _crtheight = 0; //图片的宽高
+
+    var _panorama; //全景
+    var _panoramaService;//全景
+    $(function() {
+        //单位资料
+        getUnitBaseInfoData();
+        //建筑信息列表
+        getBuildListData();
+        //消防安全重点部位
+        getUnitImportData();
+        //危险品
+        getUnitDangerousData();
+        //视频
+        getUnitVideoInfoData();
+
+        //注册人员
+        getDutyUserListData('');
+        //微型消防站 - 消防站
+        getUnitUserListData();
+        //微型消防站 - 消防设备
+        //getFireEquipmentData();
+
+    //    layerPage(300);
+
+        //绑定事件
+        bindEvent();
+
+        //微型消防站
+        //initfirehouse();
+
+        //位置地图 -  单位crt
+        getUnitAreaData();
+        //getUnitOneCrtData();
+
+        //值班人员
+        getDutyUserListData('4');
+
+    });
+    //////////////单位资料
+    function getUnitBaseInfoData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitInfoById",
+            data:'unitId='+_unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj[0];
+                    $('#unitBaseInfo .valueTxt').each(function(){
+                        var key = $(this).attr('id');
+
+                        $(this).text(msg[key] ||"--");
+                        if(key == "networkstatus"){
+                            $(this).text(msg[key]==1?"在线":"离线").addClass(msg[key]==1?"green":"red");
+                        }
+                    });
+
+                    //地址
+                    $('#unitAddress').html('<a href="#siteMap"><span class="site_text" id="unitaddress" onclick="getunitPoint();">'+msg.unitaddress+'</span></a>')
+
+                    //电话
+                    $('#unitBaseInfo .txtTell ').each(function(){
+                        var key = $(this).attr('phoneLab');
+                        if(msg[key]){
+                            $(this).html('<a href="skype://+86'+msg[key]+'" onclick="saveCallRecord(\''+_unitid+'\',\''+msg[key]+'\')"><span class="phone_text">'+msg[key]+'</span></a>');
+                        }
+                    });
+                    //消防合同文书
+                    if(msg.xfcontractbookname && msg.xfcontractbook){
+                        $('#xfcontractbook').html(
+                                '<a href="'+msg.xfcontractbook+'" target="_blank">'+msg.xfcontractbookname+'</a>'
+                        )
+                    };
+                    //单位比邻情况
+                    if(msg.unitproximity){
+                        $('#unitproximity').html('<a href="'+msg.unitproximity+'" target="_blank" class="photo_text">查看图片</a>')
+                    }
+                    //位置地图
+                    if(msg.unitpoint!=""){
+                        mapData.j=(msg.unitpoint).split(',')[0];mapData.w=(msg.unitpoint).split(',')[1];
+                    }
+                    initMap();
+
+                    //VR实景地图
+                    if(msg.unitlink){
+                        $("#VRmap").attr("data-link",msg.unitlink);
+                        loadVRData(); //获取单位vr实景地图
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getunitPoint(){
+        $('.nav>li.unitMapPoint').click();
+    }
+
+
+    //////////////建筑信息列表
+    function getBuildListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitBuilds",
+            data:_buildData,
+            success: function (data) {
+                //console.log(data);
+                if (_ifBuildUsed == 0) {
+                    layerPage(data.total);
+                    _ifBuildUsed = 1;
+                }
+                showbuildListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    function showbuildListContent(msg){
+        $('.wrap_buildBox').css('max-height',$('.content').height() - 50+'px');
+
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td class="underline">'+data[i].buildingName+'</td>'+
+                    '<td>'+data[i].unitCode+'</td>'+
+                    '<td>'+data[i].address+'</td>'+
+                    '<td>'+data[i].floors+'</td>'+
+                    '<td>'+data[i].refugeArea+'</td>'+
+                    '</tr>'
+        }
+
+        $('#buildTbody').html(html||"<tr><td colspan='6'>暂无数据...</td></tr>");
+        $('#buildTbody tr>td').each(function(){$(this).attr('title',$(this).text())});
+        $('.wrap_buildBox > .wrap_buildTbodyContent').addClass('scrollbar-inner');
+        jQuery('.scrollbar-inner').scrollbar({});
+        $('.wrap_buildBox > .wrap_buildTbodyContent').css('height',$('.wrap_buildBox').height() - 37+'px');
+
+    }
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo1'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    //console.log(obj);
+    //                if (!isNew) {
+    //                    _data.pageNumber = obj.curr;
+    //                    _data.pageSize = obj.limit;
+    //                    //console.log(_curr)
+    //                    getAlarmSysListData(); //调用接口获取数据
+    //                }
+
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+    //////////////建筑信息列表
+    function getUnitImportData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitImport",
+            data:'unitId='+_unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                   $('#UnitImport').text(msg||"--");
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    //////////////危险品
+    function getUnitDangerousData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitDangerous",
+            data:'unitId='+_unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    showDangerousContent(msg);
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    function showDangerousContent(msg){
+//        msg=[
+//            {"coupletKey":1,"coupletValue":11111},
+//            {"coupletKey":1,"coupletValue":11111},
+//            {"coupletKey":1,"coupletValue":11111},
+//            {"coupletKey":1,"coupletValue":11111}
+//        ]
+        var trlength = parseInt(msg.length/3);
+        var lastTr = msg.length%3;
+        var html="",lastTd="";
+        var index = 0;
+
+        for(var i = 0 ; i < trlength;i++){
+            var td = "";
+            for(var k = 0 ; k < 3;k++){
+                td +=  "<td>"+msg[index].coupletKey+"</td>"+
+                        "<td>"+msg[index].coupletValue+"</td>";
+                index++
+            }
+            html +="<tr>"+ td +"</tr>"
+        }
+        for(var i = 0 ; i <lastTr;i++){
+            lastTd +=  "<td>"+msg[index].coupletKey+"</td>"+
+                    "<td>"+msg[index].coupletValue+"</td>";
+            index++
+        }
+        html +="<tr>"+ (lastTd || '<td style="text-align: center">暂无单位危险品...</td>') +"</tr>";
+        $('#dangerousTbody').html(html);
+    }
+
+    //////////////位置地图
+    function initMap() {
+        mapData.map = new BMap.Map('map');
+        var point;
+        if(mapData.j!="" && mapData.j && mapData.w!="" && mapData.w){
+            point = new BMap.Point(mapData.j, mapData.w);
+        }
+        else{
+           // layer.msg("该单位暂无坐标点！");
+            point = new BMap.Point(103.136943, 38.066285);
+        }
+        mapData.map.centerAndZoom(point, mapData.zoom);
+//        mapData.map.setCurrentCity(_loginInfo.mapcenter);
+         mapData.map.enableScrollWheelZoom(true); //开启鼠标滚轮事件
+        if(mapData.j!=""&&mapData.w!=""){
+            var marker = new BMap.Marker(new BMap.Point(mapData.j, mapData.w)); //创建点
+            mapData.map.addOverlay(marker); //添加点
+            _panoramaService = new BMap.PanoramaService();
+            _panoramaService.getPanoramaByLocation(new BMap.Point(mapData.j, mapData.w), function(data) {
+                if (data != null) {
+//                            mapData.map.addTileLayer(new BMap.PanoramaCoverageLayer());
+//                            panorama.setPov({heading: -40, pitch: 6});
+                    _panorama = new BMap.Panorama('map');
+                    _panorama.setPosition(new BMap.Point(mapData.j, mapData.w));
+                    _panorama.hide();
+//                            mapData.map.removeTileLayer();
+                }
+            });
+        }
+
+
+    }
+    //获取区域
+    function getUnitAreaData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitBuildArea",
+            data:"unitID="+_unitid,
+            success: function (data) {
+                var msg = data.obj;
+                var option = "" ;
+                for (var i = 0; i < msg.length; i++) {
+                    option +='<option  value="'+msg[i].buildAreaID+'" '+(i == 0?"select":"")+'>'+msg[i].name+'</option>'
+                }
+                $('#areaSelect').html(option);
+                loadLayuiForm(); //调用layui form组件，方法写在public
+                setTimeout('getUnitOneCrtData();',1000)
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //单位crt
+    function getUnitOneCrtData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitOneCRT",
+            data:"buildAreaID="+$('#buildList').find('dd.layui-this').attr('lay-value') || "",
+            success: function (data) {
+                if(data.success){
+                    getCRTPicContent(data);
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    function getCRTPicContent(data){
+        var dataList = data.obj;
+        if(dataList.length==0){
+            $('#imgDiv').html('未接入CRT');
+            $('#wrap_img').css({'left':'calc(50% - 30px)','top':'calc(50% - 10px)'}).addClass('fontSize20');
+            return;
+        }
+        $('#wrap_img').css({'left':'0','top':'0'}).removeClass('fontSize20');
+        var msg = dataList[0];
+        if(!dataList){
+            return;
+        }
+
+
+        
+        // alert(parseFloat(msg.bgHeight));
+        // alert(parseFloat($('.crtbox ').height()));
+        if( parseFloat(msg.bgHeight) > parseFloat($('.crtbox').height())){ //如果背景图超出容器,则缩小到与容器高度一样大小
+            var less = parseFloat($('.crtbox').height()) / parseFloat(msg.bgHeight);
+            $('#imgDiv').css({ 'height': msg.bgHeight*less + 'px', 'width': msg.ggWidth*less + 'px' });
+        }else{
+            $('#imgDiv').css({ 'height': msg.bgHeight + 'px', 'width': msg.ggWidth + 'px' });
+        }
+     
+        $('#wrap_img').attr({'crtbgheight':msg.bgHeight,'crtbgwidth':msg.ggWidth});
+        _cetwidth = $('#imgDiv').width();
+        _crtheight = $('#imgDiv').height();
+//        var left = (msg.xaxis/msg.ggWidth*100).toFixed(2);
+//        var top = (msg.yaxis/msg.bgHeight*100).toFixed(2);
+        var html = '<img src="' + msg.buildAreaImg + '" id="img">';
+        //var html = '<img id="img" src="http://www.sd-xfjc.com:8085/file/upload/pictures/2018/12/12/08/951a94106496454f885caf017fd18a0e/1544575638691.jpg">';
+        for(var i = 0 ; i < dataList.length;i++){
+            html += '<div class="dot" style="top: '+dataList[i].yaxis+'; left: '+dataList[i].xaxis+'; position: absolute; background-image: url(/image/crt/'+dataList[i].codeValue+'_1.png);">' +
+                    getCRTTips(dataList[i])+
+                    '</div>';
+
+        }
+        $('#imgDiv').html(html);
+    }
+    //点位tips
+    function getCRTTips(data){
+        var html = ' <div class="wrap_dotInfo"><div class="div_info">'
+                + '<table cellpadding="0" cellspacing="0" align="center" class="table-detail">'
+                + ' <colgroup><col width="50%" /><col width="50%" /></colgroup>'
+                + ' <tbody><tr><th>部位号</th><td>' + data.adress + '</td></tr><tr><th>设备名称</th><td>' + data.eqname + '</td></tr><tr><th>真实地址</th><td>' + data.partcode + '</td></tr></tbody>'
+                + '</table></div><div class="triangle"></div></div>';
+        return html;
+    }
+
+    //////////////视频
+    function getUnitVideoInfoData(){
+
+        $('#videoFrame').attr('src','unitVideoPage.html?unitid='+_unitid);
+//        var isAsync = true,lid = 0;
+//        if (isAsync)
+//            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+//        $.ajax({
+//            type: "get",
+//            url: _serverIp + "/front/unit/getUnitVideoInfo",
+//            data:'unitId='+_unitid,
+//            success: function (data) {
+//                //console.log(data);
+//                if (data.success) {
+//                    var msg = data.obj[0];
+//                    if(msg.plugInType == "2"){
+////                        $('#videoFrame').attr('src','../video_a.html?ip='+msg.ip)
+//                        $('#videoFrame').attr('src','video_a.html?ip='+msg.ip)
+//                    }
+//                    if(msg.plugInType==0||msg.plugInType == 1){
+//                        $('#videoFrame').attr('src','../camera.html?ip='+msg.ip+'&port='+msg.port+'&userName='+msg.userName+'&password='+msg.password+'&deviceType='+msg.plugInType)
+//                    }
+//                    if(msg == "") {
+//                        $('.video_box>.video').show();
+//                        $('#videoFrame').hide();
+//                    }
+//                }
+//            },
+//            complete: function () {
+//                if (isAsync){
+//                    layer.close(lid);
+//                }
+//            }
+//        });
+    }
+
+    //////////////注册人员
+    function getUnitXFZInfoData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitXFZInfo",
+            data:'unitId='+_unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    showUnitXFZInfoContent(msg);
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    //////////////值班人员 & 注册人员
+    function getDutyUserListData(userRole){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitUserList",
+            data:'userRole='+userRole+'&unitId='+_unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    if(userRole == 4){
+                        showDutyUserContent(msg); //值班人员
+                    }
+                    else{
+                        showUnitXFZInfoContent(msg); //注册人员
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //值班人员
+    function showDutyUserContent(data){
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(i+1)+'</td>'+
+                    '<td>'+data[i].account+'</td>'+
+                    '<td>'+data[i].mobilephone+'</td>'+
+                    '<td>'+data[i].certificatesno+'</td>'+
+                    '</tr>'
+        }
+        $('#dutyUserTbody').html(html||"<tr><td colspan='5'>暂无数据...</td></tr>");
+        $('#dutyUserTbody tr>td').each(function(){$(this).attr('title',$(this).text())});
+    }
+
+    //注册人员
+    function showUnitXFZInfoContent(data){
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(i+1)+'</td>'+
+                    '<td>'+data[i].account+'</td>'+
+                    '<td>'+data[i].username+'</td>'+
+                    '<td>'+data[i].usertype+'</td>'+
+                    '<td>'+data[i].userrole+'</td>'+
+                    '<td>'+data[i].mobilephone+'</td>'+
+                    '</tr>'
+        }
+        $('#UnitXFZTbody').html(html||"<tr><td colspan='6'>暂无数据...</td></tr>");
+        $('#UnitXFZTbody tr>td').each(function(){$(this).attr('title',$(this).text())});
+    }
+
+    //////////////微型消防站
+    function  getUnitUserListData(){
+    	//$("#fireDeviceDescNum2").hide();
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/fireUnitPower",
+            data:'unitID='+_unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                   
+                    showEqListContent(msg); //消防站                 	
+                    
+                    //showUserListContent(msg.userList); //人员配备
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    function showEqListContent(data){
+        $('#eqTotal').text(data.length);
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr class="fireStationTr" onclick="firePowerDetailData(\''+data[i].id+'\',this,\''+data[i].type+'\',\''+data[i].image+'\')">'+
+                    '<td>'+data[i].name+'</td>'+
+                    '<td>'+data[i].contact+'</td>'+
+                    '<td>'+data[i].phone+'</td>'+
+                    '<td>'+data[i].address+'</td>'+
+                    '</tr>'
+        }
+        $('#eqListTbody').html(html||"<tr><td colspan='4'>暂无数据...</td></tr>");
+        $('#eqListTbody tr>td').each(function(){$(this).attr('title',$(this).text())});
+        
+        if(data.length>0){
+        	$('#eqListTbody>tr').eq(0).click();
+        }else{
+        	$("#fireDeviceDescNum").html("无消防设备...")
+        	 $('#wrapFireDeviceDescNum').parent().hide();
+            $('#wrapFireDeviceDescNum2').parent().hide();
+        }
+       
+    }
+    
+    //////////////消防设备（消防站）
+    function firePowerDetailData(powerID,obj,type,images){
+    	$(obj).addClass('active').siblings().removeClass('active');
+    	var image = images.split(",");
+    	var img='';
+
+        //image = ["../../Content/images/UnitManage/firehouse1.jpg","../../Content/images/UnitManage/firehouse2.jpg","../../Content/images/UnitManage/firehouse3.jpg"]
+    	for(var i=0;i<image.length;i++){
+    		img += '<div class="swiper-slide" style="background-image:url('+image[i]+')"></div>';
+    	}
+        var html = '<div class="swiper-wrapper">' +
+                    img+
+                '</div>' +
+                '<div class="swiper-pagination"></div>';
+        $('.firehouse_photo').html(html).addClass('swiper-container');
+    	initfirehouse();
+    	if(type == 1){
+    		$('#wrapFireDeviceDescNum').parent().hide();
+    		$('#wrapFireDeviceDescNum2').parent().show();
+    		$('#fireDeviceDescNum').css('display','none');
+            $('#fireDeviceDescNum2').css('display','flex');
+            $.ajax({
+                type: "get",
+                url: _serverIp + "/front/homeIndex/fireSquadronPowerDetail",
+                data:'powerID='+powerID,
+                success: function (data) {
+                    if (data.success == true) {
+                        $('#fireDeviceDescNum2 .dh').each(function(){
+                            var key = $(this).attr('id');
+                            //$(this).next('.dd').text( (data.obj[key] || 0) +'个')
+                        })
+                    }
+                }
+            });
+    	}
+    	else{
+    		 $('#wrapFireDeviceDescNum2').parent().hide();
+    		$('#wrapFireDeviceDescNum').parent().show();
+    		$('#fireDeviceDescNum').css('display','flex');
+            $('#fireDeviceDescNum2').css('display','none');
+            $.ajax({
+                type: "get",
+                url: _serverIp + "/front/homeIndex/firePowerDetail",
+                data:'powerID='+powerID,
+                success: function (data) {
+                    if (data.success == true) {
+                        
+                        $('#fireDeviceDescNum .dh').each(function(){
+                            var key = $(this).attr('id');
+                            $(this).next('.dd').text( (data.obj[key] || 0) +'个')
+                        })
+                    }
+                }
+            });
+    	}
+
+    }
+//     //////////////消防设备(中队)
+//     function firePowerDetailData2(powerID,obj){
+//         $(obj).addClass('active').siblings().removeClass('active');
+
+//     }
+    //微型消防站
+    function initfirehouse() {
+        _mySwiper = "";
+        _mySwiper = new Swiper('.swiper-container', {
+            direction: 'horizontal',
+            loop: true,
+            //分页器
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true
+            }
+        })
+    }
+
+
+    //绑定事件
+    function bindEvent() {
+        var index = null; //弹出窗口索引
+        //导航切换
+        $('.nav > li').click(function() {
+            $('.nav > li.active').removeClass('active');
+            $(this).addClass('active')
+        });
+
+        //按钮组切换
+        $('.btn_group button').click(function(event) {
+            var id = event.target.id;
+            $('.BMap_noprint[title=进入全景]').hide();
+
+            switch (id) {
+                case 'plane': //平面地图
+                    if(_panorama)_panorama.hide();
+                    mapData.map.setMapType(BMAP_NORMAL_MAP);
+                    //mapData.map.removeControl(stCtrl);
+                    $('.labVR').hide();
+                    $('.labcrt').hide();
+                    $('.labmap').show();
+                    break;
+                case 'satellite': //卫星地图
+                    if(_panorama)_panorama.hide();
+                    mapData.map.setMapType(BMAP_HYBRID_MAP);
+                    $('.labVR').hide();
+                    $('.labcrt').hide();
+                    $('.labmap').show();
+                    break;
+                case 'panorama': //全景地图
+                        console.log(mapData);
+                        if(mapData.j ==""||mapData.w==""){
+                            layer.msg("该单位暂无坐标点！");
+                            return;
+                        }
+                    _panoramaService.getPanoramaByLocation(new BMap.Point(mapData.j, mapData.w), function(data) {
+                        if (data != null) {
+                            var swf = navigator.plugins["Shockwave Flash"];
+                            if (!swf) {
+                                top.layer.confirm(
+                                        '您未安装Flash Player播放器或者版本过低<br/>按“确定”键进行安装或更新！',
+                                        {btn: ['确定', '取消'],skin: 'layui-layer-confirm',area:['350px','200px'],title: '<img src="../Content/images/Home/logout_tip.png" class="icon_signOut">提示' },
+                                        function (index) {
+                                            window.open('http://www.macromedia.com/go/getflashplayer');
+                                        }
+                                );
+
+                                return;
+                            }
+                            $('.labVR').hide();
+                            $('.labcrt').hide();
+                            $('.labmap').show();
+                            _panorama = new BMap.Panorama('map');
+                            _panorama.setPosition(new BMap.Point(mapData.j, mapData.w));
+                        }
+                        else {
+                            layer.msg('该单位暂无全景！')
+                        }
+                    });
+                    $('.labVR').hide();
+                    $('.labcrt').hide();
+                    $('.labmap').show();
+                    break;
+                case 'unitCRT': //单位CRT
+                        $('.labVR').hide();
+                        $('.labmap').hide();
+                        $('.labcrt').show();
+                    break;
+                // case 'VRmap': //VR实景地图
+                //         $('.labmap').hide();
+                //         $('.labcrt').hide();
+                //         $('.labVR').show();
+                //     window.open("http://www.baidu.com");
+                //     break;
+            }
+            $(this).parent().find('button').removeClass('active');
+            $(this).addClass('active');
+        });
+        
+        //vr实景全屏展示按钮
+        $('.VRfull').click(function(){
+            $('#mapBox').toggleClass('full');
+        });
+
+        //关闭弹窗
+        $('#close').click(function() {
+            layer.close(index);
+        });
+
+        //地图按钮功能
+        $('#mapBtn').click(function(event) {
+            var id = event.target.id;
+            switch (id) {
+                case 'full': // 全屏
+                    $('#mapBox').toggleClass('full');
+                    break;
+                case '2D': // 2D
+                    $('.btn_group button#plane').click();
+                   // mapData.map.setMapType(BMAP_NORMAL_MAP);
+                    $('#mapBox .btn_group button').removeClass('active').eq(0).addClass('active');
+                    break;
+                case 'position': // 位置
+                    mapData.map.panTo(new BMap.Point(mapData.j, mapData.w));
+                    break;
+                case 'zoomUp': // 放大
+                    if(!$('.btn_group button#panorama').hasClass('active')){
+                        mapData.map.setZoom(++mapData.zoom);
+                    }
+                    break;
+                case 'zoomDown': // 缩小
+                    if(!$('.btn_group button#panorama').hasClass('active')){
+                        mapData.map.setZoom(--mapData.zoom);
+                    }
+                    break;
+            }
+        });
+        //建筑信息-详情
+        $('#buildTbody').delegate('tr .underline','click',function(){
+    //        alert(1)
+            var buildid = $(this).parent('tr').attr('id');
+            layer.open({
+                type: 2,
+                title:'建筑详情',
+                closeBtn: 1,
+                area:['920px','250px'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: 'buildInfo.html?buildid='+buildid
+            });
+        });
+        //导航联动
+        setTimeout(function(){
+            $('.title').each(function(index, el) {
+                aTop.push(el.offsetTop);
+            });
+        },3000);
+        $('.content').scroll(function(){
+            var top = this.scrollTop;
+            for(var i = aTop.length; i >= 0; i--){
+                if(aTop[i] <= top){
+                    $('.nav > li.active').removeClass('active');
+                    $('.nav > li').eq(i).addClass('active');
+                    break;
+                }
+            }
+        });
+
+        //单位crt 区域选择
+        $('#btnSearch').click(function(){
+            getUnitOneCrtData();
+        });
+
+        var box = GetQuery('box');
+        var module = GetQuery('module');
+        if(box == "unitMapPoint"){
+            $('.nav >li.'+box).click();
+            //$('.nav >li.'+box+' a',this)[0].click();
+            setTimeout(function(){
+                $(".content").animate({scrollTop:$("#siteMap").offset().top - 50},100)
+            },1000)
+        }
+        if(module == "crt"){
+            $('#unitCRT').click();
+        }
+    }
+
+    //图片缩放
+    function bbimg(o) {
+        // $('.content').removeClass('scrollbar-inner').css('position','fixed');
+       //if (e.stopPropagation) { //这是取消冒泡
+        // e.preventDefault();
+        // } else{
+        //    e.cancelBubble = true;
+        // };
+
+        var zoom = parseInt(o.style.scale, 10) || 100;
+        zoom += event.wheelDelta / 12;
+
+        if (zoom > 30)
+            o.style.scale = zoom + '%';
+
+        var crtbgheight = parseFloat($('#wrap_img').attr('crtbgheight'));
+        var crtbgwidth = parseFloat($('#wrap_img').attr('crtbgwidth'));
+
+        $('#imgDiv').css({ 'height':  crtbgheight*zoom/100 + 'px', 'width': crtbgwidth*zoom/100 + 'px' });
+
+        _cetwidth =  $('#imgDiv').width()+'px';
+        _crtheight = $('#imgDiv').height()+'px';
+    }
+
+    //图片拖拽
+    $('#wrap_img ').udraggable({
+        drag: function (e, ui) {
+            $('#imgDiv').css({ 'width': _cetwidth, 'height': _crtheight })
+        }
+    });
+    
+    //新增通话记录
+	function saveCallRecord(unitid,phone){
+    	$.ajax({
+            url: _serverIp + "/front/homeIndex/addPhoneLog",
+            type: "get",
+            data:{
+				unitId:unitid,
+				phone:phone
+            },
+            success: function (data) {
+                if (data.success) {
+                	layer.msg('操作成功', { shade: [0.1, '#fff'], time: 800 });
+                }
+            }
+        });
+    }
+ 
+    //获取单位vr实景地图
+    function loadVRData(){
+        console.log(1);
+        $("#VRmap").click(function(){
+            window.open($("#VRmap").attr("data-link"));
+        });
+    }
+</script>
+
+
+</html>

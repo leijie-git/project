@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>维保巡查</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/WeibaoInspect/index.css" rel="stylesheet" type="text/css" />
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+
+</head>
+
+<body>
+    <div class="wrapper wrap_module">
+        <div class="list">
+            <div class="input_box">
+                <input type="text" class="search fontSize16" placeholder="搜索联网单位名称">
+                <button class="search_btn"></button>
+            </div>
+            <ul id="unitList" class="fontSize14 unit_list scrollbar-inner">
+
+            </ul>
+        </div>
+        <div class="arrow_btn" id="arrowBtn"></div>
+        <div class="content">
+            <iframe id="contFrame" class="contFrame" src="" frameborder="0"></iframe>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+
+$(function() {
+    getAllUnitData("");//获取联网单位
+    //绑定事件
+    bindEvent();
+});
+
+//获取所有联网单位
+function getAllUnitData(name){
+    var isAsync = true,lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "get",
+        url: _serverIp + "/front/couplet/getUnits",
+        data:'unitName='+name,
+        success: function (data) {
+            //console.log(data);
+            if (data.success == true) {
+                var msg = data.obj;
+
+                showUnitListContent(msg);
+
+            }
+        },
+        complete: function () {
+            if (isAsync){
+                layer.close(lid);
+            }
+        }
+    });
+}
+
+function showUnitListContent(msg){
+    var all = '<li data-type="wdsfdsffsd" class="li_unit">全部</li>'
+    var allhtml = "";
+    for(var i = 0 ; i < msg.length;i++){
+        allhtml+='<li title="'+msg[i].unitName+'" id="'+msg[i].unitId+'" data-type="wdsfdsffsd" class="li_unit" >'+msg[i].unitName+'</li>'
+    }
+    allhtml = all + allhtml;
+    $('#unitList').html(allhtml||"<li>暂无单位接入</li>").parent().prev().find('.unitCount').text(msg.length);
+    $('#unitList>li').eq(0).click();
+    $('#unitList .li_unit').eq(0).click();
+}
+//绑定事件
+function bindEvent() {
+    //搜索
+    $('.search').unbind(" input propertychange").on(" input propertychange",function(){
+        var thisValue = $('.search ').val();
+        var count=0;
+        if(thisValue == ""){
+            $('#unitList>li').show()
+        }
+        else{
+            $('#unitList>li').hide()
+                    .filter(function(index){
+//                            console.log($(this).text().indexOf(thisValue));
+                        if($(this).text().indexOf(thisValue) >= 0){
+                            count = 1;
+                            $(this).show();
+                            return this;
+                        }
+                    }).show();
+        }
+    });
+
+    //单位列表
+    $('#unitList').on('click', 'li', function() {
+        $('#unitList li.active').removeClass('active');
+        $(this).addClass('active');
+        var unitid = $(this).attr('id');
+        $('#contFrame').attr('src','maintainInspect.html?unitid='+unitid);
+    });
+    //单位列表箭头按钮
+    $('#arrowBtn').unbind('click').click(function() {
+        $('.wrapper').toggleClass('no_list');
+    });
+
+    $('.search_btn').unbind('click').click(function(){
+        getAllUnitData($('.search').val());
+    })
+}
+
+</script>
+
+</html>

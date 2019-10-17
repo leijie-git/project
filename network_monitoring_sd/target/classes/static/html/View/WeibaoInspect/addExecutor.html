@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>维保巡查</title>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <style>
+        .content{
+            position: relative;
+            padding: 10px 30px 0;
+        }
+        .downReport{
+            padding: 0 15px;
+            height: 30px;
+            border: none;
+            outline: none;
+            text-align: center;
+            background: url(../../Content/images/Public/search.png) no-repeat center;
+            background-size: 100% 100%;
+            cursor: pointer;
+            margin-left: 20px;
+            vertical-align: top;
+            color: #a3d8fa;
+            background-color: transparent;
+            position: absolute;
+            top: 70px;
+            left: 300px;
+            width: 90px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrapper">
+    <!--<span class="close" id="close">X</span>-->
+    <!--<div class="header">维保处理详情</div>-->
+    <div class="content">
+        <form class="layui-form" action="">
+            <label class="layui-form-label">执行人</label>
+            <div class="layui-inline layui-bg-cyan" style="float: left;">
+                <div class="layui-input-inline">
+                    <select id="executorID" name="executorID" lay-verify="">
+                    </select>
+                </div>
+            </div>
+            <div style="float: left;padding: 10px 0 0 40px">执行时间</div>
+            <input class="selectTime timeStart" id="startDate" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', minDate: '%y-%M-%d'})" /> -
+            <input class="selectTime timeEnd" id="endDate" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'startData\')||\'%y-%M-%d\'}' })" />
+        </form>
+        <input class="downReport btn_repaire" id="distribution" type="button" value="确认分配">
+    </div>
+</div>
+</body>
+<script>
+    $(function() {
+        //$('.scrollbar-inner').scrollbar();
+        //绑定事件
+        bindEvent();
+
+        getRepaireDetail();
+
+        loadLayuiForm();
+    });
+
+    function getRepaireDetail(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getMaintenanceUserBynetworkingID",
+            data:'UnitID='+GetQuery('unitId'),
+            async: false,
+            success: function (data) {
+                if(data.success){
+                    var obj = data.obj;
+                    var html = '<option value="">请选择执行人</option>'
+                    for(var i=0;i<obj.length;i++){
+                        html += '<option value="'+ obj[i].userID +'">'+ obj[i].userName +'</option>'
+                    }
+                    $("#executorID").html(html||"暂无执行人...");
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    //绑定事件
+    function bindEvent() {
+        //关闭弹窗
+        $('#close').on('click', function() {
+            var index = window.parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+
+        $("#distribution").click(function(){
+            var id = GetQuery("id");
+            var executorID = $("#executorID").val();
+            var taskStartTime = $("#startDate").val();
+            var taskEndTime = $("#endDate").val();
+            var data = {
+                id : id,
+                executorID : executorID,
+                taskStartTime : taskStartTime,
+                taskEndTime : taskEndTime
+            };
+            $.ajax({
+                type: "PUT",
+                data: data,
+                url: _serverIp + "/front/maintenance/updateUtLzRepair",
+                success: function(data){
+                    if(data.success){
+                        layer.msg(data.msg);
+                        window.parent.getWBListData();
+                        var index = window.parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                },
+                error:function(data){
+
+                }
+            })
+        })
+    }
+</script>
+
+</html>

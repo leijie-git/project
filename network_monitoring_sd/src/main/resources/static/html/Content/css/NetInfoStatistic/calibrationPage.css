@@ -1,0 +1,65 @@
+
+.div_colspan{
+    display: flex;
+    margin-bottom: 8px;
+}
+.span_name{
+    width: 30%;
+    text-align: right;
+    line-height: 30px;
+    margin-right: 10px;
+}
+.remark_content{
+    width: 140px;
+    height: 90px;
+    background: no-repeat;
+    -webkit-box-shadow: 0 0 12px 2px inset rgba(16, 71, 110, .9);
+    -moz-box-shadow: 0 0 12px 2px inset rgba(16, 71, 110, .9);
+    box-shadow: 0 0 12px 2px inset rgba(16, 71, 110, .9);
+    border: 1px #0071C3 solid;
+    background-color: transparent!important;
+    color: #fff;
+    padding: 10px;
+}
+.time_content{
+    width: 140px;
+    height: 30px;
+    line-height: 30px;
+    -webkit-box-shadow: 0 0 12px 2px inset rgba(16, 71, 110, .9);
+    -moz-box-shadow: 0 0 12px 2px inset rgba(16, 71, 110, .9);
+    box-shadow: 0 0 12px 2px inset rgba(16, 71, 110, .9);
+    border: 1px #0071C3 solid;
+    background-color: transparent!important;
+    padding: 0 10px;
+    color: #fff;
+}
+
+.submitBtn {
+    width: 60px;
+    height: 30px;
+    border: none;
+    outline: none;
+    text-align: center;
+    background: url(../../images/Public/search.png) no-repeat center;
+    background-size: 100% 100%;
+    cursor: pointer;
+    color: #a3d8fa;
+    background-color: transparent;
+    display: block;
+    margin: 0px auto 0;
+
+}
+.layui-form{
+    /*margin: auto;*/
+    /*width: 170px;*/
+    text-align: center;
+}
+.layui-input-block{
+    margin-left: 0;
+}
+.layui-form-item{
+    margin-bottom: 10px;
+}
+.layui-form-radio i{
+    font-size: 18px;
+}

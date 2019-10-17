@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>消防力量详情</title>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/firePowerDeviceInfo.css" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="../../Script/jquery-1.11.0.js"></script>
+    <script type="text/javascript" src="../../Script/public.js"   charset="utf-8"></script>
+    <script type="text/javascript" src="../../Script/layer/layer.js"></script>
+    <script type="text/javascript" src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script type="text/javascript" src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+<body>
+<div class="wrap_content">
+    <div class="div_device"><div class="dh" id="highSpray">高喷消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="waterTank">水罐消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="foam">泡沫消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="dryPowder">干粉消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="ladderLadder">云梯消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="foam">A类泡沫消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="rescueVehicle">抢险救援车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="climbingPlatform">登高平台消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="pressureSmoke">正负压排烟消防车</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="combatants">作战人员</div><div class="dd"></div></div>
+    <!--<div class="div_device"><div class="dh" id="remark">备注</div><div class="dd"></div></div>-->
+</div>
+<script>
+    $(function(){
+        firePowerDetailData(GetQuery('powerID'))
+    });
+    function firePowerDetailData(powerID){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/fireSquadronPowerDetail",
+            data:'powerID='+powerID,
+            success: function (data) {
+                if (data.success == true) {
+                    $('.dh').each(function(){
+                        var key = $(this).attr('id');
+                        $(this).next('.dd').text( (data.obj[key] || 0) +'个')
+                    })
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

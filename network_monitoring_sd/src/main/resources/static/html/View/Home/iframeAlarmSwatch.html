@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <style>
+        main {
+            width: 100%;
+            height: 100%;
+        }
+        .header{
+            width: 100%;
+            height: 10%;
+            text-align: center;
+        }
+        .ico_close{
+            float: right;
+            width: 21px;
+            /* margin-top: 2px; */
+            cursor: pointer;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: 100;
+            color: #1BC7E0;
+        }
+        ul {
+            width: 100%;
+            height: 90%;
+            padding: .5rem 10px 0;
+        }
+
+        li {
+            border-bottom: 1px solid #0e6290;
+            width: 100%;
+            height: 30px;
+            line-height: 20px;
+            padding: 5px 10px;
+        }
+
+        li span {
+            display: inline-block;
+            width: 2.6rem;
+            float: right;
+            height: 100%;
+            background: url(../../Content/images/Home/icon_swatch_close.png) no-repeat center center scroll;
+            background-size: 100% 100%;
+            /* background-size: contain; */
+            cursor: pointer;
+            text-align: right;
+            padding-right: 0.3rem;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        li span.showThis {
+            background-image: url(../../Content/images/Home/icon_swatch_open.png);
+            text-align: left;
+            padding-left: 0.3rem;
+            color:#08A2DE
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="header">
+        <span class="fontSize18">实时报警配置对话框</span>
+        <span class="ico_close" onclick="closeMe();">X</span>
+    </div>
+
+    <ul class="ul_swatch">
+        <li>显示测试报警信息<span type="810" index="testAlarmCount">关</span></li>
+        <li>显示故障报警信息<span type="2" index="faultAlarmCount">关</span></li>
+        <li>显示屏蔽报警信息<span type="6" index="shieldAlarmCount">关</span></li>
+        <li>显示其他报警信息<span type="3,4,5,7,8" index="otherAlarmCount">关</span></li>
+        <li>显示灭火系统异常信息<span type="200" index="waterAlarmCount">关</span></li>
+        <li>显示电气火灾信息<span type="300" index="electricAlarmCount">关</span></li>
+<!--         <li>显示用户信息传输装置信息<span type="400" index="inforAlarmCount"></span></li> -->
+<!--         <li>显示气体灭火信息<span type="500,501" index="extingAlarmCount"></span></li> -->
+<!--         <li>显示设备离在线报警信息<span type="600,601" index="onlineAlarmCount"></span></li> -->
+    </ul>
+</main>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script>
+    $(function(){
+        showSwatch();//开关显示
+        openThis();
+    });
+
+    function showSwatch(){
+        var swatchindex = localStorage.getItem("swatchindex");
+        if(swatchindex != null && swatchindex != undefined && swatchindex != ""){
+            var arr = swatchindex.split(',');
+            for(var i = 0 ; i < arr.length ; i++){
+                $('.ul_swatch span[index~='+arr[i]+']').addClass('showThis').text('开')
+            }
+        }
+    }
+
+    function openThis() {
+        $('ul').find('li').find('span').click(function() {
+            $(this).toggleClass('showThis');
+            if($(this).hasClass('showThis')){
+                $(this).text('开')
+            }
+            else{
+                $(this).text('关')
+            }
+        });
+    };
+
+    function closeMe() {
+
+        saveSwatch(); //保存数据
+        window.top.getTimelyAlarmTotal();
+        //假设这是iframe页
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    };
+
+    //保存
+    function saveSwatch(){
+        var _dom=$('.ul_swatch span.showThis');
+        var myswatch=[];
+        var swatchindex = [];
+        for(var i = 0 ; i < _dom.length;i++){
+            var arr = _dom.eq(i).attr('type');
+            myswatch.push(arr);
+            swatchindex.push( _dom.eq(i).attr('index'))
+        }
+        localStorage.setItem("myswatch", myswatch);//存储- 被选元素的值
+        localStorage.setItem("swatchindex", swatchindex);//存储 - 被选元素的下标
+    }
+</script>
+</body>
+</html>

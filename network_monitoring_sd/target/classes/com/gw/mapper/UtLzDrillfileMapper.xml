@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzDrillfileMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzDrillfile" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="FileClass" property="fileclass" jdbcType="INTEGER" />
+    <result column="FileType" property="filetype" jdbcType="INTEGER" />
+    <result column="FileUrl" property="fileurl" jdbcType="NVARCHAR" />
+    <result column="ShowName" property="showname" jdbcType="NVARCHAR" />
+    <result column="FileName" property="filename" jdbcType="NVARCHAR" />
+    <result column="DrillID" property="drillid" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

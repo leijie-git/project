@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/Home/toggleTaskLayer.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="wrapped">
+        <!--<span class="close" id="close">X</span>-->
+        <!--<div class="header">修改用户信息</div>-->
+        <table>
+            <tr>
+                <td>电话</td>
+                <td>
+                    <input type="text" id="phone" autocomplete="off">
+                </td>
+            </tr>
+            <tr>
+                <td>原密码</td>
+                <td>
+                    <input type="password" id="OldPassword" autocomplete="off">
+                </td>
+            </tr>
+            <tr>
+                <td>新密码</td>
+                <td>
+                    <input type="password" id="NewPassword" autocomplete="off">
+                </td>
+            </tr>
+            <tr>
+                <td>再次输入新密码</td>
+                <td>
+                    <input type="password" id="NewPassword2" autocomplete="off">
+                </td>
+            </tr>
+        </table>
+        <!--<p>注意：交接班后清除上一个班的所有报警记录</p>-->
+        <button type="button" id="saveBtn" class="save_btn" onclick="saveMsg()">确定</button>
+    </div>
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script>
+    $(function(){
+        getUserInfoData();
+        //domEvelement();
+    });
+
+    $('#close').click(function() {
+        var index=parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    });
+    //获取用户信息
+    function getUserInfoData(){
+        var loginInfo =  JSON.parse(localStorage.getItem("LoginInfo"));//将字符串转化成数组
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getUserInfo",
+            success: function (data) {
+                if (data.success == true) {
+                    var msg = data.obj;
+                    $('#phone').val(msg.mobilephone);
+                }
+            }
+        });
+    }
+   
+    //修改用户信息
+    function saveMsg(){
+    	var oldP = $('#NewPassword').val();
+    	var newP = $('#NewPassword2').val();
+    	if(oldP!=newP){
+    		layer.msg("两次输入密码不一致");
+    		return;
+    	}
+    	if((oldP&&!newP)||(!oldP&&newP)){
+    		layer.msg("新密码或者旧密码不能为空");
+    		return;
+    	}
+    	
+    	 var _data = {
+    	            phone:$('#phone').val(),
+    	            oldPassword:$('#OldPassword').val(),
+    	            newPassword:newP
+    	            };
+    	 $.ajax({
+             type: "get",
+             url: _serverIp + "/front/start/updateMsg",
+             data: _data,
+             success: function (data) {
+                 if (data.success == true) {
+                	 layer.msg('修改成功，下次登录生效。');
+                	 setTimeout(function(){
+	                	 var index=parent.layer.getFrameIndex(window.name);
+	                     parent.layer.close(index);
+                	 }, 1500);
+//                      window.top.location.href = "../Login.html"
+                 }
+                 else{
+                     layer.msg(data.msg||'修改失败');
+//                      $("#phone").val(_tell);
+                 }
+             }
+         });
+    }
+
+   /*  function domEvelement(){
+        //修改按钮
+        $('.modify').click(function(){
+            $(this).prev('input').removeAttr('readonly').addClass('modifyTxt');
+            $(this).prev('input').focus();
+        });
+        //失去焦点 - 保存数据
+        $('.inputTxt').blur(function(){
+            $(this).removeClass('modifyTxt').attr('readonly');
+
+        });
+        $('#tell').blur(function(){
+            savePhoneData();
+        })
+    } */
+
+</script>
+</html>

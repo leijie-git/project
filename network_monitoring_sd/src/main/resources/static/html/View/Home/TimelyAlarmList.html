@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>实时报警信息</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/TimelyAlarmList.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script type="text/javascript" src="../../Script/realTimeData.js"   charset="utf-8"></script> <!--实时-->
+
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script type="text/javascript" src="../../Script/scrollAuto/scrollAuto.js"></script>
+    <script type="text/javascript" src="../../Script/scrollAuto/scrollAutoTable.js"></script>
+</head>
+<body>
+<div class="timelyTit">
+    <span class="timelyTitTxt fontSize16">实时报警信息</span>
+    <div class="timelyAlarmCount fontSize18">
+        <!--<span>1</span>-->
+        <!--<span>1</span>-->
+        <!--<span>1</span>-->
+        <!--条-->
+    </div>
+    <div class="right_opt">
+        <div class="toggleSwitch"  title="实时报警开关：关">
+            <img src="../../Content/images/Index/switch_open.png" labToggle="0" style="display: none;" class="open">
+            <img src="../../Content/images/Index/switch_close.png" labToggle="1" style="background-color: #333;border-radius: 5px;" class="close">
+        </div>
+        <div><img src="../../Content/images/Home/icon_alarm.png" style="height: 18px;" onclick="openAlarmSwitch();"/></div>
+        <div title="推送中心连接正常"><img src="../../Content/images/Home/icon_center_1.png"></div>
+        <div title="服务站连接正常"><img src="../../Content/images/Home/icon_server_1.png"></div>
+        <div title="进入接警详情" class="alarmDetailFrame"><img src="../../Content/images/Home/icon_alarmInfo.png" onclick="alarmDetails();"></div>
+        <div title="收起"><img src="../../Content/images/Home/icon_timely_close.png" onclick="closeLayer();"></div>
+    </div>
+</div>
+
+<div class="table_header fontSize16">
+    <table>
+        <colgroup>
+            <col width="20%">
+            <col width="20%">
+            <col width="8%">
+            <col width="8%">
+            <col width="20%">
+            <col width="24%">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>接警时间</th>
+            <th>报警时间</th>
+            <th>类型</th>
+            <th>测试</th>
+            <th>单位名称</th>
+            <th>警情描述</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div class="table_content fontSize14 scrollbar-inner">
+
+    <div class="slide_alarmList" id="fireAlarmList">
+        <table>
+            <colgroup>
+                <col width="20%">
+                <col width="20%">
+                <col width="8%">
+                <col width="8%">
+                <col width="20%">
+                <col width="24%">
+            </colgroup>
+            <tbody id="mainContentTbody">
+            <!--<tr>-->
+            <!--<td>2018.07.20 12:23:15</td>-->
+            <!--<td>2018.07.20 12:23:15</td>-->
+            <!--<td>监管</td>-->
+            <!--<td>是</td>-->
+            <!--<td class="unitName">虹桥国展中心</td>-->
+            <!--<td class="alarmPost">00主机0015回路0007节点</td>-->
+            <!--</tr>-->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+
+<script>
+    var _AlarmCount = $('#timelyAlarmCount', top.document).text();
+    var _type = localStorage.getItem("myswatch")||""; //报警类型
+    var _usertype = _loginInfo.usertype;
+    var _fireSlide = 0;//用来限制火警滚动的速度，防止重复加载
+    $(function(){
+        $('.alarmDetailFrame').css('display',(_loginInfo.usertype==1?"none":"block"));
+        $('.timelyAlarmCount').html(getAlarmCount(_AlarmCount)+"条");
+        getTimelyAlarmList();
+        domEvelement();
+    });
+
+    setInterval(function(){
+
+        var type = localStorage.getItem("myswatch")|| "";
+        if(_type != type){
+            _type = type;
+            //getTimelyAlarmList();
+        }
+
+        var timelyAlarmCount = $('#timelyAlarmCount', top.document).text();
+        if(_AlarmCount != timelyAlarmCount){
+            _AlarmCount = timelyAlarmCount;
+            $('.timelyAlarmCount').html(getAlarmCount(_AlarmCount)+"条");
+            getTimelyAlarmList();
+        }
+
+    },1000);
+
+
+
+    function getTimelyAlarmTotal(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getRealTimeAlarmCount",
+            success: function (data) {
+                //console.log(data);
+                if (data.success) {
+                    var msg = data.obj;
+                    var count=0;
+                    for(var i in  msg){
+                        count += (msg[i] || 0)
+                    }
+                    _AlarmCount = count;
+
+                }
+            }
+        });
+    }
+    function getTimelyAlarmList(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getRealTimeAlarms",
+            data:"type="+_type,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    showListContent(msg)
+                }
+            }
+        });
+    }
+
+
+    function showListContent(data){
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            html +='<tr onclick="goUnitFunc(\''+data[i].unitId+'\')">'+
+                    '<td>'+data[i].dealtime+'</td>'+
+                    '<td class="cursorTime" onclick="openDealWindow(\''+ data[i].id +'\','+data[i].classCode+');">' + data[i].time + "</td>" + //点击时间弹出处理层
+                    '<td>'+data[i].alarmStatus+'</td>'+
+                    '<td>'+data[i].calibrationName+'</td>'+
+                    '<td>'+data[i].unitName+'</td>'+
+                    "<td class=\""+((data[i].addressID && data[i].addressID !="")?"alarmPost":"")+"\" addressid='"+data[i].addressID+"' unitid='"+data[i].unitId+"'>"+data[i].alarmDevicedesc+"</td>"+
+                    '</tr>'
+        }
+        $('#mainContentTbody').html(html||"<tr><td colspan='6' style='text-align: center;'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+
+//        if(_fireSlide == 0){
+//            $("#fireAlarmList").ScrollTable({ line: 1, speed: 500, timer: 3000 });
+//            _fireSlide = 1
+//        }
+    }
+
+    function closeLayer(){
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    };
+
+    function alarmDetails(){
+        window.top.getModulePage("alarmInfo");
+        closeLayer();
+//        top.location.href="../Index.html?moduleIndex=8";
+    }
+
+
+    function getTypePoint(){}/////报警实时-首页控方法
+    function getFireAlarmData(){}/////报警实时-首页左1火警
+
+
+    function openAlarmSwitch(){
+
+        top.layer.open({
+            type: 2,
+            //title: '实时报警配置对话框',
+            title:false,
+            closeBtn: 0,
+            area: ['350px', '350px'],
+            shade: 0.1,
+            shadeClose:false,
+            skin: 'layui-layer-loginRecord',
+            content: (_usertype == 1?"../Home/iframeAlarmSwatch.html?id=":'Home/iframeAlarmSwatch.html?id=')
+            //content: 'History_deal.html?ID=' + _id,
+        });
+    }
+
+    function domEvelement(){
+        $('#mainContentTbody').delegate(' tr>td.alarmPost','click',function(){
+            var addressid = $(this).attr('addressid');
+            var unitid = $(this).attr('unitid')
+            top.layer.open({
+                type: 2,
+                title: 'CRT图层浏览',
+                closeBtn: 1,
+                area:['60%','65%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: (_usertype == 1?"../":"")+'Home/Middle_GetCrt_Window.html?addressID='+addressid+'&unitid='+unitid
+            });
+        });
+
+        $('.toggleSwitch>img').unbind('click').click(function(){
+            var $this = $(this);
+            var labToggle = $(this).attr('labToggle');
+            //layer.msg((labToggle == 1?"打开":"关闭")+'成功');
+            _loginInfo.isOppenFirePush = labToggle;
+            localStorage.setItem("LoginInfo", JSON.stringify(_loginInfo));
+            $this.hide().siblings().show();
+            $('.toggleSwitch').attr('title',(labToggle == 1?"报警开关：开":"报警开关：关"));
+        });
+
+        var loginInfo = JSON.parse(localStorage.getItem("LoginInfo"));
+        //报警开关按钮
+        $('.toggleSwitch>img.'+(loginInfo.isOppenFirePush == 1?"open":"close")).show().siblings('img').hide();
+        $('.toggleSwitch').attr('title',(loginInfo.isOppenFirePush == 1?"实时报警开关：开":"实时报警开关：关"));
+    }
+
+
+    // 点击左一列表展示 调用index.html的方法
+    function goUnitFunc(id){
+        window.top.getAlarmEvent(id);
+    }
+
+    //点击左一列表中时间 调用index.html的方法
+    function openDealWindow(id,classCode){
+        event.stopPropagation();
+        if(classCode == "1" || classCode == "16" || classCode == "21" || classCode == "22" || classCode == "23" || classCode == "24" || classCode == "25"){
+            top.layer.open({
+                type: 2,
+                title: '报警处理',
+                closeBtn: 1,
+                tipsMore: false,
+                area: ['560px', '540px'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: '/html/View/NetInfoStatistic/system-iframe/System_deal.html?id=' + escape(id)
+            });
+        }else{
+            top.layer.open({
+                type: 2,
+                title: '报警处理',
+                closeBtn: 1,
+                tipsMore: false,
+                area: ['560px', '540px'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: '/html/View/HistoryNote/History_detail/History_deal.html?id=' + escape(id)
+            });
+        }
+
+    }
+</script>
+</html>

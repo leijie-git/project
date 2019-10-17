@@ -1,0 +1,198 @@
+
+*{
+    position: relative;
+}
+
+a,a:focus, a:hover{
+    text-decoration: none;
+}
+img{
+    max-width: 100%;
+    max-height: 100%;
+}
+.clearFloat::after{
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+}
+
+/*閹稿鎸抽弽宄扮础*/
+/*娑撳顣介幐澶愭尦*/
+.cBtn-main{
+    border: 1px solid currentColor;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-color: white;
+    width: 80px;
+    height: 30px;
+    text-align: center;
+    color: #617389;
+    margin-right: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+.cBtn-main:hover{
+    color: red;
+}
+.noBorder{
+    border:0;
+}
+
+
+/*閸﹀棜顫�/
+.radius_6{
+    -webkit-border-radius: 6px !important;
+    -moz-border-radius: 6px !important;
+    border-radius: 6px !important;
+}
+.radius_50{
+    -webkit-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    border-radius: 50% !important;
+}
+
+/*妫ｆ牠銆塨anner*/
+.index_pic{
+    width: 100%;
+}
+.index_pic{
+    width: 100%;
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    z-index:1;
+}
+.inde_pic_text{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    z-index:10;
+}
+
+
+
+/*濞撳懘娅巘able閻ㄥ嫮鈹栭惂钘夊隘*/
+.clearfix{
+    display: none;
+}
+
+/*缁俱垼澹�閸欙拷*/
+font{
+    position: absolute;
+    right: 7px;
+    top: 10px;
+}
+
+
+
+
+
+
+/*娣囶喗鏁糽ayer瀵顢嬮弽宄扮础*/
+.layui-layer-btn .layui-layer-btn0{
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.layui-layer-btn .layui-layer-btn0:hover{
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
+}
+
+.layui-layer-btn .layui-layer-btn1{
+    color: #333;
+    background-color: #fff!important;
+    border-color: #ccc!important;
+
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.layui-layer-btn .layui-layer-btn1:hover {
+    color: #333;
+    background-color: #e6e6e6!important;
+    border-color: #adadad!important;
+}
+
+.layui-layer-btn a{
+    height:auto!important;
+}
+
+
+
+
+/* input鏃堕棿鏍峰紡 */
+.date_input{
+			width: 202px;
+		}
+		
+		
+.flex_between{
+	display: -webkit-flex;
+	align-items: center;
+	display:flex;
+	justify-content: space-between;
+}
+
+
+
+
+/* boorstarp模态框样式 */
+@media (min-width: 768px){
+	.modal-dialog{
+		width:auto;
+	}
+}
+
+
+
+
+
+

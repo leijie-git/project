@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>日常巡查</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/index.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <!-- <script src="../../Script/WeChat/jqueryWeChatUI/lib/jquery-2.1.4.js"></script> -->
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+
+</head>
+
+<body>
+    <!--主体-->
+    <div class="weui-tab">
+        <div class="weui-tab__bd" id="indexTab">
+            <div id="tab5" class="weui-tab__bd-item weui-tab__bd-item--active">
+                <div class="weui-grids">
+                    <!-- <a href="patrolWBTask.html" class="weui-grid js_grid">
+                        <div class="weui-grid__icon">
+                            <img src="../../Content/images/WeChat/index/day_repair_task.png" alt="">
+                        </div>
+                        <p class="weui-grid__label">
+                            维保任务
+                        </p>
+                    </a>
+                    <a href="patrolXCTask.html" class="weui-grid js_grid">
+                        <div class="weui-grid__icon">
+                            <img src="../../Content/images/WeChat/index/day_inspect_task.png" alt="">
+                        </div>
+                        <p class="weui-grid__label">
+                            巡查任务
+                        </p>
+                    </a> -->
+                    <a href="patrolMHQRecord.html" class="weui-grid js_grid">
+                        <div class="weui-grid__icon">
+                            <img src="../../Content/images/WeChat/index/day_fire.png" alt="">
+                        </div>
+                        <p class="weui-grid__label">
+                            灭火器查看
+                        </p>
+                    </a>
+                    <a href="patrolHisRecord.html" class="weui-grid js_grid">
+                        <div class="weui-grid__icon">
+                            <img src="../../Content/images/WeChat/index/day_history_report.png" alt="">
+                        </div>
+                        <p class="weui-grid__label">
+                            历史记录
+                        </p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-tabbar" id="indexTabbar">
+            <a href="#tab1" class="weui-tabbar__item " pageurl="index.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f1_normal.png">
+                </div>
+                <p class="weui-tabbar__label">报警信息</p>
+            </a>
+            <a href="#tab2" class="weui-tabbar__item" pageurl="indexUnitManage.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f2_normal.png">
+                </div>
+                <p class="weui-tabbar__label">单位管理</p>
+            </a>
+            <a href="#tab3" class="weui-tabbar__item" pageurl="indexIot.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f3_normal.png">
+                </div>
+                <p class="weui-tabbar__label">物联</p>
+            </a>
+            <a href="#tab4" class="weui-tabbar__item " pageurl="indexEquipment.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f4_normal.png">
+                </div>
+                <p class="weui-tabbar__label">设备状态</p>
+            </a>
+            <a href="#tab5" class="weui-tabbar__item weui-bar__item--on" pageurl="indexEveryday.html">
+                <div class="weui-tabbar__icon">
+                    <img src="../../Content/images/WeChat/index/btn_main_f5_press.png">
+                </div>
+                <p class="weui-tabbar__label">日常巡查</p>
+            </a>
+        </div>
+        <div id="shadowBox"></div>
+    </div>
+    <div id="popupPage" class="weui-popup__container" style="z-index: 500;">
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <div id="popupPageName">
+                <div id="backIndex"></div>
+                <span></span>
+            </div>
+            <div class="popupPageFrame_box">
+                <iframe id="popupPageFrame" src=""></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    //获取用户信息
+    var userData = JSON.parse(GetQuery('userdata'));
+    var userType = userData.usertype;
+    console.log(userData, userType);
+
+    $(function() {
+
+        pageHeight();
+
+        //首页底部菜单点击事件
+        indexTabbarClick();
+
+        //统计告警未处理数量
+        getAlarmNodealStat();
+
+    });
+
+    //首页底部菜单点击事件
+    function indexTabbarClick() {
+        $('#indexTabbar').find('.weui-tabbar__item').click(function() {
+            var aArray = $('#indexTabbar').find('.weui-tabbar__item');
+            var aThis = $(this);
+            var aOld = $('#indexTabbar').find('.weui-bar__item--on');
+            var thisIndex = $.inArray(aThis[0], aArray);
+            var oldIndex = $.inArray(aOld[0], aArray);
+            var pageId = aThis.attr('href');
+            var tabName = $(this).find('p').text();
+            var pageUrl = $(this).attr('pageurl'); //跳转页
+
+            //用户身份判断 联网用户单位管理及物联页面直接跳转 
+            if (userType == 1 && thisIndex == 1) {
+                //单位管理
+                var selfUniName = escape('单位查岗');
+                self.location.href = "unitMap.html?pagetitle=" + selfUniName + "&unitid=" + userData.unitid;
+                return false;
+            }
+            if (userType == 1 && thisIndex == 2) {
+                //物联
+                self.location.href = "iotSystem.html?unitid=" + userData.unitid;
+                return false;
+            }
+
+            var nowDate = GetQuery('nowdate');
+            self.location.href = pageUrl + "?userdata=" + escape(GetQuery('userdata')) + "&nowdate=" + nowDate;
+            return false;
+            //style change
+            $(this).addClass('weui-bar__item--on');
+            $(this).siblings().removeClass('weui-bar__item--on');
+            if (thisIndex != oldIndex) {
+                aOld.find('.weui-tabbar__icon').find('img').attr('src', '../../Content/images/WeChat/index/btn_main_f' + (oldIndex + 1) + '_normal.png');
+                aThis.find('.weui-tabbar__icon').find('img').attr('src', '../../Content/images/WeChat/index/btn_main_f' + (thisIndex + 1) + '_press.png');
+            }
+            // tab page change
+            $('#indexTab').children('.weui-tab__bd-item').removeClass('weui-tab__bd-item--active');
+            $('#indexTab').find(pageId).addClass('weui-tab__bd-item--active');
+            //title change
+            $('title').text(tabName);
+        })
+    };
+
+    function getAlarmNodealStat() {
+        $.ajax({
+            type: 'get',
+            url: hostAdd + "/getAlarmNodealStat",
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if (!data.success) {
+                    return false;
+                }
+                $('#fireCount').text(data.obj.fireCount);
+                $('#interfaceCount').text(data.obj.interfaceCount);
+
+                if (data.obj.fireCount + data.obj.interfaceCount > 0) {
+                    $('a[href="#tab1"]').find('img').attr('src', '../../Content/images/WeChat/index/btn_main_f1_pressalarm.png');
+                    $('a[href="#tab1"]').find('p').css('color', 'red');
+                }
+            },
+
+        });
+    };
+
+    //进入调整主体宽度，ios系统下页面产生历史记录页面下方会新增白条，改变窗体高度。
+    function pageHeight() {
+        var pageHeight = $(window).height();
+        var footnavH = $('#indexTabbar').height();
+        $('#indexTab').height(pageHeight - footnavH);
+        window.onresize = function() {
+            var pageHeight = $(window).height();
+            var footnavH = $('#indexTabbar').height();
+            $('#indexTab').height(pageHeight - footnavH);
+        }
+    };
+</script>

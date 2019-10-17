@@ -1,0 +1,27 @@
+.printNone{
+    display: none;
+}
+#chart1>div>canvas{
+    display: none;
+}
+#chart2>div>canvas{
+    display: none;
+}
+#chart3>div>canvas{
+    display: none;
+}
+#Chkchart>div>canvas{
+    display: none;
+}
+#chart1>div img{
+    display: block;
+}
+#chart2>div img{
+    display: block;
+}
+#chart3>div img{
+    display: block;
+}
+#Chkchart>div img{
+    display: block;
+}

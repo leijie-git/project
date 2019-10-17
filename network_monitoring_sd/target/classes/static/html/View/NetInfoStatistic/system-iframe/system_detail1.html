@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="60">  <!--每隔60秒自动刷新页面-->
+    <title>各系统监测-灭火系统</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/NetInfoStatistic/system_detail1.css" rel="stylesheet" type="text/css" />
+    <style>
+
+        .line_Chart{
+            height: calc(50% - 20px);
+        }
+        .buildImgbg{
+            color: #5BC9FF;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .videoimg{
+            position: absolute;
+            top: 2px;
+            right: 6%;
+            cursor: pointer;
+        }
+    </style>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+
+<body>
+    <div class="wrapper ">
+        <!--<div class="top-search">-->
+        <!--<form class="layui-form" action="">-->
+        <!--&lt;!&ndash;下拉框&ndash;&gt;-->
+        <!--<div class="layui-inline layui-bg-cyan" id="alarmType">-->
+        <!--<div class="layui-input-inline">-->
+        <!--<select name="modules" lay-verify="required" lay-search="">-->
+        <!--<option value="">&#45;&#45;选择类型&#45;&#45;</option>-->
+        <!--<option value="0">手动报警</option>-->
+        <!--<option value="1">火警</option>-->
+        <!--<option value="2">故障</option>-->
+        <!--<option value="3">启动</option>-->
+        <!--<option value="4">反馈</option>-->
+        <!--<option value="5">监管</option>-->
+        <!--<option value="6">屏蔽</option>-->
+        <!--<option value="7">恢复</option>-->
+        <!--<option value="8">复位</option>-->
+        <!--<option value="9">用户传输装置操作</option>-->
+        <!--<option value="11">火警恢复</option>-->
+        <!--<option value="12">故障恢复</option>-->
+        <!--<option value="13">停止</option>-->
+        <!--<option value="14">反馈撤销</option>-->
+        <!--<option value="15">监管撤销</option>-->
+        <!--<option value="16">屏蔽撤销</option>-->
+        <!--<option value="20">消音</option>-->
+        <!--<option value="21">解除报警</option>-->
+        <!--<option value="22">自动火警有人</option>-->
+        <!--<option value="23">自动火警超时</option>-->
+        <!--<option value="24">自动火警无人</option>-->
+        <!--<option value="25">确认火警</option>-->
+        <!--<option value="26">紧急火警</option>-->
+        <!--<option value="27">预警</option>-->
+        <!--<option value="28">报警</option>-->
+        <!--<option value="30">传输装置开机</option>-->
+        <!--<option value="31">传输装置关机</option>-->
+        <!--<option value="32">控制器开机</option>-->
+        <!--<option value="33">控制器关机</option>-->
+        <!--<option value="34">RTU开机</option>-->
+        <!--<option value="35">RTU关机</option>-->
+        <!--</select>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off" />-->
+        <!--<input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" autocomplete="off" />-->
+        <!--<input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索" autocomplete="off">-->
+        <!--<input class="submitBtn" type="button" id="btnSearch" value="查询" onclick="getWaterSysValueData();">-->
+        <!--</form>-->
+        <!--</div>-->
+        <div class="top-search btn_more">
+            <form class="layui-form" action="" autocomplete="off">
+<!--                 <div class="layui-inline layui-bg-cyan"> -->
+<!--                     <div class="layui-input-inline"> -->
+<!--                         <select name="modules" lay-verify="required" lay-search=""> -->
+<!--                             <option value="">--选择类型--</option> -->
+<!--                         </select> -->
+<!--                     </div> -->
+<!--                 </div> -->
+<!--                 <input class="selectB" id="keywords" type="search" placeholder="请输入关键字搜索"> -->
+<!--                 <input class="submitBtn" type="button" value="查询"> -->
+                <span class="more_btn" id="moreBtn">更多<i class="layui-icon">&#xe65b</i></span>
+            </form>
+        </div>
+        <section>
+            <div class="scrollbar-inner">
+                <div class="divbox" id="mainDivBoxContent">
+                    <!--<div class="wrap_sysDiv">-->
+                    <!--<div class="title fontSize14">喷淋泵控制柜</div>-->
+                    <!--<div class="boxcontent threedata">-->
+                    <!--<div class="kongzhigui">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/kongzhigui.png" >-->
+                    <!--</div>-->
+                    <!--<div class="kongzhigui_cont">-->
+                    <!--<div class="kongzhigui_box">-->
+                    <!--<span class="kzword fontSize14">手自动</span>-->
+                    <!--<span class="status">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/shoudong.png">-->
+                    <!--&lt;!&ndash; <img src="../../../Content/images/NetInfoStatistic/zidong.png"> &ndash;&gt;-->
+                    <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="kongzhigui_box">-->
+                    <!--<span class="kzword fontSize14">启停</span>-->
+                    <!--<span class="status">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/qidong.png">-->
+                    <!--&lt;!&ndash; <img src="../../../Content/images/NetInfoStatistic/tingzhi.png"> &ndash;&gt;-->
+                    <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="kongzhigui_box">-->
+                    <!--<span class="kzword fontSize14">双电源</span>-->
+                    <!--<span class="status">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/zhengchang.png">-->
+                    <!--&lt;!&ndash; <img src="../../../Content/images/NetInfoStatistic/yichang.png"> &ndash;&gt;-->
+                    <!--</span>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="wrap_sysDiv">-->
+                    <!--<div class="title fontSize14">消火栓泵控制柜</div>-->
+                    <!--<div class="boxcontent">-->
+                    <!--<div class="yaliword1">0.783Mpa</div>-->
+                    <!--<div id="chart1" class="chartDiv"></div>-->
+                    <!--<div class="cankaodata fontSize14">参考值 : 0.60 - 1.00Mpa</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="wrap_sysDiv">-->
+                    <!--<div class="title fontSize14">喷淋泵末端压力</div>-->
+                    <!--<div class="boxcontent">-->
+                    <!--<div class="yaliword2">0.983Mpa</div>-->
+                    <!--<div id="chart2" class="chartDiv"></div>-->
+                    <!--<div class="cankaodata fontSize14">参考值 : 0.60 - 1.00Mpa</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="wrap_sysDiv">-->
+                    <!--<div class="title fontSize14">温度</div>-->
+                    <!--<div class="boxcontent" >-->
+                    <!--<div class="humCont">-->
+                    <!--<div class="tempdiv">-->
+                    <!--<div class="tempbar">-->
+                    <!--<div class="tempData"></div> &lt;!&ndash;这里的高度==数值&ndash;&gt;-->
+                    <!--<div class="msg msgblue"><span class="tempNumber">60</span> ℃</div> &lt;!&ndash;红色提示框,这里的位置还没计算&ndash;&gt;-->
+                    <!--&lt;!&ndash; <div class="msg msgred" style="bottom: 50%;"></div> 蓝色提示框,这里的位置还没计算&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="cankaodata fontSize14">参考值 : 20.00 - 80℃</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="wrap_sysDiv">-->
+                    <!--<div class="title fontSize14">湿度</div>-->
+                    <!--<div class="boxcontent">-->
+                    <!--<div class="yaliword1">69.152RH</div>-->
+                    <!--<div class="chartDiv contentimg">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/shidu.png">-->
+                    <!--</div>-->
+                    <!--<div class="cankaodata fontSize14">参考值 : 20 - 80.00RH</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="wrap_sysDiv box1_water">-->
+                    <!--&lt;!&ndash;水箱水位&ndash;&gt;-->
+                    <!--<div class="title fontSize14">水箱水位</div>-->
+                    <!--<div class="anmiteBox boxcontent">-->
+                    <!--<div class="word">170.397cm</div>-->
+                    <!--<div class="box">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/waterBox.png">-->
+                    <!--<div class="btword"></div>-->
+                    <!--</div>-->
+                    <!--<div class="bo">-->
+                    <!--<div>&lt;!&ndash;水波纹&ndash;&gt;-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/bo1.png" class="bo1">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/bo2.png" class="bo2">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="shuiweidata fontSize14">参考值: 130:00-210:00cm</div>-->
+                    <!--</div>-->
+                    <!--<div class="wrap_sysDiv">-->
+                    <!--<div class="title fontSize14">阀</div>-->
+                    <!--<div class="boxcontent">-->
+                    <!--<div class="chartDiv contentimg2">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/fa.png">-->
+                    <!--</div>-->
+                    <!--<div class="cankaodata fontSize14">开关   <img src="../../../Content/images/NetInfoStatistic/kai.png"></div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="wrap_sysDiv">-->
+                    <!--<div class="title fontSize14">泵房溢水</div>-->
+                    <!--<div class="boxcontent">-->
+                    <!--<div class="yaliword1">正常</div>-->
+                    <!--<div class="chartDiv contentimg2">-->
+                    <!--<img src="../../../Content/images/NetInfoStatistic/yishui.png">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </section>
+        <div class="wrap-timeChoose">
+            <input class="selectTime timeStart timeSecond" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); },dateFmt:'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" autocomplete="off" />
+            -
+            <input class="selectTime timeEnd timeSecond" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}',dateFmt:'yyyy-MM-dd HH:mm:ss', maxDate: '%y-%M-%d' })" autocomplete="off" />
+            <input class="submitBtn" id="btnSearchChart" type="button" id="btnSearch" value="查询">
+        </div>
+        <div id="lineChart" class="line_Chart" ></div>
+    </div>
+    <!--水池1-->
+    <div class="anmiteBox" style="display: none;">
+        <div class="box">
+            <img src="../../../Content/images/NetInfoStatistic/waterBox.png">
+            <div class="word">170.397cm</div>
+            <div class="btword">参考值: 130:00-210:00cm</div>
+        </div>
+        <div class="bo">
+            <div>
+                <!--水波纹-->
+                <img src="../../../Content/images/NetInfoStatistic/bo1.png" class="bo1">
+                <img src="../../../Content/images/NetInfoStatistic/bo2.png" class="bo2">
+            </div>
+        </div>
+    </div>
+    <!--水池2-->
+    <div class="anmiteBox" style="display: none;">
+        <div class="box">
+            <img src="../../../Content/images/NetInfoStatistic/waterBox.png">
+            <div class="word">170.397cm</div>
+            <div class="btword">参考值: 130:00-210:00cm</div>
+        </div>
+        <div class="bo">
+            <div>
+                <!--水波纹-->
+                <img src="../../../Content/images/NetInfoStatistic/bo1.png" class="bo1">
+                <img src="../../../Content/images/NetInfoStatistic/bo2.png" class="bo2">
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+$(function() {
+
+    loadLayuiForm();
+    //
+
+    domEvelement();
+    getWaterSysValueData();
+    //折线图
+    //lineChart();
+
+});
+
+function getWaterSysValueData() {
+    var data = {
+        type: GetQuery('systemID'),
+        unitId: GetQuery('unitId'),
+        buildId: GetQuery('areaid')
+    };
+
+    var isAsync = true,
+        lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "get",
+        url: _serverIp + "/front/couplet/getInterfaceValueList",
+        data: data,
+        async: false,
+        success: function(data) {
+            if (data.success == true) {
+                var obj = data.obj;
+                var html = "";
+                for (var i = 0; i < obj.length; i++) {
+                    if (obj[i].classCode == 2 || obj[i].classCode == 3) { //水箱、水池
+                        html += getWaterTankHtml(obj[i]);
+                    } else if (obj[i].classCode == 4) { //泵控制柜
+                        html += getControlCabHtml(obj[i]);
+                    } else if (obj[i].classCode == 5) { //温度
+                       // obj[i].interfaceList[0].currentValue  = (parseFloat(obj[i].interfaceList[0].currentValue) + parseFloat(27)).toFixed(3);
+                        html += getTemperatureHtml(obj[i]);
+                    } else if (obj[i].classCode == 6) { //湿度
+                        //obj[i].interfaceList[0].currentValue  = (parseFloat(obj[i].interfaceList[0].currentValue) + parseFloat(90)).toFixed(3);
+                        html += getHumidityHtml(obj[i]);
+                    } else if (obj[i].classCode == 7) { //压力
+                        //obj[i].interfaceList[0].currentValue  = (parseFloat(obj[i].interfaceList[0].currentValue) + parseFloat(0.45)).toFixed(3);
+                        html += getEndPressHtml(obj[i]);
+                    } else if (obj[i].classCode == 8) { //溢水值
+                        html += getSpilledWaterHtml(obj[i]);
+                    }else if (obj[i].classCode >=100 && obj[i].classCode  <= 104) { //其他
+                        html += getOtherTypeHtml(obj[i]);
+                    }
+                }
+
+                // if (obj.length < 12) {
+                //     var emptyDiv = 12 - obj.length;
+                //     for (var i = 0; i < emptyDiv; i++) {
+                //         html += '<div class="wrap_sysDiv">' +
+                //             '<div class="title fontSize14"></div>' +
+                //             '<div class="boxcontent"></div>' +
+                //             '</div>';
+                //     }
+                // }
+
+                $('#mainDivBoxContent').html(html || "暂无数据...");
+
+                $('.wrap_sysDiv').each(function(){
+                    $(this).css({"width":"12rem"});
+                    $(this).css({'height':"calc(22px + "+$(this).width()+"px)","width":$(this).width()+"px"});
+                    if(_loginInfo.usertype == 1){
+                        $(this).css({"width":"10rem"});
+                        $(this).css({'height':"calc(22px + "+$(this).width()+"px)","width":$(this).width()+"px"})
+                    }
+                });
+//                var newh = $('section>div').height();
+                if (obj.length > 6) {
+                   // $('.line_Chart').css('height','calc(40% - 40px)');
+                }
+
+                $('#mainDivBoxContent .boxcontent').eq(0).click();
+
+                setTimeout(function(){
+                    //$('#mainDivBoxContent .boxcontent').eq(0).click();
+                },1000)
+
+                jQuery('.scrollbar-inner').scrollbar({});
+                for (var i = 0; i < obj.length; i++) {
+                    if (obj[i].classCode == 7) { //压力
+                        if (parseFloat(obj[i].interfaceList[0].currentValue) > parseFloat(obj[i].interfaceList[0].analogup) || parseFloat(obj[i].interfaceList[0].currentValue) < parseFloat(obj[i].interfaceList[0].analogdown)) {
+                            getHFCChart(obj[i], 1)
+                        } else {
+                            getHFCChart(obj[i], 0)
+                        }
+                    }
+                    if (obj[i].classCode == 5) {
+                        getTemp($('.boxcontent[deviceid=' + obj[i].id + ']')); //温度计
+                    }
+                }
+            }
+        },
+        complete: function() {
+            if (isAsync) {
+                layer.close(lid);
+            }
+        }
+    })
+}
+
+////控制柜
+function getControlCabHtml(obj) {
+    var typeHtml = '';
+    for (var i = 0; i < obj.interfaceList.length; i++) {
+        var status = '<img src="../../../Content/images/NetInfoStatistic/yichang.png">';
+        var name= obj.interfaceList[i].badName || "异常",classname = "abnormalType";
+        if((parseFloat(obj.interfaceList[i].currentValue)).toFixed(2) == (parseFloat(obj.interfaceList[i].digitalNormal)).toFixed(2)){
+            name = obj.interfaceList[i].goodName || "异常";
+            classname = "normalType"
+        }
+
+        typeHtml += '<div class="kongzhigui_box" pumtype="'+obj.interfaceList[i].detialName+'" goodname="'+obj.interfaceList[i].goodName+'" badname="'+obj.interfaceList[i].badName+'" normalvalue="'+obj.interfaceList[i].digitalNormal+'">' +
+                '<span class="kzword ">' + obj.interfaceList[i].detialName + '</span>' +
+                '<span class="status '+classname+'" >' + name + '</span>' +
+                '</div>'
+
+    }
+    var buildImg = obj.buildImgbg ? "buildImgbg": "";
+    var video = '';
+    if(obj.pointVideoId){
+        video = '<img src="../../../Content/images/NetInfoStatistic/btVideo.png" pointVideoId="'+ obj.pointVideoId +'" class="videoimg" alt="" title="视频">'
+    }
+    var html = '<div class="wrap_sysDiv">' +
+        '<div class="title fontSize16"><span class="'+ buildImg +'">' + obj.buildareaname + '</span>'+ video +'</div>' +
+        '<div class="boxcontent threedata" deviceid="' + obj.id + '">' +
+        '<div class="eqName" title="'+ obj.eqName +'">' + (obj.eqName.length > 12 ? obj.eqName.substr(0,12) + '...' : obj.eqName) + '</div>' +
+        '<div class="kongzhigui"><img src="../../../Content/images/NetInfoStatistic/kongzhigui.png" ></div>' +
+        '<div class="kongzhigui_cont scrollbar-inner"><div class="kongzhigui_content">' + typeHtml + '</div></div>' +
+        '</div>' +
+        '</div>';
+    return html;
+}
+
+////压力
+function getEndPressHtml(obj) {
+    var buildImg = obj.buildImgbg ? "buildImgbg": "";
+    var battery = "";
+    var electric = "";
+    var video = '';
+    if(obj.pointVideoId){
+        video = '<img src="../../../Content/images/NetInfoStatistic/btVideo.png" pointVideoId="'+ obj.pointVideoId +'" class="videoimg" alt="" title="视频">'
+    }
+    for(var i=0;i<obj.interfaceList.length;i++){
+        if(obj.interfaceList[i].detialName == "电池"){
+
+            //  颜色判断
+            if(obj.interfaceList[1].currentValue >= 0 && obj.interfaceList[1].currentValue <= 33){
+                var color = "#ff0039";
+            }else if(obj.interfaceList[1].currentValue > 33 && obj.interfaceList[1].currentValue <= 66){
+                var color = "#f9dc00";
+            }else if(obj.interfaceList[1].currentValue > 66 && obj.interfaceList[1].currentValue <= 100){
+                var color = "#08ff83";
+            }
+
+            // 判断电量
+            var num = (obj.interfaceList[1].currentValue / 100 * 23).toFixed(4);
+
+            electric = '<div style="width: '+ num +'px;height: 9px;position: absolute;top: 26%;left: 80%;z-index: 9;background: '+ color +';border-radius: 2px"></div>';
+
+            battery = '<div style="width: 24px;height: 20px;position: absolute;top: 23%;left: 80%;z-index: 9;">' +
+                '<img src="../../../Content/images/NetInfoStatistic/dianchi.png" alt="" style="width: 100%;">' +
+                '<div style="font-size: 12px;width: 32px;text-align: center;-webkit-transform: scale(0.8);margin-left: -4px;">'+(isNaN(parseInt(obj.interfaceList[1].currentValue)) ? '0' : parseInt(obj.interfaceList[1].currentValue)) + obj.interfaceList[1].analogUnit +'</div>' +
+                '</div>';
+        }
+    }
+    var html = '<div class="wrap_sysDiv" style="position: relative;">' + electric + battery +
+        '<div class="title fontSize16"><span class="'+ buildImg +'">' + obj.buildareaname + '</span>'+ video +'</div>' +
+        '<div class="boxcontent normalData" deviceid="' + obj.id + '" down="'+obj.interfaceList[0].analogdown+'" up="'+obj.interfaceList[0].analogup+'" warndown="'+obj.interfaceList[0].analogWarningDown+'" warnup="'+obj.interfaceList[0].analogWarningUp+'">' +
+        '<div class="eqName" title="'+ obj.eqName +'">' + (obj.eqName.length > 12 ? obj.eqName.substr(0,12) + '...' : obj.eqName) + '</div>' +
+        '<div id="' + obj.id + '" class="chartDiv"></div>' +
+        '<div class="cankaodata fontSize14">参考值 : ' +obj.interfaceList[0].analogdown  + ' - ' + obj.interfaceList[0].analogup + (obj.interfaceList[0].analogUnit == ""?"MPa":obj.interfaceList[0].analogUnit)+'</div>' +
+        '</div>' +
+        '</div>';
+    return html;
+}
+
+////温度
+function getTemperatureHtml(obj) {
+    var buildImg = obj.buildImgbg ? "buildImgbg": "";
+    var video = '';
+    if(obj.pointVideoId){
+        video = '<img src="../../../Content/images/NetInfoStatistic/btVideo.png" pointVideoId="'+ obj.pointVideoId +'" class="videoimg" alt="" title="视频">'
+    }
+    var html = '<div class="wrap_sysDiv">' +
+        '<div class="title fontSize16"><span class="'+ buildImg +'">' + obj.buildareaname + '</span>'+ video +'</div>' +
+        '<div class="boxcontent normalData" deviceid="' + obj.id + '" down="'+obj.interfaceList[0].analogdown+'" up="'+obj.interfaceList[0].analogup+'" warndown="'+obj.interfaceList[0].analogWarningDown+'" warnup="'+obj.interfaceList[0].analogWarningUp+'">' +
+        '<div class="eqName" title="'+ obj.eqName +'">' + (obj.eqName.length > 12 ? obj.eqName.substr(0,12) + '...' : obj.eqName) + '</div>' +
+        '<div class="humCont"><div class="tempdiv"><div class="tempbar">' +
+        '<div class="tempData ' + (getSysValueType(obj.interfaceList[0])?"":"abnormal") + '"></div>' +
+        '<div class="msg '+(getSysValueType(obj.interfaceList[0])?"msgblue":"msgred")+'"><span class="tempNumber">' + obj.interfaceList[0].currentValue + '</span>'+(obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+' </div> ' +
+        '</div></div></div>' +
+        '<div class="cankaodata fontSize14">参考值 : ' + obj.interfaceList[0].analogdown + ' - ' + obj.interfaceList[0].analogup + (obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+'</div>' +
+        '</div>' +
+        '</div>';
+    return html;
+}
+
+////湿度
+function getHumidityHtml(obj) {
+    var buildImg = obj.buildImgbg ? "buildImgbg": "";
+    var video = '';
+    if(obj.pointVideoId){
+        video = '<img src="../../../Content/images/NetInfoStatistic/btVideo.png" pointVideoId="'+ obj.pointVideoId +'" class="videoimg" alt="" title="视频">'
+    }
+    var html = '<div class="wrap_sysDiv">' +
+            '<div class="title fontSize16"><span class="'+ buildImg +'">' + obj.buildareaname + '</span>'+ video +'</div>' +
+            '<div class="boxcontent normalData" deviceid="' + obj.id + '" down="'+obj.interfaceList[0].analogdown+'" up="'+obj.interfaceList[0].analogup+'" warndown="'+obj.interfaceList[0].analogWarningDown+'" warnup="'+obj.interfaceList[0].analogWarningUp+'">' +
+            '<div class="eqName" title="'+ obj.eqName +'">' + (obj.eqName.length > 12 ? obj.eqName.substr(0,12) + '...' : obj.eqName) + '</div>' +
+            '<div class="chartDiv contentimg"><img src="../../../Content/images/NetInfoStatistic/shidu.png"></div>' +
+            '<div class="'+(getSysValueType(obj.interfaceList[0])?"yaliword1":"yaliword2")+'">' + obj.interfaceList[0].currentValue + (obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+'</div>' +
+            '<div class="cankaodata fontSize14">参考值 : ' + obj.interfaceList[0].analogdown + ' - ' + obj.interfaceList[0].analogup + (obj.interfaceList[0].analogUnit == ""?"℃":obj.interfaceList[0].analogUnit)+'</div>' +
+            '</div>' +
+            '</div>';
+    return html;
+}
+
+////水箱、水池
+function getWaterTankHtml(obj) {
+//    var percent = 0;
+//    if((parseFloat(obj.interfaceList[0].analogup) - parseFloat(obj.interfaceList[0].analogdown))>0){
+//        percent = parseFloat((obj.interfaceList[0].currentValue || 0))/(parseFloat(obj.interfaceList[0].analogup) - parseFloat(obj.interfaceList[0].analogdown))*100
+//    }
+    var buildImg = obj.buildImgbg ? "buildImgbg": "";
+    var video = '';
+    if(obj.pointVideoId){
+        video = '<img src="../../../Content/images/NetInfoStatistic/btVideo.png" pointVideoId="'+ obj.pointVideoId +'" class="videoimg" alt="" title="视频">'
+    }
+    var battery = "";
+    var electric = "";
+    for(var i=0;i<obj.interfaceList.length;i++){
+        if(obj.interfaceList[i].detialName == "电池"){
+
+            //  颜色判断
+            if(obj.interfaceList[1].currentValue >= "0" && obj.interfaceList[1].currentValue <= "33"){
+                var color = "#ff0039";
+            }else if(obj.interfaceList[1].currentValue > "33" && obj.interfaceList[1].currentValue <= "66"){
+                var color = "#f9dc00";
+            }else if(obj.interfaceList[1].currentValue > "66" && obj.interfaceList[1].currentValue <= "100"){
+                var color = "#08ff83";
+            }
+
+            // 判断电量
+            var num = (obj.interfaceList[1].currentValue / 100 * 23).toFixed(4);
+
+            electric = '<div style="width: '+ num +'px;height: 9px;position: absolute;top: 26%;left: 80%;z-index: 9;background: '+ color +';border-radius: 2px"></div>';
+
+            battery = '<div style="width: 24px;height: 20px;position: absolute;top: 23%;left: 80%;z-index: 9;">' +
+                '<img src="../../../Content/images/NetInfoStatistic/dianchi.png" alt="" style="width: 100%;">' +
+                '<div style="font-size: 12px;width: 32px;text-align: center;-webkit-transform: scale(0.8);margin-left: -4px;">'+(isNaN(parseInt(obj.interfaceList[1].currentValue)) ? '0' : parseInt(obj.interfaceList[1].currentValue)) + obj.interfaceList[1].analogUnit +'</div>' +
+                '</div>';
+        }
+    }
+
+    var html = ' <div class="wrap_sysDiv box1_water">' +
+        '<div class="title fontSize16"><span class="'+ buildImg +'">' + obj.buildareaname + '</span>'+ video +'</div>' + electric + battery +
+        '<div class="anmiteBox boxcontent normalData" deviceid="' + obj.id + '" down="'+obj.interfaceList[0].analogdown+'" up="'+obj.interfaceList[0].analogup+'" warndown="'+obj.interfaceList[0].analogWarningDown+'" warnup="'+obj.interfaceList[0].analogWarningUp+'">' +
+        '<div class="eqName" title="'+ obj.eqName +'">' + (obj.eqName.length > 12 ? obj.eqName.substr(0,12) + '...' : obj.eqName) + '</div>' +
+
+        '<div class="box">' +
+        '<img src="../../../Content/images/NetInfoStatistic/waterBox.png">' +
+        '<div class="btword"></div>' +
+        '</div>' +
+        '<div class="bo"><div>' +
+        '<img src="../../../Content/images/NetInfoStatistic/bo1.png" class="bo1">' +
+        '<img src="../../../Content/images/NetInfoStatistic/bo2.png" class="bo2">' +
+        '</div></div>' +
+        '</div>' +
+            '<div class="word currentWord '+(getSysValueType(obj.interfaceList[0])?"yaliword1":"yaliword2")+'">' + (obj.interfaceList[0].currentValue || 0) + (obj.interfaceList[0].analogUnit == ""?"CM":obj.interfaceList[0].analogUnit)+'</div>' +
+        '<div class="shuiweidata fontSize14">参考值: ' + obj.interfaceList[0].analogdown + ' - ' + obj.interfaceList[0].analogup + (obj.interfaceList[0].analogUnit == ""?"CM":obj.interfaceList[0].analogUnit)+'</div>' +
+        '</div>';
+    return html;
+}
+
+////溢水值
+function getSpilledWaterHtml(obj) {
+    var buildImg = obj.buildImgbg ? "buildImgbg": "";
+    var video = '';
+    if(obj.pointVideoId){
+        video = '<img src="../../../Content/images/NetInfoStatistic/btVideo.png" pointVideoId="'+ obj.pointVideoId +'" class="videoimg" alt="" title="视频">'
+    }
+    var html = '<div class="wrap_sysDiv">' +
+        '<div class="title fontSize16"><span class="'+ buildImg +'">' + obj.buildareaname + '</span>'+ video +'</div>' +
+        '<div class="boxcontent normalData" deviceid="' + obj.id + '" down="'+obj.interfaceList[0].analogdown+'" up="'+obj.interfaceList[0].analogup+'" warndown="'+obj.interfaceList[0].analogWarningDown+'" warnup="'+obj.interfaceList[0].analogWarningUp+'">' +
+        '<div class="eqName" title="'+ obj.eqName +'">' + (obj.eqName.length > 12 ? obj.eqName.substr(0,12) + '...' : obj.eqName) + '</div>' +
+        '<div class="chartDiv contentimg" style="height: 62%"><img src="../../../Content/images/NetInfoStatistic/yishui.png"></div>' +
+            '<div class="' + (getSysValueType(obj.interfaceList[0])? "yaliword1" : "yaliword2") + '">' + (obj.interfaceList[0].currentValue || 0) + (obj.interfaceList[0].analogUnit == ""?"MPa":obj.interfaceList[0].analogUnit)+'</div>' +
+            '<div class="shuiweidata fontSize14">参考值: ' + obj.interfaceList[0].analogdown + ' - ' + obj.interfaceList[0].analogup + (obj.interfaceList[0].analogUnit == ""?"MPa":obj.interfaceList[0].analogUnit)+'</div>' +
+            '</div>' +
+        '</div>';
+    return html;
+}
+
+////其他
+function getOtherTypeHtml(obj){
+	var interfa = obj.interfaceList[0];
+	var name= interfa.badName || "异常",classname = "abnormalType";
+    if((parseFloat(interfa.currentValue)).toFixed(2) == (parseFloat(interfa.digitalNormal)).toFixed(2)){
+        name = interfa.goodName || "异常";
+        classname = "normalType"
+    }
+    var buildImg = obj.buildImgbg ? "buildImgbg": "";
+    var type = interfa.ioType;
+    var video = '';
+    if(obj.pointVideoId){
+        video = '<img src="../../../Content/images/NetInfoStatistic/btVideo.png" pointVideoId="'+ obj.pointVideoId +'" class="videoimg" alt="" title="视频">'
+    }
+    var html = '<div class="wrap_sysDiv">' +
+            '<div class="title fontSize16"><span class="'+ buildImg +'">' + obj.buildareaname + '</span>'+ video +'</div>'+
+            '<div class="boxcontent normalData" deviceid="' + obj.id + '" down="'+interfa.analogdown+'" up="'+interfa.analogup+'" warndown="'+interfa.analogWarningDown+'" warnup="'+interfa.analogWarningUp+'">' +
+            '<div class="eqName" title="'+ obj.eqName +'">' + (obj.eqName.length > 12 ? obj.eqName.substr(0,12) + '...' : obj.eqName) + '</div>' +
+            '<div class="chartDiv contentimg"><img src="../../../Content/images/NetInfoStatistic/'+(type=="数字量"?"type-other1":"type-other2")+'.png"></div>';
+            if(type=="数字量"){
+            	html += '<div class="kongzhigui_box" style="margin: 10.5% 0;" pumtype="'+interfa.detialName+'" goodname="'+interfa.goodName+'" badname="'+interfa.badName+'" normalvalue="'+interfa.digitalNormal+'">' +
+                '<span class="kzword ">' + interfa.detialName + '</span>' +
+                '<span class="status '+classname+'" >' + name + '</span></div></div></div>';	
+            }else{
+            	html += '<div class="'+(getSysValueType(interfa)?"yaliword1":"yaliword2")+'">' + interfa.currentValue + interfa.analogUnit+'</div>' +
+            '<div class="cankaodata fontSize14">参考值 : ' + interfa.analogdown + ' - ' + interfa.analogup + interfa.analogUnit+'</div>' +
+	        '</div>' +
+            '</div>';
+            }
+    return html;
+}
+
+function getHFCChart(obj, color) {
+    var data = obj.interfaceList[0];
+    var CO2Chart = echarts.init(document.getElementById(obj.id, color));
+    CO2Chart.title = '压力';
+
+    var wordColor = ''; //数据显示颜色
+    var barColor = ''; //仪表盘颜色显示
+    var arrowColor = ''; //指针颜色
+    var axisLabelSize = null;
+    var detailSize = 20;
+    if(top.innerWidth <= 1366){
+        axisLabelSize = 8;
+        detailSize = 14;
+    }
+
+    if (color == 0) {
+        wordColor = '#43eec9';
+        barColor = '#03b7c9';
+        arrowColor = '#43eec9';
+    } else {
+        wordColor = '#f4704d';
+        barColor = '#f4704d';
+        arrowColor = '#f4704d';
+    }
+
+    //data.analogup = 55,data.analogdown = 42.5,data.analogWarningUp = 80,data.analogWarningDown=30;
+
+    // var axisSplit1 = (data.analogdown - data.analogWarningDown)/(data.analogWarningUp - data.analogWarningDown);
+    // var axisSplit2 = (data.analogup - data.analogWarningDown)/(data.analogWarningUp - data.analogWarningDown);
+    // var axisSplit1 = parseFloat(data.analogdown * 0.2 / (data.analogup * 1.2 - data.analogdown * 0.8)).toFixed(0,2);
+    // var axisSplit2 = parseFloat((data.analogup - data.analogdown * 0.8) / (data.analogup * 1.2 - data.analogdown * 0.8)).toFixed(0,2);
+
+    var minValue = data.analogdown - (data.analogup - data.analogdown) * 0.2;
+    var maxValue = parseFloat(data.analogup) + (data.analogup - data.analogdown) * 0.2;
+
+    var axisSplit1 = (data.analogdown - minValue)/(maxValue - minValue);
+    var axisSplit2 = (data.analogup - minValue)/(maxValue - minValue);
+
+    var option = {
+        grid: {
+            z: 1, //grid作为柱状图的坐标系，其层级要和仪表图层级不同，同时隐藏
+            show: false,
+            left: '0%',
+            right: '0%',
+            top: '5%',
+            containLabel: true,
+            splitLine: {
+                show: false //隐藏分割线
+            },
+        },
+        xAxis: [ //这里有很多的show，必须都设置成不显
+            {
+                type: 'category',
+                data: [],
+                axisLine: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                },
+                splitArea: {
+                    interval: 'auto',
+                    show: false
+                }
+            }
+        ],
+        yAxis: [ //这里有很多的show，必须都设置成不显示
+            {
+                type: 'value',
+                axisLine: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                }
+            }
+        ],
+        toolbox: {
+            show: false
+        },
+        series: [{
+                name: '刻度盘',
+                type: 'gauge',
+                startAngle: 180,
+                endAngle: 0,
+                center: ["50%", "65%"], //整体的位置设置
+                z: 3,
+                min: minValue,
+                max: maxValue,
+                splitNumber: 1,
+                radius: '95%',
+                axisLine: { // 坐标轴线
+                    lineStyle: { // 属性lineStyle控制线条样式
+                        width: 10,
+                        color: [
+                            [axisSplit1, '#f4704d'],
+                            [axisSplit2, "#03b7c9"],
+                            [1, '#f4704d']
+                        ]
+                    }
+                },
+                axisTick: { // 坐标轴小标记
+                    length: 5, // 属性length控制线长
+                    splitNumber: 10,
+                    lineStyle: { // 属性lineStyle控制线条样式
+                        color: '#4375AA'
+                    }
+                },
+                splitLine: { // 分隔线
+                    length: 15, // 属性length控制线长
+                    lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+                        color: '#4375AA'
+                    }
+                },
+                axisLabel: {
+                    textStyle: {
+                        fontSize:axisLabelSize,
+                        color: '#03b7c9'
+                    }
+                },
+                pointer: {
+                    show: true,
+                    length: '70%',
+                    width: 2,
+                },
+                itemStyle: {
+                    normal: {
+                        color: arrowColor,
+                        borderWidth: 0
+                    }
+                },
+                title: { //仪表盘标题
+                    show: false,
+                    offsetCenter: ['0', '20'],
+                    textStyle: {
+                        color: '#03b7c9',
+                        fontSize: 12,
+                        fontFamily: 'Microsoft YaHei'
+                    }
+                },
+                // detail:{
+                //     show: false
+                // },
+                detail: {
+                    textStyle: {
+                        fontSize: 12,
+                        color: wordColor
+                    },
+                    offsetCenter: ["0%", "45%"],
+                    formatter:'{value}'+data.analogUnit
+                },
+                data: [{ value: (data.currentValue || 0), name: '' }]
+            },
+            {
+                name: '灰色内圈',
+                type: 'gauge',
+                z: 2,
+                radius: '95%',
+                startAngle: 180,
+                endAngle: 0,
+                center: ["50%", "65%"], //整体的位置设置
+                splitNumber: 4,
+                axisLine: { // 坐标轴线
+                    lineStyle: { // 属性lineStyle控制线条样式
+                        color: [
+                            [1, '#4375AA']
+                        ],
+                        width: 12,
+                        opacity: 1,
+                    }
+                },
+                splitLine: { //分隔线样式
+                    show: false,
+                },
+                axisLabel: { //刻度标签
+                    show: false,
+                },
+                axisTick: { //刻度样式
+                    show: false,
+                },
+                detail: {
+                    show: false,
+                    textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                        //fontWeight: 'bolder',
+                        fontSize: 10
+                    }
+                },
+            },
+        ]
+    }
+
+    CO2Chart.setOption(option);
+    window.addEventListener('resize', function() { //宽度自适应
+        CO2Chart.resize();
+    });
+
+}
+
+function getTemp(elem) {
+    var tempNumber = parseFloat($(elem).find('.tempNumber').text()) || 0; //温度数值
+    if(tempNumber > 100){
+        tempNumber = 100;
+    }else if(tempNumber <= 0){
+        tempNumber = 0;
+    }
+    // $(elem).find('.tempData').css('height', ((tempNumber + 20) > 100 ? 100 : (tempNumber + 20)) + '%'); //改变温度计柱状条高度
+    $(elem).find('.tempData').css('height', tempNumber + '%');  //改变温度计柱状条高度
+
+    $(elem).find('.humCont .msg').css('bottom', tempNumber + '%'); //改变提示框距离底部的距离
+}
+
+function domEvelement() {
+
+    window.addEventListener('resize', function() { //宽度自适应
+//        $('.wrap_sysDiv').each(function(){
+//            //$(this).css({"width":"15%"});
+//            $(this).css({'height':"calc(22px + "+$(this).width()+"px)","width":$(this).width()+"px"});
+//            if(_loginInfo.usertype == 1){
+//                //$(this).css({"width":"15.5%"});
+//                $(this).css({'height':"calc(22px + "+$(this).width()+"px)","width":$(this).width()+"px"})
+//            }
+//        });
+    });
+
+    $('#mainDivBoxContent').delegate(' .boxcontent', 'click', function() {
+        var _id = $(this).attr('deviceid');
+
+        $('#mainDivBoxContent .boxcontent').removeClass('active');
+        $(this).addClass('active')
+        getInterfaceDataHistoryData(_id);
+        // var name = $(this).prev().text();
+    });
+
+    // 查看自定义图片
+    $('#mainDivBoxContent').delegate('.buildImgbg', 'click', function() {
+        var _id = $(this).parent().siblings(".boxcontent").attr('deviceid');
+        top.layer.open({
+            type: 2,
+            title: '自定义图片',
+            closeBtn: 1,
+            area:['65%','70%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content:'/html/View/NetInfoStatistic/buildImgbg.html?id='+_id
+        })
+    });
+    // 查看视频
+    $('#mainDivBoxContent').delegate('.videoimg', 'click', function() {
+        var id = $(this).attr('pointVideoId');
+        var _unitid = GetQuery('unitId');
+        top.layer.open({
+            type: 2,
+            title: '视频',
+            closeBtn: 1,
+            area:['65%','70%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content:'/html/View/Home/Middle_GetCrt_camera.html?video='+id+'&unitid='+_unitid
+        });
+    })
+    //选择模块查看历史记录
+    $('#mainDivBoxContent').on('click','.boxcontent',function(){
+        $('.boxcontent.active').removeClass('active');
+        $(this).addClass('active');
+    });
+    //更多
+    $('#moreBtn').unbind('click').click(function() {
+        top.layer.open({
+            type: 2,
+            title: GetQuery('unitname')+"—灭火系统更多接口数据",
+            area: ['800px', '500px'],
+            shade: 0.5,
+            skin:"layui-layer-sysNotice",
+            shadeClose: true,
+            content: (_loginInfo.usertype == 0?"":"../")+'NetInfoStatistic/system-iframe/system_detail1_more.html?type='+GetQuery('systemID')+'&unitId='+GetQuery('unitId')+'&buildId='+GetQuery('areaid')
+        });
+    });
+    //搜索
+    $('#btnSearchChart').unbind('click').click(function(){
+        var id = $('#mainDivBoxContent').find('.boxcontent.active').attr('deviceid');
+        getInterfaceDataHistoryData(id);
+    })
+
+}
+
+
+function getInterfaceDataHistoryData(id){
+    var data={
+        deviceId:id,
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val()
+    };
+
+    var isAsync = true,lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "post",
+        url: _serverIp + "/front/couplet/getInterfaceDataHistory",
+        data:data,
+        success: function (msg) {
+            // console.log(msg,'chartdata');
+            if(msg.success == true){
+                var data = msg.obj;
+                var xZhou=[],seriseData=[],legendData=[];
+                for(var i = 0 ; i < data.length ; i++){
+                    var dataValue = [];
+                    for(var k = 0 ; k < data[i].statData.length; k++){
+
+                        dataValue.push(data[i].statData[k].coupletValue);
+
+                       // dataValue.push(Math.random()*2)
+                    }
+                    seriseData.push({
+                        name: data[i].detialName,
+                        type: 'line',
+                        smooth: true,
+                        symbol: 'none', 
+                        data:dataValue,
+                        analogUnit:data[i].analogUnit,
+                        normalValue:data[i].normalValue
+                    });
+                    legendData.push({name: data[i].detialName, icon: 'rect'})
+                }
+
+                if(msg.obj != ""){
+	                for(var k = 0 ; k < data[0].statData.length; k++){
+	                    xZhou.push(data[0].statData[k].coupletKey);
+	                }
+                }
+
+                var down = $('.boxcontent[deviceid='+id+']').attr('down'); //下限
+                var up = $('.boxcontent[deviceid='+id+']').attr('up');//上限
+                var wranUp = parseFloat($('.boxcontent[deviceid='+id+']').attr('warnup')); //y轴最大值
+                var wranDown = parseFloat($('.boxcontent[deviceid='+id+']').attr('warndown')); //y轴最小值
+
+                if(down == undefined && up == undefined){   //此处有待改善，仅做测试
+                    getPumpCharts(xZhou,seriseData,legendData,id);
+                } else if (isNaN(wranDown) && isNaN(wranUp)){  //如果用户未填最大值和最小值
+                    // up =null;
+                    // down=null;
+                    wranDown = down * 1 - down * 0.15;
+                    wranUp = up * 1 + up * 0.15;
+                    lineChart(xZhou,seriseData,legendData,id,down,up,wranDown,wranUp);
+                } else{
+                    for(var i = 0;i<seriseData.length;i++){
+                        seriseData[i].markLine = {
+                            silent: true,
+                            data: [{
+                                yAxis: down,
+                                lineStyle:{
+                                    normal:{
+                                        color: '#E95C41',
+                                        opacity:0.7
+                                    }
+                                }
+                            }, {
+                                yAxis: up,
+                                lineStyle:{
+                                    normal:{
+                                        color: '#E95C41',
+                                        opacity:0.7
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                    lineChart(xZhou,seriseData,legendData,id,down,up,wranDown,wranUp);
+                }
+            }
+        },
+        complete: function () {
+            if (isAsync){
+                layer.close(lid);
+            }
+        }
+    });
+}
+
+//折线图，正常填写最大值和最小值
+function lineChart(datax,seriseData,legendData,id,down,up,wranDown,wranUp) {
+    if(down == wranDown && down != null && wranDown != null){
+        wranDown = wranDown - wranDown/100000;
+        if(wranDown == 0){
+            wranDown = -1/100000
+        }
+    }
+// console.log(wranDown,down,up,wranUp);
+// console.log(seriseData);
+    var chainChart = echarts.init(document.getElementById('lineChart'));
+    chainChart.clear();
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            confine:true,
+            formatter: function (params, ticket, callback) {
+                // return params[0].axisValue+'<br /><span style="display:inline-block;width:10px;height:10px;border-radius:50px;margin-right:5px;background: '+params[0].color+'"></span>'+ params[0].seriesName +" : " + params[0].value +"("+ seriseData[0].analogUnit +")"
+                var html = params[0].axisValue;
+                for(var i = 0 ; i<params.length;i++){
+                    html += '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50px;margin-right:5px;background: '+params[i].color+'"></span>'+params[i].seriesName +' : '+params[i].value+ '('+seriseData[i].analogUnit+')</div>';
+                }
+                return html;
+            }
+        },
+        legend: {
+            data: legendData,
+            inactiveColor: '#777',
+            left: '5%',
+            top: '10px',
+            itemWidth: 23,
+            itemHeight: 8,
+            textStyle: {
+                color: '#8b9ebe',
+                fontSize: 12
+            }
+        },
+        textStyle: {
+            color: 'rgb(140, 177, 217)',
+            fontSize: 12
+        },
+        color: [ '#44F0CA','#E95C41', '#F7BB41', '#5fb9f7'],
+        grid: {
+            left: '5%',
+            right: '5%',
+            bottom: '10%',
+            top: '50px',
+            show: false,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            },
+            data: datax
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            min:function(value) {
+                return (value.min * 0.85).toFixed(2);
+            },
+            max:function(value) {
+                return (value.max * 1.15).toFixed(2);
+            },
+            // min:wranDown,
+            // max: wranUp,
+            splitLine: {
+                lineStyle: { color: '#164476' }
+            }
+        },
+        visualMap: {
+            show:false,
+            pieces: [{
+                gt: parseFloat(wranDown),
+                lte: parseFloat(down),
+                color: '#FF6D6D'
+            },{
+                gt: parseFloat(down),
+                lte: parseFloat(up),
+                color: '#44F0CA'
+            },{
+                gt: parseFloat(up),
+                lte: parseFloat(wranUp),
+                color: '#FF6D6D'
+            }],
+            outOfRange: {
+                color: '#FF6D6D'
+            }
+        },
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 100
+        }],
+        series: seriseData
+
+    };
+
+
+    chainChart.setOption(option);
+
+    window.addEventListener('resize', function() { //宽度自适应
+        chainChart.resize();
+    });
+}
+//折线图，未填写最大值和最小值
+function lineChart2(datax,seriseData,legendData,id,down,up,wranDown,wranUp) {
+// console.log(wranDown,down,up,wranUp);
+// console.log(seriseData);
+    var chainChart = echarts.init(document.getElementById('lineChart'));
+    chainChart.clear();
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            confine:true,
+            formatter: function (params, ticket, callback) {
+                return params[0].axisValue+'<br /><span style="display:inline-block;width:10px;height:10px;border-radius:50px;margin-right:5px;background: '+params[0].color+'"></span>'+ params[0].seriesName +" : " + params[0].value +"("+ seriseData[0].analogUnit +")"
+            }
+        },
+        legend: {
+            data: legendData,
+            inactiveColor: '#777',
+            left: '5%',
+            top: '10px',
+            itemWidth: 23,
+            itemHeight: 8,
+            textStyle: {
+                color: '#8b9ebe',
+                fontSize: 12
+            }
+        },
+        textStyle: {
+            color: 'rgb(140, 177, 217)',
+            fontSize: 12
+        },
+        color: [ '#44F0CA','#E95C41', '#F7BB41', '#5fb9f7'],
+        grid: {
+            left: '5%',
+            right: '5%',
+            bottom: '10%',
+            top: '50px',
+            show: false,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            },
+            data: datax
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            min:function(value) {
+                return (value.min * 0.85).toFixed(2);
+            },
+            max:function(value) {
+                return (value.max * 1.15).toFixed(2);
+            },
+            splitLine: {
+                lineStyle: { color: '#164476' }
+            }
+        },
+        visualMap: {
+            show:false,
+            pieces: [{
+                gt: parseFloat(wranDown),
+                lte: parseFloat(down),
+                color: '#FF6D6D'
+            },{
+                gt: parseFloat(down),
+                lte: parseFloat(up),
+                color: '#44F0CA'
+            },{
+                gt: parseFloat(up),
+                lte: parseFloat(wranUp),
+                color: '#FF6D6D'
+            }],
+            outOfRange: {
+                color: '#FF6D6D'
+            }
+        },
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 100
+        }],
+        series: seriseData
+
+    };
+
+
+    chainChart.setOption(option);
+
+    window.addEventListener('resize', function() { //宽度自适应
+        chainChart.resize();
+    });
+}
+//控制柜的折线图
+function getPumpCharts(datax,seriseData,legendData,id) {
+    var chainChart = echarts.init(document.getElementById('lineChart'));
+    chainChart.clear();
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            confine:true,
+            formatter: function (params, ticket, callback) {
+                // console.log(params)
+                var html = params[0].axisValue;
+                for(var i = 0 ; i<params.length;i++){
+                    var typeElem = $('.boxcontent[deviceid='+id+']').find('.kongzhigui_content').children('div[pumtype='+params[i].seriesName+']');
+                    html += '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50px;margin-right:5px;background: '+params[i].color+'"></span>'+params[i].seriesName +" : "+(parseInt(params[i].value) == parseInt(typeElem.attr('normalvalue'))?typeElem.attr('goodname'):typeElem.attr('badname'))+"</div>"
+                }
+                return html;
+               // return params[0].axisValue+'<br />'+ params[0].seriesName +" : " + params[0].value +"("+ seriseData[0].analogUnit +")"
+            }
+        },
+        legend: {
+            data: legendData,
+            inactiveColor: '#777',
+            left: '5%',
+            top: '10px',
+            itemWidth: 23,
+            itemHeight: 8,
+            textStyle: {
+                color: '#8b9ebe',
+                fontSize: 12
+            }
+        },
+        textStyle: {
+            color: 'rgb(140, 177, 217)',
+            fontSize: 12
+        },
+        color: [ '#44F0CA','#E95C41', '#F7BB41', '#5fb9f7'],
+        grid: {
+            left: '5%',
+            right: '5%',
+            bottom: '10%',
+            top: '50px',
+            show: false,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            },
+            data: datax
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            min:function(value) {
+                return value.min;
+            },
+            max:function(value) {
+                return value.max;
+            },
+            splitLine: {
+                lineStyle: { color: '#164476' }
+            }
+        },
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 100
+        }],
+        series: seriseData
+
+    };
+
+    chainChart.setOption(option);
+
+    window.addEventListener('resize', function() { //宽度自适应
+        chainChart.resize();
+    });
+
+}
+</script>
+
+</html>

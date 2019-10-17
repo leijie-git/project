@@ -1,0 +1,312 @@
+html,body{
+    height: 100%;
+}
+
+/*.container-fluid{*/
+    /*padding-left:0;*/
+    /*padding-right:0;*/
+/*}*/
+@font-face {
+    font-family: 'iconfont';
+    src: url('../../js/common/iconfont/iconfont.eot');
+    src: url('../../js/common/iconfont/iconfont.eot?#iefix') format('embedded-opentype'),
+    url('../../js/common/iconfont/iconfont.woff') format('woff'),
+    url('../../js/common/iconfont/iconfont.ttf') format('truetype'),
+    url('../../js/common/iconfont/iconfont.svg#iconfont') format('svg');
+}
+.iconfont{
+    font-family:"iconfont" !important;
+    font-size:16px;font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+@media (min-width: 768px){
+    .sidebar {
+        z-index: 100;
+        position: absolute;
+        width: 180px;
+        top: -51px;
+        left: 0px;
+    }
+}
+@media (min-width: 768px){
+    #page-wrapper {
+        position: inherit;
+        margin: 0 0 0 360px;
+        padding: 0 30px;
+        border-left: 1px solid #e7e7e7;
+    }
+}
+/*body {
+	background: #4b6d86;
+}*/
+#wrapper{
+    width: 100%;
+    height: 100%;
+}
+#wrapper .navbar-header .rightTitle{
+	font-family:'幼圆';
+	font-weight: bold;
+	background: linear-gradient(to top, #286090, #fff);
+	-webkit-background-clip: text;
+    color: transparent;
+}
+/*#wrapper .navbar-header .rightTitle:hover {
+    color: #fff;
+}
+*/
+#page-wrapper {
+    min-height: 728px;
+}
+.navbar-default {
+    background-color: #0d1723;
+    border-color: #e7e7e7;
+}
+#side-menu {
+    position: relative;
+    background-color: #07274d;
+    overflow-y: auto;
+}
+/*#side-menu::-webkit-scrollbar*/
+/*{*/
+    /*width: 8px;*/
+    /*height: 16px;*/
+    /*background-color: #F5F5F5;*/
+/*}*/
+/*#side-menu::-webkit-scrollbar-track {*/
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);*/
+    /*border-radius: 10px;*/
+    /*background-color: #F5F5F5;*/
+/*}*/
+/*#side-menu::-webkit-scrollbar-thumb{*/
+    /*border-radius: 10px;*/
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);*/
+    /*background-color: #8a8787;*/
+/*}*/
+#side-menu >li:hover {
+    cursor: auto;
+}
+.sidebar ul li a.active{
+    background-color: #4b6d86;
+}
+#rightMenu li a.active {
+    background-color: #688aa3;
+}
+#side-menu li a{
+    color: #fff;
+    width: 100%;
+}
+#side-menu li a:hover {
+    background: rgba(46, 57, 87,.8);
+    cursor: pointer;
+    -webkit-box-shadow: 4px 0 inset #4b8efe;
+    -moz-box-shadow: 4px 0 inset #4b8efe;
+    box-shadow: 4px 0 inset #4b8efe;
+}
+#rightMenu {
+    width: 180px;
+    position: absolute;
+    left: 180px;
+    top: 30px;
+    background-color: #688aa3;
+}
+#rightMenu li a{
+    color: #fff;
+}
+#rightMenu li a:hover {
+    background: #3ba4e7;
+}
+.nav>li>a:focus, .nav>li>a:hover{
+    background: transparent;
+}
+#tabMenu {
+    z-index:10;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    position: absolute;
+    left: 0;
+    background: #fff;
+    cursor: pointer;
+}
+#tabMenu img {
+    width: 30px;
+    margin-left: 5px;
+    height: 30px;
+}
+.userImg {
+    width: 30px;
+    height: 30px;
+}
+.userImg img {
+    width: 100%;
+    height: 100%;
+}
+.navbar-default .navbar-brand {
+    color: #fff;
+    font-size: 24px;
+}
+li#userRight > a {
+    padding-top: 14px;
+}
+.rolName span {
+    color: #fff;
+}
+.sidebar ul li {
+    border-bottom: 1px solid #3a5a73;
+}
+.user a.active:hover {
+    background: #fff;
+}
+.user a {
+    color: #fff;
+}
+/*菜单中的小圆点*/
+#side-menu .nav-second-level li {
+    position: relative;
+    background-color: #09213d;
+}
+#side-menu .nav-second-level li .icon{
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    z-index: 20;
+    left: 20px;
+    top: 0px;
+    background: #fff;
+}
+#side-menu .nav-second-level li .circle{
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 20;
+    left: 16px;
+    top: 16px;
+    background: #fff;
+}
+
+#side-menu .nav-second-level li:hover{
+	background-color: rgba(7, 39, 77,.5);
+}
+/*菜单中的小圆点over*/
+/*内容区域*/
+#topHeader {
+    margin-bottom: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+#contentsBody {
+    width: 100%;
+    position: relative;
+    /*top: 51px;*/
+    padding-top: 51px;
+    height: 100%;
+}
+#page-wrappers {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+/*左边菜单选中状态*/
+.curFocus {
+    background: #3ba4e7;
+}
+#sideMenu{
+    /*top: 51px;*/
+    top: 0;
+    left: 0;
+    height: calc(100% - 51px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/*提高模态框关闭按钮层级�*/
+.modal-header .close{
+    z-index:1;
+}
+.holidayTab {
+    height: 300px;
+    overflow-y: auto;
+}
+.changeTab {
+    height:300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.container-fluid {
+    padding-right: 0;
+    padding-left: 0;
+    backgound-color: #eee!important;
+}
+#rightMenu li {
+    border: none;
+}
+/*修改密码模态框样式*/
+#modal_edit_password .modal-dialog{
+    width: 407px;
+}
+#modal_edit_password .modal-footer{
+    text-align: center;
+}
+#modal_edit_password .modal-footer button{
+    width: 90px;
+}
+#modal_edit_password .modal-dialog{
+    position: absolute;
+    left: 40%;
+    top: 25%;
+}
+#rightTab {
+    position: relative;
+}
+
+.firstMenu {
+    padding-left: 180px;
+}
+.secondMenu {
+    padding-left: 190px;
+}
+#page-wrappers .tabMenu{
+    left: 180px;
+    display: none;
+}
+/*图片放大效果*/
+.wrapBox {
+    width:100%;
+    height:100%;
+    background-color: #000;
+    opacity:0.6;
+    display: none;
+    position: fixed;
+    left:0;
+    top:0;
+    z-index:1200;
+}
+.imgContent {
+  /*  width:600px;*/
+   /* height:400px;*/
+    display: none;
+    position: fixed;
+    z-index: 1300;
+    left:50%;
+    top:50%;
+   /* margin-left: -300px;
+    margin-top: -200px;*/
+}
+.imgContent img {
+    width:100%;
+    height:100%;
+    max-height: 600px;
+}
+#logoTop {
+    float: left;
+    padding-top: 2%;
+    padding-left: 15px;
+}
+#logoTop:hover {
+    background-color: transparent;
+}

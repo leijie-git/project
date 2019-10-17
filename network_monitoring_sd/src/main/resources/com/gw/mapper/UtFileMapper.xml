@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtFileMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtFile" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="NVARCHAR" />
+    <result column="ALIAS" property="alias" jdbcType="NVARCHAR" />
+    <result column="URL" property="url" jdbcType="NVARCHAR" />
+    <result column="PHYSICAL_PATH" property="physicalPath" jdbcType="NVARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        span{
+            position: relative;
+           animation: d 1s;
+
+        }
+        /*@keyframes d {*/
+            /*0%{*/
+                /*transform: translate(100px,100px);*/
+                /*animation-timing-function: cubic-bezier(0.25,0.1, 0.25,0.1);*/
+            /*}*/
+            /*50%{*/
+                /*transform: translate(300px,300px);*/
+                /*animation-timing-function: cubic-bezier(0.25,0.1, 0.25,0.6);*/
+            /*}*/
+            /*100%{*/
+                /*transform: translate(600px,600px);*/
+                /*animation-timing-function: cubic-bezier(0.25,0.1, 0.25,1);*/
+            /*}*/
+        /*}*/
+        div{
+            width: 150px;
+            height: 150px;
+            background-color: palegreen;
+            position: relative;
+            left:0;
+            top:0;
+            display: inline-block;
+            direction: ltr;
+        }
+        span{
+            display: inline-block;
+        }
+        .h{
+            animation: aa cubic-bezier(1,.28,.07,.63) 2s ;
+            /*left: 400px;*/
+            /*top: 500px;*/
+            background-color: palevioletred;
+            -webkit-border-radius:50%;
+            -moz-border-radius:50%;
+            border-radius:50%;
+            -webkit-filter: grayscale(100%);
+            -webkit-box-shadow: 0 0 40px 5px #fff;
+            -moz-box-shadow: 0 0 40px 5px #fff;
+            box-shadow: 0 0 40px 5px #fff;
+        }
+        @keyframes aa {
+            0%{
+                transform:translate(400px,500px) rotate(45deg);
+            }
+            30%{
+                transform:translate(400px,200px) rotate(60deg);
+            }
+            60%{
+                transform:translate(200px,300px) rotate(90deg);
+            }
+            100%{
+                transform:translate(100px,450px) rotate(120deg);
+            }
+        }
+        /*input[type=radio]::-ms-check{*/
+            /*background-color: palevioletred;*/
+            /*color: palegreen;*/
+            /*padding:0.5rem;*/
+            /*font-size: 2rem;*/
+        /*}*/
+        /*input[type=text]::-webkit-input-placeholder{*/
+            /*background-color: palevioletred;*/
+            /*color: palegreen;*/
+            /*padding:0.5rem;*/
+            /*font-size: 2rem;*/
+        /*}*/
+        /*input[type=checkbox]::-ms-check{*/
+            /*background-color: paleturquoise;*/
+            /*color: peru;*/
+            /*width: 2rem;*/
+            /*height: 2rem;*/
+        /*}*/
+        /*input[type=date]::-webkit-datetime-edit{*/
+            /*background-color: paleturquoise;*/
+            /*color: peru;*/
+            /*width: 2rem;*/
+            /*height: 2rem;*/
+        /*}*/
+        /*input[type=file]::-ms-browse{*/
+            /*background-color: paleturquoise;*/
+            /*color: peru;*/
+            /*width: 2rem;*/
+            /*height: 2rem;*/
+        /*}*/
+        /*::-webkit-file-upload-button{*/
+            /*background-color: paleturquoise;*/
+            /*color: peru;*/
+            /*width: 2rem;*/
+            /*height: 2rem;*/
+            /*border:1px solid;*/
+        /*}*/
+        /*input[type=color]::-webkit-color-swatch{*/
+            /*!*background-image: -webkit-linear-gradient(right,100%,100%,0,from(red),color-stop);*!*/
+            /*background-image: -webkit-gradient(linear, 0 0, 100% 0,*/
+            /*from(red),*/
+            /*color-stop(15%, orange),*/
+            /*color-stop(30%, yellow),*/
+            /*color-stop(50%, green),*/
+            /*color-stop(65%, darkcyan),*/
+            /*color-stop(80%, blue),*/
+            /*to(purple));*/
+            /*!*background-color: paleturquoise;*!*/
+            /*!*color: peru;*!*/
+            /*!*width: 2rem;*!*/
+            /*!*height: 2rem;*!*/
+        /*}*/
+        /*input[type=range]::-ms-fill-lower{*/
+            /*background-color: #a43f3f;*/
+        /*}*/
+        /*::-ms-fill-upper{*/
+            /*background-color: paleturquoise;*/
+        /*}*/
+        /*::-ms-ticks-before{*/
+            /*background-color: peru;*/
+        /*}*/
+        /*::-ms-thumb{*/
+            /*background-color: olive;*/
+        /*}*/
+        /*::-ms-track{*/
+            /*background-color: orangered;*/
+        /*}*/
+        /*::-ms-tooltip{*/
+            /*display: none;*/
+        /*}*/
+    </style>
+</head>
+<body>
+    <input type="range" size="100">
+    <input type="text" placeholder="在有有脞人">
+    <input type="radio">
+    <input type="checkbox">
+    <input type="color">
+    <input type="date">
+    <input type="file" class="f" size="5" multiple>
+<progress max="100" value="55"></progress>
+</body>
+<script>
+//    console.log($("#f").serialize())
+//    console.log($("#f").serializeArray())
+</script>
+</html>

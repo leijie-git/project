@@ -1,0 +1,363 @@
+/*物联的首页*/
+body{
+	padding: 0;
+	margin: 0;
+	background: none;
+}
+.wrapper{
+	width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /*padding: 1px 5px 0 5px;*/
+    /*background: url(../../images/AggregateAnalysis/bigbox.png) center center / 100% 100% no-repeat;*/
+}
+header{
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+    background-color: rgba(16, 71, 110,.6);
+    overflow: hidden;
+}
+
+header > div{
+	float: left;
+	height: 100%;
+}
+
+header > div:first-child{
+	width: 240px;
+	padding: 0 0 0 10px;
+}
+header > div:last-child{
+	width: calc(100% - 240px);
+	text-align: center;
+}
+.unitSearch{
+	width: 210px;
+	height: 25px;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid #0071c3;
+    background: transparent;
+    padding: 0 25px 0 5px;
+}
+
+.searchImg{
+	margin-left: -25px;
+	margin-top: -3px;
+	width: 20px;
+	cursor: pointer;
+}
+
+section{
+	position: relative;
+	width: 100%;
+	height: calc(100% - 30px);
+}
+
+
+/*左侧菜单列表*/
+.menuBox{
+	position: absolute;
+	overflow: hidden;
+	width: 240px;
+	height: 100%;
+	left: 0;
+	font-size: 14px;
+	background-color: rgba(4,31,60,.4);
+	-webkit-box-shadow: 10px 0 27px -3px inset rgb(16, 71, 110);
+	-moz-box-shadow: 10px 0 27px -3px inset rgb(16, 71, 110);
+	box-shadow: 10px 0 27px -3px inset rgb(16, 71, 110);
+}
+.menuBox>.hasUnitlist{
+	transition: width .5s;
+	-webkit-transition: width .5s;
+}
+
+.menuBox > .first_ul{
+	width: 240px;
+	height: auto;
+	max-height: calc(100% - 60px);
+	overflow: hidden;
+	transition:height .2s;
+	-webkit-transition: height .2s; /* Safari */
+}
+.menuBox > .first_ul.active{
+	height: calc(100% - 60px);
+}
+
+.menuBox>.first_ul > .block_header{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 14px 0 20px;
+	color: #798194;
+	cursor: pointer;
+	background-color: #0E2E54;
+	border-bottom: 1px solid #213F63;
+}
+.menuBox>.first_ul > .block_header>.icon_triangle{
+	float: right;
+	transform: rotate(180deg);
+	-ms-transform: rotate(180deg); /* IE 9 */
+	-webkit-transform: rotate(180deg); /* Safari and Chrome */
+	transition:transform .3s;
+	-webkit-transition: transform .3s; /* Safari */
+}
+.menuBox>.first_ul>.block_header.actDiv>.icon_triangle{
+	transform: rotate(0deg);
+	-ms-transform: rotate(0deg); /* IE 9 */
+	-webkit-transform: rotate(0deg); /* Safari and Chrome */
+	color: #1381E3;
+}
+
+.menuBox>.first_ul  .blocl_content_ul{
+	width: 100%;
+	height:  calc(100% - 30px);
+	overflow: hidden;
+	/*display: none;*/
+
+}
+.menuBox > .first_ul.active .blocl_content_ul{
+	display: block;
+}
+
+.menuBox .blocl_content_ul li{
+	width: calc(100% - 10px);
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px 0 20px;
+	border-bottom: 1px solid rgb(16, 71, 110);
+	cursor: pointer;
+	color: #78A0D1;
+	border-left: 3px rgba(0,0,0,0) solid;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+.menuBox .blocl_content_ul li.noUse{
+	cursor: not-allowed;
+}
+
+.menuBox .first_ul li:not(.noUse):hover,
+.menuBox .first_ul li.clickli{
+	background-color: #194260;
+	border-left: 3px #248BB8 solid;
+	color: #B6D3F1;
+}
+.menuBox .first_ul li:hover{
+	background-color: #194260;
+}
+
+.menuBox .first_ul > .block_header.actDiv{
+	color: #35baef;
+	background-color: #0D386B;
+}
+
+.menuBox .first_ul li > img{
+	width: 22px;
+	margin-top: 2px;
+  position: absolute;
+  right: 2px;
+}
+
+/*底部*/
+section .bottomBox{
+	position: absolute;
+	right: 0%;
+	bottom: 0;
+	/* padding: 0 3%; */
+	width: calc(100% - 240px);
+	height: 60px;
+	background-color: rgba(16, 71, 110,.8);
+}
+section .bottomBox.hasUnitlist{
+	transition: width .5s;
+	-webkit-transition: width .5s;
+}
+
+.bottomBox .numBT,
+.bottomBox .hisBT
+{
+    width: 140px;
+	display: inline-block;
+    margin-left: 15px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    padding-left: 20px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin-top: 15px;
+}
+.bottomBox .numBT{
+	background-image: url(../../images/NetInfoStatistic/btNum.png);
+}
+
+.bottomBox .hisBT{
+	background-image: url(../../images/NetInfoStatistic/btHis.png);
+}
+
+.bottomBox .numBT.active {
+    background-image: url(../../images/NetInfoStatistic/btNum_click.png);
+}
+
+.bottomBox .hisBT.active {
+    background-image: url(../../images/NetInfoStatistic/btHis_click.png);
+}
+
+/*数量选择框*/
+.choseNumBox{
+	position: absolute;
+	bottom: 48px;
+	height: 90px;
+	left: 15px;
+	width: 140px;
+	-webkit-z-index: 9;
+	-moz-z-index: 9;
+	z-index: 9;
+	border: 1px solid rgb(16, 71, 110);
+}
+.choseNumBox ul{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.choseNumBox li{
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	cursor: pointer;
+	background-color: rgb(4,31,60);
+    border-bottom: 1px solid rgb(16, 71, 110);
+}
+.choseNumBox li:hover,.choseNumBox li.active{
+	background-color: rgb(16, 71, 110);
+}
+
+section .frameDiv{
+	position: absolute;
+	right: 0%;
+	top: 0;
+	width: calc(100% - 240px);
+	height: calc(100% - 60px);
+}
+section .frameDiv.hasUnitlist{
+	transition: width .5s,left .5s;
+	-webkit-transition: width .5s,left .5s;
+}
+section .frameDiv.active{
+	width: 100%;
+}
+
+
+.arrow_btn {
+    width: 15px;
+    height: 219px;
+    background: url(../../images/WeibaoInspect/arrow_icon.png);
+    position: absolute;
+    top: 30%;
+    left: 239px;
+    cursor: pointer;
+    z-index: 99;
+
+}
+.arrow_btn.hasUnitlist{
+	transition: left .5s;
+	-webkit-transition: left .5s;
+}
+
+.no_list .frameDiv{
+    width: 100%;
+}
+
+.no_list .arrow_btn{
+    left: 0;
+}
+
+.no_list .menuBox{
+	/*display: none;*/
+	width: 0;
+}
+.no_list .bottomBox{
+	/*display: none;*/
+	width: 100%;
+}
+
+.tips{
+	position: absolute;
+	top: 7%;
+	width: 100%;
+	text-align: center;
+	text-decoration: underline;
+	display: none;
+}
+.tips>a{
+	cursor: pointer;
+	color: red;
+}
+
+
+
+.wrap_content{
+	padding: 2% 0;
+	height: 98%;
+	background: black;
+}
+.wrap_content .wrap{
+	width: 95%;
+	height: 100%;
+	margin: auto;
+	overflow: hidden;
+	position: relative;
+}
+#cameratop{
+	width: 90%;
+	height: calc(89% - 40px);
+	position: absolute;
+	top: 0px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+#cameratop object{
+	width: 100%;
+	height: 100%;
+}
+
+.textTips{
+	font-size: 18px;
+	color: #fff;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: auto;
+	width: 100%;
+	text-align: center;
+	height: 30px;
+}
+
+#idvideownd{
+	width: 100%;
+	height: 100%;
+}
+#idvideownd>object{
+	width: 100%;
+	height: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>各系统监测-处理弹窗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/HistoryNote/History_deal.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+
+<!--处理 弹窗-->
+<div id="deallBox">
+
+    <div class="top_box" style="bottom: 0">
+        <div class="list_table">
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="16%">
+                        <col width="13%">
+                        <col width="13%">
+                        <col width="13%">
+                        <col width="10%">
+                        <col width="9%">
+                    </colgroup>
+                    <thead class="fontSize16">
+                    <tr>
+                        <th>序号</th>
+                        <th>检查项</th>
+                        <th>巡查人员</th>
+                        <th>问题描述</th>
+                        <th>位置</th>
+                        <th>巡查状态</th>
+                        <th>巡查时间</th>
+                        <th>是否正常</th>
+                        <th>附件</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="16%">
+                        <col width="13%">
+                        <col width="13%">
+                        <col width="13%">
+                        <col width="10%">
+                        <col width="9%">
+                    </colgroup>
+                    <tbody class="fontSize14" id="mainContent">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="wrap_imgs ">
+    <div class="wrap_imgContent scrollbar-inner" id="wrapPicContent">
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail"  width="200" height="200">-->
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail" width="200" height="200">-->
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail" width="200" height="200">-->
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail" width="200" height="200">-->
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail" width="200" height="200">-->
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail" width="200" height="200">-->
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail" width="200" height="200">-->
+        <!--<img src="../../Content/images/event/2000.png" class="icon_resultDetail" width="200" height="200">-->
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    var _dataDetail=[];
+    $(function(){
+        getAlarmListInfo();
+        clickevent();
+    });
+
+    function getAlarmListInfo(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getInspectTaskDetail",
+            data:'taskID='+GetQuery('id'),
+            success: function (data) {
+                if(data.success == true){
+                   var msg = data.obj;
+                    _dataDetail = msg;
+                    getMHQTable(msg)
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    //获取灭火器表格数据
+    function getMHQTable(data) {
+        var html = '';
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr taskdetailid="'+data[i].taskDetailId+'">'+
+                    '<td>'+(i+1)+'</td>'+
+                    '<td>'+data[i].checkName+'</td>'+
+                    '<td>'+data[i].inspectUser+'</td>'+
+                    '<td>'+data[i].checkInfo+'</td>'+
+                    '<td>'+data[i].siteName+'</td>'+
+                    '<td>'+data[i].isInspect+'</td>'+
+                    '<td>'+data[i].inspectTime+'</td>'+
+                    '<td>'+data[i].isOK+'</td>'+
+                    '<td class="underline">查看</td>'+
+                    '</tr>'
+        }
+        $('#mainContent').html(html||"<tr><td colspan='8'>暂无数据...</td></tr>");
+        $('#mainContent td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+
+    function clickevent(){
+
+        //查看详情 - 维保
+        $('#mainContent').delegate('tr>td.underline','click',function(){
+            var taskdetailid = $(this).parent('tr').attr('taskdetailid');
+            var html = "";
+            for(var i = 0 ; i< _dataDetail.length;i++){               
+                if(taskdetailid == _dataDetail[i].taskDetailId){
+                    for(var k = 0 ; k< _dataDetail[i].picPathList.length;k++){
+                        html += '<img src="'+_dataDetail[i].picPathList[k]+'" class="icon_resultDetail">';
+                        //html += '<img src="../../Content/images/1542693894888.png" class="icon_resultDetail"  >'
+//                        html += '<img src="../../Content/images/event/Water_fire.png" class="icon_resultDetail"  >'
+                    }
+                }
+            }
+           // html += '<img src="../../Content/images/event/2000.png" class="icon_resultDetail"  >';
+            $('#wrapPicContent').html(html||"暂无详情图片");
+
+
+            layer.open({
+                type: 1,
+                title: '巡查详情',
+                area: ['600px', '300px'],
+                closeBtn: 1,
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+//            shadeClose: true,
+                content: $('.wrap_imgs')
+            });
+        });
+        //查看大图
+        $('#wrapPicContent').delegate(' .icon_resultDetail','click',function(){
+            getBigPicInfo($(this))
+        })
+    }
+
+</script>
+
+</html>

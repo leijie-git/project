@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>物联</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/NetInfoStatistic/video.css" rel="stylesheet" type="text/css"/>
+
+
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="hideElembyOneUnit">
+            <div>
+                <input type="search" name="search" class="unitSearch lightblue" placeholder="搜索联网单位名称" autocomplete="off">
+                <img src="../../Content/images/NetInfoStatistic/btSearch.png" class="searchImg">
+            </div>
+            <div class="fontSize16">视频监控</div>
+        </header>
+
+
+        <section>
+            <!--左菜单列表 start-->
+            <div class="menuBox hideElembyOneUnit">
+                <div class="first_ul">
+                    <div class="block_header">所有联网单位(<span class="unitCount"> 0</span> ) <i class="layui-icon icon_triangle">&#xe625;</i></div>
+                    <ul class="blocl_content_ul scrollbar-inner" id="allNetUnit">
+                        <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);" class="clickli">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' class="noUse">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo_gray.png"></li>-->
+                    </ul>
+                </div>
+                <div class="first_ul">
+                    <div class="block_header">视频接入单位( <span class="unitCount"> 0</span> ) <i class="layui-icon icon_triangle">&#xe625;</i></div>
+                    <ul class="blocl_content_ul scrollbar-inner" id="onlineUnit">
+                        <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' onclick="getUnitVideo(this);">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>-->
+                    </ul>
+                </div>
+                <div class="first_ul">
+                    <div class="block_header">视频未接入单位( <span class="unitCount"> 0</span> ) <i class="layui-icon icon_triangle">&#xe625;</i></div>
+                    <ul class="blocl_content_ul scrollbar-inner" id="offlineUnit">
+                        <!--<li data-type='wdsfdsffsd' class="noUse">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo_gray.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' class="noUse">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo_gray.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' class="noUse">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo_gray.png"></li>-->
+                        <!--<li data-type='wdsfdsffsd' class="noUse">上海xx大学 <img src="../../Content/images/NetInfoStatistic/btVideo_gray.png"></li>-->
+                    </ul>
+                </div>
+            </div>
+            <!--左菜单列表 end-->
+            <div class="arrow_btn hideElembyOneUnit" id="arrowBtn"></div>
+             
+            <!--底部 start-->
+            <div class="bottomBox biggerbyOneUnit">
+                <div class="bottombt numBT active orange">选择视频数量</div>
+                <div class="bottombt hisBT hideElembyOneUnit">查看历史截图</div>
+
+                <div class="choseNumBox" style="display: none;">
+                    <ul class="">
+                        <li>1</li>
+                        <li>4</li>
+                        <li>9</li>
+                    </ul>
+                </div>
+            </div>
+            <!--底部 start-->
+
+            <div class="frameDiv biggerbyOneUnit">
+                <iframe id="frameCont" class="video" src="video-iframe/video_index.html?videoNumber=1" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>
+            </div>
+        </section>
+    </div>
+</body>
+
+<script type="text/javascript">
+//    var videoNumber = 1; //视频显示数量
+
+    $(function(){
+        ifVideoByOneUnit(); //判断视频是否从单位更多进入
+        clickevent();
+
+        //获取所有联网单位
+        getAllUnitData();
+    });
+
+function ifVideoByOneUnit(){
+    var showType = GetQuery('showtype');
+//    console.log(showType);
+    if(showType&&showType!=""){
+//        console.log('yes:'+showType);
+        $('.unitSearch').val(showType);
+        $('.hideElembyOneUnit').hide();
+        $('.biggerbyOneUnit').css({'width':'94%','right':'3%'})
+    }
+    else{
+        $('.frameDiv').addClass('hasUnitlist');
+        $('.arrow_btn').addClass('hasUnitlist');
+        $('.menuBox').addClass('hasUnitlist');
+        $('.bottomBox').addClass('hasUnitlist');
+    }
+}
+
+    //获取所有联网单位
+    function getAllUnitData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getUnits",
+            data:'unitName='+$('.unitSearch').val(),
+            cache: false,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                   showUnitListContent(msg);
+
+                }
+            }
+        });
+    }
+
+    function showUnitListContent(msg){
+        var allhtml = "",onlineHtml="",offlineHtml="",allCount= 0,onlineCount= 0,offCount=0;
+        for(var i = 0 ; i < msg.length;i++){
+            allhtml+='<li unitid="'+msg[i].unitId+'" data-type="" class="li_unit '+(msg[i].hasVideo == 0?"noUse":"")+'" >'+msg[i].unitName+
+                    '<img src="../../Content/images/NetInfoStatistic/'+(msg[i].hasVideo == 0?"btVideo_gray":"btVideo") +'.png"></li>'
+            if(msg[i].hasVideo == 0){
+                offlineHtml+='<li unitid="'+msg[i].unitId+'" data-type="" class="li_unit noUse" >'+msg[i].unitName+
+                        '<img src="../../Content/images/NetInfoStatistic/btVideo_gray.png"></li>';
+                offCount++
+            }
+            if(msg[i].hasVideo == 1){
+                onlineHtml+='<li unitid="'+msg[i].unitId+'" data-type="" class="li_unit">'+msg[i].unitName+
+                        '<img src="../../Content/images/NetInfoStatistic/btVideo.png"></li>';
+                onlineCount++
+            }
+        }
+        $('#allNetUnit').html(allhtml||"<li>暂无单位接入</li>").parent().prev().find('.unitCount').text(msg.length);
+        $('#onlineUnit').html(onlineHtml||"<li>暂无单位接入</li>").parent().prev().find('.unitCount').text(onlineCount);
+        $('#offlineUnit').html(offlineHtml||"<li>暂无单位接入</li>").parent().prev().find('.unitCount').text(offCount);
+        $('.block_header').eq(0).click();
+        $('.li_unit:not(.noUse)').eq(0).click();
+        //$('.choseNumBox>ul>li').eq(0).click();
+    }
+
+
+    function clickevent(){
+        //搜索
+        $('.searchImg').unbind('click').click(function(){
+            $('.block_header').eq(0).click();
+            getAllUnitData();
+        });
+
+        //监听搜索框
+        $('.unitSearch').unbind(" input propertychange").on(" input propertychange",function(){
+            $('.block_header').eq(0).click();
+            getAllUnitData()
+
+        });
+
+
+        //分类点击
+        $('.block_header').unbind('click').click(function(){
+            if($(this).hasClass('actDiv')){
+                $(this).parent('.first_ul').removeClass('active');
+                $(this).removeClass('actDiv'); //收缩
+               // $(this).next().slideUp('fast');
+                $(this).parent('.first_ul').css('height',"30px")
+            }else{
+                $(this).parent('.first_ul').addClass('active').siblings().removeClass('active');
+                $(this).addClass('actDiv').parent().siblings().children('.block_header').removeClass('actDiv'); //展开
+                //$(this).next().slideDown('fast').parent().siblings().find('.blocl_content_ul').slideUp('fast');
+                var unitList = $(this).next().find('li').length;
+                var maxContentHeight = $('.menuBox').height() - 90;
+                if(parseInt(unitList)*31 > maxContentHeight){
+                    $(this).parent('.first_ul').siblings().css('height',"30px");
+                    $(this).parent('.first_ul').css('height',"calc(100% - 60px)")
+                }
+                else{
+                    $(this).parent('.first_ul').siblings().css('height',"30px");
+                    $(this).parent('.first_ul').css('height',parseInt(unitList)*30+30 +"px")
+                }
+//                console.log(parseInt(unitList)*30 );
+            }
+        });
+
+        //底部两个按钮
+        $('.bottombt').unbind('click').click(function(){
+            var _index = $(this).index();
+            if(_index == 0){
+                event.stopPropagation();
+                if($('.choseNumBox').hasClass('actNum')){
+                    $('.choseNumBox').fadeOut('fast').removeClass('actNum');
+                }else{
+                    $('.choseNumBox').slideDown('fast').addClass('actNum');
+                }
+               //
+            }else{
+                $('.choseNumBox li').removeClass('active');
+                $(this).addClass('active orange').siblings().removeClass('active orange');
+                $('#frameCont').removeClass('video').addClass('photo');
+                var unitId = $('.menuBox').find('li.clickli').attr('unitid');
+                $('#frameCont').attr('src','video-iframe/historyPics.html?unitId='+unitId); //跳进查看历史截图页
+
+            }
+        });
+
+        //点击选择视频数量
+        $('.choseNumBox li').unbind('click').click(function(){
+            console.log($('.menuBox .li_unit.clickli').text());
+
+            $(this).addClass('active').siblings().removeClass('active');
+            var videoNumber = $(this).text();
+            var unitId = $('.menuBox').find('li.clickli').attr('unitid');
+            var unitname = $('.menuBox').find('li.clickli').text();
+            var type = $('.menuBox').find('li.clickli').attr('data-type');
+            if(!$('#frameCont').hasClass('video')){ //首次加载视频判断-之后不重复刷新模块
+                $('#frameCont').attr('src','video-iframe/video_index.html?type='+type+'&videoNumber=' + videoNumber+'&unitId='+unitId)+'&unitname='+escape(unitname); //跳转到视频页重新加载视频及数量
+                $('.numBT').addClass('active orange').siblings().removeClass('active orange');
+                $('#frameCont').addClass('video').removeClass('photo');
+            }
+            else{
+                window.document.getElementById('frameCont').contentWindow.showVideoNum(videoNumber);
+            }
+            if($('.choseNumBox').hasClass('actNum')){
+                $('.choseNumBox').fadeOut('fast').removeClass('actNum');
+            }else{
+                $('.choseNumBox').slideDown('fast').addClass('actNum');
+            }
+            //
+            //$('#frameCont').attr('src','video-iframe/video_index.html');
+        });
+
+
+        $(document).unbind('click').click(function(){
+            mainUse(); //收缩选择框
+        }); 
+
+        //$('.actDiv li').eq(0).click();
+
+        //单位列表箭头按钮
+        $('#arrowBtn').unbind('click').click(function() {
+            $('.wrapper').toggleClass('no_list');
+        });
+    }
+
+    //收缩选择框
+    function mainUse() {
+        $('.choseNumBox').fadeOut('fast').removeClass('actNum');
+        //$('.choseNumBox li').unbind();
+    }
+
+    //获取点击单位视频
+    $('.blocl_content_ul').delegate('.li_unit:not(.noUse)','click',function(){
+        $('.choseNumBox li').removeClass('active');
+        $(this).parents('.menuBox').find('li').removeClass('clickli');
+        $(this).addClass('clickli');
+        var unitId = $(this).attr('unitid');
+        var type = $(this).attr('data-type');
+        $('.numBT').addClass('active orange').siblings().removeClass('active orange')
+        $('#frameCont').attr('src','video-iframe/video_index.html?type=' + type + '&videoNumber=1&unitId='+unitId);
+    })
+</script>
+</html>

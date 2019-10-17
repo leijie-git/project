@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>萤石云</title>
+    <script src="../Script/jquery-1.11.0.js"></script>
+    <script src="https://open.ys7.com/sdk/js/1.1/ezuikit.js"></script>
+    <script src="../Script/public.js"></script>
+    <script src="../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            padding: 0 0;
+            height: 95%;
+        }
+        .wrap {
+            width: 95%;
+            height: 95%;
+            margin: auto;
+            background: black;
+            overflow: hidden;
+        }
+
+        object {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        #myPlayer {
+            width: 100%;
+            height: 100%;
+        }
+
+        #myPlayer source {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+
+    <video id="myPlayer" data- poster=" " controls playsinline webkit-playsinline autoplay>
+        <source class="play_a" src="" type="rtmp/flv" />
+        <source class="play_b" src="" type="application/x-mpegURL" />
+    </video>
+</div>
+
+<script>
+    var _ip = GetQuery("ip"); //IP
+//    console.log(_ip);
+//    _ip = "ae489bb4ef81472ea9b92e05d0f58bc5.hd"
+    //http://hls.open.ys7.com/openlive/ae489bb4ef81472ea9b92e05d0f58bc5.hd.m3u8
+    $(function () {
+        $("#myPlayer").find(".play_a").attr("src", "rtmp://rtmp.open.ys7.com/openlive/" + _ip);
+        $("#myPlayer").find(".play_b").attr("src", "http://hls.open.ys7.com/openlive/"+_ip+".m3u8");
+        var player = new EZUIPlayer('myPlayer'); //执行视频
+    });
+
+</script>
+</body>
+</html>

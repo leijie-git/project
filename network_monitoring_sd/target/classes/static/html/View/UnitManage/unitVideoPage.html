@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <style>
+        .video{
+            width: 100%;
+            height: 100%;
+            float: left;
+            background-color: #011120;
+            background-image: url(../../Content/images/UnitManage/video1.png);
+            background-repeat: no-repeat;
+            background-position: center 40%;
+            position: relative;
+        }
+        .video>div{
+            color: #57687D;
+            font-size: 18px;
+            margin:auto;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            bottom: 10px;
+        }
+        .btn_cutPic {
+            width: 26px;
+            height: 26px;
+            background: url(../../Content/images/Home/btn_showBig.png) no-repeat center / 100% 100%;
+            /* background-size: 30px; */
+            position: absolute;
+            right: 3%;
+            top: 4%;
+            transition: right .5s;
+            -webkit-transition: right .5s;
+            cursor: pointer;
+            z-index: 999;
+            min-width: 15px;
+            min-height: 15px;
+        }
+        .top-search{
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+<div class="top-search btn_more" style="position: absolute;z-index: 99">
+    <form class="layui-form" action="" autocomplete="off" id="wrapVideoContet" style="width: 200px;background: #043260">
+        <div class="layui-inline layui-bg-cyan">
+            <div class="layui-input-inline">
+                <select name="modules" lay-filter="video" lay-verify="required" lay-search="" id="videoSelect">
+
+                </select>
+            </div>
+        </div>
+        <!--<input class="selectB" id="keywords" type="search" placeholder="请输入关键字搜索">-->
+        <input class="submitBtn" type="button" value="查询">
+    </form>
+</div>
+<div class="wrap_content" style="height:calc(100% - 40px);width: calc(100% - 15px);position: absolute;top: 35px;">
+    <iframe id="cameraIframe" frameborder="0" width="100%" height="100%" scrolling="0" style="width: 100%;height: 100%"></iframe>
+    <div class="btn_cutPic"></div>
+</div>
+
+
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<script src="../../Script/public.js"></script>
+<script>
+    var _unitid = GetQuery('unitid');
+    $(function(){
+
+        getUnitVideoInfoData();
+        bindEvent();
+
+        //var form = layui.form();
+        // form.on('select(video)', function(data){
+        //     console.log(data);
+        // });
+        // $('#videoSelect').change(function () {
+        //     alert('A'+$(this).val());
+        // });
+    });
+
+    //////////////视频
+    function getUnitVideoInfoData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitVideoInfo",
+            data:'unitId='+_unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success) {
+                    var msg = data.obj;
+                    var html = "";
+                    for(var i = 0 ; i < msg.length;i++){
+                        html +='<option value="'+msg[i].id+'" '+(i==0?"selected":"")+' ip="'+msg[i].ip+'" port="'+msg[i].port+'" userName="'+msg[i].userName+'" password="'+msg[i].password+'" deviceType="'+msg[i].plugInType+'" buildarename="'+msg[i].buildAreaName+'" appKey="'+msg[i].appKey+'" token="'+msg[i].token+'" serialnumber="'+msg[i].serialnumber+'">'+msg[i].name+'</option>'
+                    }
+                    $('#videoSelect').html(html);
+                    loadLayuiForm(); //调用layui form组件，方法写在public
+                    if(msg.length>0){
+                        var ip = msg[0].ip,port = msg[0].port,userName = msg[0].userName,password = msg[0].password,deviceType = msg[0].plugInType,buildarename = msg[0].buildAreaName;
+                        var videoIframeSrc="";
+                        var token = msg[0].token,appKey = msg[0].appKey,serialnumber = msg[0].serialnumber;
+                        if(deviceType == 2){
+                            if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+                                videoIframeSrc = '../iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+                            }else{
+                                videoIframeSrc = '../video_a.html?ip='+escape(ip)+"&buildareaname="+buildarename
+                            }
+                        }else if(deviceType == 0 || deviceType== 1 || deviceType== 9 ){
+                            videoIframeSrc = '../camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&buildareaname="+escape(buildarename)
+                        }
+                        $('#cameraIframe').attr('src',videoIframeSrc);
+                        $('.btn_cutPic').attr({'ip':escape(ip),'port':escape(port),'username':escape(userName),'password':escape(password),'devicetype':escape(deviceType),'buildarename':buildarename,'token':token,appKey:appKey,serialnumber:serialnumber})
+                    }
+                    else{
+                        $('body').html('<div class="video" ><div>该单位暂无视频录入</div></div>')
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    //
+    function bindEvent(){
+        $('.submitBtn').click(function(){
+            var key = $('#wrapVideoContet').find('dd.layui-this').attr('lay-value')||"";
+            var ip = $('#videoSelect>option[value='+key+']').attr('ip');
+            var port = $('#videoSelect>option[value='+key+']').attr('port');
+            var userName = $('#videoSelect>option[value='+key+']').attr('username');
+            var password = $('#videoSelect>option[value='+key+']').attr('password');
+            var deviceType = $('#videoSelect>option[value='+key+']').attr('devicetype');
+            var buildarename = $('#videoSelect>option[value='+key+']').attr('buildarename');
+
+            var token = $('#videoSelect>option[value='+key+']').attr('token');
+            var appKey = $('#videoSelect>option[value='+key+']').attr('appKey');
+            var serialnumber = $('#videoSelect>option[value='+key+']').attr('serialnumber');
+
+            var videoIframeSrc="";
+            if(deviceType == 2){
+                if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+                    videoIframeSrc = '../iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+                }else{
+                    videoIframeSrc = '../video_a.html?ip='+escape(ip)+"&buildareaname=" + buildarename
+                }
+            }else if(deviceType == 0 || deviceType== 1 || deviceType== 9 ){ //海康
+                videoIframeSrc = '../camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&buildareaname="+escape(buildarename)
+            }
+            $('#cameraIframe').attr('src',videoIframeSrc);
+            $('.btn_cutPic').attr({'ip':escape(ip),'port':escape(port),'username':escape(userName),'password':escape(password),'devicetype':escape(deviceType),'buildarename':buildarename,'token':token,appKey:appKey,serialnumber:serialnumber})
+        });
+
+        $('.wrap_content').delegate(' .btn_cutPic','click',function(e){
+            e.stopPropagation();
+
+            var ip = $(this).attr('ip');
+            var port = $(this).attr('port');
+            var userName = $(this).attr('userName');
+            var password = $(this).attr('password');
+            var deviceType = $(this).attr('deviceType');
+            var buildarename = $(this).attr('buildarename');
+
+            var token = $(this).attr('token'),appKey = $(this).attr('appKey'),serialnumber = $(this).attr('serialnumber');
+
+            top.layer.open({
+                type: 2,
+                title: false,
+                closeBtn: 1,
+                area:['100%','100%'],
+                shade: 0.1,
+                shadeClose:true,
+                content: (_loginInfo.usertype == 1?"../":"")+'NetInfoStatistic/biggerVideo.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&buildarename="+escape(buildarename)+'&unitId='+escape(_unitid)+'&token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+            });
+        })
+    }
+
+</script>
+</body>
+</html>

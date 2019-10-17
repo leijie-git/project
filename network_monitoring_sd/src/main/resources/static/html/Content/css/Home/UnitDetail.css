@@ -1,0 +1,164 @@
+.wrapper{
+	width: 100%;
+	height: 100%;
+    padding: 0% 0.5% 1% 01%;;
+}
+
+nav {
+    width: 100%;
+    height: 50px;
+    padding-top: 12px;
+    padding-left: 10px;
+    overflow: hidden;
+}
+
+nav .navbt {
+	float: left;
+	display: inline-block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #a3d8fa;
+    background: url(../../images/Public/search.png) no-repeat center;
+    background-size: 100% 100%;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.red {
+    color: #EA6168;
+}
+nav .navbt.active {
+    background: url(../../images/Home/mapMarkerTypeTab_active.png) no-repeat center;
+    color: #dec151;
+    background-size: 100% 100%;
+}
+
+nav .navbt:hover {
+    background: url(../../images/Home/mapMarkerTypeTab_active.png) no-repeat center;
+    background-size: 100% 100%;
+    color: #dec151;
+}
+
+section{
+	overflow: hidden;
+	width: 100%;
+	height: calc(100% - 50px);
+}
+
+.secbox{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.secbox>div{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+    margin-bottom: 5px;
+}
+
+.nth1{
+	width: calc(20% - 5px);
+	height: 100%;
+	color: #7BA5D1;
+    background: rgba(13, 74, 128, 0.8);
+    text-align: right;
+    padding-right: 15px;
+    float: left;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.nth2{
+	width: calc(30% - 5px);
+	height: 100%;
+    color: #fff;
+    background: rgba(13, 74, 128, 0.3);
+    padding-left: 15px;
+    float: left;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 5px;
+}
+
+.nth3{
+	width: calc(20% - 5px);
+	height: 100%;
+	color: #7BA5D1;
+    background: rgba(13, 74, 128, 0.8);
+    text-align: right;
+    padding-right: 15px;
+    float: left;
+    display: inline-block;
+    margin-right: 5px;
+}
+.nth4{
+	width: calc(80% - 5px);
+	height: 100%;
+    color: #fff;
+    background: rgba(13, 74, 128, 0.3);
+    padding-left: 15px;
+    float: left;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 5px;
+}
+
+
+/*单位详细资料弹窗*/
+/*传输设备tab*/
+.sys1{
+	display: inline-block;
+	text-align: center;
+	width: 60px;    
+	vertical-align: middle;
+    height: 18px;
+    line-height: 18px;
+	color: #fff;
+	background-color: #ff3300;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+.sys2{
+	display: inline-block;
+	text-align: center;
+	width: 70px; 
+	vertical-align: middle;
+    height: 18px;
+    line-height: 18px;
+	color: #fff;
+	background-color: #339900;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+.sys3{
+	display: inline-block;
+	text-align: center;
+	width: 70px; 
+	vertical-align: middle;
+    height: 18px;
+    line-height: 18px;
+	color: #fff;
+	background-color: #0099CC;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.phone_text {
+    padding-right: 30px;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: underline;
+    background-image: url(../../images/UnitManage/phone_icon.png);
+    background-repeat: no-repeat;
+    background-position: right;
+}

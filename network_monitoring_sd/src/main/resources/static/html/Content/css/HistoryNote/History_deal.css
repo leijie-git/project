@@ -1,0 +1,198 @@
+
+
+/*处理弹窗*/
+#deallBox{
+	position: relative;
+    width: 100%;
+    height: 96%;
+    overflow: hidden;
+}
+
+.top_box{
+	position: absolute;
+	left: 2%;
+    right: 1%;
+	top: 4.5%;
+	bottom: 60px;
+	overflow-y: auto;
+}
+.titleBox {
+    overflow: hidden;
+    -webkit-display: flex;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 30px;
+    margin-bottom: 4px;
+}
+.titleBox>div {
+    -webkit-display: flex;
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+    height: 30px;
+    line-height: 30px;
+}
+.titleBox>div>div {
+    height: 100%;
+    text-align: center;
+}
+.titleBox>div>div:first-child {
+    background: rgba(163, 216, 250,.2);
+    width: 30%;
+}
+.titleBox>div>div:last-child {
+    background: rgba(16, 71, 110,.6);
+    width: 70%;
+}
+
+
+.titleBox2{
+	height: 60px;
+}
+
+.titleBox2>div{
+	width: 100%;
+	height: 60px;
+}
+
+.titleBox2>div>div:first-child{
+	width: 15.2%;
+	height: 60px;
+	line-height: 60px
+}
+.titleBox2>div>div:last-child{
+	width: 84.8%;
+	height: 60px;
+}
+
+.titleBox2 textarea,.titleBox input{
+	width: 100%;
+	height: 100%;
+	padding: 4px;
+	background: transparent;
+	resize: none;
+	border: none;
+	color: #fff;
+}
+
+.titleBox3{
+	height: 30px;
+}
+.titleBox3>div{
+	width: 100%;
+	height: 30px;
+}
+.titleBox3>div>div:first-child{
+	width: 15.2%;
+	height: 30px;
+	line-height: 30px;
+}
+.titleBox3>div>div:last-child{
+	width: 84.8%;
+	height: 30px;
+	text-align: left;
+}
+.titleBox3 .choseBt{
+	margin-left: 5%;
+    margin-top: 5px;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    display: none;
+}
+.titleBox3 .choseBt.missAlarm{
+    background: url("../../../Content/images/NetInfoStatistic/checkbox_checked.png");
+    background-size: 100% 100%;
+}
+.titleBox3 .choseBt.realAlarm{
+    background: url("../../../Content/images/NetInfoStatistic/checkbox.png");
+    background-size: 100% 100%;
+    display: block;
+}
+
+.submitBtn{
+	position: absolute;
+	bottom: 5%;
+	right: 10px;
+}
+
+
+
+
+
+
+
+/*Chrome下*/
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.top_box::-webkit-scrollbar,
+.titleBox2 textarea::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: rgba(0,0,0,0);
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.top_box::-webkit-scrollbar-track,
+.titleBox2 textarea::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background: rgba(3,94,138,.2);
+}
+/*定义滑块，内阴影及圆角*/
+.top_box::-webkit-scrollbar-thumb,
+.titleBox2 textarea::-webkit-scrollbar-thumb {
+    height: 20px;        
+    background: rgba(3,94,138,.8);
+
+}
+
+/*IE下滚动条样式*/
+.top_box,
+.titleBox2 textarea{
+    scrollbar-base-color: #035e8a; /*滑块颜色*/
+    scrollbar-3dlight-color: #035e8a;
+    scrollbar-highlight-color: #035e8a;
+    scrollbar-track-color: #336699; /*背景色*/
+    scrollbar-arrow-color: #373F6E; /*箭头颜色*/
+    scrollbar-shadow-color: #373F6E;
+    scrollbar-dark-shadow-color: #035e8a;
+}
+
+
+.div_checkbox{
+    vertical-align: middle;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    width: 26px;
+    height: 26px;
+    background: url(../../../Content/images/NetInfoStatistic/checkbox.png) no-repeat center;
+    background-size: 100% 100%;
+    margin: auto;
+}
+.div_checkbox.active{
+    background: url("../../../Content/images/NetInfoStatistic/checkbox_checked.png") no-repeat center;
+    background-size: 100% 100%;
+}
+.div_checkbox.canClick{
+    cursor: pointer;
+}
+
+.wrap_imgs{
+    width: 100%;
+    height: 100%;
+    padding:2% 5%;
+}
+.wrap_imgs .wrap_imgContent{
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+    /*justify-content: center;*/
+}
+.icon_resultDetail{
+    max-width: calc(33% - 10px);
+    height: auto;
+    margin: 5px;
+}
+

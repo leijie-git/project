@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>查岗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/CheckPost/Index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+
+<div class="wrapper_content second_module">
+
+    <div class="middleBox">
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">
+                <!--下拉框-->
+                <div class="layui-inline layui-bg-cyan" id="resultStatus">
+                    <div class="layui-input-inline">
+                        <select name="modules" lay-verify="required" lay-search="">
+                            <option value="" selected>--点名结果--</option>
+                            <option value="0">失败</option>
+                            <option value="1">成功</option>
+                        </select>
+                    </div>
+                </div>
+
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })" />
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })" />
+
+                <input class="selectB"  id="keyWords"  type="search" placeholder="请输入关键字搜索">
+                <input class="submitBtn" id="btnSearch" type="button" value="查询">
+            </form>
+        </div>
+        <!--table start-->
+        <div class="table_box">
+            <div class="list_table">
+                <div class="table_header">
+                    <table>
+                        <colgroup>
+                            <col width="6%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="10%">
+                            <col width="15%">
+                            <col width="10%">
+                            <col width="15%">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>单位编号</th>
+                            <th>子站号</th>
+                            <th class="align-left padding-left">单位名称</th>
+                            <th>发送用户</th>
+                            <th>发送时间</th>
+                            <th>点名结果</th>
+                            <th>回应时间</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="table_content scrollbar-inner">
+                    <table cellpadding="0" cellspacing="0" class="tbody">
+                        <colgroup>
+                            <col width="6%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="10%">
+                            <col width="15%">
+                            <col width="10%">
+                            <col width="15%">
+                        </colgroup>
+                        <tbody id="mianTbody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap_page">
+        <div id="demo7"></div>
+        <img src="../../Content/images/Public/exportBT.png" class="btn_export">
+    </div>
+</div>
+
+<script>
+    var _data = {
+        keyword:$('#keyWords').val(),
+        pageNumber:1,
+        pageSize:20,
+        result:$('#resultStatus').find('dd.layui-this').attr('lay-value')||"",
+        startDate:$('#sData2').val(),
+        endDate:$('#eData2').val()
+    };
+    var _ifUsed = 0;
+    $(function () {
+        loadLayuiForm();//调用layui form组件，方法写在public
+        getLookupRecordData();//获取查岗记录数据
+        domeEvelement();
+    });
+
+    function getLookupRecordData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/lookup/getNamingLogs",
+            data:_data,
+            async:isAsync,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+
+                showListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showListContent(msg){
+        var data = msg.list;
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr id="'+data[i].id+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].unitcode+'</td>'+
+                    '<td>'+data[i].childstationnum+'</td>'+
+                    '<td class="align-left">'+data[i].unitname+'</td>'+
+                    '<td>'+data[i].userName+'</td>'+
+                    '<td>'+data[i].sendDate+'</td>'+
+                    '<td class="'+(data[i].status == "成功"?"success":"fail")+'">'+data[i].status+'</td>'+
+                    '<td>'+data[i].receiveDate+'</td>'+
+                    '</tr>'
+        }
+        $('#mianTbody').html(html||"<tr><td colspan='8'>暂无数据...</td></tr>");
+        $('#mianTbody>tr>td').each(function(){$(this).attr('title',$(this).text())});
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+//                    console.log(obj);
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getLookupRecordData(); //调用接口获取数据
+                    }
+                }
+            });
+        });
+    }
+
+    function domeEvelement(){
+        $('#btnSearch').click(function(){
+        	_ifUsed = 0;
+            _data.keyword=$('#keyWords').val();
+            _data.result=$('#resultStatus').find('dd.layui-this').attr('lay-value')||"";
+            _data.startDate=$('#sData2').val();
+            _data.endDate=$('#eData2').val();
+            getLookupRecordData();
+        });
+
+        $('.btn_export').click(function(){
+            if( $('#mianTbody tr:first-child>td').length == 1)
+                return;
+            var url = _serverIp + "/front/lookup/exportNamingLogs?"
+                    + "&keyword=" + $('#keyWords').val()
+                    + "&pageNumber=" + _data.pageNumber
+                    + "&pageSize=" + _data.pageSize
+                    + "&result=" + ($('#resultStatus').find('dd.layui-this').attr('lay-value')||"")
+                    + "&startDate=" + $('#sData2').val()
+                    + "&endDate=" + $('#eData2').val();
+            postExport(url)
+        });
+
+//        //查看身份信息
+//        $('#mianTbody').delegate('tr>td.identity:not(.no)').click(function(){
+//            var id =  $(this).parent('tr').attr('id');
+//            layer.open({
+//                type: 2,
+//                title: '查岗人员信息',
+//                closeBtn: 1,
+//                area:['55%','80%'],
+//                shade: 0.1,
+//                skin: 'layui-layer-loginRecord',
+//                content: './staffInfoLayer.html'
+//            });
+//        })
+    }
+</script>
+</body>
+</html>

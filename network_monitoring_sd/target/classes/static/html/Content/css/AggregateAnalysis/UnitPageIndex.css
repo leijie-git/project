@@ -1,0 +1,201 @@
+*,html{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+body{
+    padding: 0;
+}
+
+/*单位系统分析*/
+.wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding-top: 8px;
+    background: url(../../images/AggregateAnalysis/bigbox.png) center center / 100% 100% no-repeat;
+}
+
+.underline{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.table_content img{
+	margin-right: 5px;
+    margin-top: -3px;
+    width: 16px;
+}
+
+/*逻辑图弹窗*/
+#LogicBox{
+	padding: 4% 3%;
+	width: 100%;
+	height: 100%;
+}
+
+#LogicBox .titleBox{
+	overflow: hidden;
+	-webkit-display: flex;
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+}
+
+#LogicBox .titleBox>div{
+	-webkit-display: flex;
+	display: flex;
+	justify-content: space-between;
+	width: calc(50% - 5px);
+	height: 30px;
+}
+
+#LogicBox .titleBox>div>div{
+	height: 100%;
+	text-align: center;
+}
+
+#LogicBox .titleBox>div>div:first-child{
+	background: rgba(163, 216, 250,.2);
+	width: 30%;
+}
+
+#LogicBox .titleBox>div>div:last-child{
+	background: rgba(16, 71, 110,.6);
+	width: 70%;
+}
+
+#LogicBox .contBox{
+	width: 100%;
+	height: calc(100% - 30px);
+	padding-top: 10px;
+}
+
+#LogicBox .contBox .c_word{
+	width: 100%;
+	height: 35px;
+}
+
+#LogicBox .contBox .c_word span{
+	display: inline-block;
+	text-align: center;
+	width: 100px;
+	height: 25px;
+	line-height: 25px;
+	border-top: 1px solid rgba(16, 71, 110,1);
+	border-bottom: 1px solid rgba(16, 71, 110,1);
+}
+
+#LogicBox .contBox>div:last-child{
+	width: 100%;
+	height: calc(100% - 35px);
+	border: 1px solid black;
+	background: #fff;
+	/* text-align: center; */
+	display: flex;
+	align-content: center;
+	justify-content: center;
+}
+
+/*更多详情 弹窗*/
+#chartBox{
+	width: 100%;
+    height: calc(95% - 40px);
+	overflow: hidden;
+	padding: 2%;
+    background: url(../../images/AggregateAnalysis/chagangHdBg.png)no-repeat center;
+    background-size: 100% 100%;
+}
+
+#chartBox #chart1,
+#chartBox .eventbox{
+	float: left;
+	display: inline-block;
+	width: 50%;
+	height: 100%;
+	display: flex;
+	justify-content: space-around;
+	flex-direction: column;
+}
+
+#chartBox .eventbox{	
+	/*padding-top: 5%;*/
+}
+
+
+.eventDiv{
+	width: 100%;
+	padding: 0 2%;
+	cursor: pointer;
+}
+@media screen and (max-width: 1366px){
+	#chartBox .eventbox{	
+		padding-top: 0;
+	}
+
+	.eventDiv{
+	    width: 100%;
+    	padding: 0 2%;
+    	cursor: pointer;
+	}
+}
+
+.eventDiv:hover,
+.eventActive{
+	background-color: rgba(16, 71, 110, 0.8);
+}
+
+.eventDiv>div{
+	float: left;
+	display: inline-block;
+}
+.eventDiv .barData{
+	float: right;
+	width: 8%;
+}
+
+.eventDiv .word{
+	color: #eee;
+	width: 22%;
+	height: 100%;
+	line-height: 28px;
+	text-align: left;
+	letter-spacing: 2px;
+}
+
+.eventDiv .bar{
+	position: relative;
+	width: 66%;
+	margin-top: 4px;
+	height: 20px;
+	border: 1px solid #777;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	background-color: #062F5D;
+}
+
+.barPrograss{
+	position: absolute;
+	left:0;
+	top: 1px;
+	bottom: 1px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	background:-moz-linear-gradient(left,#0f50a0,#5abbfd);/*Mozilla*/
+	background:-webkit-gradient(linear,0 50%,100% 50%,from(#0f50a0),to(#5abbfd));/*Old gradient for webkit*/
+	background:-webkit-linear-gradient(left,#0f50a0,#5abbfd);/*new gradient for Webkit*/
+	background:-o-linear-gradient(left,#0f50a0,#5abbfd); /*Opera11*/
+}
+
+#LogicBox img{
+	/* width: 15px; */
+	margin-top: -3px;
+	margin-right: 5px;
+}
+
+
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitNotifyMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitNotify" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="sender" property="sender" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="send_date" property="sendDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+	<!--更改关联sysUser  为UT_Unit_User-->
+  <select id="getNotifyList" resultType="com.gw.front.index.data.FrontNotifyOutData" parameterType="java.lang.String">
+  SELECT
+		a.id id,
+		c.UserName sender,
+		a.title title,
+		CONVERT (VARCHAR, a.send_date, 120) sendDate,
+		CASE WHEN b.is_read = 1 THEN '已阅' ELSE '未阅' END isRead
+	FROM
+		UT_Unit_notify a
+	LEFT JOIN UT_User_Notify_Rel b ON a.ID = b.notify_id
+	LEFT JOIN UT_Unit_User c ON a.sender=c.ID
+	WHERE
+		b.unit_user_id = #{userId}
+	order by a.send_date desc
+  </select>
+  
+  <select id="getNotifyPageList" resultType="com.gw.systemManager.data.NotifyOutData" parameterType="com.gw.systemManager.data.NotifyInData">
+  	SELECT
+		n.ID,
+		s.Account sender,
+		n.content,
+		CONVERT (VARCHAR, n.send_date, 120) sendDate,
+		n.title
+	FROM
+		UT_Unit_notify n
+	LEFT OUTER JOIN SYS_USER s ON n.sender = s.ID
+	<where>
+		<if test="title != null and title != ''">
+			n.title like '%${title}%'
+		</if>
+		<if test="sender != null and sender != ''">
+			AND s.Account like '%${sender}%'
+		</if>
+		<if test="content != null and content != ''">
+			AND n.content like '%${content}%'
+		</if>
+	</where>
+	ORDER BY n.ID DESC
+  </select>
+	<!--更改关联sysuer 为UT_Unit_User-->
+  <select id="getNotifyInfoById" resultType="com.gw.front.index.data.FrontNotifyOutData">
+  	SELECT
+		a.content,
+		d.UserName sender,
+		CONVERT (VARCHAR, a.send_date, 120) sendDate,
+		a.title
+	FROM
+		UT_Unit_notify a
+	LEFT JOIN UT_Unit_User d ON d.ID = a.sender
+	WHERE
+		a.ID = #{id}
+  </select>
+</mapper>

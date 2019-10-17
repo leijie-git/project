@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>视频</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/video_index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<!--视频区域 start-->
+		<div class="wrap_video">
+			<!--暂无视频-->
+			<!--<div class="videoDiv area1">-->
+				<!--<iframe src="" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>-->
+			<!--</div>-->
+		</div>
+
+		<!--视频区域 start-->
+
+		<!--右侧区域菜单 start-->
+		<div class="areaMenu">
+
+			<div class="areaBox">
+                <img src="../../../Content/images/NetInfoStatistic/btArea.png" class="areaImg">
+                <input type="search" name="search" class="areaSearch lightblue" id="areaSearch" placeholder="搜索区域视频">
+                <img src="../../../Content/images/NetInfoStatistic/btSearch.png" class="searchImg">
+            </div>
+
+			<div class="menuBox ">
+
+				<div class="layui-collapse"  id="boxVideoList" style="height: 100%;border: none">
+				  <!--<div class="layui-colla-item">-->
+				    <!--<h2 class="layui-colla-title">杜甫</h2>-->
+				    <!--<div class="layui-colla-content layui-show">-->
+						<!--<ul class="menuBoxUl">-->
+							<!--<li class="active">-->
+								<!--<span>消控室</span>-->
+								<!--<img src="../../../Content/images/NetInfoStatistic/btRightArrow.png" class="arrow">-->
+							<!--</li>-->
+							<!--<li>-->
+								<!--<span>消控室</span>-->
+							<!--</li>-->
+							<!--<li>-->
+								<!--<span>消控室</span>-->
+							<!--</li>-->
+							<!--<li>-->
+								<!--<span>消控室</span>-->
+							<!--</li>-->
+						<!--</ul>-->
+					<!--</div>-->
+				  <!--</div>-->
+				  <!--<div class="layui-colla-item">-->
+				    <!--<h2 class="layui-colla-title">李清照</h2>-->
+				    <!--<div class="layui-colla-content">内容区域</div>-->
+				  <!--</div>-->
+				  <!--<div class="layui-colla-item">-->
+				    <!--<h2 class="layui-colla-title">鲁迅</h2>-->
+				    <!--<div class="layui-colla-content">内容区域</div>-->
+				  <!--</div>-->
+				</div>
+
+			</div>
+			
+		</div>
+		<!--右侧区域菜单 end-->
+	</div>
+</body>
+
+
+<script type="text/javascript">
+	var _videoNumber=GetQuery('videoNumber');
+	var _type=GetQuery('type');
+	var _unitId = GetQuery('unitId');
+
+	//alert(videoNumber);
+	//alert(type);
+
+	$(function(){
+
+		//showVideoNum(_videoNumber);
+		getUnitCameraListData();//获取右侧视频列表
+
+        clickevent();
+
+    });
+
+	function getUnitCameraListData(){
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/couplet/getUnitBuildAreas",
+			data:'unitId='+_unitId+'&buildName='+$('#areaSearch').val(),
+			success: function (data) {
+				if (data.success == true) {
+					var msg = data.obj;
+					showCameraListContent(msg);
+				}
+			}
+		});
+	}
+
+	function showCameraListContent(data){
+		var html = "";
+		for(var i = 0 ; i < data.length;i++){
+//			html +='<li videoclass="'+data[i].videoclass+'" videotype="'+ data[i].videotype+'" ip="'+data[i].ip+'" port="'+data[i].port+'" >'+
+//					'<span>'+data[i].buildAreaName+'</span>'+
+//					'</li>'
+			var videos = data[i].videos;
+
+			var videoList = "";
+			for(var k = 0 ; k < videos.length;k++){
+
+				videoList +='<li class="videoLi fontSize14" ip="'+videos[k].ip+'" port="'+videos[k].port+'" poscode="'+videos[k].poscode+'" userName="'+videos[k].username+'" password="'+videos[k].password+'" deviceType="'+videos[k].plugintype+'" buildarename="'+data[i].buildAreaName+'" appKey="'+data[i].appKey+'" token="'+data[i].token+'" serialnumber="'+videos[k].serialnumber+'">' +
+								'<span>'+videos[k].name+'</span>' +
+								'<img src="../../../Content/images/NetInfoStatistic/btRightArrow.png" class="arrow">'+
+							'</li>'
+
+			}
+
+			html +='<div class="layui-colla-item">'+
+						'<h2 class="layui-colla-title fontSize16">'+data[i].buildAreaName+'</h2>'+
+						'<div class="layui-colla-content '+(i==0?"layui-show":"")+'">'+
+							'<ul class="menuBoxUl">'+videoList+'</ul>'+
+						'</div>'+
+					'</div>'
+		}
+		$('#boxVideoList').html(html);
+
+		layui.use('element', function(){
+			var  element = layui.element;
+			element.init();
+		});
+		$('#boxVideoList .videoLi').eq(0).click();
+	}
+
+	
+    function clickevent(){
+    	//收缩父页面选择框
+		$(document).unbind('click').click(function(){
+	        parent.mainUse();
+	    });
+
+		$('#areaSearch').unbind(" input propertychange").on(" input propertychange",function(){
+			var thisValue = $('#areaSearch').val();
+			var count=0;
+			if(thisValue == ""){
+				$('#boxVideoList .layui-colla-item').show();
+			}
+			else{
+				$('#boxVideoList .layui-colla-item').hide()
+						.filter(function(index){
+//                            console.log($(this).text().indexOf(thisValue));
+							if($(this).children('h2').text().indexOf(thisValue) >= 0){
+								count = 1;
+								$(this).show();
+								return this;
+							}
+						}).show();
+			}
+		});
+
+    	//搜索区域
+    	$(".searchImg").unbind('click').click(function(){
+    		getUnitCameraListData();
+		});
+    	
+		//区域视频
+		$('#boxVideoList').delegate('.layui-colla-item li.videoLi','click',function(){
+	    	if($(this).hasClass('active')){
+	    		return false;
+	    	}else{
+				var videoNum = $('.choseNumBox .active', parent.document).text();
+				var ip=$(this).attr('ip'),port = $(this).attr('port'),channel = $(this).attr('poscode'),userName = $(this).attr('username'),password = $(this).attr('password'),deviceType = $(this).attr('devicetype');
+				var buildarename = $(this).attr('buildarename');
+
+				var token = $(this).attr('token'),appKey = $(this).attr('appKey'),serialnumber = $(this).attr('serialnumber');
+
+				var videoIframeSrc="";
+				if(deviceType == 2){ //萤石云
+					if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+						videoIframeSrc = '../../iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+					}else{
+						videoIframeSrc = '../../UnitManage/video_a.html?ip='+escape(ip);
+					}
+				}else if(deviceType == 0 || deviceType== 1|| deviceType== 9 ){
+					videoIframeSrc = '../../camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+'&channel='+escape(channel)
+				}
+
+				if(videoNum == 1|| videoNum ==""){
+// 					showVideoNum(1)
+//					$('.wrap_video iframe').attr('src','../../camera.html?ip='+ip+'port='+port+'&userName='+userName+'&password='+password+'&deviceType='+deviceType)
+
+					var html ='<div class="videoDiv area'+1+'">'+
+							'<div class="div_checkbox"></div>'+
+							'<iframe src="'+videoIframeSrc+'" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>'+
+							'<div class="btn_cutPic" ip="'+ip+'" port="'+port+'" userName="'+userName+'" password="'+password+'" deviceType="'+deviceType+'" buildarename="'+buildarename+'" channel="'+channel+'" appKey="'+appKey+'" token="'+token+'" serialnumber="'+serialnumber+'"></div>'+
+							'</div>';
+					$('.wrap_video').html(html||"暂无视频");
+				}
+				else{
+					if($('.wrap_video>.videoDiv.active').length > 0){
+						$('.wrap_video>.videoDiv.active iframe').attr('src',videoIframeSrc)
+					}
+					else{
+						//showVideoNum(videoNum)
+					}
+				}
+				$('.videoLi').removeClass('active');
+	    		$(this).addClass('active');
+	    		$(this).siblings().find('.arrow').remove();
+	    		$(this).append('');
+
+	    	}
+	    });
+
+		//视频选中
+		$('.wrap_video').delegate(' .div_checkbox','click',function(){
+			$(this).parent('.videoDiv').toggleClass('active');
+			$(this).parent('.videoDiv').siblings().removeClass('active');
+		});
+
+		$('.wrap_video').delegate(' .btn_cutPic','click',function(e){
+			e.stopPropagation();
+
+			var ip = $(this).attr('ip');
+			var port = $(this).attr('port');
+			var userName = $(this).attr('userName');
+			var password = $(this).attr('password');
+			var deviceType = $(this).attr('deviceType');
+			var buildarename = $(this).attr('buildarename');
+			var channel = $(this).attr('poscode');
+			var token = $(this).attr('token'),appKey = $(this).attr('appKey'),serialnumber = $(this).attr('serialnumber');
+			top.layer.open({
+				type: 2,
+				title: false,
+				closeBtn: 1,
+				area:['100%','100%'],
+				shade: 0.1,
+				shadeClose:true,
+				content: (_loginInfo.usertype == 0?"":"../")+'NetInfoStatistic/biggerVideo.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&unitId="+ _unitId +"&buildarename="+escape(buildarename)+'&channel='+escape(channel)+'&token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+			});
+		})
+    }
+
+	function showVideoNum(num){
+//		console.log(num)
+		var length = num;
+		if(num > $('#boxVideoList .videoLi').length){
+			length = $('#boxVideoList .videoLi').length;
+		}
+
+		var html = "";
+		for(var i = 0 ; i < length ; i ++){
+			var dom = $('#boxVideoList .videoLi').eq(i);
+			var ip=dom.attr('ip'),port = dom.attr('port'),channel = dom.attr('poscode'),userName = dom.attr('username'),password = dom.attr('password'),deviceType = dom.attr('devicetype');
+			var buildarename = dom.attr('buildarename');
+
+			var token = dom.attr('token'),appKey = dom.attr('appKey'),serialnumber = dom.attr('serialnumber');
+
+			var videoIframeSrc="";
+			if(deviceType == 2){
+				if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+					videoIframeSrc = '../../iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+				}else{
+					videoIframeSrc = '../../UnitManage/video_a.html?ip='+escape(ip)
+				}
+			}else if(deviceType == 0 || deviceType== 1 ){
+				videoIframeSrc = '../../camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+'&channel='+escape(channel)
+			}
+
+			html +='<div class="videoDiv area'+num+'">'+
+						'<div class="div_checkbox"></div>'+
+						'<iframe src="'+videoIframeSrc+'" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>'+
+					    '<div class="btn_cutPic" ip="'+ip+'" port="'+port+'" userName="'+userName+'" password="'+password+'" deviceType="'+deviceType+'" buildarename="'+buildarename+'" channel="'+channel+'"></div>'+
+					'</div>'
+		}
+		$('.wrap_video').html(html||"暂无视频")
+	}
+
+</script>
+</html>

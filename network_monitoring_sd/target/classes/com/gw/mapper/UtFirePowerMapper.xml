@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtFirePowerMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtFirePower" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="unit_id" property="unitId" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="BIGINT" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+    <result column="point_x" property="pointX" jdbcType="VARCHAR" />
+    <result column="point_y" property="pointY" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="contact" property="contact" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="BIGINT" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getFirePowerList" resultType="com.gw.firePower.data.FirePowerOutData">
+  	SELECT
+		a.ID id,
+		a.unit_id unitId,
+		a.type,
+		a.name,
+		a.remark,
+		a.point_x pointX,
+		a.point_y pointY,
+		a.address,
+		a.contact,
+		a.phone,
+		a.pid,
+		a.image,
+		b.UnitName unitName
+	FROM
+		UT_Fire_Power a
+	LEFT JOIN UT_Unit_BaseInfo b on a.unit_id = b.ID
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+		<if test="name != null and name != ''">
+			and a.name like '%${name}%'
+		</if>
+		<if test="type != null and type != ''">
+			AND a.type = ${type}
+		</if>
+		<if test="unitName != null and unitName != ''">
+			AND b.UnitName like '%${unitName}%'
+		</if>
+	</where>
+	ORDER BY a.ID DESC
+  </select>
+  <select id="getFireStationNameByType" resultType="com.gw.firePower.data.FirePowerOutData">
+  	SELECT
+		a.ID,
+		a.name
+	FROM
+		UT_Fire_Power a
+	WHERE
+		a.type = #{type}
+  </select>
+  <select id="getFrontFirePowerList" resultType="com.gw.firePower.data.FirePowerOutData">
+    SELECT
+        a.ID id,
+        a.unit_id unitId,
+        a.type,
+        a.name,
+        a.remark,
+        a.point_x pointX,
+        a.point_y pointY,
+        a.address,
+        a.contact,
+        a.phone,
+		c.name pname
+    FROM
+        UT_Fire_Power a
+		LEFT JOIN UT_Fire_Power c ON a.pid = c.ID
+  	<if test ="userid !=null and userid !='' and userid != 1">
+   		 LEFT JOIN UT_Base_UserReUnit b ON a.unit_id = b.unit_id
+    </if>
+    <where>
+	   <if test="type!=null and type!=''">
+	       <if test="type == 3">
+	        a.type in(3,4)
+	       </if>
+	       <if test="type!=3">
+	           a.type = #{type}
+	       </if>
+	   </if>
+	   <if test ="unitID!=null and unitID!=''">
+	       and (a.unit_id = #{unitID} or a.unit_id is null)
+	   </if>
+	   <if test ="userid !=null and userid !='' and userid != 1">
+	       and (b.user_id = #{userid} or a.unit_id is NULL)
+	   </if>
+    </where>
+  </select>
+  
+  <select id="getFrontUnitFirePowerList" resultType="com.gw.firePower.data.FirePowerOutData">
+    SELECT
+        a.ID id,
+        a.unit_id unitId,
+        a.type,
+        a.name,
+        a.remark,
+        a.point_x pointX,
+        a.point_y pointY,
+        a.address,
+        a.contact,
+        a.phone,
+        a.image
+    FROM
+        UT_Fire_Power a
+    <where>
+    <if test ="unitID!=null and unitID!=''">
+        a.unit_id = #{unitID}
+    </if>
+    </where>
+  </select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseUsercardMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseUsercard" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="CardNo" property="cardno" jdbcType="NVARCHAR" />
+    <result column="ShowName" property="showname" jdbcType="NVARCHAR" />
+    <result column="FileName" property="filename" jdbcType="NVARCHAR" />
+    <result column="UploadDate" property="uploaddate" jdbcType="TIMESTAMP" />
+    <result column="UploadUser" property="uploaduser" jdbcType="BIGINT" />
+    <result column="UserID" property="userid" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

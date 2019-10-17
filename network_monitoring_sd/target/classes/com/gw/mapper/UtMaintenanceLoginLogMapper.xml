@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtMaintenanceLoginLogMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtMaintenanceLoginLog" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="login_date" property="loginDate" jdbcType="TIMESTAMP" />
+    <result column="login_addr" property="loginAddr" jdbcType="VARCHAR" />
+    <result column="login_ip" property="loginIp" jdbcType="VARCHAR" />
+    <result column="login_out_date" property="loginOutDate" jdbcType="TIMESTAMP" />
+    <result column="data_from" property="dataFrom" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getLoginLogs" resultType="com.gw.front.index.data.FrontLoginLogOutData">
+	SELECT
+		a.ID,
+		a.login_name loginName,
+		a.login_addr loginAddr,
+		CONVERT (VARCHAR, a.login_date, 120) loginDate,
+		a.login_ip loginIp,
+		CONVERT (VARCHAR, a.login_out_date, 120) loginOutDate,
+		a.data_from dataFrom
+	FROM
+		UT_Maintenance_login_Log a
+	LEFT JOIN UT_Unit_User b ON a.login_name = b.Account
+	WHERE
+		b.ID = #{userId}
+		<if test="dataFrom != null and dataFrom != ''">
+			and a.data_from=#{dataFrom}
+		</if>
+	order by a.login_date desc
+  </select>
+   <select id="selectAddressByIP" resultType="java.lang.String">
+	 SELECT addr FROM [dbo].[UT_IP_ADDRESS] WHERE ip=#{ip}
+   </select>
+   <insert id="insetIPAddress" >
+	 INSERT [dbo].[UT_IP_ADDRESS] VALUES (#{ip},#{address})
+   </insert>
+</mapper>

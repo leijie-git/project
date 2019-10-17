@@ -1,0 +1,52 @@
+.topBox{
+
+	width: 100%!important;
+	/*overflow-y: auto;*/
+	overflow: hidden;
+	padding-left: 2%;
+}
+#topBoxContent{
+	width: 100%;
+	min-height: 100%;
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+}
+.scroll-wrapper > .scroll-content{
+	width: 100%;
+	height: 100%;
+}
+
+.t_boxb{
+	width: 16%;
+	margin: 0 .6%;
+	height: 100%;
+	padding: .2% 0;
+}
+
+.chartDiv {
+	width: 100%;
+	height: calc(100% - 38px);
+	overflow: hidden;
+}
+.boxcontent{
+	padding: 3% 0 ;
+}
+
+.t_word{
+	height: 20px;
+	line-height: 20px;
+	/*margin-bottom: 2%;*/
+}
+
+.t_cont{
+	/*height: 88%;*/
+}
+
+.normal{
+	background: url(../../../Content/images/NetInfoStatistic/normal.png)no-repeat center center /60%;
+}
+
+.abnormal{
+	background: url(../../../Content/images/NetInfoStatistic/abnormal.png)no-repeat center center /60%;
+}

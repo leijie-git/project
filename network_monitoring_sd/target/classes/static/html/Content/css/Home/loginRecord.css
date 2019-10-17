@@ -1,0 +1,37 @@
+html,body{
+    background: rgba(0,0,0,0);
+}
+body{
+    padding:1%  2.2%;
+}
+.layer_headerTit{
+    height: 7%;
+}
+.layer_mainContent{
+    height: calc(100% - 60px);
+    /*margin-top: 2%;*/
+}
+.table_header{
+    color: #C2DBFA;
+}
+.table_content{
+    color:#7BA0D4;
+}
+.wrap_page{
+    text-align: center;
+    padding: 0 10px;
+    height: 50px;
+    margin-top: 5px;
+    background: -webkit-linear-gradient(left, #0F325C , #1F4876,#0F325C); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(right, #0F325C , #1F4876,#0F325C); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(right, #0F325C , #1F4876,#0F325C); /* Firefox 3.6 - 15 */
+    background: linear-gradient(to right, #0F325C , #1F4876,#0F325C); /* ��׼���﷨ */
+    box-shadow: 0 0 10px 2px #082543;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.table_content > table tr{
+    cursor: auto;
+}

@@ -1,0 +1,3875 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzBjzjalarmMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzBjzjalarm">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="AlarmCode" property="alarmcode" jdbcType="NVARCHAR"/>
+        <result column="OnwerCode" property="onwercode" jdbcType="NVARCHAR"/>
+        <result column="DeviceIndex" property="deviceindex" jdbcType="INTEGER"/>
+        <result column="DeviceNo" property="deviceno" jdbcType="INTEGER"/>
+        <result column="Time" property="time" jdbcType="TIMESTAMP"/>
+        <result column="Alarm_Status" property="alarmStatus" jdbcType="INTEGER"/>
+        <result column="Alarm_SourceDesc" property="alarmSourcedesc" jdbcType="NVARCHAR"/>
+        <result column="Alarm_DeviceDesc" property="alarmDevicedesc" jdbcType="NVARCHAR"/>
+        <result column="Alarm_WhereDesc" property="alarmWheredesc" jdbcType="NVARCHAR"/>
+        <result column="Alarm_Reserve" property="alarmReserve" jdbcType="NVARCHAR"/>
+        <result column="ZJID" property="zjid" jdbcType="NVARCHAR"/>
+        <result column="HLID" property="hlid" jdbcType="NVARCHAR"/>
+        <result column="JDID" property="jdid" jdbcType="NVARCHAR"/>
+        <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP"/>
+        <result column="isDeal" property="isdeal" jdbcType="INTEGER"/>
+        <result column="DealType" property="dealtype" jdbcType="INTEGER"/>
+        <result column="DealTime" property="dealtime" jdbcType="TIMESTAMP"/>
+        <result column="DealUser" property="dealuser" jdbcType="NVARCHAR"/>
+        <result column="DealInfo" property="dealinfo" jdbcType="NVARCHAR"/>
+        <result column="IsNeedMaintain" property="isneedmaintain" jdbcType="INTEGER"/>
+        <result column="MaintainDesc" property="maintaindesc" jdbcType="NVARCHAR"/>
+        <result column="DealResult" property="dealresult" jdbcType="INTEGER"/>
+        <result column="isTest" property="isTest" jdbcType="INTEGER"/>
+        <result column="UnitID" property="unitid" jdbcType="BIGINT"/>
+        <result column="calibration_id" jdbcType="NVARCHAR" property="calibrationId"/>
+        <result column="dealCode" jdbcType="VARCHAR" property="dealcode"/>
+        <result column="picUrl" jdbcType="VARCHAR" property="picurl"/>
+        <result column="isPhone" jdbcType="VARCHAR" property="isphone"/>
+    </resultMap>
+    <!--<select id="statFiresByBuild" resultType="com.gw.front.index.data.FrontFireOutData"
+            parameterType="java.lang.String">
+        SELECT
+        SUM(CASE WHEN a.isDeal=0 or a.isDeal is NULL THEN 1 ELSE 0 END) AS noDealCount,
+        SUM(CASE WHEN a.isDeal=1 THEN 1 ELSE 0 END) AS dealCount
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+        AND f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON f.BuildAreaID = b.relation_id
+        </if>
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status = 1
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+    </select>-->
+
+    <!--<select id="statFiresByBJZJBuild" resultType="com.gw.front.index.data.FrontFireOutData"
+            parameterType="java.lang.String">
+        SELECT
+        SUM(CASE WHEN a.isDeal=0 or a.isDeal is NULL THEN 1 ELSE 0 END) AS noDealCount,
+        SUM(CASE WHEN a.isDeal=1 THEN 1 ELSE 0 END) AS dealCount
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON e.BuildAreaID = b.relation_id
+        </if>
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status = 1
+        and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+    </select>-->
+
+ <!--   <select id="statFires" resultType="com.gw.front.index.data.FrontFireOutData" parameterType="java.lang.String">
+        SELECT
+        SUM(CASE WHEN a.isDeal=0 or a.isDeal is NULL THEN 1 ELSE 0 END) AS noDealCount,
+        SUM(CASE WHEN a.isDeal=1 THEN 1 ELSE 0 END) AS dealCount
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+        AND f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status = 1
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+    </select>-->
+    <select id="statFires" resultType="com.gw.front.index.data.FrontFireOutData" parameterType="java.lang.String">
+        SELECT
+        SUM(CASE WHEN a.isDeal=0 or a.isDeal is NULL THEN 1 ELSE 0 END) AS noDealCount,
+        SUM(CASE WHEN a.isDeal=1 THEN 1 ELSE 0 END) AS dealCount
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+
+        <if test="selectType == 1 or selectType == 2">
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+            AND f.partcode = a.Alarm_Reserve
+        </if>
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+            </if>
+        </if>
+        <if test="selectType == 2">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON f.BuildAreaID = b.relation_id
+            </if>
+        </if>
+        <if test="selectType == 3">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON e.BuildAreaID = b.relation_id
+            </if>
+        </if>
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status = 1
+        <if test="selectType == 3">
+            and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        </if>
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+    </select>
+    <!--<select id="getAlarmList" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontAlarmInData">
+        SELECT
+        DISTINCT
+        TOP(200)
+        a.ID id,
+        a.UnitID unitId,
+        c.UnitName unitName,
+        a.Lastupdate,
+        RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        CASE WHEN h.BuildImgbg IS NULL OR h.BuildImgbg = '' THEN null ELSE f.ID END addressID,
+        f.BuildAreaID buildAreaID,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_Status type
+        FROM
+        (SELECT
+        ID,
+        OnwerCode,
+        UnitID,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve,
+        isDeal
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        <if test="type != null and type != ''">
+            and Alarm_Status = #{type}
+        </if>
+        <if test="type == null or type == ''">
+            and Alarm_Status in (1,2,3,4,5,6,7,8,22,23,24,25,26)
+        </if>
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        LEFT JOIN UT_Unit_BuildArea h ON f.BuildAreaID = h.ID
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="isDeal != null and isDeal != ''">
+            and a.isDeal = #{isDeal}
+        </if>
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getAlarmList" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontAlarmInData">
+        SELECT
+        DISTINCT
+        TOP(200)
+        a.ID id,
+        a.Alarm_WhereDesc alarmWhereDesc,
+        a.Alarm_SourceDesc alarmSourceDesc,
+        a.Alarm_DeviceDesc alarmDeviceDesc,
+        a.Alarm_Status alarmStatus,
+        a.UnitID unitId,
+        c.UnitName unitName,
+        a.Lastupdate,
+        RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        <if test="selectType == 1 or selectType == 2">
+            CASE WHEN h.BuildImgbg IS NULL OR h.BuildImgbg = '' THEN null ELSE f.ID END addressID,
+            f.BuildAreaID buildAreaID,
+        </if>
+        <if test="selectType == 3">
+            e.BuildAreaID,
+        </if>
+        e.EqName equipmentDetialName,
+        e.BuildAreaID,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_Status type
+        FROM
+        (SELECT
+        ID,
+        OnwerCode,
+        UnitID,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve,
+        isDeal
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        <if test="type != null and type != ''">
+            and Alarm_Status = #{type}
+        </if>
+        <if test="type == null or type == ''">
+            and Alarm_Status in (1,2,3,4,5,6,7,8,22,23,24,25,26)
+        </if>
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+            </if>
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="selectType == 1 or selectType == 2">
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+            LEFT JOIN UT_Unit_BuildArea h ON f.BuildAreaID = h.ID
+        </if>
+        <if test="selectType == 2">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON f.BuildAreaID =b.relation_id
+            </if>
+        </if>
+        <if test="selectType == 3">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON e.BuildAreaID =b.relation_id
+            </if>
+        </if>
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="isDeal != null and isDeal != ''">
+            and a.isDeal = #{isDeal}
+        </if>
+        <if test="selectType == 3">
+            and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        </if>
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        order by a.Lastupdate desc
+    </select>
+
+    <!--<select id="getAlarmListByBuild" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontAlarmInData">
+        SELECT
+        distinct
+        TOP(200)
+        a.ID id,
+        a.Alarm_WhereDesc alarmWhereDesc,
+        a.Alarm_SourceDesc alarmSourceDesc,
+        a.Alarm_DeviceDesc alarmDeviceDesc,
+        a.Alarm_Status alarmStatus,
+        a.Lastupdate time,
+        a.UnitID unitId,
+        c.UnitName unitName,
+        RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        CASE WHEN h.BuildImgbg IS NULL OR h.BuildImgbg = '' THEN null ELSE f.ID END addressID,
+        f.BuildAreaID,
+        e.EqName equipmentDetialName,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_Status type
+        FROM
+        (SELECT
+        ID,
+        OnwerCode,
+        UnitID,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve,
+        isDeal
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        <if test="type != null and type != ''">
+            and Alarm_Status = #{type}
+        </if>
+        <if test="type == null or type == ''">
+            and Alarm_Status in (1,2,3,4,5,6,7,8,22,23,24,25,26)
+        </if>
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        LEFT JOIN UT_Unit_BuildArea h ON f.BuildAreaID = h.ID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON f.BuildAreaID =b.relation_id
+        </if>
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="isDeal != null and isDeal != ''">
+            and a.isDeal = #{isDeal}
+        </if>
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        order by a.Lastupdate desc
+    </select>-->
+
+    <!--<select id="getAlarmListByBJZJBuild" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontAlarmInData">
+        SELECT
+        distinct
+        TOP(200)
+        a.ID id,
+        a.Alarm_WhereDesc alarmWhereDesc,
+        a.Alarm_SourceDesc alarmSourceDesc,
+        a.Alarm_DeviceDesc alarmDeviceDesc,
+        a.Alarm_Status alarmStatus,
+        a.Lastupdate time,
+        a.UnitID unitId,
+        c.UnitName unitName,
+        e.EqName equipmentDetialName,
+        RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        e.BuildAreaID,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_Status type
+        FROM
+        (SELECT
+        ID,
+        OnwerCode,
+        UnitID,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve,
+        isDeal
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        <if test="type != null and type != ''">
+            and Alarm_Status = #{type}
+        </if>
+        <if test="type == null or type == ''">
+            and Alarm_Status in (1,2,3,4,5,6,7,8,22,23,24,25,26)
+        </if>
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON e.BuildAreaID =b.relation_id
+        </if>
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="isDeal != null and isDeal != ''">
+            and a.isDeal = #{isDeal}
+        </if>
+        and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        order by a.Lastupdate desc
+    </select>-->
+  <!--  <select id="getAlarmListCount" resultType="com.gw.front.index.data.FrontAlarmTypeOutData">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status=2 THEN 1 ELSE 0 END) faultCount,
+        SUM(CASE WHEN a.Alarm_Status=5 THEN 1 ELSE 0 END) shieldCount,
+        SUM(CASE WHEN a.Alarm_Status=6 THEN 1 ELSE 0 END) superviseCount
+        FROM
+        (SELECT
+        UnitID,
+        OnwerCode,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status in(2,5,6)
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        GROUP BY a.Alarm_Status
+    </select>-->
+    <select id="getAlarmListCount" resultType="com.gw.front.index.data.FrontAlarmTypeOutData">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status=2 THEN 1 ELSE 0 END) faultCount,
+        SUM(CASE WHEN a.Alarm_Status=5 THEN 1 ELSE 0 END) shieldCount,
+        SUM(CASE WHEN a.Alarm_Status=6 THEN 1 ELSE 0 END) superviseCount
+        FROM
+        (SELECT
+        UnitID,
+        OnwerCode,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+            </if>
+        </if>
+        <if test="selectType == 2">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON b.relation_id = f.BuildAreaID
+            </if>
+        </if>
+        <if test="selectType == 3">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON e.relation_id = e.BuildAreaID
+            </if>
+        </if>
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status in(2,5,6)
+
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        GROUP BY a.Alarm_Status
+    </select>
+
+    <!--<select id="getAlarmListBuildCount" resultType="com.gw.front.index.data.FrontAlarmTypeOutData">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status=2 THEN 1 ELSE 0 END) faultCount,
+        SUM(CASE WHEN a.Alarm_Status=5 THEN 1 ELSE 0 END) shieldCount,
+        SUM(CASE WHEN a.Alarm_Status=6 THEN 1 ELSE 0 END) superviseCount
+        FROM
+        (SELECT
+        UnitID,
+        OnwerCode,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON b.relation_id = f.BuildAreaID
+        </if>
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status in(2,5,6)
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        GROUP BY a.Alarm_Status
+    </select>-->
+    <!--<select id="getAlarmListBJZJBuildCount" resultType="com.gw.front.index.data.FrontAlarmTypeOutData">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status=2 THEN 1 ELSE 0 END) faultCount,
+        SUM(CASE WHEN a.Alarm_Status=5 THEN 1 ELSE 0 END) shieldCount,
+        SUM(CASE WHEN a.Alarm_Status=6 THEN 1 ELSE 0 END) superviseCount
+        FROM
+        (SELECT
+        UnitID,
+        OnwerCode,
+        DeviceIndex,
+        DeviceNo,
+        Lastupdate,
+        Alarm_Status,
+        Alarm_SourceDesc,
+        Alarm_DeviceDesc,
+        Alarm_WhereDesc,
+        calibration_id,
+        Alarm_Reserve
+        FROM
+        UT_LZ_BJZJAlarm
+        WHERE
+        DateDiff(hh,Lastupdate,getDate()) &lt;= 24
+        ) a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON e.relation_id = e.BuildAreaID
+        </if>
+        LEFT JOIN UT_Unit_calibration g ON a.calibration_id = g.ID
+        WHERE 1=1
+        and e.ID is not null
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and a.Alarm_Status in(2,5,6)
+        and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        and (d.isDelete = 0 OR d.isDelete is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        GROUP BY a.Alarm_Status
+    </select>-->
+
+    <select id="getFireAlarmStatByProperty" resultType="com.gw.front.index.data.FrontRecordOutData">
+        SELECT
+        i.CodeName,
+        COUNT (f.ID)
+        FROM
+        (
+        SELECT DISTINCT
+        e.UserType,
+        a.ID
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        LEFT JOIN UT_Unit_NetDevice c ON c.OwnerCode = a.OnwerCode
+        AND c.DeviceIndex = a.DeviceIndex
+        AND (a.DeviceNo = c.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment d ON d.NetDeviceID = c.ID
+        LEFT JOIN UT_Unit_Build e ON e.ID = d.BuildID
+        WHERE
+        a.Alarm_Status in (0,1)
+        <if test="userId != 1">
+            AND b.user_id = #{userId}
+        </if>
+        AND (c.isDelete = 0 OR c.isDelete is NULL)
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+        ) f
+        LEFT JOIN (
+        SELECT
+        g.CodeName,
+        g.CodeValue
+        FROM
+        UT_Base_Code g
+        LEFT JOIN UT_Base_CodeGroup h ON g.CodeGroupID = h.CodeGroupID
+        WHERE
+        h.CodeGroupKey = #{codeGroupKey}
+        ) i ON f.UserType = i.CodeValue
+        GROUP BY
+        i.CodeName
+    </select>
+    <!--<select id="getRealTimeAlarms" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontAlarmInData">
+        SELECT
+        DISTINCT
+        TOP(1000)
+        a.ID id,
+        a.Lastupdate,
+        c.UnitName unitName,
+        RIGHT(CONVERT (VARCHAR, a.[time], 120),14) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) dealtime,
+        a.UnitID unitId,
+        c.ChildStationNum childStationNum,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END calibrationName,
+        f.ID addressID,
+        eq.ClassCode classCode
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN UT_Base_EqClass eq ON e.EqClassID = eq.ID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        WHERE 1=1
+        and e.ID is not null and (e.isDelete = 0 OR e.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        AND (c.isDelete = 0 OR c.isDelete is NULL)
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+        AND (a.isDeal = 0 or a.isDeal is null)
+        <if test="types != null">
+            AND a.Alarm_Status in
+            <foreach collection="types" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="loginTime != null and loginTime != ''">
+            AND a.Lastupdate >=#{loginTime}
+        </if>
+        ORDER BY
+        a.Lastupdate DESC
+    </select>-->
+
+    <select id="getRealTimeAlarms" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontAlarmInData">
+        SELECT
+        distinct
+        TOP(1000)
+        a.ID id,
+        a.Lastupdate,
+        c.UnitName unitName,
+        RIGHT(CONVERT (VARCHAR, a.[time], 120),14) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) dealtime,
+        a.UnitID unitId,
+        c.ChildStationNum childStationNum,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END calibrationName,
+        <if test="selectType == 1 or selectType == 2">
+            f.ID addressID,
+        </if>
+        eq.ClassCode classCode
+        FROM
+        UT_LZ_BJZJAlarm a
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+            </if>
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN UT_Base_EqClass eq ON e.EqClassID = eq.ID
+
+        <if test="selectType == 1">
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        </if>
+        <if test="selectType == 2">
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON b.relation_id = f.BuildAreaID
+            </if>
+        </if>
+        <if test="selectType == 3">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON b.relation_id = e.BuildAreaID
+            </if>
+        </if>
+
+        WHERE 1=1
+        and e.ID is not null and (e.isDelete = 0 OR e.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="selectType == 3">
+            and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        </if>
+        AND (c.isDelete = 0 OR c.isDelete is NULL)
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+        AND (a.isDeal = 0 or a.isDeal is null)
+        <if test="types != null">
+            AND a.Alarm_Status in
+            <foreach collection="types" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="loginTime != null and loginTime != ''">
+            AND a.Lastupdate >=#{loginTime}
+        </if>
+        ORDER BY
+        a.Lastupdate DESC
+    </select>
+
+    <!-- <select id="getRealTimeAlarmsByBuild" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+                parameterType="com.gw.front.index.data.FrontAlarmInData">
+            SELECT
+            distinct
+            TOP(1000)
+            a.ID id,
+            a.Lastupdate,
+            c.UnitName unitName,
+            RIGHT(CONVERT (VARCHAR, a.[time], 120),14) time,
+            ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+            alarmDevicedesc,
+            a.Alarm_Status alarmStatus,
+            RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) dealtime,
+            a.UnitID unitId,
+            c.ChildStationNum childStationNum,
+            CASE WHEN g.ID = 2 THEN '是' ELSE '否' END calibrationName,
+            f.ID addressID,
+            eq.ClassCode classCode
+            FROM
+            UT_LZ_BJZJAlarm_History a
+            LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+            LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+            LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+            AND a.DeviceIndex = d.DeviceIndex
+            AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+            LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+            LEFT JOIN UT_Base_EqClass eq ON e.EqClassID = eq.ID
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON b.relation_id = f.BuildAreaID
+            </if>
+            WHERE 1=1
+            and e.ID is not null and (e.isDelete = 0 OR e.isDelete is NULL)
+            <if test="userId != 1">
+                and b.user_id = #{userId}
+            </if>
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            AND (d.isDelete = 0 OR d.isDelete is NULL)
+            AND (a.isDeal = 0 or a.isDeal is null)
+            <if test="types != null">
+                AND a.Alarm_Status in
+                <foreach collection="types" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="loginTime != null and loginTime != ''">
+                AND a.Lastupdate >=#{loginTime}
+            </if>
+            ORDER BY
+            a.Lastupdate DESC
+        </select>-->
+    <!--<select id="getRealTimeAlarmsBJZJByBuild" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontAlarmInData">
+        SELECT
+        distinct
+        TOP(1000)
+        a.ID id,
+        a.Lastupdate,
+        c.UnitName unitName,
+        RIGHT(CONVERT (VARCHAR, a.[time], 120),14) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        RIGHT(CONVERT (VARCHAR, a.Lastupdate, 120),14) dealtime,
+        a.UnitID unitId,
+        c.ChildStationNum childStationNum,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END calibrationName,
+        eq.ClassCode classCode
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN UT_Base_EqClass eq ON e.EqClassID = eq.ID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON b.relation_id = e.BuildAreaID
+        </if>
+        WHERE 1=1
+        and e.ID is not null and (e.isDelete = 0 OR e.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        AND (c.isDelete = 0 OR c.isDelete is NULL)
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+        AND (a.isDeal = 0 or a.isDeal is null)
+        <if test="types != null">
+            AND a.Alarm_Status in
+            <foreach collection="types" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="loginTime != null and loginTime != ''">
+            AND a.Lastupdate >=#{loginTime}
+        </if>
+        ORDER BY
+        a.Lastupdate DESC
+    </select>-->
+
+    <!--<select id="getRealTimeAlarmCount" resultType="com.gw.front.index.data.RealTimeAlarmCount">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status in(1,22,23,24,25,26) THEN 1 ELSE 0 END) alarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 810 THEN 1 ELSE 0 END) testAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 2 THEN 1 ELSE 0 END) faultAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 6 THEN 1 ELSE 0 END) shieldAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(3,4,5,7,8) THEN 1 ELSE 0 END) otherAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 400 THEN 1 ELSE 0 END) inforAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(600,601) THEN 1 ELSE 0 END) onlineAlarmCount
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+        AND f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        WHERE
+        (a.isDeal = 0 or a.isDeal is null)
+        and e.ID is not null and (e.isDelete = 0 or e.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="loginTime != null and loginTime != ''">
+            AND a.Lastupdate >=#{loginTime}
+        </if>
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+    </select>-->
+    <select id="getRealTimeAlarmCount" resultType="com.gw.front.index.data.RealTimeAlarmCount">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status in(1,22,23,24,25,26) THEN 1 ELSE 0 END) alarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 810 THEN 1 ELSE 0 END) testAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 2 THEN 1 ELSE 0 END) faultAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 6 THEN 1 ELSE 0 END) shieldAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(3,4,5,7,8) THEN 1 ELSE 0 END) otherAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 400 THEN 1 ELSE 0 END) inforAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(600,601) THEN 1 ELSE 0 END) onlineAlarmCount
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="selectType == 1 or selectType == 2">
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+            AND f.partcode = a.Alarm_Reserve
+        </if>
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+            </if>
+        </if>
+        <if test="selectType == 2">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON f.BuildAreaID =b.relation_id
+            </if>
+        </if>
+        <if test="selectType == 3">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON e.BuildAreaID =b.relation_id
+            </if>
+        </if>
+        WHERE
+        (a.isDeal = 0 or a.isDeal is null)
+        and e.ID is not null and (e.isDelete = 0 or e.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="loginTime != null and loginTime != ''">
+            AND a.Lastupdate >=#{loginTime}
+        </if>
+        <if test="selectType == 3">
+            and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        </if>
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+    </select>
+    <!--<select id="getRealTimeAlarmBuildCount" resultType="com.gw.front.index.data.RealTimeAlarmCount">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status in(1,22,23,24,25,26) THEN 1 ELSE 0 END) alarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 810 THEN 1 ELSE 0 END) testAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 2 THEN 1 ELSE 0 END) faultAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 6 THEN 1 ELSE 0 END) shieldAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(3,4,5,7,8) THEN 1 ELSE 0 END) otherAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 400 THEN 1 ELSE 0 END) inforAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(600,601) THEN 1 ELSE 0 END) onlineAlarmCount
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+        AND f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON f.BuildAreaID =b.relation_id
+        </if>
+        WHERE
+        (a.isDeal = 0 or a.isDeal is null)
+        and e.ID is not null and (e.isDelete = 0 or e.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="loginTime != null and loginTime != ''">
+            AND a.Lastupdate >=#{loginTime}
+        </if>
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+    </select>-->
+    <!--<select id="getRealTimeAlarmBJZJBuildCount" resultType="com.gw.front.index.data.RealTimeAlarmCount">
+        SELECT
+        SUM(CASE WHEN a.Alarm_Status in(1,22,23,24,25,26) THEN 1 ELSE 0 END) alarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 810 THEN 1 ELSE 0 END) testAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 2 THEN 1 ELSE 0 END) faultAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 6 THEN 1 ELSE 0 END) shieldAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(3,4,5,7,8) THEN 1 ELSE 0 END) otherAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status = 400 THEN 1 ELSE 0 END) inforAlarmCount,
+        SUM(CASE WHEN a.Alarm_Status in(600,601) THEN 1 ELSE 0 END) onlineAlarmCount
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON e.BuildAreaID =b.relation_id
+        </if>
+        WHERE
+        (a.isDeal = 0 or a.isDeal is null)
+        and e.ID is not null and (e.isDelete = 0 or e.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="loginTime != null and loginTime != ''">
+            AND a.Lastupdate >=#{loginTime}
+        </if>
+        and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+        AND (d.isDelete = 0 OR d.isDelete is NULL)
+    </select>-->
+
+    <!--<select id="getFireAlarmList" resultType="com.gw.front.couplet.data.FrontCoupletFireAlarmOutData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+        SELECT
+        a.id,
+        CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        ISNULL(d.name, c.EqName) eqName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        a.[Time] hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        d.ID addressID,
+        a.Alarm_DeviceDesc alarmCat
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON e.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration f ON f.ID = b.calibration_id
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="type != null and type != ''">
+                AND ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="alarmStatus != null and alarmStatus!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="unitId != null and unitId != ''">
+                and b.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                and build.id = #{buildId}
+            </if>
+            <if test="netDeviceId != null and netDeviceId != ''">
+                and b.ID= #{netDeviceId}
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getFireAlarmList" resultType="com.gw.front.couplet.data.FrontCoupletFireAlarmOutData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+        SELECT
+        <if test="selectType == 2 or selectType == 3">
+            distinct
+        </if>
+        a.id,
+        a.Lastupdate,
+        CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        a.[Time] hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        <if test="selectType == 1 or selectType == 2">
+            ISNULL(d.name, c.EqName) eqName,
+            ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+            d.ID addressID,
+        </if>
+        <if test="selectType == 3">
+            c.EqName eqName,
+        </if>
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        a.Alarm_DeviceDesc alarmCat
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        <if test="selectType == 1 or selectType == 2">
+            LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+            AND a.Alarm_Reserve = d.partcode
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo e ON e.ID = a.UnitID
+        <if test="selectType == 2">
+            LEFT JOIN UT_Base_UserRelation re ON d.BuildAreaID =re.relation_id
+        </if>
+        <if test="selectType == 3">
+            LEFT JOIN UT_Base_UserRelation re ON c.BuildAreaID =re.relation_id
+        </if>
+        LEFT JOIN UT_Unit_calibration f ON f.ID = b.calibration_id
+        <if test="selectType == 1 or selectType == 3">
+            <if test="buildId != null and buildId != ''">
+                LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+            </if>
+        </if>
+        <if test="selectType == 2">
+            <if test="buildId != null and buildId != ''">
+                LEFT JOIN UT_Unit_BuildArea build ON build.ID=d.BuildAreaID
+            </if>
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="selectType == 3">
+                and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+                <if test="type != null and type != ''">
+                    AND c.EqSystemID = #{type}
+                </if>
+            </if>
+            <if test="selectType == 1 or selectType == 2">
+                <if test="type != null and type != ''">
+                    AND ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+                </if>
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="alarmStatus != null and alarmStatus!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="selectType == 1">
+                <if test="unitId != null and unitId != ''">
+                    and b.UnitID = #{unitId}
+                </if>
+            </if>
+            <if test="selectType == 2 or selectType == 3">
+                <if test="userId != null and userId != ''">
+                    and re.user_id = #{userId}
+                </if>
+            </if>
+            <if test="buildId != null and buildId != ''">
+                and build.id = #{buildId}
+            </if>
+            <if test="netDeviceId != null and netDeviceId != ''">
+                and b.ID= #{netDeviceId}
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>
+    <!--<select id="getFireAlarmListByBuild" resultType="com.gw.front.couplet.data.FrontCoupletFireAlarmOutData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        ISNULL(d.name, c.EqName) eqName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        a.[Time] hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        d.ID addressID,
+        a.Alarm_DeviceDesc alarmCat
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON e.ID = a.UnitID
+        LEFT JOIN UT_Base_UserRelation re ON d.BuildAreaID =re.relation_id
+        LEFT JOIN UT_Unit_calibration f ON f.ID = b.calibration_id
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=d.BuildAreaID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="type != null and type != ''">
+                AND ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="alarmStatus != null and alarmStatus!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="buildId != null and buildId != ''">
+                and build.id = #{buildId}
+            </if>
+            <if test="netDeviceId != null and netDeviceId != ''">
+                and b.ID= #{netDeviceId}
+            </if>
+            <if test="userId != null and userId != ''">
+                and re.user_id = #{userId}
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <!--<select id="getFireAlarmListBJZJByBuild" resultType="com.gw.front.couplet.data.FrontCoupletFireAlarmOutData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        c.EqName eqName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        a.[Time] hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        a.Alarm_WhereDesc alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        a.Alarm_DeviceDesc alarmCat
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN UT_Unit_BaseInfo e ON e.ID = a.UnitID
+        LEFT JOIN UT_Base_UserRelation re ON c.BuildAreaID =re.relation_id
+        LEFT JOIN UT_Unit_calibration f ON f.ID = b.calibration_id
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+            <if test="type != null and type != ''">
+                AND c.EqSystemID = #{type}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="alarmStatus != null and alarmStatus!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="buildId != null and buildId != ''">
+                and build.id = #{buildId}
+            </if>
+            <if test="netDeviceId != null and netDeviceId != ''">
+                and b.ID= #{netDeviceId}
+            </if>
+            <if test="userId != null and userId != ''">
+                and re.user_id = #{userId}
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getFireAlarmImgList" resultType="com.gw.equipment.data.EquipmentFacilitiesData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+        SELECT
+        a.ID,
+        a.UnitID,
+        a.NetDeviceID,
+        a.EqName,
+        c.ClassCode,
+        f.UnitName,
+		g.buildareaname
+        FROM
+        UT_EQ_Equipment a
+        LEFT JOIN UT_Unit_NetDevice b ON a.NetDeviceID = b.ID
+        LEFT JOIN UT_Base_EqClass c ON a.EqClassID = c.ID
+        LEFT JOIN UT_Unit_Build d ON a.BuildID = d.ID
+        LEFT JOIN UT_Base_EqSystem e ON a.EqSystemID = e.ID
+        LEFT JOIN UT_Unit_BaseInfo f ON a.UnitID = f.ID
+				LEFT JOIN UT_Unit_BuildArea g ON a.UnitID=g.UnitID
+				where
+            (a.isDelete = 0 OR a.isDelete is NULL)
+            AND (f.isDelete = 0 OR f.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+        <if test="UnitID != null and UnitID != ''">
+				and a.UnitID = #{UnitID}
+        </if>
+        <if test="EqSystemID != null and EqSystemID != ''">
+            and a.EqSystemID = #{EqSystemID}
+        </if>
+        ORDER BY a.ID DESC
+    </select>
+    <select id="getFireAlarm_Relation_ImgList" resultType="com.gw.equipment.data.EquipmentFacilitiesData"
+            parameterType="com.gw.equipment.data.EquipmentFacilitiesData">
+ 	SELECT
+		a.adress,
+		a.eqid,
+		e.UnitID ID,
+		e.EqName,
+		n.name netdevicename,
+		b.UnitName unitname,
+		a.BuildAreaID buildareaid,
+		c.ID buildId,
+		a.pointType pointtype,
+		a.EqSystemID,
+		d.buildareaname,
+		f.ClassCode
+	FROM
+		Ut_EQ_address_rel a
+	LEFT OUTER JOIN UT_EQ_Equipment e ON a.eqid = e.ID
+	LEFT OUTER JOIN UT_Unit_NetDevice n ON e.NetDeviceID = n.ID
+	LEFT OUTER JOIN UT_Unit_BaseInfo b ON e.UnitID = b.ID
+	LEFT OUTER JOIN UT_Unit_BuildArea d ON d.ID = a.BuildAreaID
+	LEFT OUTER JOIN UT_Unit_Build c ON c.ID = d.BuildID
+	LEFT OUTER JOIN UT_Base_EqClass f ON e.EqClassID = f.ID
+	where
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			and (n.isDelete = 0 OR n.isDelete is NULL)
+ 			and (e.isDelete = 0 OR e.isDelete is NULL)
+			AND b.ID = #{UnitID}
+	ORDER BY a.ID DESC
+    </select>
+    <select id="getFireAlarmSelectList" resultType="com.gw.front.couplet.data.FrontCoupletFireAlarmOutData"
+            parameterType="com.gw.front.couplet.data.FrontCoupletInData">
+        SELECT
+        id,
+        Lastupdate,
+        dealResult,
+        isTest,
+        unitCode,
+        cid,
+        childstationnum,
+        unitName,
+        TIME,
+        hostTime,
+        alarmStatus,
+        alarmSourcedesc,
+        alarmDeviceDesc,
+        eqName,
+        alarmWheredesc,
+        addressID,
+        isDeal,
+        dealCode,
+        alarmCat
+        FROM
+        (
+        SELECT
+        ROW_NUMBER () OVER (ORDER BY Lastupdate DESC) PAGE_ROW_NUMBER,
+        id,
+        Lastupdate,
+        dealResult,
+        isTest,
+        unitCode,
+        cid,
+        childstationnum,
+        unitName,
+        TIME,
+        hostTime,
+        alarmStatus,
+        alarmSourcedesc,
+        alarmDeviceDesc,
+        eqName,
+        alarmWheredesc,
+        addressID,
+        isDeal,
+        dealCode,
+        alarmCat
+        FROM
+        (
+        SELECT
+        a.id,
+        a.Lastupdate,
+        CASE
+        WHEN a.dealResult = 1 THEN
+        '是'
+        ELSE
+        '否'
+        END dealResult,
+        CASE
+        WHEN f.ID = 2 THEN
+        '是'
+        ELSE
+        '否'
+        END isTest,
+        e.UnitCode unitCode,
+        c.ID as cid,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) TIME,
+        a.[Time] hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '') + ' ' + ISNULL(a.Alarm_DeviceDesc, '') + ' ' + ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        ISNULL(d.name, c.EqName) eqName,
+        ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        d.ID addressID,
+        CASE
+        WHEN a.isDeal = 1 THEN
+        '是'
+        ELSE
+        '否'
+        END isDeal,
+        a.dealCode dealCode,
+        a.Alarm_DeviceDesc alarmCat
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (
+        a.DeviceNo = b.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON e.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration f ON f.ID = b.calibration_id
+        LEFT JOIN UT_Base_UserReUnit re ON a.UnitID = re.unit_id
+        WHERE
+        (
+        e.isDelete = 0
+        OR e.isDelete IS NULL
+        )
+        AND (
+        b.isDelete = 0
+        OR b.isDelete IS NULL
+        )
+        AND (
+        c.isDelete = 0
+        OR c.isDelete IS NULL
+        )
+        <if test="unitId != null and unitId != ''">
+            AND b.UnitID = #{unitId}
+        </if>
+        <if test="id != null and id != ''">
+            AND c.id = #{id}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND e.UnitName=#{UnitName}
+        </if>
+        <if test="type != null and type != ''">
+            AND ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND a.Lastupdate >=#{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND a.Lastupdate &lt;=#{endDate}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND e.UnitName LIKE '%${keyword}%'
+        </if>
+        <if test="userId != null and userId != ''">
+            and re.user_id = #{userId}
+        </if>
+        ) AS PAGE_TABLE_ALIAS
+        ) AS PAGE_TABLE_ALIAS
+        WHERE
+        PAGE_ROW_NUMBER > 0
+        ORDER BY
+        PAGE_ROW_NUMBER
+    </select>
+    <select id="getAlarmInfo" resultType="com.gw.front.couplet.data.FrontCoupletAlarmInfoOutData"
+            parameterType="java.lang.String">
+  	SELECT
+  		TOP 1 a.ID id,
+		d.UnitName unitName,
+        a.OnwerCode                                                                                         deviceCode,
+		CASE WHEN a.DeviceIndex=1 THEN '主机' ELSE '用户传输装置' END AS                                            deviceIndex,
+        a.DeviceNo                                                                                          deviceNo,
+        CONVERT (VARCHAR, a.Lastupdate, 120)                                                                alarmTime,
+        a.Alarm_Status                                                                                      alarmStatus,
+        a.Alarm_SourceDesc                                                                                  alarmSourcedesc,
+        ISNULL(re.name, c.EqName)                                                                           eqName,
+        ISNULL(re.adress, a.Alarm_WhereDesc)                                                                alarmWheredesc,
+		ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '') alarmDevicedesc,
+        isnull(a.isDeal,0)                                                                                  isdeal,
+        a.DealUser                                                                                          dealUser,
+        CONVERT(VARCHAR, a.DealTime, 120)                                                                   dealTime,
+        a.DealInfo                                                                                          dealInfo,
+        a.DealResult                                                                                        dealResult,
+        a.dealCode                                                                                          dealCode,
+        a.IsNeedMaintain                                                                                    isNeedMaintain,
+        e.RepairSite                                                                                        repairSite,
+        e.BadDesc                                                                                           badDesc,
+        a.picUrl                                                                                            picUrl,
+        re.ID                                                                                               addressID,
+        a.Alarm_DeviceDesc                                                                                  alarmCat
+	FROM
+		UT_LZ_BJZJAlarm_History a
+	LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+	AND a.DeviceIndex = b.DeviceIndex
+	AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+	LEFT JOIN UT_EQ_Equipment c ON b.ID=c.NetDeviceID
+	LEFT JOIN Ut_EQ_address_rel re ON c.ID=re.eqid AND re.partcode=a.Alarm_Reserve
+	LEFT JOIN UT_Unit_BaseInfo d ON a.UnitID = d.ID
+	LEFT JOIN UT_LZ_Repair e ON e.BaseID = a.ID
+	WHERE a.ID=#{id}
+	AND (d.isDelete = 0 OR d.isDelete is NULL)
+	AND (b.isDelete = 0 OR b.isDelete is NULL)
+	AND (c.isDelete = 0 OR c.isDelete is NULL)
+
+  </select>
+    <!--<select id="getFireHistoryList" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        a.UnitID unitId,
+        b.id netDeviceId,
+        a.OnwerCode deviceCode,
+        a.DeviceIndex deviceIndex,
+        a.DeviceNo deviceNo,
+        a.JDID jdid,
+        CASE WHEN a.DealResult=1 THEN '是' WHEN a.DealResult=0 then '否' else '' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        c.id eqId,
+        ISNULL(d.name, c.EqName) eqName,
+        CONVERT(VARCHAR,a.Lastupdate,120) time,
+        CONVERT(VARCHAR,a.[Time],120) hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isdeal,
+        a.dealCode dealCode,
+        d.ID addressID,
+        a.Alarm_DeviceDesc alarmCat,
+        a.DealInfo dealInfo
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_Build i ON i.ID=c.BuildID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit re ON re.unit_id = a.UnitID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="type != null and type != ''">
+                and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+            <if test="isDeal != null and isDeal != ''">
+                <if test="isDeal==1">
+                    AND a.isDeal = #{isDeal}
+                </if>
+                <if test="isDeal==0">
+                    AND a.isDeal IS NULL
+                </if>
+
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getFireHistoryList" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        a.UnitID unitId,
+        b.id netDeviceId,
+        a.OnwerCode deviceCode,
+        a.DeviceIndex deviceIndex,
+        a.DeviceNo deviceNo,
+        a.JDID jdid,
+        CASE WHEN a.DealResult=1 THEN '是' WHEN a.DealResult=0 then '否' else '' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        c.id eqId,
+        <if test="selectType == 1 or selectType == 2">
+            ISNULL(d.name, c.EqName) eqName,
+        </if>
+        <if test="selectType == 3">
+            c.EqName eqName,
+        </if>
+        CONVERT(VARCHAR,a.Lastupdate,120) time,
+        CONVERT(VARCHAR,a.[Time],120) hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        <if test="selectType == 1 or selectType == 2">
+            ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        </if>
+        <if test="selectType == 3">
+            a.Alarm_WhereDesc alarmWheredesc,
+        </if>
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isdeal,
+        a.dealCode dealCode,
+        <if test="selectType == 1 or selectType == 2">
+            d.ID addressID,
+        </if>
+        a.Alarm_DeviceDesc alarmCat,
+        a.DealInfo dealInfo
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        <if test="selectType == 1 or selectType == 2">
+            LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+            AND a.Alarm_Reserve = d.partcode
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_Build i ON i.ID=c.BuildID
+        </if>
+        <if test="selectType == 1">
+            <if test="userId != null and userId != '' and userId != 1">
+                LEFT JOIN UT_Base_UserReUnit re ON re.unit_id = a.UnitID
+            </if>
+        </if>
+        <if test="selectType == 2">
+            <if test="userId != null and userId != '' and userId != 1">
+                LEFT JOIN UT_Base_UserRelation re ON d.BuildAreaID = re.relation_id
+            </if>
+        </if>
+        <if test="selectType == 3">
+            <if test="userId != null and userId != '' and userId != 1">
+                LEFT JOIN UT_Base_UserRelation re ON c.BuildAreaID = re.relation_id
+            </if>
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            <if test="selectType == 3">
+                and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+            </if>
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="selectType == 1 or selectType == 2">
+                <if test="type != null and type != ''">
+                    and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+                </if>
+            </if>
+            <if test="selectType == 3">
+                <if test="type != null and type != ''">
+                    and c.EqSystemID = #{type}
+                </if>
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+            <if test="isDeal != null and isDeal != ''">
+                <if test="isDeal==1">
+                    AND a.isDeal = #{isDeal}
+                </if>
+                <if test="isDeal==0">
+                    AND a.isDeal IS NULL
+                </if>
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>
+    <!--<select id="getFireHistoryBuildList" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        a.UnitID unitId,
+        b.id netDeviceId,
+        a.OnwerCode deviceCode,
+        a.DeviceIndex deviceIndex,
+        a.DeviceNo deviceNo,
+        a.JDID jdid,
+        CASE WHEN a.DealResult=1 THEN '是' WHEN a.DealResult=0 then '否' else '' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        c.id eqId,
+        ISNULL(d.name, c.EqName) eqName,
+        CONVERT(VARCHAR,a.Lastupdate,120) time,
+        CONVERT(VARCHAR,a.[Time],120) hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isdeal,
+        a.dealCode dealCode,
+        d.ID addressID,
+        a.Alarm_DeviceDesc alarmCat,
+        a.DealInfo dealInfo
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_Build i ON i.ID=c.BuildID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserRelation re ON d.BuildAreaID = re.relation_id
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="type != null and type != ''">
+                and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+            <if test="isDeal != null and isDeal != ''">
+                <if test="isDeal==1">
+                    AND a.isDeal = #{isDeal}
+                </if>
+                <if test="isDeal==0">
+                    AND a.isDeal IS NULL
+                </if>
+
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <!--<select id="getFireHistoryBJZJBuildList" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        a.UnitID unitId,
+        b.id netDeviceId,
+        a.OnwerCode deviceCode,
+        a.DeviceIndex deviceIndex,
+        a.DeviceNo deviceNo,
+        a.JDID jdid,
+        CASE WHEN a.DealResult=1 THEN '是' WHEN a.DealResult=0 then '否' else '' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        c.id eqId,
+        c.EqName eqName,
+        CONVERT(VARCHAR,a.Lastupdate,120) time,
+        CONVERT(VARCHAR,a.[Time],120) hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        a.Alarm_WhereDesc alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isdeal,
+        a.dealCode dealCode,
+        a.Alarm_DeviceDesc alarmCat,
+        a.DealInfo dealInfo
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_Build i ON i.ID=c.BuildID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserRelation re ON c.BuildAreaID = re.relation_id
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status!=''">
+                AND a.Alarm_Status in
+                <foreach collection="statusList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="type != null and type != ''">
+                and c.EqSystemID = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+            <if test="isDeal != null and isDeal != ''">
+                <if test="isDeal==1">
+                    AND a.isDeal = #{isDeal}
+                </if>
+                <if test="isDeal==0">
+                    AND a.isDeal IS NULL
+                </if>
+
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getFireUnitList" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        <if test="sqlType != null and sqlType != ''">
+            COUNT (DISTINCT d.partcode) COUNT
+        </if>
+        <if test="sqlType == null or sqlType == ''">
+            a.Alarm_Status alarmStatus,
+            a.Alarm_SourceDesc alarmSourcedesc,
+            a.Alarm_DeviceDesc alarmCat,
+            a.Alarm_WhereDesc alarmWheredesc,
+            ISNULL(d.name, c.EqName) eqName,
+            MIN (
+            CONVERT (VARCHAR, a.Lastupdate, 120)
+            ) time,
+            COUNT (a.id) count
+        </if>
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_Build i ON i.ID=c.BuildID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit re ON re.unit_id = a.UnitID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and CONVERT (VARCHAR(100), a.Lastupdate
+                , 20)>=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and CONVERT (VARCHAR(100), a.Lastupdate
+                , 20)>=#{endDate}
+            </if>
+            <if test="type != null and type != ''">
+                and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+        </where>
+        <if test="sqlType == null or sqlType == ''">
+            GROUP BY
+            a.Alarm_Status,
+            a.Alarm_SourceDesc,
+            a.Alarm_DeviceDesc,
+            a.Alarm_WhereDesc,
+            d.name,
+            c.EqName
+        </if>
+    </select>
+    <!--<select id="getFireList" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        d.name eqName,
+        CONVERT(VARCHAR,a.Lastupdate,120) time,
+        CONVERT(VARCHAR,a.[Time],23) hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        d.ID addressID,
+        a.Alarm_DeviceDesc alarmCat,
+        a.UnitID unitId
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit re ON re.unit_id = a.UnitID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            and DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status != ''">
+                <if test="status==36">
+                    and a.Alarm_Status != 1
+                </if>
+                <if test="status !=36">
+                    and a.Alarm_Status = #{status}
+                </if>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="type != null and type != ''">
+                and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getFireList" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        <if test="selectType == 1 or selectType == 2 or selectType == 3">
+            a.id,
+            <if test="selectType == 1 or selectType == 2">
+                a.Lastupdate,
+            </if>
+            <if test="selectType == 3">
+                CONVERT(VARCHAR,a.Lastupdate,120) Lastupdate,
+            </if>
+            CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+            CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+            e.UnitCode unitCode ,
+            e.ChildStationNum childstationnum,
+            e.UnitName unitName,
+            <if test="selectType == 1 or selectType == 2">
+                d.name eqName,
+            </if>
+            <if test="selectType == 3">
+                c.EqName eqName,
+            </if>
+            CONVERT(VARCHAR,a.Lastupdate,120) time,
+            CONVERT(VARCHAR,a.[Time],23) hostTime,
+            a.Alarm_Status alarmStatus,
+            a.Alarm_SourceDesc alarmSourcedesc,
+            ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+            alarmDeviceDesc,
+            <if test="selectType == 1 or selectType == 2">
+                ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+            </if>
+            <if test="selectType == 3">
+                a.Alarm_WhereDesc alarmWheredesc,
+            </if>
+            CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+            a.dealCode dealCode,
+            <if test="selectType == 1 or selectType == 2">
+                d.ID addressID,
+            </if>
+            a.Alarm_DeviceDesc alarmCat,
+            a.UnitID unitId
+        </if>
+        <if test="selectType == 4">
+            a.UnitID unitid,
+            e.UnitName unitName
+        </if>
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        <if test="selectType == 1 or selectType == 2 or selectType == 4">
+            LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+            AND a.Alarm_Reserve = d.partcode
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+        </if>
+        <if test="selectType == 1 or selectType == 4">
+            <if test="userId != null and userId != '' and userId != 1">
+                LEFT JOIN UT_Base_UserReUnit re ON re.unit_id = a.UnitID
+            </if>
+        </if>
+        <if test="selectType == 2">
+            <if test="userId != null and userId != '' and userId != 1">
+                LEFT JOIN UT_Base_UserRelation re ON re.relation_id = d.BuildAreaID
+            </if>
+        </if>
+        <if test="selectType == 3">
+            <if test="userId != null and userId != '' and userId != 1">
+                LEFT JOIN UT_Base_UserRelation re ON re.relation_id = c.BuildAreaID
+            </if>
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            <if test="selectType == 3">
+                and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+            </if>
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            and DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status != ''">
+                <if test="status==36">
+                    and a.Alarm_Status != 1
+                </if>
+                <if test="status !=36">
+                    and a.Alarm_Status = #{status}
+                </if>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="selectType == 1 or selectType == 2 or selectType == 4">
+                <if test="type != null and type != ''">
+                    and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+                </if>
+            </if>
+            <if test="selectType == 3">
+                <if test="type != null and type != ''">
+                    and c.EqSystemID = #{type}
+                </if>
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+        </where>
+        <if test="selectType == 1 or selectType == 2 or selectType == 3">
+            order by a.Lastupdate desc
+        </if>
+    </select>
+
+    <!--<select id="getFireListByBuild" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        a.id,
+        a.Lastupdate,
+        CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        d.name eqName,
+        CONVERT(VARCHAR,a.Lastupdate,120) time,
+        CONVERT(VARCHAR,a.[Time],23) hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        ISNULL(d.adress, a.Alarm_WhereDesc) alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        d.ID addressID,
+        a.Alarm_DeviceDesc alarmCat,
+        a.UnitID unitId
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserRelation re ON re.relation_id = d.BuildAreaID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            and DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status != ''">
+                <if test="status==36">
+                    and a.Alarm_Status != 1
+                </if>
+                <if test="status !=36">
+                    and a.Alarm_Status = #{status}
+                </if>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="type != null and type != ''">
+                and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+    <!--<select id="getFireListBJZJByBuild" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        distinct
+        a.id,
+        CONVERT(VARCHAR,a.Lastupdate,120) Lastupdate,
+        CASE WHEN a.dealResult=1 THEN '是' ELSE '否' END dealResult,
+        CASE WHEN f.ID = 2 THEN '是' ELSE '否' END isTest,
+        e.UnitCode unitCode ,
+        e.ChildStationNum childstationnum,
+        e.UnitName unitName,
+        c.EqName eqName,
+        CONVERT(VARCHAR,a.Lastupdate,120) time,
+        CONVERT(VARCHAR,a.[Time],23) hostTime,
+        a.Alarm_Status alarmStatus,
+        a.Alarm_SourceDesc alarmSourcedesc,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDeviceDesc,
+        a.Alarm_WhereDesc alarmWheredesc,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        a.Alarm_DeviceDesc alarmCat,
+        a.UnitID unitId
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserRelation re ON re.relation_id = c.BuildAreaID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            and (a.Alarm_Reserve is NULL or a.Alarm_Reserve ='')
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            and DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status != ''">
+                <if test="status==36">
+                    and a.Alarm_Status != 1
+                </if>
+                <if test="status !=36">
+                    and a.Alarm_Status = #{status}
+                </if>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="type != null and type != ''">
+                and c.EqSystemID = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+        </where>
+        order by a.Lastupdate desc
+    </select>-->
+
+    <!--<select id="getFireLists" resultType="com.gw.front.history.data.FrontHistoryAlarmInfoOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        DISTINCT
+        e.UnitName unitName
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        LEFT JOIN UT_Unit_BaseInfo e ON a.UnitID = e.ID
+        LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_BuildArea build ON build.ID=c.BuildAreaID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit re ON re.unit_id = a.UnitID
+        </if>
+        <where>
+            (e.isDelete = 0 OR e.isDelete is NULL)
+            AND c.ID IS NOT NULL
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            AND (c.isDelete = 0 OR c.isDelete is NULL)
+            and DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+            <if test="userId != null and userId != '' and userId != 1">
+                AND re.user_id=#{userId}
+            </if>
+            <if test="dealResult != null and dealResult != ''">
+                AND a.DealResult=#{dealResult}
+            </if>
+            <if test="status != null and status != ''">
+                <if test="status==36">
+                    and a.Alarm_Status != 1
+                </if>
+                <if test="status !=36">
+                    and a.Alarm_Status = #{status}
+                </if>
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND a.Lastupdate >=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND a.Lastupdate &lt;=#{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND e.UnitName LIKE '%${keyword}%'
+            </if>
+            <if test="type != null and type != ''">
+                and ISNULL(d.EqSystemID,c.EqSystemID) = #{type}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND a.UnitID = #{unitId}
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND i.ID = #{buildId}
+            </if>
+        </where>
+    </select>-->
+    <select id="getAlarmCout" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData"
+            parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+        SELECT
+        <if test="sqlType == null or sqlType == ''">
+            convert(varchar,a.Alarm_Status) coupletKey,
+            ISNULL(
+            d.EqSystemID,
+            c.EqSystemID
+            ) coupletValue
+        </if>
+        <if test="sqlType == 1">
+            convert(varchar,a.Alarm_Status) coupletKey,
+            ISNULL(
+            d.EqSystemID,
+            c.EqSystemID
+            ) coupletValue,
+            a.ID
+        </if>
+        <if test="sqlType == 2">
+            convert(varchar,a.Alarm_Status) coupletKey,
+            ISNULL(
+            d.EqSystemID,
+            c.EqSystemID
+            ) coupletValue,
+            a.Alarm_Status alarmStatus
+        </if>
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+        AND a.Alarm_Reserve = d.partcode
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit uu ON uu.unit_id = a.UnitID
+        </if>
+        <where>
+            (b.isDelete = 0 OR b.isDelete is NULL)
+            and ISNULL(d.EqSystemID,c.EqSystemID) is not null
+            <if test="userId != 1">
+                and uu.user_id = #{userId}
+            </if>
+            and (c.isDelete = 0 OR c.isDelete is NULL)
+            <if test="sqlType == null or sqlType == ''">
+                <if test="startDate != null and startDate != ''">
+                    and a.Lastupdate >= #{startDate}
+                </if>
+                <if test="endDate != null and endDate != ''">
+                    and a.Lastupdate &lt;= #{endDate}
+                </if>
+            </if>
+            <if test="unitId != null and unitId != ''">
+                and a.UnitID = #{unitId}
+            </if>
+            <if test="isTest != null and isTest  != ''">
+                and a.isTest = #{isTest}
+            </if>
+            <if test="sqlType != null and sqlType != ''">
+                and a.isDeal =#{isDeal}
+                and a.DealResult =#{dealResult}
+                <if test="startDate != null and startDate != ''">
+                    and CONVERT (VARCHAR, a.DealTime, 23)>= #{startDate}
+                </if>
+                <if test="endDate != null and endDate != ''">
+                    and CONVERT (VARCHAR, a.DealTime, 23)>= #{endDate}
+                </if>
+            </if>
+        </where>
+        <if test="sqlType == null or sqlType == ''">
+            UNION ALL
+            SELECT
+            <if test="sqlType == null or sqlType == ''">
+                a.EquipmentDetialName coupletKey,
+                c.EqSystemID coupletValue
+            </if>
+            <if test="sqlType == 1">
+                a.EquipmentDetialName coupletKey,
+                c.EqSystemID coupletValue,
+                a.ID
+            </if>
+            <if test="sqlType == 2">
+                a.EquipmentDetialName coupletKey,
+                c.EqSystemID coupletValue,
+                a.Alarm_Status alarmStatus
+            </if>
+            FROM
+            UT_LZ_FireEquipmentAlarm a
+            LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+            LEFT JOIN UT_EQ_Equipment c ON b.EQID = c.ID
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit uu ON uu.unit_id = c.UnitID
+            </if>
+            LEFT JOIN UT_Base_EqSystem sys ON sys.id = c.EqSystemID
+            <where>
+                (c.isDelete = 0 OR c.isDelete is NULL)
+                and c.EqSystemID is not null
+                <if test="userId != 1">
+                    and uu.user_id = #{userId}
+                </if>
+                <if test="startDate != null and startDate != ''">
+                    and a.Lastupdate >= #{startDate}
+                </if>
+                <if test="endDate != null and endDate != ''">
+                    and a.Lastupdate &lt;= #{endDate}
+                </if>
+                <if test="unitId != null and unitId != ''">
+                    and a.UnitID = #{unitId}
+                </if>
+                <if test="isTest != null and isTest  != ''">
+                    and a.isTest = #{isTest}
+                </if>
+                <if test="type != null and type != ''">
+                    AND d.ID = #{type}
+                </if>
+                <if test="ioType != null and ioType != ''">
+                    and ioType=#{ioType}
+                </if>
+                <if test="sqlType != null and sqlType != ''">
+                    and a.isDeal =#{isDeal}
+                    <if test="startDate != null and startDate != ''">
+                        and CONVERT (VARCHAR, a.DealTime, 23)>= #{startDate}
+                    </if>
+                    <if test="endDate != null and endDate != ''">
+                        and CONVERT (VARCHAR, a.DealTime, 23)>= #{endDate}
+                    </if>
+                </if>
+            </where>
+        </if>
+    </select>
+    <select id="getUnitIDByBJZJDeviceAndpartCode" parameterType="com.gw.alarm.data.AlarmBJZJInData"
+            resultType="com.gw.alarm.data.AlarmBJZJOutData">
+    SELECT
+        ISNULL(d.unitId, a.UnitID) unitID,
+        a.calibration_id           calibrationId,
+        b.ID eqId,
+        b.EqName                   eqname,
+        d.name                     eqDetailName,
+        d.adress                   eqAddress,
+        d.videoId                  videoId,
+        a.ID                       netDeviceId,
+        d.ID                       addressRelId,
+        d.partcode                 partcode,
+        a.isUploadA                isuploada,
+        a.isUploadB                isuploadb,
+        d.BuildAreaID  buildAreaID
+    FROM
+        UT_Unit_NetDevice a
+    LEFT JOIN UT_EQ_Equipment b ON a.ID = b.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel d ON b.ID = d.eqid
+    left join UT_Unit_BaseInfo unit on a.UnitID = unit.id
+    where
+        a.OwnerCode = #{onwercode}
+        and a.DeviceIndex = #{deviceindex}
+        and (a.DeviceNo = #{deviceno} or a.DeviceIndex = 2)
+        AND (a.isDelete = 0 OR a.isDelete is NULL)
+        and (b.isDelete = 0 OR b.isDelete is NULL)
+        and (unit.isDelete = 0 OR unit.isDelete is NULL)
+        and unit.id is not null
+        and b.ID is not null
+        and d.partcode = #{ZJID}
+  </select>
+
+    <select id="getUnitIDByBJZJDevice" parameterType="com.gw.alarm.data.AlarmBJZJInData"
+            resultType="com.gw.alarm.data.AlarmBJZJOutData">
+    SELECT
+         a.UnitID                   unitID,
+        a.calibration_id           calibrationId,
+        b.ID eqId,
+        b.EqName                   eqname,
+        a.ID                       netDeviceId,
+        a.isUploadA                isuploada,
+        a.isUploadB                isuploadb,
+        b.BuildAreaID buildAreaID
+    FROM
+        UT_Unit_NetDevice a
+    LEFT JOIN UT_EQ_Equipment b ON a.ID = b.NetDeviceID
+    left join UT_Unit_BaseInfo unit on a.UnitID = unit.id
+    where
+        a.OwnerCode = #{onwercode}
+        and a.DeviceIndex = #{deviceindex}
+        and (a.DeviceNo = #{deviceno} or a.DeviceIndex = 2)
+        AND (a.isDelete = 0 OR a.isDelete is NULL)
+        and (b.isDelete = 0 OR b.isDelete is NULL)
+        and (unit.isDelete = 0 OR unit.isDelete is NULL)
+        and unit.id is not null
+        and b.ID is not null
+  </select>
+
+    <select id="getAlarmInfoExist" parameterType="com.gw.alarm.data.AlarmBJZJInData" resultType="java.lang.String">
+    SELECT
+        a.ID
+    FROM
+        UT_LZ_BJZJAlarm a
+   LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+    AND a.DeviceIndex = b.DeviceIndex
+    AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+    LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+    LEFT JOIN Ut_EQ_address_rel d ON c.ID = d.eqid
+    AND a.Alarm_Reserve = d.partcode
+    where
+        a.OnwerCode = #{onwercode}
+        and a.DeviceIndex = #{deviceindex}
+        and (a.DeviceNo = #{deviceno} or a.DeviceIndex = 2)
+        and DateDiff(Mi, a.Lastupdate, getDate()) &lt;= 5
+        and a.Alarm_Reserve = #{ZJID}
+  </select>
+
+    <select id="getEmployeeByBJZJDevice" resultType="com.gw.alarm.data.EmployeeForSendMsgData">
+    SELECT
+        ID,
+        UserName,
+        Account useraccount,
+        OpenID,
+        MobilePhone mobileno,
+        channelId channelId,
+        phone_name phoneName,
+        ReceiveAlarmType receiveAlarmType
+    FROM
+        UT_Unit_User a
+    LEFT JOIN UT_Base_UserReUnit b ON a.id = b.user_id
+    WHERE
+        b.unit_id = #{ unitID }
+  </select>
+
+    <select id="getEmployeeByBJZJDeviceByBuild" resultType="com.gw.alarm.data.EmployeeForSendMsgData">
+    SELECT
+       a.ID id,
+       a.UserName username,
+       a.Account useraccount,
+       a.OpenID openid,
+       a.MobilePhone mobileno,
+       a.channelId channelId,
+       a.phone_name phoneName,
+       a.ReceiveAlarmType receiveAlarmType,
+       b.relation_id buildAreaId
+    FROM
+        UT_Unit_User a
+    LEFT JOIN UT_Base_UserReUnit c ON a.id = c.user_id
+    LEFT JOIN UT_Base_UserRelation b ON a.id = b.user_id
+    WHERE
+        c.unit_id = #{ unitID }
+  </select>
+
+    <select id="getAlarmNodealStat" resultType="com.gw.wechat.data.WeChatAlarmStatOutData"
+            parameterType="java.lang.String">
+        SELECT
+        fireCount,
+        interfaceCount
+        FROM
+        (
+        SELECT
+        COUNT (DISTINCT a.ID) fireCount
+        FROM
+        UT_LZ_BJZJAlarm a
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit uu ON uu.unit_id = a.UnitID
+            </if>
+            WHERE 1=1
+            <if test="userId != 1">
+                and uu.user_id = #{userId}
+            </if>
+            AND a.Alarm_Status = 1
+        </if>
+        <if test="selectType == 2 or selectType == 3">
+            LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+            AND a.DeviceIndex = d.DeviceIndex
+            AND (
+            a.DeviceNo = d.DeviceNo
+            OR a.DeviceIndex = 2
+            )
+            LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+            LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+            LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+            <if test="selectType == 2">
+                LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+                AND f.partcode = a.Alarm_Reserve
+                <if test="userId != 1">
+                    LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = f.BuildAreaID
+                </if>
+            </if>
+            <if test="selectType == 3">
+                <if test="userId != 1">
+                    LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = e.BuildAreaID
+                </if>
+            </if>
+            WHERE
+            (
+            c.isDelete = 0
+            OR c.isDelete IS NULL
+            )
+            AND a.Alarm_Status = 1
+            AND (
+            d.isDelete = 0
+            OR d.isDelete IS NULL
+            )
+            <if test="userId != 1">
+                and uu.user_id = #{userId}
+            </if>
+            <if test="selectType == 3">
+                AND (
+                a.Alarm_Reserve IS NULL
+                OR a.Alarm_Reserve = ''
+                )
+            </if>
+        </if>
+        AND (a.isDeal is NULL or a.isDeal = 0)
+        AND DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        ) m
+        LEFT JOIN (
+        SELECT
+        COUNT (a.ID) interfaceCount
+        FROM
+        UT_LZ_FireEquipmentAlarm a
+        LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+        LEFT JOIN UT_EQ_Equipment c ON b.EQID = c.ID
+        <if test="selectType == 2 or selectType == 3">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation d ON d.relation_id = c.BuildAreaID
+            </if>
+        </if>
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit d ON c.UnitID = d.unit_id
+            </if>
+        </if>
+        WHERE
+        (a.isDeal is NULL or a.isDeal = 0)
+        <if test="userId != 1">
+            and d.user_id = #{userId}
+        </if>
+        AND DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        ) n ON 1 = 1
+    </select>
+    <!--<select id="getAlarmNodealByBuildStat" resultType="com.gw.wechat.data.WeChatAlarmStatOutData"
+            parameterType="java.lang.String">
+        SELECT
+        fireCount,
+        interfaceCount
+        FROM
+        (
+        SELECT
+        COUNT (DISTINCT a.ID) fireCount
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+        AND f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = f.BuildAreaID
+        </if>
+        WHERE
+        (
+        c.isDelete = 0
+        OR c.isDelete IS NULL
+        )
+        AND a.Alarm_Status = 1
+        AND (
+        d.isDelete = 0
+        OR d.isDelete IS NULL
+        )
+        <if test="userId != 1">
+            and uu.user_id = #{userId}
+        </if>
+        AND (a.isDeal is NULL or a.isDeal = 0)
+        AND DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        ) m
+        LEFT JOIN (
+        SELECT
+        COUNT (a.ID) interfaceCount
+        FROM
+        UT_LZ_FireEquipmentAlarm a
+        LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+        LEFT JOIN UT_EQ_Equipment c ON b.EQID = c.ID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation d ON d.relation_id = c.BuildAreaID
+        </if>
+        WHERE
+        (a.isDeal is NULL or a.isDeal = 0)
+        <if test="userId != 1">
+            and d.user_id = #{userId}
+        </if>
+        AND DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        ) n ON 1 = 1
+    </select>-->
+    <!--<select id="getAlarmNodealByBJZJBuildStat" resultType="com.gw.wechat.data.WeChatAlarmStatOutData"
+            parameterType="java.lang.String">
+        SELECT
+        fireCount,
+        interfaceCount
+        FROM
+        (
+        SELECT
+        COUNT (DISTINCT a.ID) fireCount
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = e.BuildAreaID
+        </if>
+        WHERE
+        (
+        c.isDelete = 0
+        OR c.isDelete IS NULL
+        )
+        AND a.Alarm_Status = 1
+        AND (
+        d.isDelete = 0
+        OR d.isDelete IS NULL
+        )
+        <if test="userId != 1">
+            and uu.user_id = #{userId}
+        </if>
+        AND (
+        a.Alarm_Reserve IS NULL
+        OR a.Alarm_Reserve = ''
+        )
+        AND (a.isDeal is NULL or a.isDeal = 0)
+        AND DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        ) m
+        LEFT JOIN (
+        SELECT
+        COUNT (a.ID) interfaceCount
+        FROM
+        UT_LZ_FireEquipmentAlarm a
+        LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+        LEFT JOIN UT_EQ_Equipment c ON b.EQID = c.ID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation d ON d.relation_id = c.BuildAreaID
+        </if>
+        WHERE
+        (a.isDeal is NULL or a.isDeal = 0)
+        <if test="userId != 1">
+            and d.user_id = #{userId}
+        </if>
+        AND DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        and (c.isDelete = 0 OR c.isDelete is NULL)
+        ) n ON 1 = 1
+    </select>-->
+    <!--<select id="getWechatAlarmList" resultType="com.gw.wechat.data.WechatAlarmInfoOutData">
+        SELECT
+        distinct a.id,
+        c.UnitName unitName,
+        a.Lastupdate alarmTime,
+        a.Alarm_Status alarmStatus,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest
+        FROM
+        UT_LZ_BJZJAlarm a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit uu ON uu.unit_id = a.UnitID
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="userId != 1">
+            and uu.user_id=#{userId}
+        </if>
+        <if test="isDeal != null and isDeal!=''">
+            <if test="isDeal ==0 ">
+                and (a.isDeal is NULL or a.isDeal = 0)
+            </if>
+            <if test="isDeal !=0">
+                and a.isDeal = #{isDeal}
+            </if>
+        </if>
+        <if test="alarmStatus != null">
+            and a.Alarm_Status = #{alarmStatus}
+        </if>
+        <if test="alarmType != null and alarmType != ''">
+            and  a.Alarm_Status NOT in (1,2,3,8,34, 35, 200, 201, 211, 212, 218, 219, 261, 262, 268, 269, 300, 301)
+            &lt;!&ndash;<foreach collection="alarmStatuss" index="index" item="item" open="(" separator="," close=")">&ndash;&gt;
+                &lt;!&ndash;#{alarmStatuss}&ndash;&gt;
+            &lt;!&ndash;</foreach>&ndash;&gt;
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and c.UnitName like '%${keyword}%'
+        </if>
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getWechatAlarmList" resultType="com.gw.wechat.data.WechatAlarmInfoOutData">
+        SELECT
+        distinct a.id,
+        c.UnitName unitName,
+        a.Lastupdate alarmTime,
+        a.Alarm_Status alarmStatus,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest
+        FROM
+        UT_LZ_BJZJAlarm a
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit uu ON uu.unit_id = a.UnitID
+            </if>
+        </if>
+        <if test="selectType == 2 or selectType == 3">
+            LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+            AND a.DeviceIndex = d.DeviceIndex
+            AND (
+            a.DeviceNo = d.DeviceNo
+            OR a.DeviceIndex = 2
+            )
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        <if test="selectType == 2">
+            LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = f.BuildAreaID
+            </if>
+        </if>
+        <if test="selectType == 3">
+            LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = e.BuildAreaID
+            </if>
+        </if>
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="selectType == 2">
+            AND (d.isDelete = 0
+            OR d.isDelete IS NULL
+            )
+            AND (
+            e.isDelete = 0
+            OR e.isDelete IS NULL
+            )
+        </if>
+        <if test="selectType == 3">
+            AND (
+            a.Alarm_Reserve IS NULL
+            OR a.Alarm_Reserve = ''
+            )
+            AND (
+            d.isDelete = 0
+            OR d.isDelete IS NULL
+            )
+            AND (
+            e.isDelete = 0
+            OR e.isDelete IS NULL
+            )
+        </if>
+        <if test="userId != 1">
+            and uu.user_id=#{userId}
+        </if>
+        <if test="isDeal != null and isDeal!=''">
+            <if test="isDeal ==0 ">
+                and (a.isDeal is NULL or a.isDeal = 0)
+            </if>
+            <if test="isDeal !=0">
+                and a.isDeal = #{isDeal}
+            </if>
+        </if>
+        <if test="alarmStatus != null">
+            and a.Alarm_Status = #{alarmStatus}
+        </if>
+        <if test="alarmType != null and alarmType != ''">
+            and  a.Alarm_Status NOT in (1,2,3,8,34, 35, 200, 201, 211, 212, 218, 219, 261, 262, 268, 269, 300, 301)
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and c.UnitName like '%${keyword}%'
+        </if>
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        order by a.Lastupdate desc
+    </select>
+    <!--<select id="getWechatAlarmByBuildList" resultType="com.gw.wechat.data.WechatAlarmInfoOutData">
+        SELECT
+        distinct a.id,
+        c.UnitName unitName,
+        a.Lastupdate alarmTime,
+        a.Alarm_Status alarmStatus,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = f.BuildAreaID
+        </if>
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        AND (
+        d.isDelete = 0
+        OR d.isDelete IS NULL
+        )
+        AND (
+        e.isDelete = 0
+        OR e.isDelete IS NULL
+        )
+        <if test="userId != 1">
+            and uu.user_id=#{userId}
+        </if>
+        <if test="isDeal != null and isDeal!=''">
+            <if test="isDeal ==0 ">
+                and (a.isDeal is NULL or a.isDeal = 0)
+            </if>
+            <if test="isDeal !=0">
+                and a.isDeal = #{isDeal}
+            </if>
+        </if>
+        <if test="alarmStatus != null">
+            and a.Alarm_Status = #{alarmStatus}
+        </if>
+        <if test="alarmType != null and alarmType != ''">
+            and  a.Alarm_Status NOT in (1,2,3,8,34, 35, 200, 201, 211, 212, 218, 219, 261, 262, 268, 269, 300, 301)
+            &lt;!&ndash;<foreach collection="alarmStatuss" index="index" item="item" open="(" separator="," close=")">&ndash;&gt;
+            &lt;!&ndash;#{alarmStatuss}&ndash;&gt;
+            &lt;!&ndash;</foreach>&ndash;&gt;
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and c.UnitName like '%${keyword}%'
+        </if>
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        order by a.Lastupdate desc
+    </select>-->
+    <!--<select id="getWechatAlarmByBJZJBuildList" resultType="com.gw.wechat.data.WechatAlarmInfoOutData">
+        SELECT
+        distinct a.id,
+        c.UnitName unitName,
+        a.Lastupdate alarmTime,
+        a.Alarm_Status alarmStatus,
+        CASE WHEN g.ID = 2 THEN '是' ELSE '否' END isTest
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration g ON g.ID = a.calibration_id
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation uu ON uu.relation_id = e.BuildAreaID
+        </if>
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        AND (
+        a.Alarm_Reserve IS NULL
+        OR a.Alarm_Reserve = ''
+        )
+        AND (
+        d.isDelete = 0
+        OR d.isDelete IS NULL
+        )
+        AND (
+        e.isDelete = 0
+        OR e.isDelete IS NULL
+        )
+        <if test="userId != 1">
+            and uu.user_id=#{userId}
+        </if>
+        <if test="isDeal != null and isDeal!=''">
+            <if test="isDeal ==0 ">
+                and (a.isDeal is NULL or a.isDeal = 0)
+            </if>
+            <if test="isDeal !=0">
+                and a.isDeal = #{isDeal}
+            </if>
+        </if>
+        <if test="alarmStatus != null">
+            and a.Alarm_Status = #{alarmStatus}
+        </if>
+        <if test="alarmType != null and alarmType != ''">
+            and  a.Alarm_Status NOT in (1,2,3,8,34, 35, 200, 201, 211, 212, 218, 219, 261, 262, 268, 269, 300, 301)
+            &lt;!&ndash;<foreach collection="alarmStatuss" index="index" item="item" open="(" separator="," close=")">&ndash;&gt;
+            &lt;!&ndash;#{alarmStatuss}&ndash;&gt;
+            &lt;!&ndash;</foreach>&ndash;&gt;
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and c.UnitName like '%${keyword}%'
+        </if>
+        and DateDiff(hh,a.Lastupdate,getDate()) &lt;= 24
+        order by a.Lastupdate desc
+    </select>-->
+    <select id="getStatisticalInfo" resultType="com.gw.front.index.data.FrontStatisticalOutData">
+  	SELECT
+		a.UnitID unitId,
+		b.DeviceStatus deviceStatus,
+		c.Alarm_Status alarmStatus,
+		d.ID calibrationType
+	FROM
+		UT_Unit_NetDevice a
+	LEFT JOIN DB_FireProtection.dbo.sd_devices b ON a.OwnerCode = b.OwnerCode
+	LEFT OUTER JOIN UT_LZ_BJZJAlarm_History c ON a.UnitID = c.UnitID
+	LEFT OUTER JOIN UT_Unit_calibration d ON a.calibration_id = d.ID
+	WHERE (a.isDelete = 0 OR a.isDelete is NULL)
+  </select>
+
+    <select id="getFireStatistical" resultType="com.gw.front.index.data.FrontOnlineStatisticalOutData">
+        SELECT DISTINCT
+        d.unitId,
+        d.UnitName unitName,
+        d.UnitCode unitCode
+        FROM
+        (
+        SELECT
+        a.ID unitId,
+        a.UnitName,
+        b.Alarm_Status,
+        a.UnitCode
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_LZ_BJZJAlarm b ON b.UnitID = a.ID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit c ON c.unit_id = a.ID
+        </if>
+        WHERE
+        DateDiff(hh, b.Lastupdate, getDate()) &lt;= 24
+        <if test="userId != 1">
+            AND c.user_id = #{userId}
+        </if>
+        AND
+        b.Alarm_Status = #{alarmStatus}
+        AND
+        (b.isDeal = 0 or b.isDeal is null)
+        AND
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        ) as d
+        <if test="unitname != null and unitname != ''">
+            WHERE d.UnitName like '%${unitname}%'
+        </if>
+    </select>
+    <select id="getCalibrationType" resultType="com.gw.front.index.data.FrontOnlineStatisticalOutData">
+        SELECT DISTINCT
+        d.unitId,
+        d.UnitName unitName,
+        d.UnitCode unitCode
+        FROM
+        (
+        SELECT
+        a.ID unitId,
+        a.UnitName,
+        b.calibration_id,
+        a.UnitCode
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Unit_NetDevice b ON b.UnitID = a.ID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit c ON c.unit_id = a.ID
+        </if>
+        WHERE
+        b.calibration_id = #{calibrationId}
+        <if test="userId != 1">
+            and c.user_id = #{userId}
+        </if>
+        AND (a.isDelete = 0 OR a.isDelete is NULL)
+        AND (b.isDelete = 0 OR b.isDelete is NULL)
+        ) as d
+        <if test="unitname != null and unitname != ''">
+            WHERE d.UnitName like '%${unitname}%'
+        </if>
+    </select>
+    <select id="getRealTimeAlarmsByUnitId" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontStatisticalInData">
+        SELECT
+        c.UnitName unitName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        CONVERT (VARCHAR, a.DealTime, 120) dealtime,
+        a.UnitID unitId,
+        c.ChildStationNum childStationNum
+        FROM
+        UT_LZ_BJZJAlarm a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration d ON a.calibration_id = d.ID
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="userId != 1">
+            AND b.user_id = #{userId}
+        </if>
+        AND DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        <if test="unitId != null and unitId != ''">
+            AND a.unitId = #{unitId}
+        </if>
+        <if test="alarmStatus != null and alarmStatus != ''">
+            AND a.Alarm_Status = #{alarmStatus}
+        </if>
+        <if test="calibrationType != null and calibrationType != ''">
+            AND d.calibration_type = #{calibrationType}
+        </if>
+        <if test="isDeal != null and isDeal != ''">
+            <if test="isDeal == 0 ">
+                AND (a.isDeal = 0 or a.isDeal is NULL)
+            </if>
+            <if test="isDeal != 0">
+                AND a.isDeal = #{isDeal}
+            </if>
+        </if>
+        ORDER BY
+        a.Lastupdate DESC
+    </select>
+    <!--<select id="getAllAlarms" resultType="com.gw.front.index.data.FrontFireInfoOutData">
+        SELECT
+        distinct
+        a.id id,
+        a.Lastupdate,
+        c.UnitName unitName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        CONVERT (VARCHAR, a.DealTime, 120) dealtime,
+        a.UnitID unitId,
+        c.UnitCode unitCode,
+        c.ChildStationNum childStationNum,
+        CASE WHEN d.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.isPhone isPhone
+        FROM
+        UT_LZ_BJZJAlarm a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration d ON a.calibration_id = d.ID
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        AND DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND (a.isDeal = 0 or a.isDeal is NULL)
+        ORDER BY a.Lastupdate DESC
+    </select>-->
+    <select id="getAllAlarms" resultType="com.gw.front.index.data.FrontFireInfoOutData">
+        SELECT
+        distinct
+        a.id id,
+        a.Lastupdate,
+        c.UnitName unitName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        CONVERT (VARCHAR, a.DealTime, 120) dealtime,
+        a.UnitID unitId,
+        c.UnitCode unitCode,
+        c.ChildStationNum childStationNum,
+        CASE WHEN d.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.isPhone isPhone
+        FROM
+        UT_LZ_BJZJAlarm a
+        <if test="selectType == 1">
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+            </if>
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration d ON a.calibration_id = d.ID
+        <if test="selectType == 2">
+            LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+            LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON b.relation_id = f.BuildAreaID
+            </if>
+        </if>
+        <if test="selectType == 3">
+            LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+            <if test="userId != 1">
+                LEFT JOIN UT_Base_UserRelation b ON b.relation_id = e.BuildAreaID
+            </if>
+        </if>
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        AND DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND (a.isDeal = 0 or a.isDeal is NULL)
+        <if test="selectType == 2 or selectType == 3">
+            and (e.isDelete = 0 OR e.isDelete is NULL)
+        </if>
+        ORDER BY a.Lastupdate DESC
+    </select>
+    <!--<select id="getAllAlarmsByBuild" resultType="com.gw.front.index.data.FrontFireInfoOutData">
+        SELECT
+        distinct
+        a.id id,
+        a.Lastupdate,
+        c.UnitName unitName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        CONVERT (VARCHAR, a.DealTime, 120) dealtime,
+        a.UnitID unitId,
+        c.UnitCode unitCode,
+        c.ChildStationNum childStationNum,
+        CASE WHEN d.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.isPhone isPhone
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration d ON a.calibration_id = d.ID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid and f.partcode = a.Alarm_Reserve
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON b.relation_id = f.BuildAreaID
+        </if>
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        AND DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND (a.isDeal = 0 or a.isDeal is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        ORDER BY a.Lastupdate DESC
+    </select>-->
+    <!--<select id="getAllAlarmsByBJZJBuild" resultType="com.gw.front.index.data.FrontFireInfoOutData">
+        SELECT
+        distinct
+        a.id id,
+        a.Lastupdate,
+        c.UnitName unitName,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        CONVERT (VARCHAR, a.DealTime, 120) dealtime,
+        a.UnitID unitId,
+        c.UnitCode unitCode,
+        c.ChildStationNum childStationNum,
+        CASE WHEN d.ID = 2 THEN '是' ELSE '否' END isTest,
+        a.isPhone isPhone
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration d ON a.calibration_id = d.ID
+        LEFT JOIN UT_EQ_Equipment e ON d.ID = e.NetDeviceID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserRelation b ON b.relation_id = e.BuildAreaID
+        </if>
+        WHERE
+        (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        AND DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND (a.isDeal = 0 or a.isDeal is NULL)
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        ORDER BY a.Lastupdate DESC
+    </select>-->
+    <select id="getAlarmByUnitId" resultType="com.gw.front.index.data.FrontFireInfoOutData"
+            parameterType="com.gw.front.index.data.FrontStatisticalInData">
+        <!-- SELECT * FROM( -->
+        SELECT
+        a.ID id,
+        c.UnitName unitName,
+        c.UnitCode unitCode,
+        CONVERT (VARCHAR, a.Lastupdate, 120) time,
+        ISNULL(a.Alarm_WhereDesc, '')+' '+ISNULL(a.Alarm_DeviceDesc, '')+' '+ISNULL(a.Alarm_SourceDesc, '')
+        alarmDevicedesc,
+        a.Alarm_Status alarmStatus,
+        CASE WHEN d.ID = 2 THEN '是' ELSE '否' END isTest,
+        c.ChildStationNum childStationNum,
+        a.UnitID unitId,
+        CONVERT (VARCHAR, a.DealTime, 120) dealtime,
+        CASE WHEN a.DealResult=1 THEN '误报' ELSE '真实告警' END dealResult,
+        CASE WHEN a.isDeal=1 THEN '是' ELSE '否' END isDeal,
+        a.dealCode dealCode,
+        d.ID calibrationId,
+        a.Lastupdate lastupdate
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = a.UnitID
+        LEFT JOIN UT_Unit_calibration d ON a.calibration_id = d.ID
+        WHERE
+        a.unitId = #{unitId}
+        AND (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="alarmStatus != null and alarmStatus != ''">
+            AND a.Alarm_Status = #{alarmStatus}
+        </if>
+        <if test="calibrationType != null and calibrationType != ''">
+            AND d.ID = #{calibrationType}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND a.Lastupdate >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND a.Lastupdate &lt;= #{endDate}
+        </if>
+        <if test="isDeal != null and isDeal != ''">
+            <if test="isDeal == 0 ">
+                AND (a.isDeal = 0 or a.isDeal is NULL)
+            </if>
+            <if test="isDeal != 0">
+                AND a.isDeal = #{isDeal}
+            </if>
+        </if>
+        ORDER BY a.lastupdate DESC
+
+    </select>
+    <select id="getFireAlarmDatas" resultType="com.gw.front.forSDOS.FireOutData"
+            parameterType="com.gw.front.forSDOS.FrontSdosInData">
+        SELECT
+        a.Alarm_Status [value],
+        CONVERT (VARCHAR, a.Lastupdate, 120) happentime,
+        f.adress remark,
+        a.OnwerCode + '-' + CONVERT (VARCHAR, a.DeviceIndex) + '-' + CONVERT (VARCHAR, a.DeviceNo) deviceCode
+        FROM
+        UT_LZ_BJZJAlarm_History a
+        LEFT JOIN UT_Unit_NetDevice d ON a.OnwerCode = d.OwnerCode
+        AND a.DeviceIndex = d.DeviceIndex
+        AND (
+        a.DeviceNo = d.DeviceNo
+        OR a.DeviceIndex = 2
+        )
+        LEFT JOIN UT_EQ_Equipment b ON d.ID = b.ID
+        LEFT JOIN Ut_EQ_address_rel f ON b.ID = f.eqid
+        AND f.partcode = a.Alarm_Reserve
+        <if test="privateKey != null and privateKey != ''">
+            LEFT JOIN UT_Unit_Privatekey_REL c ON c.unit_id = d.UnitID
+        </if>
+        <where>
+            (
+            b.isDelete = 0
+            OR b.isDelete IS NULL
+            )
+            <if test="deviceCode != null and deviceCode != ''">
+                and a.OnwerCode + '-' + CONVERT (VARCHAR, a.DeviceIndex) + '-' + CONVERT (VARCHAR, a.DeviceNo) =
+                #{deviceCode}
+            </if>
+            <if test="dtstart != null and dtstart != ''">
+                AND a.Lastupdate >= #{dtstart}
+            </if>
+            <if test="dtend != null and dtend != ''">
+                AND a.Lastupdate &lt;= #{dtend}
+            </if>
+            <if test="privateKey != null and privateKey != ''">
+                AND c.private_key = #{privateKey}
+            </if>
+        </where>
+
+    </select>
+    <select id="getRTUAlarmCurrentDatas" resultType="com.gw.front.forSDOS.RtuCurrentOutData"
+            parameterType="com.gw.front.forSDOS.FrontSdosInData">
+        SELECT DISTINCT
+        a.CurrentValue [value],
+        CONVERT (VARCHAR, a.Lastupdate, 120) happentime,
+        c.InstallPosition remark,
+        b.OwnerCode + '-' + CONVERT (VARCHAR, b.DeviceIndex) + '-' + CONVERT (VARCHAR, b.DeviceNo) deviceCode
+        FROM
+        UT_EQ_EquipmentDetialGW f
+        LEFT JOIN UT_EQ_Equipment c ON f.EQID = c.ID
+        LEFT JOIN UT_Unit_NetDevice b ON b.ID = c.NetDeviceID
+        LEFT JOIN DB_FireProtection.dbo.sd_interfaces a ON b.OwnerCode = a.OwnerCode
+        AND b.DeviceNo = a.DeviceNo
+        AND f.IOType = a.IOType
+        AND f.IOPort = a.IOPort
+        <if test="privateKey != null and privateKey != ''">
+            LEFT JOIN UT_Unit_Privatekey_REL e ON e.unit_id = b.UnitID
+        </if>
+        WHERE
+        b.DeviceIndex = 3
+        AND (
+        c.isDelete = 0
+        OR c.isDelete IS NULL
+        )
+        AND (
+        b.isDelete = 0
+        OR b.isDelete IS NULL
+        )
+        <if test="deviceCode != null and deviceCode != ''">
+            and b.OwnerCode + '-3-' + CONVERT (VARCHAR,b.DeviceNo)+'-'+CONVERT (VARCHAR,f.IOType)+'-'+CONVERT
+            (VARCHAR,f.IOPort) = #{deviceCode}
+        </if>
+        <if test="privateKey != null and privateKey != ''">
+            AND e.private_key = #{privateKey}
+        </if>
+    </select>
+
+    <select id="getRTUAlarmHistoryDatas" resultType="com.gw.front.forSDOS.RtuHistoryOutData"
+            parameterType="com.gw.front.forSDOS.FrontSdosInData">
+        SELECT
+        a.AlarmValue [value],
+        CONVERT (VARCHAR, a.Lastupdate, 120) happentime,
+        c.InstallPosition remark,
+        e.OwnerCode + '-3-' + CONVERT (VARCHAR,e.DeviceNo)+'-'+CONVERT (VARCHAR,b.IOType)+'-'+CONVERT (VARCHAR,b.IOPort)
+        deviceCode
+        FROM
+        UT_LZ_FireEquipmentAlarm a
+        LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+        LEFT JOIN UT_EQ_Equipment c ON b.EQID = c.ID
+        LEFT JOIN UT_Unit_NetDevice e ON c.NetDeviceID=e.ID
+        <if test="privateKey != null and privateKey != ''">
+            LEFT JOIN UT_Unit_Privatekey_REL f ON f.unit_id = e.UnitID
+        </if>
+        <where>
+            (c.isDelete = 0 OR c.isDelete is NULL)
+            and (e.isDelete = 0 OR e.isDelete is NULL)
+            <if test="deviceCode != null and deviceCode != ''">
+                and e.OwnerCode + '-3-' + CONVERT (VARCHAR,e.DeviceNo)+'-'+CONVERT (VARCHAR,b.IOType)+'-'+CONVERT
+                (VARCHAR,b.IOPort) = #{deviceCode}
+            </if>
+            <if test="dtstart != null and dtstart != ''">
+                AND a.Lastupdate >= #{dtstart}
+            </if>
+            <if test="dtend != null and dtend != ''">
+                AND a.Lastupdate &lt;= #{dtend}
+            </if>
+            <if test="privateKey != null and privateKey != ''">
+                AND f.private_key = #{privateKey}
+            </if>
+        </where>
+
+    </select>
+    <select id="getHistoryAlarmCount" resultType="com.gw.openApi.common.data.out.HistoryAlarmCount">
+        SELECT
+        c.ID unitId,
+        c.UnitName unitName,
+        c.UnitCode unitCode,
+        ISNULL(SUM(CASE WHEN a.Alarm_Status in(1,22,23,24,25,26) THEN 1 ELSE 0 END),0) fireCount ,
+        ISNULL(SUM(CASE WHEN a.Alarm_Status = 2 THEN 1 ELSE 0 END),0) faultCount ,
+        ISNULL(SUM(CASE WHEN a.Alarm_Status = 5 THEN 1 ELSE 0 END),0) adminCount ,
+        ISNULL(SUM(CASE WHEN a.Alarm_Status = 3 THEN 1 ELSE 0 END),0) startCount ,
+        ISNULL(SUM(CASE WHEN a.Alarm_Status = 4 THEN 1 ELSE 0 END),0) feedCount ,
+        ISNULL(SUM(CASE WHEN a.Alarm_Status = 6 THEN 1 ELSE 0 END),0) echo
+        FROM UT_Base_UserReUnit b
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = b.unit_id
+        LEFT JOIN (
+        SELECT
+        Alarm_Status,
+        UnitID
+        FROM
+        UT_LZ_BJZJAlarm_History
+        WHERE
+        1=1
+        <if test="startDate != null and startDate != ''">
+            AND Lastupdate &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND Lastupdate &lt;= #{endDate}
+        </if>
+        ) a
+        ON c.ID = a.UnitID
+        WHERE b.user_id = #{userId}
+        <if test="keyword != null and keyword != ''">
+            AND c.UnitName LIKE '%${keyword}%'
+        </if>
+        GROUP BY c.ID,c.UnitName,c.UnitCode
+        ORDER BY fireCount desc
+    </select>
+    <select id="getUtLzBjzjalarmMinId" resultType="java.lang.String">
+        SELECT MAX(ID) AS ID FROM UT_LZ_BJZJAlarm WHERE format(Lastupdate,'yyyy-MM-dd') &lt;= format(dateadd(day, -3, getdate()),'yyyy-MM-dd')
+    </select>
+
+    <delete id="deleteUtLzBjzjalarmData">
+        DELETE FROM UT_LZ_BJZJAlarm WHERE ID &lt;= #{id}
+    </delete>
+
+    <select id="getDifference" resultType="com.gw.mapper.entity.UtLzBjzjalarm">
+    SELECT
+        AlarmCode alarmcode,
+        OnwerCode onwercode,
+        DeviceIndex deviceindex,
+        DeviceNo deviceno,
+        TIME time,
+        Alarm_Status alarmStatus,
+        Alarm_SourceDesc alarmSourcedesc,
+        Alarm_DeviceDesc alarmDevicedesc,
+        Alarm_WhereDesc alarmWheredesc,
+        Alarm_Reserve alarmReserve,
+        ZJID zjid,
+        HLID hlid,
+        JDID jdid,
+        Lastupdate lastupdate,
+        isDeal isdeal,
+        DealType dealtype,
+        DealTime dealtime,
+        DealUser dealuser,
+        DealInfo dealinfo,
+        IsNeedMaintain isneedmaintain,
+        MaintainDesc maintaindesc,
+        DealResult dealresult,
+        ID id,
+        UnitID unitid,
+        calibration_id calibrationId,
+        dealCode dealcode,
+        picUrl picurl,
+        isPhone isphone,
+        isTest isTest,
+        deviceid,
+        buildAreaId
+    FROM
+        UT_LZ_BJZJAlarm
+    EXCEPT
+        SELECT
+            AlarmCode alarmcode,
+            OnwerCode onwercode,
+            DeviceIndex deviceindex,
+            DeviceNo deviceno,
+            TIME time,
+            Alarm_Status alarmStatus,
+            Alarm_SourceDesc alarmSourcedesc,
+            Alarm_DeviceDesc alarmDevicedesc,
+            Alarm_WhereDesc alarmWheredesc,
+            Alarm_Reserve alarmReserve,
+            ZJID zjid,
+            HLID hlid,
+            JDID jdid,
+            Lastupdate lastupdate,
+            isDeal isdeal,
+            DealType dealtype,
+            DealTime dealtime,
+            DealUser dealuser,
+            DealInfo dealinfo,
+            IsNeedMaintain isneedmaintain,
+            MaintainDesc maintaindesc,
+            DealResult dealresult,
+            ID id,
+            UnitID unitid,
+            calibration_id calibrationId,
+            dealCode dealcode,
+            picUrl picurl,
+            isPhone isphone,
+            isTest isTest,
+            deviceid,
+            buildAreaId
+        FROM
+            UT_LZ_BJZJAlarm_History
+    </select>
+    <select id="getInsertId" resultType="java.lang.Long">
+        SELECT
+            ID
+        FROM
+            UT_LZ_BJZJAlarm
+        EXCEPT
+            SELECT
+                ID
+            FROM
+                UT_LZ_BJZJAlarm_History
+    </select>
+    <select id="getOriginalAlarmById" resultType="com.gw.aspect.data.OriginalAlarmVo">
+        select top 1
+            a.OnwerCode        onwercode,
+            a.DeviceIndex      deviceindex,
+            a.DeviceNo         deviceno,
+            a.Alarm_Reserve    alarmReserve,
+            d.ID               addressRelId,
+            c.ID               eqId,
+            b.ID               netDeviceId,
+            a.ID               id,
+            a.Time             time,
+            a.Alarm_Status     alarmStatus,
+            a.Alarm_SourceDesc alarmSourcedesc,
+            a.Alarm_DeviceDesc alarmDevicedesc,
+            a.Alarm_WhereDesc  alarmWheredesc,
+            a.isTest           isTest,
+            a.isDeal           isdeal,
+            a.DealType         dealtype,
+            a.DealTime         dealtime,
+            a.DealUser         dealuser,
+            a.DealInfo         dealinfo,
+            a.IsNeedMaintain   isneedmaintain,
+            a.MaintainDesc     maintaindesc,
+            a.DealResult       dealresult,
+            a.dealCode         dealcode,
+            a.picUrl           picurl,
+            a.UnitID           unitid,
+            c.BuildID          buildId,
+            d.BuildAreaID      buildAreaId
+        from UT_LZ_BJZJAlarm a
+            left join UT_Unit_NetDevice b on a.OnwerCode = b.OwnerCode and a.DeviceIndex = b.DeviceIndex and
+                                             (a.DeviceNo = b.DeviceNo or a.DeviceIndex = 2)
+            left join UT_EQ_Equipment c on b.ID = c.NetDeviceID
+            left join Ut_EQ_address_rel d on c.ID = d.eqid
+        where a.ID = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,244 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Kip
+  Date: 2017/9/21
+  Time: 15:38
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<!doctype html>
+<html>
+<head>
+    <title>维保管理_维保任务管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <%@include file="../inc.jsp"%>
+    <link rel="stylesheet" href="/css/page_css/role_management.css">
+    <script type="text/javascript"
+            src="/js/common/zTree/jquery.ztree.core.js"></script>
+    <script type="text/javascript"
+            src="/js/common/zTree/jquery.ztree.excheck.js"></script>
+    <style>
+        .fixed-table-body thead th .th-inner{text-align: center;}
+
+    </style>
+</head>
+<body>
+<div class="container jy_wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jy_wrapper">
+                <ul class="jy_title">
+                    <li class="is_active"><span class="title">维保管理</span></li>
+                    <li class="no_active"><span class="title">维保任务管理</span></li>
+                </ul>
+            </div>
+            <div class="jy_mainTile panel-heading" style="display: none" clickNo="0">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label for="identityNo" class="control-label">维保计划<strong>
+                            :</strong></label>
+                        <td class="text-left">
+                            <select class="form-control inputWidth" id="buildIdSearch" <%--disabled="disabled"--%>>
+                                <%-- <option value="0">--请选择--</option>--%>
+                            </select>
+                        </td>
+                       <%-- <label for="identityNo" class="control-label">联网单位<strong>
+                            :</strong></label> &lt;%&ndash;<input type="text" class="form-control"
+                                    id="defaultUserName">&ndash;%&gt;
+
+                        <td class="text-left">
+                            <input class="form-control inputWidth" id="buildSearch" &lt;%&ndash;disabled="disabled"&ndash;%&gt; readonly="readonly">
+                                &lt;%&ndash; <option value="0">--请选择--</option>&ndash;%&gt;
+                            </input>
+                        </td>--%>
+                        <label for="identityNo" class="control-label">维保执行人<strong>
+                            :</strong></label>
+                        <select class="form-control inputWidth" id="executor" <%--disabled="disabled"--%>>
+                            <%-- <option value="0">--请选择--</option>--%>
+                        </select>
+
+                        <label for="identityNo" class="control-label">位置<strong>
+                            :</strong></label>
+                        <input class="form-control inputWidth" id="Position" >
+
+                        </input>
+                       <div style="margin-top:10px;">
+
+                           维保周期： <span id="commonInput"><input type="text"
+                                                               class="form-control showInput" name="searchContent"
+                                                               id="planStart" placeholder="开始时间" readonly="readonly"></span>
+                           - <span id="commonInput"><input type="text"
+                                                           class="form-control showInput" name="searchContent"
+                                                           id="planEnd"  placeholder="结束时间" readonly="readonly"></span>
+                       </div>
+
+                    </div>
+                    <button type="button" class="btn btn-primary btnSearch">
+                        <i class="fa fa-search"></i>&nbsp;查询
+                    </button>
+                    <button type="button" class="btn btn-warning btnReset">
+                        <i class="fa fa-undo"></i>&nbsp;重置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dataTable">
+                <div class="jy_new" style="top: 6px;">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <select name="menuType" id="menuType" class="form-control">
+                                <option value="buildIdSearch">维保计划</option>
+                                <option value="executor">维保执行人</option>
+                            </select>
+                            <span id="commonInput"><select type="text"
+                                                          class="form-control showInput" name="searchContent"
+                                                           id="searchContent" ></select></span>
+                        </div>
+                        <button type="button" class="btn btn-primary ordinarySearch">
+                            <i class="fa fa-search"></i>&nbsp;查询
+                        </button>
+                        <button type="button" class="btn btn-primary seniorSearch">高级搜索</button>
+                        <c:if test="${userSession.account != 'admin' }">
+                            <c:if test="${userSession.unitId != null and userSession.unitId != ''}">
+                                <button type="button" class="btn btn-new btnNew"
+                                        data-toggle="modal" data-target='#newAdd'>
+                                    <i class="fa fa-plus"></i>&nbsp;新增
+                                </button>
+                            </c:if>
+                        </c:if>
+                    </div>
+                </div>
+                <div class="inspectPlanTable">
+                    <table class="table table-bordered" id="inspectPlanTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 新增/编辑计划模态框 -->
+<div class="modal fade" tabindex="-1" role="dialog" id="newAdd">
+    <div class="modal-dialog" role="document" id="firstModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">新增巡查计划</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <table class="table tableNo">
+                                <colgroup>
+                                    <col width="15%">
+                                    <col width="35%">
+                                    <col width="15%">
+                                    <col width="35%">
+                                </colgroup>
+                                <tr>
+
+                                    <td class="text-right"><font style="color: red">*</font>维保计划<strong> :</strong>
+                                    </td>
+                                    <td class="text-left">
+                                        <select class="form-control inputWidth" id="maintenance" <%--disabled="disabled"--%>>
+                                            <%-- <option value="0">--请选择--</option>--%>
+                                        </select>
+                                    </td>
+                                    <td class="text-right"><font style="color: red">*</font>所属单位<strong> :</strong>
+                                    </td>
+                                    <td class="text-left">
+                                        <input class="form-control inputWidth" id="maintenanceUnit" readonly="readonly">
+                                            <%-- <option value="0">--请选择--</option>--%>
+                                        </input>
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><font style="color: red">*</font>建筑<strong> :</strong>
+                                    </td>
+                                    <td class="text-left">
+                                        <input class="form-control inputWidth" id="buildId" readonly="readonly">
+                                            <%-- <option value="0">--请选择--</option>--%>
+                                        </input>
+
+                                    </td>
+                                    <td class="text-right"><font style="color: red">*</font>区域<strong> :</strong>
+                                    </td>
+                                    <td class="text-left">
+                                        <input class="form-control inputWidth" id="buildAreaId" readonly="readonly">
+                                            <%-- <option value="0">--请选择--</option>--%>
+                                        </input>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                   <%-- <td class="text-right"><font style="color: red">*</font>巡检计划名称<strong> :</strong>
+                                    </td>
+                                    <td class="text-left"><input type="text"
+                                                                 class="form-control inputWidth" id="PlanName">
+                                    </td>--%>
+                                    <td class="text-right" style="width:100px;"><font style="color: red;">*</font>维保执行人<strong> :</strong>
+                                    </td>
+                                    <td class="text-left">
+                                        <input class="form-control inputWidth" id="Personliable" readonly="readonly">
+                                        </input>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><font style="color: red">*</font>维保对象<strong> :</strong>
+                                    </td>
+                                    <td class="text-left"><input type="text"
+                                                                 class="form-control inputWidth" id="maintenanceObject" >
+                                    </td>
+                                    <td class="text-right"><font style="color: red ;width: 100px;">*</font>位置<strong> :</strong>
+                                    </td>
+                                    <td class="text-left"><input type="text"
+                                                                 class="form-control inputWidth" id="position">
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btnSure">
+                    <i class="fa fa-floppy-o"></i>&nbsp;保存
+                </button>
+                <button type="button" class="btn btn-close btnClose"
+                        data-dismiss="modal">
+                    <i class="fa fa-times"></i>&nbsp;关闭
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- 区分新增和编辑 -->
+<input type="hidden" id="edit" value="0">
+
+<input type="hidden" name="indexId" id="indexId" value="">
+
+<%--权限--%>
+<input type="hidden" name="preId" id="preId" value="">
+
+
+</body>
+<script src="/js/page_js/Maintenance/weibaoTask.js"></script>
+</html>

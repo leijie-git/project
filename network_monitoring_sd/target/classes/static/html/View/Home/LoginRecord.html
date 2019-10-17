@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/loginRecord.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+</head>
+<body>
+<!--<div class="layer_headerTit">-->
+    <!--<div class="headerTitText fontSize18">登录记录</div>-->
+    <!--<div class="btn_layer_close"></div>-->
+<!--</div>-->
+<div class="layer_mainContent">
+    <div class="table_header fontSize16">
+        <table>
+            <colgroup>
+                <col width="6%">
+                <col width="10%">
+                <col width="18%">
+                <col width="17%">
+                <col width="18%">
+                <col width="15%">
+                <col width="16%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>登录名称</th>
+                <th>登录时间</th>
+                <th>登录地点</th>
+                <th>退出时间</th>
+                <th>在线时长</th>
+                <th>登录IP</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="table_content fontSize14 scrollbar-inner">
+        <table>
+            <colgroup>
+                <col width="6%">
+                <col width="10%">
+                <col width="18%">
+                <col width="17%">
+                <col width="18%">
+                <col width="15%">
+                <col width="16%">
+            </colgroup>
+            <tbody id="mainContentTbody">
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="wrap_page">
+    <div id="demo7"></div>
+    <img src="../../Content/images/Public/exportBT.png" class="btn_export">
+</div>
+
+
+</body>
+<script>
+    var ifUsed = 0; //调用page方法的判断
+    var _data = {
+        pageNumber: 1,
+        pageSize: 20
+    };
+    $(function(){
+        getRecordData();
+        domEvelement();
+    });
+
+    function getRecordData(){
+
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 })
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getLoginLogs",
+            data:_data,
+            async:isAsync,
+            success: function (data) {
+                //console.log(data);
+                if (ifUsed == 0) {
+                    layerPage(data.total);
+                    ifUsed = 1;
+                }
+
+                showListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showListContent(msg){
+        var data = msg.list;
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            html +='<tr>'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].loginName+'</td>'+
+                    '<td>'+data[i].loginDate+'</td>'+
+                    '<td>'+data[i].loginAddr+'</td>'+
+                    '<td>'+data[i].loginOutDate+'</td>'+
+                    '<td>'+data[i].onlineTime+'</td>'+
+                    '<td>'+data[i].loginIp+'</td>'+
+                '</tr>'
+        }
+        $('#mainContentTbody').html(html);
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+            , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    console.log(obj);
+                    if (!isNew) {
+                        _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getRecordData(); //调用接口获取数据
+                    }
+
+                }
+            });
+        })
+            //完整功能
+
+    }
+
+    function domEvelement(){
+        $('.btn_layer_close').click(function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+                //导出
+
+        $('.btn_export').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            var url = _serverIp + "/front/homeIndex/exportLoginLogs"
+
+            postExport(url)
+        })
+    }
+</script>
+</html>

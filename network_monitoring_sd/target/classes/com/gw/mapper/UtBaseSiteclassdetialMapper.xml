@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseSiteclassdetialMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseSiteclassdetial">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="CheckInfo" property="checkinfo" jdbcType="NVARCHAR"/>
+        <result column="CheckMethod" property="checkmethod" jdbcType="NVARCHAR"/>
+        <result column="unitId" property="unitId" jdbcType="BIGINT"/>
+    </resultMap>
+    <select id="getList" resultType="com.gw.inspect.data.SiteClassDetialOutData"
+            parameterType="com.gw.inspect.data.SiteClassDetialInData">
+        SELECT
+        a.ID ID,
+        a.CheckInfo CheckInfo,
+        a.CheckMethod CheckMethod,
+        a.unitId UnitID
+        FROM
+        UT_Base_SiteClassDetial a
+        <where>
+            <if test='UnitID!=1'>
+                a.unitId = #{UnitID}
+            </if>
+            <if test="CheckInfo!=null and CheckInfo!=''">
+                and a.CheckInfo like '%${CheckInfo}%'
+            </if>
+            <if test="CheckMethod!=null and CheckMethod!=''">
+                and a.CheckMethod like '%${CheckMethod}%'
+            </if>
+        </where>
+        ORDER BY ID DESC
+    </select>
+
+    <select id="getSiteclassdetialBySiteclassid" resultType="com.gw.inspect.data.SiteClassDetialOutData"
+            parameterType="com.gw.inspect.data.SiteClassDetialInData">
+    SELECT
+	    a.ID ID
+    FROM
+        UT_Base_SiteClassDetial a
+    where
+        a.SiteClassID =#{siteClassid}
+  </select>
+
+    <!-- 批量插入-->
+    <insert id="insertDetialList" parameterType="java.util.List">
+        <if test="list != null">
+            insert into UT_Base_SiteClassDetial(ID,CheckInfo,CheckMethod,SiteClassID)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{item.id},#{item.checkinfo},#{item.checkmethod},#{item.siteclassid})
+            </foreach>
+        </if>
+    </insert>
+
+
+    <!--根据检查项对象查出检查项ID-->
+    <select id="selectIDbyUtBaseSiteclassdetial" parameterType="com.gw.mapper.entity.UtBaseSiteclassdetial"
+            resultType="java.lang.String">
+        select id
+        from  UT_Base_SiteClassDetial
+        where
+        checkinfo=#{checkinfo}
+     and
+        checkmethod=#{checkmethod}
+
+
+
+
+    </select>
+
+
+</mapper>

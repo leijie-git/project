@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitNetdeviceRelMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitNetdeviceRel" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NetDeviceID" property="netdeviceid" jdbcType="BIGINT" />
+    <result column="partcode" property="partcode" jdbcType="VARCHAR" />
+    <result column="adress" property="adress" jdbcType="VARCHAR" />
+  </resultMap>
+  
+ <!--  <select id="getAllNetDeviceRel" resultType="com.gw.device.data.NetDeviceRelOutData">
+  	SELECT
+		r.ID,
+		r.adress,
+		r.NetDeviceID,
+		r.partcode,
+		n.name,
+		b.ID unitid,
+		b.UnitName
+	FROM
+		Ut_unit_netDevice_rel r
+	LEFT OUTER JOIN UT_Unit_NetDevice n ON r.NetDeviceID = n.ID
+	LEFT OUTER JOIN UT_Unit_BaseInfo b ON n.UnitID = b.ID
+	<if test="netdeviceid != null and netdeviceid != ''">
+		WHERE r.NetDeviceID like '%${netdeviceid}%'
+	</if>
+  </select> -->
+</mapper>

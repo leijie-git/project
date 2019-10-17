@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitXfzuserMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitXfzuser" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="UserPost" property="userpost" jdbcType="NVARCHAR" />
+    <result column="UserName" property="username" jdbcType="NVARCHAR" />
+    <result column="Tel" property="tel" jdbcType="NVARCHAR" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <select id="selectAllXFZUser" resultType="com.gw.fireStation.data.XFZUserOutData">
+  	SELECT
+		u.ID,
+		u.Tel,
+		u.UnitID,
+		u.UserName,
+		u.UserPost,
+		b.UnitName
+	FROM
+		UT_Unit_XFZUser u
+		LEFT OUTER JOIN UT_Unit_BaseInfo b
+	ON
+		u.UnitID = b.ID
+	WHERE
+		(b.isDelete = 0 OR b.isDelete is NULL)
+	<if test="username != null and username != ''">
+		AND u.UserName like '%${username}%'
+	</if>
+	ORDER BY u.ID DESC
+  </select>
+</mapper>

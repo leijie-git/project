@@ -1,0 +1,155 @@
+.div1{
+	width: 100%;
+	height: 35px;
+	overflow: hidden;
+	border-top: 1px solid rgb(16, 71, 110);
+	border-bottom: 1px solid rgb(16, 71, 110);
+}
+
+.div2{
+	width: 100%;
+	height: 90px;
+	overflow: hidden;
+	border-bottom: 1px solid rgb(16, 71, 110);
+}
+
+.div1 .div_l,
+.div2 .div_l{
+	float: left;
+	display: inline-block;
+	width: 15%;
+	line-height: 35px;
+	height: 100%;
+	text-align: center;
+	background: rgba(13, 74, 128, 0.3);
+}
+.div2 .div_l{
+	line-height: 120px;
+}
+.div1 .div_r{
+	padding-left: 2%;
+	line-height: 30px;
+}
+.div1 .div_r img{
+	margin-right: 5px;
+	margin-top: -2px;
+	cursor: pointer;
+}
+.div1 .div_r span{
+	margin-right: 10px;
+	display: inline-block;
+	cursor: pointer;
+}
+.div1 .div_r,
+.div2 .div_r{
+	float: left;
+	display: inline-block;
+	width: 85%;
+	height: 100%;
+	text-align: left;
+}
+
+.div1 .div_r img:last-child{
+	margin-left: 20px;
+}
+
+.div_r>div{
+	width: 100%;
+	height: 50%;
+	overflow: hidden;
+	-webkit-display: flex;
+	-moz-display: flex;
+	display: flex;
+	justify-content: space-around;
+}
+
+.div_r>div>div{
+	width: 60px;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	margin-top: 8px;
+	float: left;
+	display: inline-block;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.type1{
+	background: url(../../images/NetInfoStatistic/piliang_huojing.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type2{
+	background: url(../../images/NetInfoStatistic/piliang_guzhang.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type3{
+	background: url(../../images/NetInfoStatistic/piliang_pingbi.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type4{
+	background: url(../../images/NetInfoStatistic/piliang_jianguan.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type5{
+	background: url(../../images/NetInfoStatistic/piliang_qidong.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type6{
+	background: url(../../images/NetInfoStatistic/piliang_fankui.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type7{
+	background: url(../../images/NetInfoStatistic/piliang_fuwei.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type8{
+	background: url(../../images/NetInfoStatistic/piliang_qita.png)no-repeat center;
+	background-size: 100% 100%;
+}
+
+.type1.active{
+	background: url(../../images/NetInfoStatistic/piliang_huojingC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type2.active{
+	background: url(../../images/NetInfoStatistic/piliang_guzhangC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type3.active{
+	background: url(../../images/NetInfoStatistic/piliang_pingbiC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type4.active{
+	background: url(../../images/NetInfoStatistic/piliang_jianguanC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type5.active{
+	background: url(../../images/NetInfoStatistic/piliang_qidongC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type6.active{
+	background: url(../../images/NetInfoStatistic/piliang_fankuiC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type7.active{
+	background: url(../../images/NetInfoStatistic/piliang_fuweiC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.type8.active{
+	background: url(../../images/NetInfoStatistic/piliang_qitaC.png)no-repeat center;
+	background-size: 100% 100%;
+}
+
+
+#deallBox{
+    text-align: center;
+}
+
+.submitBtn{
+    width: 106px;
+    background: url(../../../Content/images/Public/quanbu.png)no-repeat center;
+    background-size: 100% 100%;
+    right: auto;
+    margin-left: -10%;
+}

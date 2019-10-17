@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitSystemMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitSystem" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="SystemName" property="systemname" jdbcType="NVARCHAR" />
+    <result column="SystemSite" property="systemsite" jdbcType="NVARCHAR" />
+    <result column="Brand" property="brand" jdbcType="NVARCHAR" />
+    <result column="MakeFrom" property="makefrom" jdbcType="NVARCHAR" />
+    <result column="Manager" property="manager" jdbcType="NVARCHAR" />
+    <result column="Tel" property="tel" jdbcType="NVARCHAR" />
+    <result column="Remark" property="remark" jdbcType="NVARCHAR" />
+    <result column="OrderIndex" property="orderindex" jdbcType="INTEGER" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="CreateUser" property="createuser" jdbcType="BIGINT" />
+    <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseEqsystemMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseEqsystem" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="EqSystemCode" property="eqsystemcode" jdbcType="INTEGER" />
+    <result column="EqSystemName" property="eqsystemname" jdbcType="NVARCHAR" />
+    <result column="Remark" property="remark" jdbcType="LONGNVARCHAR" />
+  </resultMap>
+  
+  <select id="getEqSystemSelect" resultType="com.gw.device.data.EqSystemOutData">
+  	SELECT
+		e.ID,
+		e.EqSystemName,
+		e.EqSystemCode
+	FROM
+		UT_Base_EqSystem e
+  </select>
+  
+  <select id="getEqSystemList" resultType="com.gw.device.data.EqSystemOutData">
+  	SELECT
+		s.ID,
+		s.EqSystemCode,
+		s.EqSystemName,
+		s.Remark
+	FROM
+		UT_Base_EqSystem s
+	<if test="EqSystemName != null and EqSystemName != ''">
+	 WHERE s.EqSystemName like '%${EqSystemName}%'
+	</if>
+	ORDER BY s.ID DESC
+  </select>
+  <select id="getEqSystemByUnitId" resultType="com.gw.device.data.EqSystemOutData">
+  	SELECT
+		m.ID,
+		m.EqSystemCode,
+		m.EqSystemName
+	FROM
+		UT_Base_EqSystem m
+	INNER JOIN (
+		SELECT DISTINCT
+			ISNULL(b.EqSystemID, a.EqSystemID) EqSystemID
+		FROM
+			UT_EQ_Equipment a
+		LEFT JOIN Ut_EQ_address_rel b ON a.ID = b.eqid
+		WHERE (a.isDelete = 0 OR a.isDelete is NULL)
+			<if test="unitId != null and unitId != ''">
+				And a.UnitID = #{unitId}
+			</if>
+			<if test="buildId != null and buildId != ''">
+				and a.BuildID = #{buildId}
+			</if>
+	) n ON m.ID = n.EqSystemID
+  </select>
+</mapper>

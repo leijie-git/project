@@ -1,0 +1,13 @@
+.wrapper header>.content_header>.sys_nav {
+    width: 55%;
+    margin: 1.6% 2% 1% -2.2%;
+    justify-content: center;
+}
+
+.wrapper header>.content_header>.sys_nav>div:nth-child(2n) {
+    margin: 0 -1.5%;
+}
+
+.wrapper header>.content_header>.sys_nav>div {
+    width: 16.2%;
+}

@@ -1,0 +1,249 @@
+table.topTable>tbody>tr>td{
+	border: none;
+}
+select{
+	width: 100%;
+	height: 34px;
+	border-radius: 4px;
+	-webkit-border-radius:4px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+}
+#newEmploy .loadImg img {
+    vertical-align: top;
+}
+#importEmployeeForm #photoCoverss {
+    display: inline-block;
+    width: 200px;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+select option {
+    font-size:14px;
+}
+.check {
+    width: 66%;
+    display: inline-block;
+}
+.check + select {
+    float: right;
+    margin-right: 2%;
+    width: 28%;
+}
+.needCheck {
+    margin-top: 5px;
+}
+#tabStatistics {
+    margin-top: 10px;
+}
+#second-modal .modal-footer{
+   text-align: left;
+}
+.employeeTab {
+    height:550px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.addPosition {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 15px;
+}
+#parentForm {
+    padding:15px;
+}
+.employTable {
+    padding: 0 15px;
+}
+#queryRole,
+#status{
+    width:190px;
+}
+#import .modal-body {
+    text-align: left;
+}
+#employss {
+    /*margin: 0;*/
+}
+/*#importEmployeeForm {*/
+    /*position: relative;*/
+/*}*/
+/*#uploadExcel {*/
+    /*position: absolute;*/
+    /*left:0;*/
+    /*top:30px;*/
+/*}*/
+#editRoles .roleContent {
+    height: 530px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#editRoles .btnSureRole {
+    margin-bottom: 10px;
+}
+#newEmploy .addLevel {
+    border: 1px solid #dedede;
+}
+#editRoles .addLevel {
+    display: none;
+    margin-top: 70px;
+    border: 1px solid #dedede;
+}
+#importEmployeeForm .jy_titles {
+    margin-left: -8px;
+}
+.loadImgView ,
+.loadImg{
+    width:100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.loadImgView li ,
+.loadImg li{
+    width: 100px;
+    height:100px;
+    margin-right:2px;
+    float: left;
+}
+.loadImgView li >img,
+.loadImg li >img{
+    width:100%;
+    height:100%;
+}
+
+#mybutton{
+    color:#fff;
+    padding:7px 10px;
+    height:34px;
+    display: inline-block;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-radius: 3px;
+}
+#mybutton:hover {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
+#photoCover {
+    height: 35px;
+    width: 207px;
+    border-radius: 4px;
+    margin-left: -1px;
+    border: 1px solid #ccc;
+}
+#preIdWrap_3{
+    position: relative;
+    display: block;
+    width: 200px;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.preIdWrap{
+    position: relative;
+    display: block;
+    width: 88%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.preId{
+    position: absolute;
+    top: 33px;
+    left: 0;
+    z-index:10 !important;
+    border-color: #ccc;
+    /*display: none;*/
+    background-color: #fff;
+}
+.addOther table {
+    border-top:1px solid #dedede;
+}
+.addOther table:first-child{
+    border:none;
+}
+.addOther {
+    height:300px;
+    overflow-y: auto;
+}
+.inputLevel {
+    width:175px;
+}
+
+.footerSave {
+    width: 100%;
+    text-align: center;
+    padding-bottom:10px;
+}
+
+.downTemp, .upTemp,.chooseFile,.wrapExport{
+	width:86px;
+}
+.wrapExport{
+	    vertical-align: top;
+}
+.fileName{
+	    width: 350px;
+    display: inline-block;
+    word-break: break-all;
+}
+.importArea > div>span{
+	    text-align: right;
+	    margin-top:7px;
+}
+.fileName{
+	 text-align: left !important;
+	  margin-top:7px;
+	      padding-left: 10px;
+}
+.tableNo1{
+	    width: auto;
+}
+.tableNo1 td{
+	padding:0 !important;
+	border:0 !important;
+}
+.inputWidth{
+	width:150px;
+}
+.importArea>div>p{
+	margin-top:10px;
+}

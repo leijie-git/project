@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>各系统监测-处理弹窗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/HistoryNote/History_deal.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+
+<!--处理 弹窗-->
+<div id="deallBox">
+
+    <div class="top_box" style="bottom: 0">
+        <div class="list_table">
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="6%">
+                        <col width="10%">
+                        <col width="14%">
+                        <col width="10%">
+                        <col width="14%">
+                        <col width="12%">
+                        <col width="14%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead class="fontSize16">
+                    <tr>
+                        <th>序号</th>
+                        <th>巡查人员</th>
+                        <th>巡查位置</th>
+                        <th>处理状态</th>
+                        <th>单位名称</th>
+                        <th>单位编号</th>
+                        <th>到期时间</th>
+                        <th>剩余天数</th>
+                        <th>周期类型</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="6%">
+                        <col width="10%">
+                        <col width="14%">
+                        <col width="10%">
+                        <col width="14%">
+                        <col width="12%">
+                        <col width="14%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <tbody id="mainContent">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer" style="padding-top:15px;">
+            <div id="demo7" ></div>
+            <!--<img class="dealBt" id="dealBtn" src="../../../Content/images/Public/piliang.png">-->
+            <img class="exportBtn" id="exportBtn" src="../../Content/images/Public/exportBT.png">
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    var _dataDetail=[];
+    var _ifUsed = 0; //调用page方法的判断
+    var _Edata={
+        pageNumber:1,
+        pageSize:20,
+        unitId:GetQuery('unitid')
+    };
+    $(function(){
+        getAlarmListInfo();
+        bindEvent();
+    });
+    function getAlarmListInfo(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getInspectEpirationTaskList",
+            data:_Edata,
+            success: function (data) {
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                getMHQTable(data)
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    //获取灭火器表格数据
+    function getMHQTable(msg) {
+        var data = msg.list;
+        var html = '';
+        for(var i = 0 ; i < data.length;i++){
+            var type = "";
+            if(data[i].inspectCycleType == 0){
+                type = "日"
+            }else if(data[i].inspectCycleType == 1){
+                type = "周"
+            }else if(data[i].inspectCycleType == 2){
+                type = "月"
+            }else if(data[i].inspectCycleType == 3){
+                type = "年"
+            }
+            html += '<tr id="'+data[i].taskID+'">'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].inspectUser+'</td>'+
+                    '<td>'+data[i].siteName+'</td>'+
+                    '<td>'+data[i].isInspect+'</td>'+
+                    '<td>'+data[i].unitName+'</td>'+
+                    '<td>'+data[i].unitCode+'</td>'+
+                    '<td>'+data[i].taskEnd+'</td>'+
+                    '<td>'+data[i].lastDay+'</td>'+
+                    '<td>'+ type +'</td>'+
+                    '</tr>'
+        }
+        $('#mainContent').html(html||"<tr><td colspan='9'>暂无数据...</td></tr>");
+        $('#mainContent td').each(function(){$(this).attr('title',$(this).text())})
+    }
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+                    if (!isNew) {
+                        _Edata.pageNumber = obj.curr;
+                        _Edata.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getAlarmListInfo(); //调用接口获取数据
+                    }
+                }
+            });
+        })
+        //完整功能
+
+    }
+    function bindEvent() {
+	    //导出
+        $('#exportBtn').unbind('click').click(function(){
+            if( $('#mainContent tr:first-child>td').length == 1){
+                return;
+            }
+            var url = _serverIp + "/front/maintenance/exportInspectEpirationTaskList?"
+                    +"unitId="+ GetQuery('unitid');
+            postExport(url)
+        });
+    }
+
+
+</script>
+
+</html>

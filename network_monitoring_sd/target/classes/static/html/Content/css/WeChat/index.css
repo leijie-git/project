@@ -1,0 +1,235 @@
+body,
+html {
+    overflow-x: hidden;
+}
+
+#box {
+    height: 100%;
+}
+
+#leftNav {
+    width: 100%;
+    height: 100%;
+    background: url(/html/Content/images/WeChat/index/bg_leftnav.png) no-repeat center center scroll;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    padding-left: 10%;
+    padding-top: 10%;
+    color: #fff;
+}
+
+.alarm_info {
+    margin-top: 5%;
+}
+
+.alarm_info input {
+    padding-left: 5px;
+    border: none;
+    border-radius: 0;
+}
+
+.alarm_type_item {
+    line-height: 30px;
+    vertical-align: middle;
+    font-size: 18px;
+    margin: 10% 0;
+}
+
+.alarm_type_item a {
+    color: #fff;
+}
+
+.alarm_type_item img {
+    width: 30px;
+    vertical-align: middle;
+    margin-right: 4%;
+}
+
+.weui-tab {
+    transition: all .5s ease 0s;
+    top: 0;
+    left: 0;
+}
+
+#topNavImg {
+    float: left;
+    display: block;
+    height: 100%;
+    width: 50px;
+}
+
+#shadowBox {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: .3;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 99999;
+}
+
+.weui-tab.box_scale {
+    transform: scale(.9);
+    left: 60%;
+}
+
+.weui-tabbar__item.weui-bar__item--on .weui-tabbar__label {
+    color: #2ba3ff;
+}
+
+.weui-tab__bd .weui-tab__bd-item {
+    background-color: #f2f2f2;
+}
+
+
+/* 1gaoj s */
+
+#tab1 .weui-cells,
+#unitList,
+#iotList,
+#facList {
+    margin-top: 0;
+}
+
+.topBtn {
+    height: 40px;
+    width: 100%;
+}
+
+.topBtn span {
+    display: block;
+    float: right;
+    margin-right: 15px;
+    line-height: 40px;
+}
+
+.topBtn img {
+    width: 20px;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+
+/* 2单位管理 s */
+
+#unitCount {
+    background-color: #fff;
+}
+
+#tab2 #unitCount .weui-cell__bd {
+    color: #2ba3ff;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#unitList {
+    margin-top: 0;
+}
+
+#tab2 .weui-cell {
+    flex-wrap: wrap;
+}
+
+#tab2 .weui-cell__hd {
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+#tab2 .weui-cell__bd {
+    color: #5e656f;
+    font-size: 90%;
+}
+
+
+/* 3单位管理 s */
+
+
+/* 4单位管理 s */
+
+#tab4 .weui-cell {
+    flex-wrap: wrap;
+}
+
+#tab4 .weui-cell__hd {
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+#tab4 .weui-cell__bd {
+    color: #5e656f;
+    font-size: 90%;
+}
+
+.fac_online {
+    color: #2ba3ff!important;
+}
+
+.fac_onclock {
+    font-size: 90%;
+    padding: 0 10px 0 25px;
+    border-radius: 10px;
+    background: #2ba3ff url(../../images/WeChat/index/fac_clock.png) no-repeat 8px center scroll;
+    color: #fff;
+    background-size: auto 60%;
+}
+
+.weui-dialog__bd {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#confimBox {
+    font-size: 13px;
+}
+
+
+/* 5日常巡查 s */
+
+#tab5 .weui-grid {
+    width: 50%;
+}
+
+#tab5 .weui-grid__icon {
+    width: 100px;
+    height: 100px;
+}
+
+
+/* 弹窗 s */
+
+#popupPageName {
+    float: left;
+    height: 40px;
+    background-color: #2ba3ff;
+    text-align: center;
+    width: 100%;
+    color: #fff;
+    position: relative;
+    line-height: 40px;
+}
+
+.popupPageFrame_box {
+    float: left;
+    background: #fff;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+
+#popupPageFrame {
+    float: left;
+    background: #fff;
+    height: 100%;
+    width: 100%;
+}
+
+#backIndex {
+    position: absolute;
+    background: red;
+    height: 25px;
+    width: 25px;
+    top: 7px;
+}

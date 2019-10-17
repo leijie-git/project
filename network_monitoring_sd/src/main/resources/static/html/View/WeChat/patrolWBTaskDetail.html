@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>维保任务</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <style>
+        .weui-uploader__file-content {
+            display: block;
+            top: 8px;
+            left: 88%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>处理人</p>
+            </div>
+            <div class="weui-cell__ft" id="person"></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>执行时间</p>
+            </div>
+            <div class="weui-cell__ft" id="time"></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>放置位置</p>
+            </div>
+            <div class="weui-cell__ft" id="location"></div>
+        </div>
+    </div>
+
+    <div class="weui-cells__title">问题描述</div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <!-- <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入现场问题描述" rows="3"></textarea>
+            </div> -->
+            <div class="weui-cell__bd" id="questionBefore">
+
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells__title">问题照片</div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-uploader__bd">
+                <ul class="weui-uploader__files" id="uploaderFiles1">
+                    <!-- <li class="weui-uploader__file" style=" position: relative;background-image:url(../../Content/images/WeChat/center/bg_userCenter.jpg)">
+                        <div class="weui-uploader__file-content">
+                            <img src='../../Content/images/WeChat/sq-delete.png' style='position: absolute;right:-7px;top:-9px;width:22px;'>
+                        </div>
+                    </li> -->
+                </ul>
+                <!-- <div class="weui-uploader__input-box">
+                    <input id="uploaderInput1" class="weui-uploader__input" type="file" accept="image/*" multiple="">
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells__title">维保内容</div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <!--  <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入现场维修描述" rows="3"></textarea>
+            </div> -->
+            <div class="weui-cell__bd" id="questionAfter">
+
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells__title">维保照片</div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <ul class="weui-uploader__files" id="uploaderFiles2">
+                <!-- <li class="weui-uploader__file" style="background-image:url(../../Content/images/WeChat/center/bg_userCenter.jpg)"></li> -->
+            </ul>
+            <!-- <div class="weui-uploader__input-box">
+                <input id="uploaderInput2" class="weui-uploader__input" type="file" accept="image/*" multiple="">
+            </div> -->
+        </div>
+    </div>
+
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" href="javascript:self.history.back(-1);" id="showTooltips">返回</a>
+    </div>
+</body>
+
+
+<script>
+    var _id = GetQuery('id');
+
+    $(function() {
+        getData();
+    });
+
+    function getData() {
+        $.ajax({
+            type: "get",
+            url: hostAdd + "/getMaintenanceDetail",
+            data: "id=" + _id,
+            async: false,
+            success: function(data) {
+                console.log(data);
+
+                if (data.success == true) {
+                    if (data.obj != '') {
+                        $('#person').text(data.obj.dealUser); //处理人
+                        $('#time').text(data.obj.dealDate); //执行时间
+                        $('#location').text(data.obj.siteName); //放置位置
+                        $('#questionBefore').text(getNone(data.obj.questionInfo)); //问题描述
+                        $('#questionAfter').text(getNone(data.obj.checkInfo)); //维保内容
+
+                        var quetionUrl = []; //问题照片
+                        var _li1 = [];
+                        if (data.obj.quetionUrl != '') {
+                            if (data.obj.quetionUrl.length != 1) {
+                                quetionUrl = (data.obj.quetionUrl).split(',');
+                                for (var i = 0; i < quetionUrl.length; i++) {
+                                    _li1 = "<li class='weui-uploader__file' style='position: relative;background-image:url(" + quetionUrl[i] + ")'></li>";
+                                }
+                            } else {
+                                _li1 = "<li class='weui-uploader__file' style='position: relative;background-image:url(" + quetionUrl[0] + ")'></li>";
+                            }
+
+                            $('#uploaderFiles1').html(_li1 || '');
+                        }
+
+                        var checkUrl = []; //维保照片
+                        var _li2 = [];
+                        if (data.obj.checkUrl != '') {
+                            if (data.obj.checkUrl.length != 1) {
+                                checkUrl = (data.obj.checkUrl).split(',');
+                                for (var i = 0; i < checkUrl.length; i++) {
+                                    _li2 = "<li class='weui-uploader__file' style='position: relative;background-image:url(" + checkUrl[i] + ")'></li>";
+                                }
+                            } else {
+                                _li2 = "<li class='weui-uploader__file' style='position: relative;background-image:url(" + checkUrl[0] + ")'></li>";
+                            }
+
+                            $('#uploaderFiles2').html(_li2 || '');
+                        }
+                    }
+                };
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function getNone(data) {
+        if (data == '') {
+            return '无';
+        } else {
+            return data;
+        }
+    }
+</script>
+
+</html>

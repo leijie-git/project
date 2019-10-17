@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseSiteclassbaseMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseSiteclassbase" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="SiteClassName" property="siteclassname" jdbcType="NVARCHAR" />
+    <result column="SiteClassDesc" property="siteclassdesc" jdbcType="NVARCHAR" />
+  </resultMap>
+
+
+
+
+  <!-- 批量插入-->
+  <insert id="inserUtBaseSiteclassbaseList" parameterType="java.util.List">
+    <if test="list != null">
+      insert into UT_Base_SiteClassBase(ID,SiteClassName,SiteClassDesc)
+      values
+      <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.id},#{item.siteclassname},#{item.siteclassdesc})
+      </foreach>
+    </if>
+  </insert>
+
+  <!--根据检查对象查出检查id-->
+
+  <select id="selectIDbyUtBaseSiteclassbase" parameterType="com.gw.mapper.entity.UtBaseSiteclassbase"
+          resultType="java.lang.String">
+    select id
+    from UT_Base_SiteClassBase
+    where
+
+    SiteClassName=#{siteclassname}
+
+    and
+    SiteClassDesc=#{siteclassdesc}
+
+
+
+  </select>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.SysPropertiesMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.SysProperties" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="wx_appid" property="wxAppid" jdbcType="VARCHAR" />
+    <result column="wx_secret" property="wxSecret" jdbcType="VARCHAR" />
+    <result column="wx_redirect_uri" property="wxRedirectUri" jdbcType="VARCHAR" />
+    <result column="wx_temp_id" property="wxTempId" jdbcType="VARCHAR" />
+    <result column="wx_temp_rtu_id" property="wxTempRtuId" jdbcType="VARCHAR" />
+    <result column="wx_temp_inspecttask_id" property="wxTempInspectTaskId" jdbcType="VARCHAR" />
+    <result column="wx_temp_extinguisher_id" property="wxTempExtinguisherId" jdbcType="VARCHAR" />
+    <result column="wx_click_url" property="wxClickUrl" jdbcType="VARCHAR" />
+    <result column="short_message_api_key" property="shortMessageApiKey" jdbcType="VARCHAR" />
+    <result column="short_message_api_secret" property="shortMessageApiSecret" jdbcType="VARCHAR" />
+    <result column="sign_name" property="signName" jdbcType="VARCHAR" />
+    <result column="red_server_port" property="redServerPort" jdbcType="VARCHAR" />
+    <result column="access_token" property="accessToken" jdbcType="VARCHAR" />
+    <result column="android_api_key" property="androidApiKey" jdbcType="VARCHAR" />
+    <result column="android_api_secret" property="androidApiSecret" jdbcType="VARCHAR" />
+    <result column="project_domain_name" property="projectDomainName" jdbcType="VARCHAR" />
+    <result column="map_center" property="mapCenter" jdbcType="VARCHAR" />
+    <result column="map_level" property="mapLevel" jdbcType="VARCHAR" />
+    <result column="server_time_out_phone" property="serverTimeOutPhone" jdbcType="VARCHAR" />
+    <result column="wz_title" property="wzTitle" jdbcType="VARCHAR" />
+    <result column="js_providers" property="jsProviders" jdbcType="VARCHAR" />
+    <result column="gw_url" property="gwUrl" jdbcType="VARCHAR" />
+    <result column="wz_recordAddress" property="wzRecordaddress" jdbcType="VARCHAR" />
+    <result column="wz_record" property="wzRecord" jdbcType="VARCHAR" />
+    <result column="yx_account" property="yxAccount" jdbcType="VARCHAR" />
+    <result column="yx_smtpserver" property="yxSmtpserver" jdbcType="VARCHAR" />
+    <result column="yx_smtpport" property="yxSmtpport" jdbcType="VARCHAR" />
+    <result column="video_appkey" property="videoAppkey" jdbcType="VARCHAR" />
+    <result column="video_appsecret" property="videoAppsecret" jdbcType="VARCHAR" />
+    <result column="yx_pwd" property="yxPwd" jdbcType="VARCHAR" />
+      <result column="chouJiangToken" property="chouJiangToken" jdbcType="VARCHAR" />
+      <result column="suXiToken" property="suXiToken" jdbcType="VARCHAR" />
+      <result column="expiresin" property="expiresin" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="getProperties" resultType="com.gw.systemManager.data.SysPropertiesOutData">
+  	SELECT
+		TOP (1) id,
+		wx_appid wxAppid,
+		wx_secret wxSecret,
+		wx_redirect_uri wxRedirectUri,
+		wx_temp_id wxTempId,
+		wx_temp_rtu_id wxTempRtuId,
+		wx_temp_inspecttask_id wxTempInspectTaskId,
+		wx_temp_extinguisher_id wxTempExtinguisherId,
+		wx_click_url wxClickUrl,
+		short_message_api_key shortMessageApiKey,
+		short_message_api_secret shortMessageApiSecret,
+		sign_name signName,
+		red_server_port redServerPort,
+		access_token accessToken,
+		android_api_key androidApiKey,
+		android_api_secret androidApiSecret,
+		project_domain_name projectDomainName,
+		map_center mapCenter,
+		map_level mapLevel,
+		server_time_out_phone serverTimeOutPhone,
+		wz_title wzTitle,
+		js_providers jsProviders,
+		gw_url gwUrl, 
+		wz_recordAddress wzRecordaddress,
+		wz_record wzRecord,
+		yx_account yxAccount,
+		yx_smtpserver yxSmtpserver,
+		yx_smtpport yxSmtpport,
+		video_appkey videoAppkey,
+		video_appsecret videoAppsecret,
+		yx_pwd yxPwd,
+		chouJiangToken chouJiangToken,
+		suXiToken suXiToken,
+		expiresin expiresin
+	FROM
+		SYS_PROPERTIES
+  </select>
+</mapper>

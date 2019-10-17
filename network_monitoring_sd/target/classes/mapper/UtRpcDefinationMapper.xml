@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gw.mapper.UtRpcDefinationMapper">
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtRpcDefination">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="unit_id" jdbcType="BIGINT" property="unitId" />
+    <result column="push_type" jdbcType="INTEGER" property="pushType" />
+    <result column="data_type" jdbcType="INTEGER" property="dataType" />
+    <result column="push_url" jdbcType="VARCHAR" property="pushUrl" />
+  </resultMap>
+
+</mapper>

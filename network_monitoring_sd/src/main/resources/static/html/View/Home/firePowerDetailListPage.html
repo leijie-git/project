@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/Home/warningMoreLayer.css" rel="stylesheet" type="text/css" />
+    <style>
+        html, body {
+            width: 96%;
+            height: 99%;
+            padding: 0;
+            margin: auto;
+        }
+        .list_table{
+            height: 100%;
+        }
+        .callphone{
+            color: rgb(163, 216, 250);;
+        }
+        .callphone:hover{
+            color: #fff;
+        }
+        .table_content .underline {
+            color: #5BC9FF;
+        }
+    </style>
+</head>
+<body>
+<div class="list_table">
+    <div class="table_header">
+        <table>
+            <colgroup>
+                <col width="35%">
+                <col width="35%">
+                <col width="30%">
+            </colgroup>
+            <thead class="fontSize16">
+            <tr>
+                <th>名称</th>
+                <th>地址</th>
+                <th>电话</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="table_content scrollbar-inner">
+        <table cellpadding="0" cellspacing="0" class="tbody">
+            <colgroup>
+                <col width="35%">
+                <col width="35%">
+                <col width="30%">
+            </colgroup>
+            <tbody class="fontSize14" id="mainContentTbody">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+<script src="../../Script/public.js"></script>
+<script>
+    $(function(){
+        getFirePowerListData();
+
+        bindEvent();
+    });
+
+    function getFirePowerListData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getFirePowers",
+            data:'unitID='+GetQuery("unitID")+'&instence='+GetQuery("instence"),
+            success: function (data) {
+                if (data.success == true) {
+                    //showFirePowerPoint(data.obj);//显示消防力量 - 方法在map.js
+                    var msg = data.obj;
+                    var html = "";
+                   for(var i = 0 ; i < msg.length ; i++){
+                       var infoClass="";
+                       if(msg[i].type == 0|| msg[i].type == 1||msg[i].type == 2){
+                           infoClass = "underline stationname"
+                       }
+                       html +='<tr id="'+msg[i].id+'" type="'+msg[i].type+'">' +
+                               '<td class="align-left '+infoClass+'">'+msg[i].name+'</td>' +
+                               '<td class="align-left">'+msg[i].address+'</td>' +
+                               '<td><a href="skype://+86'+msg[i].phone+'" class="callphone"  onclick="saveCallRecord("'+GetQuery("unitID")+'","'+msg[i].phone+'");"><span labname="phone">'+msg[i].phone+'</span></a></td>'
+                               '</tr>'
+                   }
+                    $('#mainContentTbody').html(html||"<tr><td colspan='3'>暂无数据</td></tr>");
+                    $('#mainContentTbody>tr>td').each(function(){$(this).attr('title',$(this).text())})
+                }
+            }
+        });
+    }
+
+    function bindEvent(){
+        $('#mainContentTbody').delegate('tr .stationname','click',function(){
+            var powerID = $(this).parent('tr').attr('id');
+            var type = $(this).parent('tr').attr('type');
+
+            top.layer.open({
+                type: 2,
+                title: '详情',
+                closeBtn: 1,
+                area:['650px',(type == 1?"260px":"350px")],
+                shade: 0.1,
+                skin: 'layui-layer-sysNotice-forePower',
+                content: 'Home/firePowerDeviceInfo'+(type == 1?"2":"")+'.html?powerID='+powerID
+            });
+
+        })
+    }
+	
+    //新增通话记录
+	function saveCallRecord(unitid,phone){
+    	$.ajax({
+            url: _serverIp + "/front/homeIndex/addPhoneLog",
+            type: "get",
+            data:{
+				unitId:unitid,
+				phone:phone
+            },
+            success: function (data) {
+                if (data.success) {
+                	layer.msg('操作成功', { shade: [0.1, '#fff'], time: 800 });
+                }
+            }
+        });
+    }
+</script>
+</html>

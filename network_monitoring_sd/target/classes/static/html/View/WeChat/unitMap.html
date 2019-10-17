@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"> -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=yes" />
+    <title></title>
+
+    <!--字体样式icon-->
+    <link href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" />
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" />
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+        
+        .weui-panel__bd {
+            background-color: #fff;
+        }
+        
+        .weui-media-box_appmsg .weui-media-box__hd {
+            width: 25px;
+            height: 25px;
+            line-height: 30px;
+        }
+        
+        .button_sp_area {
+            text-align: center;
+        }
+        
+        .weui-btn_blue {
+            background-color: #2ba3ff;
+            line-height: 35px;
+            margin: 10px;
+        }
+        
+        .weui-btn_blue:active {
+            background-color: #1d87d8;
+        }
+        
+        .weui-btn_blue img {
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        
+        .map {
+            height: calc(100% - 180px);
+            width: 100%;
+        }
+        /* 弹窗 s */
+        
+        #popupPageName {
+            height: 40px;
+            background-color: #2ba3ff;
+            text-align: center;
+            width: 100%;
+            color: #fff;
+            position: relative;
+            line-height: 40px;
+        }
+        
+        .popupPageFrame_box {
+            /* background: #fff; */
+            width: 100%;
+            /* height: calc(100% - 40px); */
+        }
+        
+        #popupPageFrame {
+            /* float: left;
+            background: #fff;
+            height: 100%; */
+            width: 100%;
+            height: calc(100% - 40px);
+            overflow-y: auto;
+        }
+        
+        #backIndex {
+            position: absolute;
+            height: 100%;
+            width: 40px;
+            top: 2px;
+        }
+        
+        .inspect_btn {
+            position: inherit;
+            width: 100%;
+            left: 0;
+            color: #50b3ff;
+            font-size: 18px;
+            background: #fff;
+            border-top: 1px solid #f2f2f2;
+            padding: 10px 15px;
+            height: auto;
+        }
+        
+        button:active {
+            background: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="map" id="mapall"></div>
+    <div class="weui-panel__bd">
+        <a onclick="openBMapPage(this)" class="weui-media-box weui-media-box_appmsg" href="baidumap://map/direction?origin=121.662353,31.096222&destination=120.662353,31.296222">
+            <div class="weui-media-box__hd">
+                <img class="weui-media-box__thumb" src="../../Content/images/WeChat/unit_addr.png">
+            </div>
+            <div class="weui-media-box__bd">
+                <h4 class="weui-media-box__title" addName='' id="addname">地址：</h4>
+            </div>
+        </a>
+        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+            <div class="weui-media-box__hd">
+                <img class="weui-media-box__thumb" src="../../Content/images/WeChat/unit_tele.png">
+            </div>
+            <div class="weui-media-box__bd">
+                <h4 class="weui-media-box__title" id="tel">消控室电话：</h4>
+            </div>
+        </a>
+    </div>
+    <div class="button_sp_area">
+        <a href="javascript:;" onclick="getList();" class="weui-btn weui-btn_mini weui-btn_blue">
+            <img src="../../Content/images/WeChat/map_tack.png"> 执行查岗
+        </a>
+        <a href="javascript:;" onclick="inspectRecord()" class="weui-btn weui-btn_mini weui-btn_blue">
+            <img src="../../Content/images/WeChat/map_report.png">查岗记录</a>
+    </div>
+
+    <div id="transferList" class="weui-popup__container">
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <div id="popupPageName">
+                <div id="backIndex"><i class="fa fa-angle-left  fa-2x"></i></div>
+                <span></span>
+            </div>
+            <div id="popupPageFrame">
+
+                <div class="weui-cells">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <p>标题文字</p>
+                        </div>
+                        <div class="weui-cell__ft">说明文字</div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <p>标题文字</p>
+                        </div>
+                        <div class="weui-cell__ft">说明文字</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=jy2n8jjGdPTV7K23dqwGT5LaYIG20sWA"></script>
+<script>
+    var unitid = GetQuery('unitid');
+
+    $('title').text(GetQuery('pagetitle'));
+
+    $(function() {
+        getUnitInfo(); //单位信息
+
+        $('#backIndex').click(function() {
+            $.closePopup();
+        })
+    })
+
+    function setBMap(unitpoint) {
+        if (unitpoint == '') {
+            unitpoint = '120.64304, 31.268881';
+        }
+
+        // 百度地图API功能
+        var map = new BMap.Map("mapall"); // 创建Map实例
+        map.centerAndZoom(new BMap.Point(unitpoint.split(',')[0], unitpoint.split(',')[1]), 14); // 初始化地图,设置中心点坐标和地图级别
+        //添加地图类型控件
+        map.addControl(new BMap.MapTypeControl({
+            mapTypes: [
+                BMAP_NORMAL_MAP,
+                BMAP_HYBRID_MAP
+            ]
+        }));
+        map.setCurrentCity("苏州"); // 设置地图显示的城市 此项是必须设置的
+        map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+        var marker = new BMap.Marker(new BMap.Point(unitpoint.split(',')[0], unitpoint.split(',')[1])); // 创建点
+        map.addOverlay(marker);
+    }
+
+    function getList() {
+        $("#transferList").popup();
+        $.ajax({
+            type: "get",
+            url: hostAdd + "/getUnitTransferDevice",
+            data: "unitId=" + unitid,
+            success: function(data) {
+                console.log(unitid);
+                console.log(data);
+                if (data.success == true) {
+                    $.toast("列表加载中", 1500);
+                    $('#popupPageFrame').empty();
+                    for (var i = 0; i < data.obj.length; i++) {
+                        $('#popupPageFrame').append(
+                            '<div class="weui-cells" onclick="inspectFn(\'' + data.obj[i].ownerCode + '\',' + data.obj[i].result + ');">' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>设备名称:</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">' + data.obj[i].name + '</div>' +
+                            '</div>' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>设备编号:</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">' + data.obj[i].ownerCode + '</div>' +
+                            '</div>' +
+                            '<button type="button" class="inspect_btn">操作</button>' +
+
+                            '</div>'
+                        )
+                    }
+                    if (data.obj.length == 0) {
+                        // $('#popupPageFrame').append(' <div style="text-align: center;font-size:14px;margin-top: 5%;">--暂无数据--</div>')
+                        $('#popupPageFrame').append(' <div class="weui-loadmore weui-loadmore_line"><span style="background-color: transparent;" class="weui-loadmore__tips">暂无数据</span></div>')
+
+                    }
+
+
+                } else {
+                    $.toast("获取失败!", "cancel")
+                }
+            }
+        });
+
+        // $.closePopup() //关闭
+    }
+
+    //执行查岗；
+    function inspectFn(ownerCode, result) {
+        if (result != 1 && result != 18 && result != 34) {
+            $.toast("设备不在线!", "cancel");
+            return false;
+        }
+        $.modal({
+            // title: "Hello",
+            text: "是否确定执行查岗命令？",
+            buttons: [{
+                text: "取消查岗",
+                className: "default",
+                onClick: function() {}
+            }, {
+                text: "执行查岗",
+                onClick: function() {
+                    $.ajax({
+                        type: "get",
+                        url: hostAdd + "/lookup",
+                        data: "ownerCode=" + ownerCode,
+                        success: function(data) {
+                            console.log(unitid);
+                            console.log(data);
+                            if (data.success == true) {
+                                $.toast("已发送!", 1500);
+                            } else {
+                                $.toast("发送失败!", "cancel")
+                            }
+                        }
+                    });
+                }
+            }, ]
+        });
+    }
+
+    function inspectRecord() {
+        self.location.href = "unitInspectRecord.html?unitid=" + unitid;
+    };
+
+    function getUnitInfo() {
+        $.ajax({
+            type: "get",
+            url: hostAdd + "/getUnitInfoById",
+            data: "unitId=" + unitid,
+            success: function(data) {
+                console.log(data);
+                if (data.success == true) {
+                    setBMap(data.obj.unitpoint);
+                    $('#addname').text('地址: ' + data.obj.unitaddress);
+                    $('#addname').attr('addName: ' + data.obj.unitaddress);
+                    $('#addname').attr('unitpoint', data.obj.unitpoint);
+                    $('#tel').html('<a href="tel:' + data.obj.fireroomphone + '">消控室电话: ' + data.obj.fireroomphone + '</a>');
+                }
+            }
+        });
+    }
+
+    function openBMapPage(element) {
+        // var addName = $(element).find('#addname').attr('addName');
+        // window.open('https://map.baidu.com/mobile/webapp/search/search/qt=s&wd=' + addName);
+        // window.open("baidumap://map/direction?origin=121.662353,31.096222&destination=120.662353,31.296222");
+        // alert(123);
+
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            alert('请在右上角选择 “在浏览器打开” ');
+            return;
+        }
+
+        var locationVal = $('#addname').attr('unitpoint');
+        var locationValW, locationValL;
+        locationValW = locationVal.split(',')[1];
+        locationValL = locationVal.split(',')[0];
+
+        window.open("http://api.map.baidu.com/geocoder?location=" + locationValW + "," + locationValL + "&coord_type=gcj02&output=html&src=webapp.baidu.openAPIdemo");
+
+    }
+</script>

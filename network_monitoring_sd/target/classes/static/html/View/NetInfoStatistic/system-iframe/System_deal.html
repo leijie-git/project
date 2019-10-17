@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>各系统监测-处理弹窗</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/HistoryNote/History_deal.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+
+     <!--处理 弹窗-->
+    <div id="deallBox">
+
+        <div class="top_box">
+            <div class="titleBox">
+                <div>
+                    <div>报警单位</div>
+                    <div><input type="text" value="" id="unitName"></div>
+                </div>
+
+                <div>
+                    <div>报警名称</div>
+                    <div><input type="text" value="" id="deviceIndex"></div>
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>设备子号</div>
+                    <div><input type="text" value="" id="deviceNo"></div>
+                </div>
+
+                <div>
+                    <div>设备编号</div>
+                    <div><input type="text" value="" id="deviceCode"></div>
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>报警时间</div>
+                    <div><input type="text" value="" id="alarmTime"></div>
+                </div>
+
+                <div>
+                    <div>报警类型</div>
+                    <div><input type="text" value="" id="alarmStatus"></div>
+                </div>
+            </div>
+            <div class="titleBox">
+                <div>
+                    <div>报警源</div>
+                    <div><input type="text" value="" id="alarmSourcedesc"></div>
+                </div>
+
+                <div>
+                    <div>报警设备</div>
+                    <div><input type="text" value="" id="eqName"></div>
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>报警地点</div>
+                    <div><input type="text" value="" id="alarmWheredesc"></div>
+                </div>
+
+                <div>
+                    <div>处理人</div>
+                    <div><input type="text" value="" id="dealUser"></div>
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>处理时间</div>
+                    <div><input type="text" value="" id="dealTime"></div>
+                </div>
+                <div>
+                    <div>是否误报</div>
+                    <div class="wrap_check">
+                        <div class="div_checkbox" id="dealResult"></div>
+                    <!--<input type="checkbox" id="dealResult"/>-->
+                    </div>
+                </div>
+            </div>
+             <div class="titleBox titleBox2">
+                <div>
+                    <div>处理内容</div>
+                    <div>
+                        <textarea id="dealInfo" ></textarea>
+                    </div>                   
+                </div>
+            </div>
+            <div class="titleBox">
+                <div>
+                    <div>是否维修</div>
+                    <div class="wrap_check">
+                        <div class="div_checkbox" id="repairResult"></div>
+                    <!--<input type="checkbox" id="dealResult"/>-->
+                    </div>
+                </div>
+                
+            </div>
+             <div class="titleBox titleBox2">
+                <div>
+                    <div>维修描述</div>
+                    <div>
+                        <textarea id="badDesc" ></textarea>
+                    </div>                   
+                </div>
+            </div>
+
+             <!-- <div class="titleBox titleBox3">
+                <div>
+                    <div>是否误报</div>
+                    <div class="wrap_check">
+                        <div class="div_checkbox"></div>
+                    <input type="checkbox" id="dealResult"/>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <input class="submitBtn" type="button" value="处理" >
+    </div>
+
+</body>
+<script type="text/javascript">
+//	var _id = GetQuery('id');
+
+    $(function(){
+        getAlarmListInfo();
+        clickevent();
+    });
+
+    function getAlarmListInfo(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/couplet/getAlarmInfo",
+            data:'id='+ GetQuery('id'),
+            success: function (data) {
+                if(data.success == true){
+                    var msg = data.obj;
+                    $('.top_box input').each(function(){
+                        if($(this).attr('id') == "deviceIndex"){
+                            $(this).val(msg[$(this).attr('id')] == 1?"主机":"其他")
+                        }
+                        $(this).val(msg[$(this).attr('id')]);
+                    });
+                    $('#dealInfo').text(msg['dealInfo']);
+                    $('#badDesc').text(msg['badDesc']);
+                    if(msg.isdeal == 1){//查看
+                    	$('.top_box').css('bottom','4.5%');
+                        $('.submitBtn').hide();
+                        $('.danhao').show();
+                        $('.top_box input').attr('readonly','readonly');
+                        $('.top_box textarea').attr('readonly','readonly');                 
+                        
+                    }
+                    if(msg.dealResult==1){
+//                          $("#dealResult").get(0).checked=true;
+                        $('#dealResult').addClass('active');
+                    }
+                    else{
+                        $('#dealResult').addClass('canClick');
+                        //$('.choseBt').addClass('undeal').show();
+                    }
+                    if(msg.isNeedMaintain==1){
+//                          $("#dealResult").get(0).checked=true;
+                        $('#repairResult').addClass('active');
+                    }
+                    else{
+                        $('#repairResult').addClass('canClick');
+                        //$('.choseBt').addClass('undeal').show();
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+
+    function clickevent(){
+
+        $('.submitBtn').click(function(){
+        	var dealResult;
+            if($('#dealResult').hasClass('active')){
+                dealResult=1;
+            }else{
+                dealResult=2
+            }
+            if($('#repairResult').hasClass('active')){
+            	isNeedMaintain=1;
+            }else{
+            	isNeedMaintain=2
+            }
+            var data = {
+                    dealInfo:$('#dealInfo').val(),
+                    badDesc:$('#badDesc').val(),
+                    dealResult:dealResult,
+                    isNeedMaintain:isNeedMaintain,
+                    id:GetQuery('id')
+                };
+        	 var isAsync = true,lid = 0;
+             if (isAsync)
+                 lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+             $.ajax({
+                 type: "get",
+                 url: _serverIp + "/front/couplet/dealAlarm",
+                 data:data,
+                 success: function (data) {
+                   layer.msg(data.msg);
+                   window.parent.location.reload(true);
+                 },
+                 complete: function () {
+                     if (isAsync){
+                         layer.close(lid);
+                     }
+                 },
+                 error:function(){
+                	 layer.msg(data.msg);
+                 }
+             });
+        });
+
+        $('.wrap_check').delegate('.canClick','click',function(){
+        	$(this).toggleClass('active')
+        })
+    }
+
+    $('.titleBox3').delegate('.undeal','click',function(){
+        $(this).toggleClass('realAlarm')
+    })
+</script>
+
+</html>

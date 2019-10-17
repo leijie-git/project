@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>维保巡查</title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <style>
+        body {
+            padding-bottom: 55px;
+        }
+        
+        table {
+            table-layout: fixed;
+        }
+        
+        td {
+            border-right: 1px solid #bbb;
+            border-bottom: 1px solid #bbb;
+            background: #fff;
+            text-align: center;
+            padding: 5px 2px;
+        }
+        
+        .radio_icon {
+            vertical-align: middle;
+            width: 18px;
+            padding-right: 5px;
+        }
+        
+        .closePopup {
+            float: right;
+            color: #fff;
+            border-radius: 4px;
+            padding: 0 10px;
+        }
+        
+        .weui-uploader__file-content {
+            display: block;
+            top: 8px;
+            left: 88%;
+        }
+        
+        .btn_l {
+            width: 45%;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <colgroup>
+            <col width="100" />
+            <col width="500" />
+            <col width="200" />
+            <col width="200" />
+        </colgroup>
+        <tr>
+            <td>1</td>
+            <td style="text-align: left;">文中文中文中文中文</td>
+            <td><img class="radio_icon" src="../../Content/images/WeChat/icon_chose1.png">正常</td>
+            <td onclick="openPopup();"><img class="radio_icon" src="../../Content/images/WeChat/icon_chose1.png">异常</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td style="text-align: left;">文中文中文中文中文</td>
+            <td><img class="radio_icon" src="../../Content/images/WeChat/icon_chose2.png">正常</td>
+            <td onclick="openPopup();"><img class="radio_icon" src="../../Content/images/WeChat/icon_chose1.png">异常</td>
+        </tr>
+    </table>
+
+    <div id="abnormalPopup" class="weui-popup__container">
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <div class="weui-cells__title">问题描述
+                <div class="closePopup weui-btn_primary " onclick="closePopup();">返回</div>
+            </div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <!-- <div class="weui-cell__bd">
+                        <textarea class="weui-textarea" placeholder="请输入问题描述" rows="3"></textarea>
+                    </div> -->
+                    <div class="weui-cell__bd" id="questionBefore">
+                        123asddddddddddddddasd
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cells__title">问题照片</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-uploader__bd">
+                        <ul class="weui-uploader__files" id="uploaderFiles">
+                            <li class="weui-uploader__file " style=" position: relative;background-image:url(../../Content/images/WeChat/center/bg_userCenter.jpg)">
+                                <div class="weui-uploader__file-content">
+                                    <img src='../../Content/images/WeChat/sq-delete.png' style='position: absolute;right:-7px;top:-9px;width:22px;'>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="weui-uploader__input-box">
+                            <input id="uploaderInput1" class="weui-uploader__input" type="file" accept="image/*" multiple="">
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-cells__title">*当场整改需将整改前后照片上传</div>
+            </div>
+            <div class="weui-cells__title">整改情况</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <textarea class="weui-textarea" placeholder="请输入整改情况" rows="3"></textarea>
+                    </div>
+                    <div class="weui-cell__bd" id="questionBefore" hidden>
+                        123asddddddddddddddasd
+                    </div>
+                </div>
+            </div>
+            <div class="weui-btn-area" style="text-align: center;">
+                <a class="weui-btn weui-btn_primary btn_l" href="javascript:" id="1">立即整改</a>
+                <a class="weui-btn weui-btn_primary btn_l" href="javascript:" id="2">生成隐患</a>
+            </div>
+        </div>
+    </div>
+    <div class="weui-btn-area" style="text-align: center;text-align: center;
+    position: fixed;
+    width: calc(100% - 30px);
+    bottom: 0;">
+        <a class="weui-btn weui-btn_primary" href="javascript:" id="subWork">巡查完成</a>
+    </div>
+</body>
+
+<script>
+    $(function() {
+        // getUnitList();
+    })
+
+
+
+    function openPopup() {
+        $("#abnormalPopup").popup();
+    };
+
+    function closePopup() {
+        $.closePopup();
+    }
+</script>
+</html>

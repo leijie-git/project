@@ -1,0 +1,103 @@
+.wrap_module{
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: url(../../images/AggregateAnalysis/bigbox.png) center center / 100% 100% no-repeat;
+}
+.arrow_btn {
+    left: 255px;
+}
+.no_list .arrow_btn{
+    left: 0;
+}
+.content{
+    padding-top: 4px!important;
+}
+
+.timeBTChose{
+    overflow: hidden;
+    float: right;
+    margin-top: 5px;
+    width: 150px;
+    height: 25px;
+    margin-right: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #116bb9;
+    -webkit-display: flex;
+    display: flex;
+    justify-content: space-between;
+}
+
+.top-search>form {
+    float: left;
+    width: calc(100% - 200px);
+}
+.timeBTChose > span{
+    height: 100%;
+    line-height: 25px;
+    float: left;
+    display: inline-block;
+    text-align: center;
+    width: 33.3%;
+    background-color: #014b91;
+    border-right: 1px solid #116bb9;
+    cursor: pointer;
+}
+
+.timeBTChose > span:last-child{
+    border-right: none;
+}
+
+.timeBTChose > span:hover,
+.actTime{
+    color: #75e5f5;
+    background-color: #116bb9!important;
+}
+
+.box2{
+    width: 100%;
+    height: calc(100% - 44px);
+}
+.box2 .chartdiv {
+    height: calc(33% - 13px);
+    /*height:180px;*/
+    float: left;
+    display: none;
+    width: 23% !important;
+    margin: 6px 0.9% 6px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(0, 113, 195);
+    border-image: initial;
+    border-radius: 5px;
+}
+.box2 .title {
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    background: transparent;
+}
+
+.box2 .cont {
+    width: 100%;
+    height: calc(100% - 25px);
+    background-color: rgba(16, 71, 110,.6);
+}
+
+#arrowBtn{
+    z-index: 99;
+    /*display: none;*/
+}
+.scroll-wrapper > .scroll-content{
+    /*width: 100%!important;*/
+}
+
+@media screen and (max-width: 1600px){
+    .arrow_btn {
+        left: 210px;
+    }
+}

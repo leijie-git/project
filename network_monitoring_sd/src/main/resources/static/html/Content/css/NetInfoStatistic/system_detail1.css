@@ -1,0 +1,387 @@
+section {
+    width: 100%;
+    height: 50%;
+    /*padding: 2% 2% calc(2% - 10px) 2%;/*/
+    padding-left: 2%;
+    border-bottom: 1px solid #064278;
+}
+
+section>div {
+    width: 100%;
+    height: 100%;
+    display: grid;
+}
+
+.divbox {
+    overflow: hidden;
+    -webkit-display: flex;
+    -moz-display: flex;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    /*height: 47%;	*/
+    margin-bottom: 10px;
+}
+
+.divbox:last-child {
+    justify-content: flex-start;
+}
+
+
+.divbox>div,
+.divbox2>div {
+    width: 24%;
+    height: 100%;
+}
+
+.divbox:last-child>div {
+    margin: 0 .6%;
+}
+
+
+.title {
+    width: 100%;
+    height: 22px;
+    /*line-height: 30px;*/
+    text-align: center;
+    color: #fff;
+}
+
+.boxcontent {
+    width: 100%;
+    height: calc(100% - 25px);
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    padding: 3% 0;
+    background-color: rgba(13, 74, 128, .9);
+    cursor: pointer;
+    position: relative;
+}
+.boxcontent.active,
+.boxcontent:hover {
+    background-color: rgba(13, 74, 128, .6);
+}
+
+.kongzhigui {
+    width: 100%;
+    height: calc(100% - 74px);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kongzhigui_content{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.kongzhigui>img {
+    height: 86%;
+}
+
+.kongzhigui_cont {
+    width: 100%;
+    height: 54px;
+    text-align: center;
+    padding-top: 2.4%;
+}
+
+.kongzhigui_box {
+    width: 100%;
+    /*height: 33%;*/
+    overflow: hidden;
+    margin: .5% 0;
+}
+
+.kongzhigui_box .kzword {
+    float: left;
+    display: inline-block;
+    width: 50%;
+    /* height: 100%; */
+    text-align: right;
+    padding-right: 5%;
+    color: #ccc;
+}
+
+.kongzhigui_box .status {
+    float: left;
+    display: inline-block;
+    text-align: left;
+    /*padding-left: 5%;*/
+    width: 50px;
+    height: 16px;
+    line-height: 14px;
+    padding: 0px 6px;
+    color: #676767;
+}
+.kongzhigui_box .status.abnormalType{
+    text-align: right;
+    background: url("../../images/NetInfoStatistic/state_abnormal_bg.png") 100%/100%;
+}
+.kongzhigui_box .status.normalType{
+    text-align: left;
+    background: url("../../images/NetInfoStatistic/state_normal1_bg.png") 100%/100%;
+}
+
+
+.box1_water,
+.box2_water {
+    position: relative;
+}
+
+.yaliword1 {
+    width: 100%;
+    height: 10%;
+    text-align: center;
+    color: #43eec9;
+}
+
+.yaliword2 {
+    width: 100%;
+    height: 10%;
+    text-align: center;
+    color: #f4704d;
+}
+
+.chartDiv {
+    width: 100%;
+    height: 75%;
+    overflow: hidden;
+}
+
+.cankaodata {
+    width: 100%;
+    height: 15%;
+    text-align: center;
+    color: #ccc;
+    position: absolute;
+    bottom: 5px;
+}
+
+.shuiweidata {
+    position: absolute;
+    width: 100%;
+    height: 15%;
+    text-align: center;
+    color: #ccc;
+    bottom: 5px;
+}
+
+.humCont {
+    width: 100%;
+    height: 94px;
+    position: relative;
+    text-align: center;
+    top: calc(46% - 47px);
+}
+
+.tempdiv {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    width: 70px;
+    height: 95%;
+    background: url(../../images/NetInfoStatistic/temp.png)no-repeat center;
+    background-size: 100% 100%;
+}
+
+.tempbar {
+    position: absolute;
+    width: 8px;
+    height: 62%;
+    left: 20%;
+    top: 14%;
+    background-color: none;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.tempData {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #348dd5;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.tempData.abnormal {
+    background-color: #f4704d;
+}
+
+.humCont .msg {
+    position: absolute;
+    width: 25%;
+    height: 20px;
+    line-height: 20px;
+    text-align: left;
+    padding-left: 5px;
+    color: #fff;
+    right: 15px;
+    left: auto;
+    width: 70px;
+}
+
+.humCont .msg.msgred {
+    background: url(../../images/NetInfoStatistic/temp_red.png)no-repeat center;
+    background-size: 100% 100%;
+}
+
+.humCont .msg.msgblue {
+    background: url(../../images/NetInfoStatistic/temp_blue.png)no-repeat center;
+    background-size: 100% 100%;
+}
+
+.contentimg {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contentimg2 {
+    height: 80%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contentimg3 {
+    height: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contentimg>img {
+    height: 90%;
+    /*margin-top: 12%;*/
+}
+
+.contentimg2>img {
+    height:88%;
+    /*margin-top: 18%;*/
+}
+
+canvas {
+    cursor: pointer;
+}
+
+
+
+/*电气火灾*/
+
+.arcCont {
+    width: 100%;
+    height: 100%;
+}
+
+.arcImg {
+    width: 100%;
+    text-align: center;
+    height: 60%;
+}
+
+.arcImg>img {
+    width: 40%;
+}
+
+.dataDescribe {
+    width: 100%;
+    height: 40%;
+    text-align: center;
+    -webkit-display: flex;
+    -moz-display: flex;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dataDescribe>div {
+    width: 30%;
+    text-align: center;
+}
+
+.dataDescribe>div>img {
+    display: block;
+    width: 35%;
+    margin-left: 30%;
+    margin-bottom: 3%;
+    margin-top: 5%;
+}
+
+.dataDescribe>div>div {
+    width: 100%;
+    color: #ccc;
+}
+
+.normalData {
+    color: #43eec9;
+}
+
+
+.alarmData {
+    color: #cd3a2a;
+}
+
+.dataDescribe2 {
+    width: 100%;
+    height: 40%;
+    text-align: center;
+}
+
+.dataDescribe2 .yaliword1 {
+    margin-top: 3%;
+    margin-bottom: 6%;
+}
+
+
+.status>img {
+    width: 66%;
+}
+
+.divbox {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.wrap_sysDiv {
+    width: 22%;
+    margin: 0 .6%;
+    height: 100%;
+    padding: .2% 0;
+    float: left;
+}
+
+.line_Chart {
+    width: 100%;
+    height: calc(100% - 40px);
+    padding-left: 2%;
+    border-top: 1px solid #031C33;
+
+}
+.line2 section{
+	height: 60%;
+}
+.line2 .line_Chart{
+    height: calc(40% - 40px);
+}
+
+@media screen and (max-width: 1366px) {
+	.humCont .msg{
+		/*left: -78px;*/
+	}
+	.tempData{
+		width: 70%;
+	}
+}

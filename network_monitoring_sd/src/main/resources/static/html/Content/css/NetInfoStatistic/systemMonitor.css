@@ -1,0 +1,165 @@
+/*历史截图iframe*/
+body{
+	padding: 0;
+	margin: 0;
+	background: none;
+}
+.wrapper{
+	width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /*background: none;*/
+    /*background-color: rgba(4,31,60,.8);*/
+    /*background-image: url(../../images/NetInfoStatistic/iframeBG.png);*/
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 0;
+    position: relative;
+}
+
+.top-search{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding-top: 5px;
+    padding-left: 15px;
+    left: 0;
+    background-color: rgba(16, 71, 110,.6);
+}
+
+section{
+    /*position: absolute;*/
+    /*top: 40px;*/
+    /*overflow: hidden;*/
+    /*width: 100%;*/
+    /*bottom: 40px;*/
+    /*-webkit-display: flex;*/
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    /*flex-direction: column;*/
+    /*padding: 8px 0;*/
+}
+
+section .main{
+    overflow: hidden;
+    width: 100%;
+    height: 32%;
+    -webkit-display: flex;
+    display: flex;
+    justify-content: space-between;
+}
+
+section .main .picDiv{
+    width: 19.5%;
+    height: 100%;
+    position: relative;
+    background: black;
+}
+
+section .main .picCont{
+    position: absolute;
+    top: 0;
+    bottom: 25px;
+    width: 100%;
+}
+
+section .main .decribe{
+    position: absolute;
+    bottom: 0;
+    height: 25px;
+    line-height: 25px;
+    width: 100%;
+    background-color: rgba(16, 71, 110,.8);
+    padding: 0 10px;
+
+}
+
+section .main .decribe span{
+    display: inline-block;
+}
+
+section .main .decribe span:first-child{
+    float: left;
+}
+section .main .decribe span:last-child{
+    float: right;
+}
+
+
+.footer{
+    position: absolute;
+    bottom: 0;
+    height: 40px;
+}
+
+
+section{
+    height: calc(100% - 5px);
+}
+section .frameDiv{
+    height: 100%;
+}
+
+.input_box {
+    width: 100%;
+    height: 40px;
+    padding: 5px 10px;
+    background: rgba(13, 74, 128, 1);
+    position: relative;
+}
+.search {
+    width: 100%;
+    height: 30px;
+    color: #8BABD1;
+    border: none;
+    border-bottom: 1px solid #38658C;
+    padding-left: 10px;
+    padding-right: 30px;
+    background: none;
+    display: block;
+    outline: none;
+}
+.search_btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: none;
+    background-repeat: no-repeat;
+    background-image: url(../../../Content/images/NetInfoStatistic/btSearch.png);
+    background-position: 3px 3px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.first_ul {
+    width: 100%;
+    height: calc(100% - 40px);
+    /*background: rgba(3, 31, 55, 0.4);*/
+    overflow: auto;
+}
+
+.arrow_btn {
+    width: 15px;
+    height: 219px;
+    background: url(../../images/WeibaoInspect/arrow_icon.png);
+    position: absolute;
+    top: 30%;
+    left: 246px;
+    cursor: pointer;
+    z-index: 99;
+}
+
+.no_list .frameDiv{
+    width: 100%;
+    left: 0;
+}
+
+.no_list .arrow_btn{
+    left: 0;
+}
+
+.no_list .menuBox{
+    display: none;
+}

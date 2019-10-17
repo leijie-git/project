@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseEqPortMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseEqPort">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="ClassCode" property="classcode" jdbcType="INTEGER"/>
+        <result column="PortName" property="portName" jdbcType="NVARCHAR"/>
+    </resultMap>
+    <select id="getArrayList" resultType="com.gw.mapper.entity.UtBaseEqPort">
+        select
+        ID,
+        ClassCode,
+        PortName
+        from
+        UT_Base_EqPort
+        <where>
+            <if test="classcode!=null">
+                ClassCode = #{classcode}
+            </if>
+        </where>
+    </select>
+
+</mapper>

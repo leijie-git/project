@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtEqExtinguisherMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtEqExtinguisher">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <id column="unit_id" property="unitId" jdbcType="BIGINT"/>
+        <result column="extinguisher_type" property="extinguisherType" jdbcType="VARCHAR"/>
+        <result column="extinguisher_position" property="extinguisherPosition" jdbcType="NVARCHAR"/>
+        <result column="product_date" property="productDate" jdbcType="TIMESTAMP"/>
+        <result column="jc_date" property="jcDate" jdbcType="TIMESTAMP"/>
+        <result column="fill_date" property="fillDate" jdbcType="TIMESTAMP"/>
+        <result column="expire_date" property="expireDate" jdbcType="TIMESTAMP"/>
+        <result column="validity_date" property="validityDate" jdbcType="TIMESTAMP"/>
+        <result column="Extinguisher_Num" property="extinguisherNum" jdbcType="INTEGER"/>
+        <result column="Product_UnitName" property="productUnitname" jdbcType="NVARCHAR"/>
+        <result column="Product_UnitPhone" property="productUnitphone" jdbcType="NVARCHAR"/>
+        <result column="remark" property="remark" jdbcType="NVARCHAR"/>
+        <result column="extinguisher_code" property="extinguisherCode" jdbcType="NVARCHAR"/>
+    </resultMap>
+    <select id="getMaintenanceStat" resultType="com.gw.front.maintenance.data.FrontMaintenanceStatOutData">
+        SELECT
+        SUM(CASE WHEN DATEADD(dd,ISNULL(unit.AdvanceReminderDay, 30),GETDATE())>a.validity_date and
+        a.validity_date>GETDATE() THEN 1 ELSE 0 END) toDateCount,
+        SUM(CASE WHEN DATEADD(dd,ISNULL(unit.AdvanceReminderDay, 30),GETDATE())>a.expire_date and
+        a.expire_date>GETDATE() THEN 1 ELSE 0 END) scrapCount,
+        COUNT(*) totalCount
+        FROM
+        UT_EQ_Extinguisher a
+        LEFT JOIN UT_Unit_BaseInfo unit ON a.unit_id=unit.ID
+        <if test="userId!=null and userId!=''and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.unit_id = b.unit_id
+        </if>
+        <where>
+            <if test="unitId!=null and unitId!=''">
+                and a.unit_id = #{unitId}
+            </if>
+            <if test="userId!=null and userId!='' and userId != 1">
+                and b.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getFireExtinguisherList" resultType="com.gw.front.maintenance.data.FrontMaintenanceFireOutData"
+            parameterType="com.gw.front.maintenance.data.FrontMaintenanceInData">
+        SELECT DISTINCT
+        a.ID id,
+        a.extinguisher_type extinguisherType,
+        a.extinguisher_position extinguisherPosition,
+        CONVERT (VARCHAR, a.product_date, 23) productDate,
+        CONVERT (VARCHAR, a.jc_date, 23) jcDate,
+        CONVERT (VARCHAR, a.fill_date, 23) fullDate,
+        CONVERT (VARCHAR, a.expire_date, 23) eqChangeDate,
+        CONVERT (VARCHAR, a.validity_date, 23) validityDate
+        FROM
+        UT_EQ_Extinguisher a
+        LEFT JOIN UT_Unit_BaseInfo unit ON a.unit_id = unit.ID
+        <if test="userId !=null and userId!='' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.unit_id = b.unit_id
+        </if>
+        where 1=1
+        <if test="unitId != null and unitId != ''">
+            AND a.unit_id = #{unitId}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND a.extinguisher_position LIKE '%${keyword}%'
+        </if>
+        <if test="dateType != null and dateType != ''">
+            <if test="startDate != null and startDate != ''">
+                <if test="dateType==1">
+                    AND a.product_date >= #{startDate}
+                </if>
+                <if test="dateType==2">
+                    AND a.jc_date >= #{startDate}
+                </if>
+                <if test="dateType==3">
+                    AND a.fill_date >= #{startDate}
+                </if>
+                <if test="dateType==4">
+                    AND a.expire_date >= #{startDate}
+                </if>
+                <if test="dateType==5">
+                    AND a.validity_date >= #{startDate}
+                </if>
+            </if>
+            <if test="endDate != null and endDate != ''">
+                <if test="dateType==1">
+                    AND a.product_date &lt;= #{endDate}
+                </if>
+                <if test="dateType==2">
+                    AND a.jc_date &lt;= #{endDate}
+                </if>
+                <if test="dateType==3">
+                    AND a.fill_date &lt;= #{endDate}
+                </if>
+                <if test="dateType==4">
+                    AND a.expire_date &lt;= #{endDate}
+                </if>
+                <if test="dateType==5">
+                    AND a.validity_date &lt;= #{endDate}
+                </if>
+            </if>
+        </if>
+        <if test="userId !=null and userId!='' and userId != 1">
+            AND b.user_id = #{userId}
+        </if>
+        <if test="status!=null and status!=''">
+            <if test="status==0">
+                and CONVERT(VARCHAR,getDate(),23) &gt;= CONVERT(VARCHAR,a.expire_date,23)
+            </if>
+            <if test="status==1">
+                and CONVERT(VARCHAR,getDate(),23) &gt;= CONVERT(VARCHAR,a.validity_date,23)
+            </if>
+            <if test="status==2"><!-- 即将到期 -->
+                and DATEADD(dd,ISNULL(unit.AdvanceReminderDay, 30),GETDATE())>a.expire_date and a.expire_date>GETDATE()
+            </if>
+            <if test="status==3"><!-- 即将报废 -->
+                and DATEADD(dd,ISNULL(unit.AdvanceReminderDay, 30),GETDATE())>a.validity_date and
+                a.validity_date>GETDATE()
+            </if>
+        </if>
+        ORDER BY a.ID DESC
+    </select>
+
+    <select id="getExtinguisherByUnitId" resultType="com.gw.front.unit.data.FrontUnitExtinguisherOutData">
+  	SELECT
+		e.ID id,
+		e.Extinguisher_Num extinguisherNum,
+		e.extinguisher_position extinguisherPosition,
+		e.extinguisher_type extinguisherType,
+		e.fill_date fillDate,
+		e.jc_date jcDate,
+		e.product_date productDate,
+		e.Product_UnitName productUnitname,
+		e.Product_UnitPhone productUnitphone,
+		e.remark remark,
+		e.unit_id unitId,
+		e.validity_date validityDate,
+		e.expire_date expireDate
+	FROM
+		UT_EQ_Extinguisher e
+	WHERE
+		e.unit_id = ${unitId}
+  </select>
+    <select id="getExtinguisherList" resultType="com.gw.front.unit.data.FrontUnitExtinguisherOutData"
+            parameterType="com.gw.front.unit.data.FrontUnitExtinguisherInData">
+        SELECT
+        e.ID id,
+        e.Extinguisher_Num extinguisherNum,
+        e.extinguisher_position extinguisherPosition,
+        e.extinguisher_type extinguisherType,
+        CONVERT (VARCHAR, e.fill_date, 23) fillDate,
+        CONVERT (VARCHAR, e.jc_date, 23) jcDate,
+        CONVERT (VARCHAR, e.product_date, 23) productDate,
+        e.Product_UnitName productUnitname,
+        e.Product_UnitPhone productUnitphone,
+        e.remark remark,
+        e.unit_id unitId,
+        CONVERT (VARCHAR, e.validity_date, 23) validityDate,
+        CONVERT (VARCHAR, e.expire_date, 23) expireDate,
+        e.extinguisher_code extinguisherCode
+        FROM
+        UT_EQ_Extinguisher e
+        LEFT JOIN UT_Unit_BaseInfo b ON b.ID = e.unit_id
+        <where>
+            (b.isDelete = 0 OR b.isDelete is NULL)
+            <if test='unitId != 1'>
+                and b.ID = #{unitId}
+            </if>
+            <if test="extinguisherPosition != null and extinguisherPosition != ''">
+                and e.extinguisher_position like '%${extinguisherPosition}%'
+            </if>
+            <if test="extinguisherType != null and extinguisherType != ''">
+                AND e.extinguisher_type like '%${extinguisherType}%'
+            </if>
+            <if test="productUnitname != null and productUnitname != ''">
+                AND e.Product_UnitName like '%${productUnitname}%'
+            </if>
+        </where>
+        ORDER BY e.ID DESC
+    </select>
+
+
+    <select id="getMaintenanceStatList" resultType="com.gw.front.couplet.data.FrontCoupletUnitInfo">
+        SELECT
+        SUM(CASE WHEN DATEADD(dd,ISNULL(unit.AdvanceReminderDay, 30),GETDATE())>a.validity_date and
+        a.validity_date>GETDATE() THEN 1 ELSE 0 END) toDateCount,
+        SUM(CASE WHEN DATEADD(dd,ISNULL(unit.AdvanceReminderDay, 30),GETDATE())>a.expire_date and
+        a.expire_date>GETDATE() THEN 1 ELSE 0 END) scrapCount,
+        unit.ID unitId,
+        unit.UnitName unitName
+        FROM
+        UT_Unit_BaseInfo unit
+        LEFT JOIN UT_EQ_Extinguisher a ON a.unit_id=unit.ID
+        <if test="userId!=null and userId!=''and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.unit_id = b.unit_id
+        </if>
+        <where>
+            1=1
+            <if test="userId!=null and userId!='' and userId != 1">
+                and b.user_id = #{userId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and unit.UnitName LIKE '%${keyword}%'
+            </if>
+            GROUP by unit.ID,unit.UnitName
+        </where>
+    </select>
+
+    <select id="selectById" resultType="com.gw.front.maintenance.data.FrontMaintenanceFireOutData"
+            parameterType="java.lang.Long">
+		SELECT
+		a.ID id,
+		a.extinguisher_type extinguisherType,
+		a.extinguisher_position extinguisherPosition,
+		CONVERT (VARCHAR, a.product_date, 23) productDate,
+		CONVERT (VARCHAR, a.jc_date, 23) jcDate,
+		CONVERT (VARCHAR, a.fill_date, 23) fullDate,
+		CONVERT (VARCHAR, a.expire_date, 23) eqChangeDate,
+		CONVERT (VARCHAR, a.validity_date, 23) validityDate
+		FROM
+		UT_EQ_Extinguisher  a
+		where
+		a.id = #{id}
+	</select>
+
+    <select id="getExpireExtinguisherList" resultType="com.gw.front.unit.data.FrontUnitExtinguisherOutData">
+      SELECT
+        a.ID id,
+		a.Extinguisher_Num extinguisherNum,
+		a.extinguisher_position extinguisherPosition,
+		a.extinguisher_type extinguisherType,
+		a.fill_date fillDate,
+		a.jc_date jcDate,
+		a.product_date productDate,
+		a.Product_UnitName productUnitname,
+		a.Product_UnitPhone productUnitphone,
+		a.remark remark,
+		a.unit_id unitId,
+		a.validity_date validityDate,
+		a.expire_date expireDate,
+		a.extinguisher_code extinguisherCode,
+	(
+		CASE
+		WHEN DATEADD(
+			dd,
+			ISNULL(unit.AdvanceReminderDay, 30),
+			GETDATE()
+		) > a.validity_date
+		AND a.validity_date > GETDATE() THEN
+			1
+		ELSE
+			0
+		END
+	) validityCount,--即将报废
+	(
+		CASE
+		WHEN DATEADD(
+			dd,
+			ISNULL(unit.AdvanceReminderDay, 30),
+			GETDATE()
+		) > a.expire_date
+		AND a.expire_date > GETDATE() THEN
+			1
+		ELSE
+			0
+		END
+	) expireCount,--即将到期
+(
+		CASE
+		WHEN
+			CONVERT(varchar,GETDATE(),120)>a.validity_date
+		THEN
+			1
+		ELSE
+			0
+		END
+	) tovalidityCount,--已报废
+(
+		CASE
+		WHEN
+			CONVERT(varchar,GETDATE(),120)>a.expire_date
+		THEN
+			1
+		ELSE
+			0
+		END
+	) toexpireCount--已到期
+
+FROM
+	UT_EQ_Extinguisher a
+LEFT JOIN UT_Unit_BaseInfo unit ON a.unit_id = unit.ID
+
+  </select>
+
+    <!--统计当前用户的单位下的检查点的状态统计-->
+    <select id="getUserUnitSiteStatus" parameterType="java.lang.String"
+            resultType="com.gw.front.index.data.UserUnitIDSiteStatus">
+     select
+COUNT(1) sumAbnormal,
+COUNT(CASE WHEN r.status is null  then '未检查'  END ) unchecked,
+COUNT(CASE WHEN r.status=0  then '正常'  END ) normal,
+(COUNT(CASE WHEN r.status=1  then '立即整改'  END )+COUNT(CASE WHEN r.status=2  then '生成维修'  END ) ) abnormal,
+COUNT(CASE WHEN r.status=1  then '立即整改'  END )  nowRectification,
+COUNT(CASE WHEN r.status=2  then '生成维修'  END )   generateMaintenance,
+COUNT(CASE WHEN r.status=3  then '已整改'  END )  rectificationOk
+from UT_Inspect_Site s
+RIGHT  JOIN
+UT_Inspect_Base_Rel r on s.id=r.siteID
+where UnitID=#{UnitID}
+    </select>
+
+    <!--巡查进度统计 总的巡查个数 已完成个数-->
+    <select id="getSiteCountAndOkCheckCount"  parameterType="java.lang.String" resultType="com.gw.front.index.data.UserUnitIDSiteStatus">
+
+SELECT
+sum(siteCount) sumSiteCount,
+ sum(okCheckCount) sumokCheckCount
+FROM
+	UT_Inspect_Task where UnitID=#{UnitID}
+
+    </select>
+</mapper>

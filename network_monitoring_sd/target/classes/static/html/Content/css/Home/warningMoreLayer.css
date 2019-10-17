@@ -1,0 +1,93 @@
+html,
+body {
+    width: 100%;
+    height: 99%;
+    padding: 0;
+    margin: 0;
+}
+
+.selectTime{
+	width: 200px;
+    padding-left: 50px;
+}
+
+
+
+
+.wrapped {
+    width: 100%;
+    height: 100%;
+    padding: 2% 3%;
+    /* border: 1px solid #3295CE; */
+    /* background: #092847; */
+    position: relative;
+}
+
+.close {
+    font-size: 24px;
+    font-weight: 100;
+    color: #1BC7E0;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 27px;
+    transform: scale(1.4, 1);
+}
+
+.header {
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    font-size: 18px;
+    color: #67CCEF;
+    margin-bottom: 10px;
+    background-image: url(../../images/UnitManage/title1.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: bottom;
+}
+.list_table{
+    height: calc(100% - 100px);
+}
+.checkall {
+    cursor: pointer;
+}
+.table_content .underline {
+    text-decoration: underline;
+}
+
+.table_content .underline {
+    text-decoration: underline;
+}
+.layui-input-inline,
+.top-search input{
+    vertical-align: top;
+}
+.top-search{
+    line-height: 30px;
+}
+.btn_crt{
+    text-decoration: underline;
+}
+.no_crt{
+    cursor: default;
+    opacity: 0.2;
+}
+.btn_crt>img,.no_crt>img{
+    width: 24px;
+}
+
+.ico_video{
+    cursor: pointer;
+    width: 16px;
+}
+.icon_deal{
+    width: 24px;
+}
+.icon_Info{
+    height: 20px;
+    margin-right: 4px;
+}
+
+

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtBaseProvicecityregionMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtBaseProvicecityregion" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+    <result column="RegionName" property="regionname" jdbcType="NVARCHAR" />
+    <result column="RegionCode" property="regioncode" jdbcType="NVARCHAR" />
+    <result column="ParentID" property="parentid" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <select id="selectRegionByType" resultType="com.gw.unit.data.BaseProvicecityregionOutData">
+  	SELECT
+		Type,
+		RegionName,
+		RegionCode,
+		ID,
+		ParentID
+	FROM
+		UT_Base_ProviceCityRegion
+	<where>
+		<if test="type != null and type != 0">
+			type = #{type}
+		</if>
+		<if test="parentId != null and parentId != 0" >
+			AND ParentID = #{parentId}
+		</if>
+	</where>
+  </select>
+   <select id="getAllProvice" resultType="com.gw.dataCenter.data.ProviceCityRegionOutData" >
+    SELECT
+	    ID id,
+	    Type proviceType,
+	    RegionName regionName,
+	    RegionCode regionCode,
+	    ParentID pid
+	FROM
+        UT_Base_ProviceCityRegion
+    <where>
+      <if test="name != null and name!=''" >
+       RegionName like concat(concat('%',#{name,jdbcType=VARCHAR}),'%')
+      </if>
+    </where>
+  </select>
+  <select id="getListProvice" resultType="com.gw.dataCenter.data.ProviceCityRegionOutData">
+    SELECT
+		ID id,
+		Type proviceType,
+		RegionName regionName,
+		RegionCode regionCode,
+		ParentID pid
+    FROM
+        UT_Base_ProviceCityRegion
+        <where>
+            <if test="type!=null and type!=''">
+            Type &lt; #{type}
+            </if>
+        </where>
+  </select>
+  <select id="getProviceByID" resultType="com.gw.dataCenter.data.ProviceCityRegionOutData">
+    SELECT
+		a.ID id,
+		a.Type proviceType,
+		a.RegionName regionName,
+		a.RegionCode regionCode,
+		a.ParentID pid,
+		b.RegionName pname
+	FROM
+		UT_Base_ProviceCityRegion a
+	LEFT JOIN UT_Base_ProviceCityRegion b ON a.ParentID = b.ID
+        <where>
+           a.ID = #{id}
+        </where>
+  </select>
+</mapper>

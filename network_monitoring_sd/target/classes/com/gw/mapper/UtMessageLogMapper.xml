@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtMessageLogMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtMessageLog" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="unit_id" property="unitId" jdbcType="BIGINT" />
+    <result column="sender" property="sender" jdbcType="BIGINT" />
+    <result column="receiver" property="receiver" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="send_date" property="sendDate" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="message_type" property="messageType" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="LONGNVARCHAR" />
+  </resultMap>
+  <select id="getMessageList" resultType="com.gw.front.history.data.FrontHistoryMessageOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+  	SELECT
+		b.UnitName unitName,
+		a.phone phone,
+		a.receiver receiver,
+		count(*) sendCount,
+		sum(case when a.status = 1 then 1 else 0 end) succCount,
+		sum(case when a.status = 0 then 1 else 0 end) failCount
+	FROM
+		UT_message_log a
+	LEFT JOIN UT_Unit_BaseInfo b ON a.unit_id = b.ID
+	<if test="userId != 1">
+		LEFT JOIN UT_Base_UserReUnit e ON e.unit_id = b.id
+	</if>
+	<if test="buildId != null and buildId != ''">
+		LEFT JOIN UT_Unit_Build i ON i.UnitID = b.ID
+	</if>
+	<where>
+		(b.isDelete = 0 OR b.isDelete is NULL)
+		<if test="userId != 1">
+			and e.user_id = #{userId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.send_date >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.send_date &lt;= #{endDate}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (b.UnitName LIKE '%${keyword}%' or a.phone LIKE '%${keyword}%')
+		</if>
+		<if test="unitId != null and unitId != ''">
+			AND b.ID = #{unitId}
+		</if>
+		<if test="buildId != null and buildId != ''">
+			AND i.ID = #{buildId}
+		</if>
+	</where>
+	group by b.UnitName,a.phone,a.receiver
+  </select>
+  <select id="getAnalysisMessageList" resultType="com.gw.front.history.data.FrontHistoryMessageOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+  	SELECT
+  		b.UnitCode,
+		b.ChildStationNum childStationNum,
+		b.UnitName unitName,
+		a.phone phone,
+		a.receiver receiver,
+		count(*) sendCount,
+		sum(case when a.status = 1 then 1 else 0 end) succCount,
+		sum(case when a.status = 0 then 1 else 0 end) failCount
+	FROM
+		UT_message_log a
+	LEFT JOIN UT_Unit_BaseInfo b ON a.unit_id = b.ID
+	<if test="userId != 1">
+		LEFT JOIN UT_Base_UserReUnit e ON e.unit_id = b.id
+	</if>
+	<where>
+		(b.isDelete = 0 OR b.isDelete is NULL)
+		<if test="userId != 1">
+			and e.user_id = #{userId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and DateName(year,a.send_date) = #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and CONVERT(varchar(7),a.send_date,120) = #{endDate}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (b.UnitName LIKE '%${keyword}%' or a.phone LIKE '%${keyword}%')
+		</if>
+	</where>
+	group by b.UnitName,a.phone,a.receiver,b.ChildStationNum,b.UnitCode
+  </select>
+  <select id="getMessageStatDetail" resultType="com.gw.front.history.data.FrontHistoryMessageOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+	SELECT
+		b.UnitName unitName,
+		a.phone phone,
+		a.content content,
+		a.send_date sendDate,
+		a.status status,
+		a.message_type messageType
+	FROM
+		UT_message_log a
+	LEFT JOIN UT_Unit_BaseInfo b ON a.unit_id = b.ID
+	<if test="buildId != null and buildId != ''">
+		LEFT JOIN UT_Unit_Build c ON c.UnitID = b.ID
+	</if>
+	<where>
+		a.phone = #{phone}
+		and (b.isDelete = 0 OR b.isDelete is NULL)
+		<if test="startDate != null and startDate != ''">
+			and DateName(year,a.send_date) = #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and CONVERT(varchar(7),a.send_date,120) = #{endDate}
+		</if>
+		<if test="unitId != null and unitId != ''">
+			AND b.ID = #{unitId}
+		</if>
+		<if test="buildId != null and buildId != ''">
+			AND c.ID = #{buildId}
+		</if>
+	</where>
+	order by a.id desc
+  </select>
+</mapper>

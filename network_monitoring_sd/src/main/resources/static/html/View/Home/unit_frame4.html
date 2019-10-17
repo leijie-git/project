@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位详细资料 - 传输设备</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/UnitDetail.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+    <!--table start-->
+    <div class="table_box" style="height: 99%;padding: 0 1%">
+        <div class="list_table">
+            <div class="table_header">
+                <table>
+                    <colgroup>
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="5%">
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="15%">
+                        <col width="15%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>设备类型</th>
+                            <th>子号</th>
+                            <th>设备名称</th>
+                            <th>设备型号</th>
+                            <th>设备状态</th>
+                            <th>系统</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table_content scrollbar-inner">
+                <table cellpadding="0" cellspacing="0" class="tbody">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="5%">
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="15%">
+                        <col width="15%">
+                    </colgroup>
+                    <tbody id="mainContentTbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="wrap_page">
+            <div id="demo7"></div>
+            <img src="../../Content/images/Public/exportBT.png" class="btn_export">
+        </div>
+    </div>
+    <!--table end-->
+</body>
+<script type="text/javascript">
+    var _ifUsed = 0; //调用page方法的判断
+    var _id='';
+
+    var _deviceData={
+        pageSize:20,
+        pageNumber:1,
+        eqSystem:"",
+        type:"",
+        status:"",
+        version:'',
+        startDate:"",
+        endDate:"",
+        keyword:GetQuery('unitname')
+    };
+	$(function(){
+        getTableData(); //表格数据加载
+	});
+    //表格数据加载
+    function getTableData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getSDDeviceStatusList",
+            data:_deviceData,
+            async:isAsync,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+
+                showListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showListContent(msg){
+        var data = msg.list;
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            html +='<tr id="'+data[i].id+'">' +
+                    '<td>'+(msg.startRow++)+'</td>' +
+                    '<td class="blue align-left">'+data[i].deviceType+'</td>'+
+                    '<td>'+data[i].deviceNo+'</td>'+
+                    '<td class="align-left">'+data[i].deviceName+'</td>'+
+                    '<td>'+data[i].deviceModel+'</td>'+
+                    '<td onclick="getEqIsOnline(this);" class="align-left underline '+(data[i].deviceStatus == "离线"?"red":"")+'">'+data[i].deviceStatus+'</td>'+
+                    '<td>'+data[i].eqSystemName+'</td>'+
+                    '</tr>'
+        }
+        $('#mainContentTbody').html(html||"<tr><td colspan='7'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+//                    console.log(obj);
+                    if (!isNew) {
+                        _deviceData.pageNumber = obj.curr;
+                        _deviceData.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getTableData(); //调用接口获取数据
+                    }
+
+                }
+            });
+        });
+        //完整功能
+
+    }
+
+    //设备离在线情况弹窗
+    function getEqIsOnline(obj){
+        var id = $(obj).parent().attr('id');
+        top.layer.open({
+            type: 2,
+            title: '设备离在线情况',
+            closeBtn: 1,
+            area:['50%','75%'],
+            shade: 0.1,
+            skin: 'layui-layer-loginRecord',
+            content: 'HistoryNote/History_detail/History12_EqIsOnline.html?id='+id+'&unitid='
+        });
+    }
+</script>
+</html>

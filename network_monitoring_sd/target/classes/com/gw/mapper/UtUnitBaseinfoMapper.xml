@@ -1,0 +1,1423 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitBaseinfoMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitBaseinfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="UnitCode" property="unitcode" jdbcType="NVARCHAR"/>
+        <result column="UnitName" property="unitname" jdbcType="NVARCHAR"/>
+        <result column="OrgCode" property="orgcode" jdbcType="NVARCHAR"/>
+        <result column="UnitType" property="unittype" jdbcType="NVARCHAR"/>
+        <result column="UnitAddress" property="unitaddress" jdbcType="LONGNVARCHAR"/>
+        <result column="Phone" property="phone" jdbcType="NVARCHAR"/>
+        <result column="UnitSummary" property="unitsummary" jdbcType="LONGNVARCHAR"/>
+        <result column="UnitBg" property="unitbg" jdbcType="NVARCHAR"/>
+        <result column="NetworkStatus" property="networkstatus" jdbcType="INTEGER"/>
+        <result column="PostCode" property="postcode" jdbcType="NVARCHAR"/>
+        <result column="FireroomPhone" property="fireroomphone" jdbcType="NVARCHAR"/>
+        <result column="SafeResponsiblePersonName" property="saferesponsiblepersonname" jdbcType="NVARCHAR"/>
+        <result column="SafeResponsiblePersonCard" property="saferesponsiblepersoncard" jdbcType="NVARCHAR"/>
+        <result column="SafeResponsiblePersonPhone" property="saferesponsiblepersonphone" jdbcType="NVARCHAR"/>
+        <result column="SafeManagerName" property="safemanagername" jdbcType="NVARCHAR"/>
+        <result column="SafeManagerCard" property="safemanagercard" jdbcType="NVARCHAR"/>
+        <result column="SafeManagerPhone" property="safemanagerphone" jdbcType="NVARCHAR"/>
+        <result column="AssistManagerName" property="assistmanagername" jdbcType="NVARCHAR"/>
+        <result column="AssistManagerCard" property="assistmanagercard" jdbcType="NVARCHAR"/>
+        <result column="AssistManagerPhone" property="assistmanagerphone" jdbcType="NVARCHAR"/>
+        <result column="LegalPersonName" property="legalpersonname" jdbcType="NVARCHAR"/>
+        <result column="LegalPpersonCard" property="legalppersoncard" jdbcType="NVARCHAR"/>
+        <result column="LegalPersonPhone" property="legalpersonphone" jdbcType="NVARCHAR"/>
+        <result column="StaffCount" property="staffcount" jdbcType="INTEGER"/>
+        <result column="EstablishmentTime" property="establishmenttime" jdbcType="TIMESTAMP"/>
+        <result column="SuperiorUnit" property="superiorunit" jdbcType="NVARCHAR"/>
+        <result column="AdministUnit" property="administunit" jdbcType="NVARCHAR"/>
+        <result column="EconomicType" property="economictype" jdbcType="NVARCHAR"/>
+        <result column="FixedAssets" property="fixedassets" jdbcType="DECIMAL"/>
+        <result column="Area" property="area" jdbcType="DECIMAL"/>
+        <result column="BuildingArea" property="buildingarea" jdbcType="DECIMAL"/>
+        <result column="OnlineDate" property="onlinedate" jdbcType="TIMESTAMP"/>
+        <result column="SuperviseLevel" property="superviselevel" jdbcType="NVARCHAR"/>
+        <result column="SuperviseType" property="supervisetype" jdbcType="NVARCHAR"/>
+        <result column="BelongCenterName" property="belongcentername" jdbcType="NVARCHAR"/>
+        <result column="SvgFile" property="svgfile" jdbcType="NVARCHAR"/>
+        <result column="UnitPoint" property="unitpoint" jdbcType="NVARCHAR"/>
+        <result column="AddressDetial" property="addressdetial" jdbcType="NVARCHAR"/>
+        <result column="AppID" property="appid" jdbcType="NVARCHAR"/>
+        <result column="AppKey" property="appkey" jdbcType="NVARCHAR"/>
+        <result column="InspectDate" property="inspectdate" jdbcType="TIMESTAMP"/>
+        <result column="DataFrom" property="datafrom" jdbcType="INTEGER"/>
+        <result column="DataFromID" property="datafromid" jdbcType="NVARCHAR"/>
+        <result column="Important" property="important" jdbcType="BIT"/>
+        <result column="ImportantID" property="importantid" jdbcType="NVARCHAR"/>
+        <result column="SocialCreditCode" property="socialcreditcode" jdbcType="NVARCHAR"/>
+        <result column="PropertyUnitName" property="propertyunitname" jdbcType="NVARCHAR"/>
+        <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP"/>
+        <result column="Lastupdate" property="lastupdate" jdbcType="TIMESTAMP"/>
+        <result column="LZScore" property="lzscore" jdbcType="DECIMAL"/>
+        <result column="LZScoreLevel" property="lzscorelevel" jdbcType="INTEGER"/>
+        <result column="XFZImg" property="xfzimg" jdbcType="NVARCHAR"/>
+        <result column="FireCount" property="firecount" jdbcType="INTEGER"/>
+        <result column="WaterCount" property="watercount" jdbcType="INTEGER"/>
+        <result column="VideoCount" property="videocount" jdbcType="INTEGER"/>
+        <result column="ElectricCount" property="electriccount" jdbcType="INTEGER"/>
+        <result column="ProviceID" property="proviceid" jdbcType="BIGINT"/>
+        <result column="CityID" property="cityid" jdbcType="BIGINT"/>
+        <result column="RegionID" property="regionid" jdbcType="BIGINT"/>
+        <result column="TownID" property="townid" jdbcType="BIGINT"/>
+        <result column="ChildStationNum" property="childstationnum" jdbcType="BIGINT"/>
+        <result column="UnitDangerLevel" property="unitdangerlevel" jdbcType="VARCHAR"/>
+        <result column="TechnicalRepresentative" property="technicalrepresentative" jdbcType="VARCHAR"/>
+        <result column="UserRepresentative" property="userrepresentative" jdbcType="VARCHAR"/>
+        <result column="InductionPointCount" property="inductionpointcount" jdbcType="INTEGER"/>
+        <result column="MessagePhone" property="messagephone" jdbcType="NVARCHAR"/>
+        <result column="UnitProximity" property="unitproximity" jdbcType="NVARCHAR"/>
+        <result column="FireRating" property="firerating" jdbcType="NVARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="calibration_id" jdbcType="NVARCHAR" property="calibrationId"/>
+        <result column="XFContractBook" jdbcType="NVARCHAR" property="xfcontractbook"/>
+        <result column="XFContractBookName" jdbcType="NVARCHAR" property="xfcontractbookname"/>
+        <result column="isDelete" jdbcType="INTEGER" property="isdelete"/>
+        <result column="MonitorUnitName" jdbcType="VARCHAR" property="monitorunitname"/>
+        <result column="MonitorUnitUser" jdbcType="VARCHAR" property="monitorunituser"/>
+        <result column="MonitorUnitPhone" jdbcType="VARCHAR" property="monitorunitphone"/>
+        <result column="AdvanceReminderDay" jdbcType="INTEGER" property="advancereminderday"/>
+        <result column="ReceiveAlarmType" jdbcType="VARCHAR" property="receivealarmtype"/>
+        <result column="MessageNumber" jdbcType="INTEGER" property="messagenumber"/>
+        <result column="isAutoCall" jdbcType="INTEGER" property="isautocall"/>
+        <result column="AutoCallDelay" jdbcType="INTEGER" property="autocalldelay"/>
+        <result column="logoUrl" jdbcType="VARCHAR" property="logourl"/>
+        <result column="unitLink" jdbcType="VARCHAR" property="unitlink"/>
+        <result column="systemNumber" jdbcType="VARCHAR" property="systemNumber"/>
+        <result column="isUploadA" jdbcType="INTEGER" property="isuploada"/>
+        <result column="isUploadB" jdbcType="INTEGER" property="isuploadb"/>
+        <result column="video_appkey" jdbcType="VARCHAR" property="videoAppkey"/>
+        <result column="video_appsecret" jdbcType="VARCHAR" property="videoAppsecret"/>
+        <result column="call_total" jdbcType="INTEGER" property="callTotal"/>
+        <result column="call_used" jdbcType="INTEGER" property="callUsed"/>
+        <result column="call_alarm_type" jdbcType="VARCHAR" property="callAlarmType"/>
+        <result column="beforehand" jdbcType="VARCHAR" property="beforehand"/>
+        <result column="beforehandName" jdbcType="VARCHAR" property="beforehandName"/>
+    </resultMap>
+
+    <select id="selectAllUnitBaseInfo" resultType="com.gw.unit.data.UnitBaseInfoOutData"
+            parameterType="com.gw.unit.data.UnitBaseInfoInData">
+        SELECT distinct
+        a.id,
+        a.unitcode,
+        a.unitname,
+        a.unittype,
+        a.phone,
+        CONVERT (VARCHAR, a.EstablishmentTime, 23) establishmenttime
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Maintenance_ReUnit b ON a.ID = b.UnitID
+        left join UT_Base_Code c on c.CodeId = a.UnitType
+        left join UT_Maintenance_Unit d on d.ID = b.ManageID
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="unitname != null and unitname != ''">
+            AND a.UnitName like '%${unitname}%'
+        </if>
+        <if test="unitcode != null and unitcode != ''">
+            AND a.unitcode like '%${unitcode}%'
+        </if>
+        <if test="unittype != null and unittype != ''">
+            AND a.unittype = #{unittype}
+        </if>
+        <if test="id != null and id != ''">
+            AND a.id = #{id}
+        </if>
+        ORDER BY a.id DESC
+    </select>
+
+    <select id="selectAllUnitBaseInfoById" resultType="com.gw.unit.data.UnitBaseInfoOutData"
+            parameterType="com.gw.unit.data.UnitBaseInfoInData">
+        SELECT Top(1)
+        a.id,
+        a.unitcode,
+        a.unitname,
+        a.email,
+        a.unittype,
+        a.unitaddress,
+        a.phone,
+        a.unitsummary,
+        a.technicalrepresentative,
+        a.networkstatus,
+        a.postcode,
+        a.fireroomphone,
+        a.saferesponsiblepersonname,
+        a.saferesponsiblepersoncard,
+        a.saferesponsiblepersonphone,
+        a.safemanagername,
+        a.safemanagercard,
+        a.safemanagerphone,
+        a.assistmanagername,
+        a.assistmanagercard,
+        a.assistmanagerphone,
+        a.legalpersonname,
+        a.legalppersoncard,
+        a.legalpersonphone,
+        a.staffcount,
+        a.superiorunit,
+        a.administunit,
+        a.economictype,
+        a.fixedassets,
+        a.area,
+        a.buildingarea,
+        a.superviselevel,
+        a.supervisetype,
+        a.belongcentername,
+        a.userrepresentative,
+        a.unitpoint,
+        a.addressdetial,
+        a.datafrom,
+        a.datafromid,
+        a.important,
+        a.importantid,
+        a.socialcreditcode,
+        a.propertyunitname,
+        a.lzscore,
+        a.lzscorelevel,
+        a.firerating,
+        a.firecount,
+        a.watercount,
+        a.videocount,
+        a.electriccount,
+        a.unitdangerlevel,
+        a.proviceid,
+        a.cityid,
+        a.regionid,
+        a.townid,
+        a.childstationnum,
+        a.inductionpointcount,
+        a.unitproximity,
+        a.xfzimg,
+        a.unitbg,
+        a.svgfile,
+        CONVERT (VARCHAR, a.EstablishmentTime, 23) establishmenttime,
+        CONVERT (VARCHAR, a.OnlineDate, 23) onlinedate,
+        a.XFContractBook,
+        a.XFContractBookName,
+        a.monitorunitname,
+        a.monitorunituser,
+        a.monitorunitphone,
+        a.advancereminderday,
+        a.receivealarmtype,
+        a.messagephone,
+        a.messagenumber,
+        a.OrgCode,
+        a.isAutoCall,
+        a.AutoCallDelay,
+        a.autoCallNum autoCallNum,
+        a.isUploadB isuploadb,
+        a.isUploadA isuploada,
+        a.logourl,
+        a.unitLink unitlink,
+        a.systemNumber systemNumber,
+        b.ManageID maintenanceunitid,
+        c.CodeValue unittypeValue,
+        d.UnitName maintenanceunitName,
+        CONVERT (VARCHAR, a.EstablishmentTime, 23) establishmenttime,
+        a.video_appkey videoAppkey,
+        a.video_appsecret videoAppsecret,
+        a.call_total callTotal,
+        a.call_alarm_type callAlarmType,
+        a.beforehand,
+        a.beforehandName
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Maintenance_ReUnit b ON a.ID = b.UnitID
+        left join UT_Base_Code c on c.CodeId = a.UnitType
+        left join UT_Maintenance_Unit d on d.ID = b.ManageID
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+            AND a.id = #{id}
+  </select>
+
+    <select id="selectAllUnitById" resultType="com.gw.unit.data.UnitBaseInfoOutUnitData"
+            parameterType="com.gw.unit.data.UnitBaseInfoInData">
+        SELECT
+        d.ID id,
+        d.UnitName maintenanceunitName
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Maintenance_ReUnit b ON a.ID = b.UnitID
+        left join UT_Base_Code c on c.CodeId = a.UnitType
+        left join UT_Maintenance_Unit d on d.ID = b.ManageID
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+            AND a.id = #{id}
+  </select>
+
+    <select id="selectUnitNameAndId" resultType="com.gw.unit.data.BaseInfoSelectOutData">
+  	SELECT
+		unitname,
+		id
+	FROM
+		UT_Unit_BaseInfo
+             WHERE
+		NetworkStatus = 1
+	AND (isDelete = 0 OR isDelete is NULL)
+    </select>
+
+    <select id="getArrayList" resultType="com.gw.unit.data.BaseInfoSelectOutData">
+    SELECT
+        id,
+        unitname
+    FROM
+        UT_Unit_BaseInfo
+    WHERE (isDelete = 0 OR isDelete is NULL)
+    order by id desc
+  </select>
+    <select id="getNetUnitCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT
+        count (*)
+        FROM
+        UT_Unit_BaseInfo a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.ID = b.unit_id
+        </if>
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="getTransferDeviceUnit" resultType="com.gw.front.lookup.data.FrontLookupUnitInfoData">
+        SELECT DISTINCT
+        c.ID deviceId,
+        a.id unitId,
+        a.UnitCode unitcode,
+        a.UnitName unitname,
+        a.UnitAddress unitaddress,
+        a.Phone phone,
+        a.ChildStationNum childstationnum,
+        c.ownerCode ownerCode,
+        c.DeviceIndex deviceIndex,
+        d.DeviceStatus result,
+        c.name name,
+        CASE WHEN v.ID is not NULL THEN 1 ELSE 0 END hasVideo
+        FROM
+        UT_Unit_NetDevice c
+        LEFT JOIN UT_Unit_BaseInfo a ON a.ID = c.UnitID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON b.unit_id = a.ID
+        </if>
+        LEFT JOIN ${database}.dbo.sd_devices d ON c.OwnerCode = d.OwnerCode
+        AND c.DeviceIndex = d.DeviceIndex
+        LEFT JOIN UT_Unit_Video v ON v.UnitID = a.ID
+        AND v.VideoType = 1
+        WHERE
+        c.DeviceIndex = 2
+        <if test="userId != 1">
+            AND b.user_id = #{userId}
+        </if>
+        AND (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="keyWord != null and keyWord != ''">
+            AND (a.UnitName like '%${keyWord}%' or a.UnitCode like '%${keyWord}%' or c.ownerCode like '%${keyWord}%')
+        </if>
+        AND (a.isDelete = 0 OR a.isDelete is NULL)
+    </select>
+    <select id="getUnits" resultType="com.gw.front.couplet.data.FrontCoupletUnitInfo">
+        SELECT DISTINCT
+        a.id unitId,
+        a.UnitName unitName,
+        CASE WHEN e.ID IS NULL THEN 0 ELSE 1 END AS hasVideo
+        FROM
+        UT_Unit_BaseInfo a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.ID = b.unit_id
+        </if>
+        LEFT JOIN UT_Unit_Video e ON a.ID = e.UnitID
+        AND e.VideoType in (1,2,3)
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="unitName != null and unitName != ''">
+            and a.UnitName LIKE '%${unitName}%'
+        </if>
+    </select>
+    <select id="getUnitStatList" resultType="com.gw.front.analysis.data.FrontAnalysisUnitOutData"
+            parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+        SELECT
+        a.UnitCode,
+        a.ChildStationNum,
+        a.UnitName unitName,
+        COUNT(e.id) deviceCount,
+        COUNT(f.ID) lookupCount,
+        SUM(CASE WHEN f.Status=1 THEN 1 ELSE 0 END) lookupAnswerCount,
+        convert(varchar(8),dateadd(ss,SUM(b.long_time),108),108) longTime,
+        COUNT(c.ID) messageCount,
+        sum(g.rx) receiveFlow,
+        sum(g.tx) sendFlow,
+        a.id unitId
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN (
+        SELECT
+        unit_id,
+        long_time
+        FROM
+        UT_phone_log
+        WHERE
+        send_date >= #{startDate}
+        <if test="endDate != null and endDate != ''">
+            AND send_date &lt;= #{endDate}
+        </if>
+        ) b ON a.ID = b.unit_id
+        LEFT JOIN (
+        SELECT
+        ID,
+        unit_id
+        FROM
+        UT_message_log
+        WHERE
+        send_date >= #{startDate}
+        <if test="endDate != null and endDate != ''">
+            AND send_date &lt;= #{endDate}
+        </if>
+        ) c ON a.ID = c.unit_id
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit d ON a.ID = d.unit_id
+        </if>
+        LEFT JOIN UT_Unit_NetDevice e ON a.ID = e.UnitID
+        LEFT JOIN (
+        SELECT
+        id,
+        OwnerCode,
+        Status
+        FROM
+        ${database}.dbo.sd_inspect
+        WHERE
+        Requestdate >= #{startDate}
+        <if test="endDate != null and endDate != ''">
+            AND Requestdate &lt;= #{endDate}
+        </if>
+        ) f ON e.OwnerCode = f.OwnerCode
+        LEFT JOIN (
+        SELECT
+        rx,
+        tx,
+        OwnerCode
+        FROM
+        ${database}.dbo.sd_dataflow
+        WHERE
+        LastUpdate >= #{startDate}
+        <if test="endDate != null and endDate != ''">
+            AND LastUpdate &lt;= #{endDate}
+        </if>
+        ) g ON e.OwnerCode = g.OwnerCode
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and d.user_id = #{userId}
+        </if>
+        and (e.isDelete = 0 OR e.isDelete is NULL)
+        <if test="keyword != null and keyword != ''">
+            AND (a.UnitName LIKE '%${keyword}%' or a.UnitCode LIKE '%${keyword}%')
+        </if>
+        group by a.id,a.UnitName,a.ChildStationNum,a.UnitCode
+    </select>
+    <select id="getUnitInfoById" resultType="com.gw.front.unit.data.FrontUnitInfoOutData"
+            parameterType="java.lang.String">
+  	SELECT
+  	TOP(1)
+  		a.id,
+  		a.unitLink unitlink,
+		a.unitcode,
+		a.unitname,
+		a.email,
+		a.unitaddress,
+		a.phone,
+		a.unitsummary,
+		a.technicalrepresentative,
+		a.networkstatus,
+		a.postcode,
+		a.fireroomphone,
+		a.saferesponsiblepersonname,
+		a.saferesponsiblepersoncard,
+		a.saferesponsiblepersonphone,
+		a.safemanagername,
+		a.safemanagercard,
+		a.safemanagerphone,
+		a.assistmanagername,
+		a.assistmanagercard,
+		a.assistmanagerphone,
+		a.legalpersonname,
+		a.legalppersoncard,
+		a.legalpersonphone,
+		a.staffcount,
+		a.superiorunit,
+		a.administunit,
+		a.economictype,
+		a.fixedassets,
+		a.area,
+		a.buildingarea,
+		a.superviselevel,
+		a.belongcentername,
+		a.userrepresentative,
+		a.unitpoint,
+		a.addressdetial,
+		a.datafrom,
+		a.datafromid,
+		a.important,
+		a.importantid,
+		a.socialcreditcode,
+		a.propertyunitname,
+		a.lzscore,
+		a.lzscorelevel,
+		a.firerating,
+		a.firecount,
+		a.watercount,
+		a.videocount,
+		a.electriccount,
+		a.unitdangerlevel,
+		a.proviceid,
+		a.cityid,
+		a.regionid,
+        a.townid,
+		a.childstationnum,
+		a.inductionpointcount,
+		a.unitproximity,
+		a.xfzimg,
+		a.unitbg,
+		a.svgfile,
+		CONVERT (VARCHAR, a.EstablishmentTime, 120)establishmenttime,
+		CONVERT (VARCHAR, a.OnlineDate, 120)onlinedate,
+		b.CodeName unittype,
+		c.CodeName supervisetype,
+		d.RegionName + ' ' + e.RegionName + ' ' + f.RegionName administrativedivision,
+		h.UnitName maintenanceunitname,
+		h.Contacts maintenanceunituser,
+		h.Telephone maintenanceunitphone,
+		a.MonitorUnitName monitorunitname,
+		a.MonitorUnitUser monitorunituser,
+		a.MonitorUnitPhone monitorunitphone,
+		a.XFContractBook XFContractBook,
+		a.XFContractBookName XFContractBookName,
+		a.OrgCode orgCode,
+		a.isAutoCall,
+		a.AutoCallDelay,
+		a.logoUrl logourl
+	FROM
+		UT_Unit_BaseInfo a
+	LEFT JOIN UT_Base_Code b ON b.CodeID = a.UnitType
+	LEFT JOIN UT_Base_Code c ON c.CodeID = a.SuperviseType
+	LEFT JOIN UT_Base_ProviceCityRegion d ON d.ID = a.ProviceID
+	LEFT JOIN UT_Base_ProviceCityRegion e ON e.ID = a.CityID
+	LEFT JOIN UT_Base_ProviceCityRegion f ON f.ID = a.RegionID
+	LEFT JOIN UT_Maintenance_ReUnit g ON g.UnitID = a.ID
+	LEFT JOIN UT_Maintenance_Unit h ON h.ID = g.ManageID
+	WHERE a.id = #{unitId}
+	AND (isDelete = 0 OR isDelete is NULL)
+  </select>
+    <!--<select id="getUnitMapPoint" resultType="com.gw.front.index.data.FrontUnitPointOutData">
+        SELECT DISTINCT
+        m.ID unitId,
+        m.UnitPoint unitPoint,
+        l.Alarm_Status alarmStatus,
+        '1' unittype,
+        m.UnitName unitName
+        FROM
+        (
+        SELECT
+        a.ID,
+        a.UnitPoint,
+        a.UnitName
+        FROM
+        UT_Unit_BaseInfo a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.ID = b.unit_id
+        </if>
+        <if test="sysType != null and sysType != ''">
+            INNER JOIN (
+            SELECT DISTINCT
+            b.UnitID
+            FROM
+            UT_EQ_Equipment b
+            LEFT JOIN Ut_EQ_address_rel d ON b.ID = d.eqid
+            WHERE
+            (
+            b.isDelete = 0
+            OR b.isDelete IS NULL
+            )
+            AND b.unitId IS NOT NULL
+            and ISNULL(d.EqSystemID, b.EqSystemID) = #{sysType}
+            ) n ON a.ID = n.UnitID
+        </if>
+
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="unitName != null and unitName != ''">
+            a.UnitName like '%${unitName}%'
+        </if>
+
+        ) m
+        LEFT JOIN (
+        SELECT
+        t.UnitID,
+        t.Alarm_Status,
+        row_number () OVER (
+        partition BY t.UnitID
+        ORDER BY
+        t.Alarm_Status
+        ) group_idx
+        FROM
+        (SELECT
+        a.UnitID,
+        CASE WHEN a.Alarm_Status =1 THEN 1 ELSE 2 END Alarm_Status
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        WHERE
+        DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND a.UnitID IS NOT NULL
+        AND ISNULL(a.isDeal, 0)=0
+        and c.id is not null
+        AND ISNULL(c.isDelete, 0)=0
+        <if test="alarmType != null and alarmType != ''">
+            <if test="alarmType==1">
+                and a.Alarm_Status=1
+            </if>
+            <if test="alarmType==2">
+                and a.Alarm_Status = 2
+            </if>
+        </if>
+        UNION ALL
+        SELECT
+        a.UnitID,
+        '2' Alarm_Status
+        FROM
+        UT_LZ_FireEquipmentAlarm a
+        LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+        LEFT JOIN UT_EQ_Equipment c ON c.ID = b.EQID
+        WHERE
+        DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND a.UnitID IS NOT NULL
+        and c.id is not null
+        AND ISNULL(c.isDelete, 0)=0
+        AND ISNULL(a.isDeal, 0)=0) t
+
+        ) l ON m.ID = l.UnitID and l.group_idx = 1
+        <where>
+            <if test="alarmType != null and alarmType != ''">
+                and l.Alarm_Status=#{alarmType}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        <if test="userId == 1">
+            top 1
+        </if>
+        mu.ID unitId,
+        mu.PointX + ',' + mu.PointY unitPoint,
+        '' alarmStatus,
+        '0' unittype,
+        mu.UnitName unitName
+        FROM
+        UT_Maintenance_Unit mu
+        RIGHT JOIN UT_Unit_User b ON mu.ID = b.UnitID
+        <if test="userId != 1">
+            where b.ID=#{userId}
+        </if>
+    </select>-->
+    <select id="getUnitMapPoint" resultType="com.gw.front.index.data.FrontUnitPointOutData">
+        SELECT DISTINCT
+        m.ID unitId,
+        m.UnitPoint unitPoint,
+        l.Alarm_Status alarmStatus,
+        '1' unittype,
+        m.UnitName unitName
+        FROM
+        (
+        SELECT
+        a.ID,
+        a.UnitPoint,
+        a.UnitName
+        FROM
+        UT_Unit_BaseInfo a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.ID = b.unit_id
+        </if>
+        <if test="sysType != null and sysType != ''">
+            INNER JOIN (
+            SELECT DISTINCT
+            b.UnitID
+            FROM
+            UT_EQ_Equipment b
+            LEFT JOIN Ut_EQ_address_rel d ON b.ID = d.eqid
+            WHERE
+            (
+            b.isDelete = 0
+            OR b.isDelete IS NULL
+            )
+            AND b.unitId IS NOT NULL
+            and ISNULL(d.EqSystemID, b.EqSystemID) = #{sysType}
+            ) n ON a.ID = n.UnitID
+        </if>
+
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="unitName != null and unitName != ''">
+            a.UnitName like '%${unitName}%'
+        </if>
+
+        ) m
+        LEFT JOIN (
+        SELECT
+        t.UnitID,
+        t.Alarm_Status,
+        row_number () OVER (
+        partition BY t.UnitID
+        ORDER BY
+        t.Alarm_Status
+        ) group_idx
+        FROM
+        (SELECT
+        a.UnitID,
+        CASE WHEN a.Alarm_Status =1 THEN 1 ELSE 2 END Alarm_Status
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        WHERE
+        DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND a.UnitID IS NOT NULL
+        AND ISNULL(a.isDeal, 0)=0
+        and c.id is not null
+        AND ISNULL(c.isDelete, 0)=0
+        <if test="alarmType != null and alarmType != ''">
+            <if test="alarmType==1">
+                and a.Alarm_Status=1
+            </if>
+            <if test="alarmType==2">
+                and a.Alarm_Status = 2
+            </if>
+        </if>
+        <if test="selectType == 1">
+            UNION ALL
+            SELECT
+            a.UnitID,
+            '2' Alarm_Status
+            FROM
+            UT_LZ_FireEquipmentAlarm a
+            LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+            LEFT JOIN UT_EQ_Equipment c ON c.ID = b.EQID
+            WHERE
+            DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+            AND a.UnitID IS NOT NULL
+            and c.id is not null
+            AND ISNULL(c.isDelete, 0)=0
+            AND ISNULL(a.isDeal, 0)=0
+        </if>
+        ) t
+
+        ) l ON m.ID = l.UnitID and l.group_idx = 1
+        <where>
+            <if test="alarmType != null and alarmType != ''">
+                and l.Alarm_Status=#{alarmType}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        <if test="userId == 1">
+            top 1
+        </if>
+        mu.ID unitId,
+        mu.PointX + ',' + mu.PointY unitPoint,
+        '' alarmStatus,
+        '0' unittype,
+        mu.UnitName unitName
+        FROM
+        UT_Maintenance_Unit mu
+        RIGHT JOIN UT_Unit_User b ON mu.ID = b.UnitID
+        <if test="userId != 1">
+            where b.ID=#{userId}
+        </if>
+    </select>
+    <!--<select id="getUnitMapPointByBJZJ" resultType="com.gw.front.index.data.FrontUnitPointOutData">
+        SELECT DISTINCT
+        m.ID unitId,
+        m.UnitPoint unitPoint,
+        l.Alarm_Status alarmStatus,
+        '1' unittype,
+        m.UnitName unitName
+        FROM
+        (
+        SELECT
+        a.ID,
+        a.UnitPoint,
+        a.UnitName
+        FROM
+        UT_Unit_BaseInfo a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.ID = b.unit_id
+        </if>
+        <if test="sysType != null and sysType != ''">
+            INNER JOIN (
+            SELECT DISTINCT
+            b.UnitID
+            FROM
+            UT_EQ_Equipment b
+            LEFT JOIN Ut_EQ_address_rel d ON b.ID = d.eqid
+            WHERE
+            (
+            b.isDelete = 0
+            OR b.isDelete IS NULL
+            )
+            AND b.unitId IS NOT NULL
+            and ISNULL(d.EqSystemID, b.EqSystemID) = #{sysType}
+            ) n ON a.ID = n.UnitID
+        </if>
+
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="unitName != null and unitName != ''">
+            a.UnitName like '%${unitName}%'
+        </if>
+
+        ) m
+        LEFT JOIN (
+        SELECT
+        t.UnitID,
+        t.Alarm_Status,
+        row_number () OVER (
+        partition BY t.UnitID
+        ORDER BY
+        t.Alarm_Status
+        ) group_idx
+        FROM
+        (SELECT
+        a.UnitID,
+        CASE WHEN a.Alarm_Status =1 THEN 1 ELSE 2 END Alarm_Status
+        FROM
+        UT_LZ_BJZJAlarm a
+        LEFT JOIN UT_Unit_NetDevice b ON a.OnwerCode = b.OwnerCode
+        AND a.DeviceIndex = b.DeviceIndex
+        AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+        LEFT JOIN UT_EQ_Equipment c ON b.ID = c.NetDeviceID
+        WHERE
+        DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND a.UnitID IS NOT NULL
+        AND ISNULL(a.isDeal, 0)=0
+        and c.id is not null
+        AND ISNULL(c.isDelete, 0)=0
+        <if test="alarmType != null and alarmType != ''">
+            <if test="alarmType==1">
+                and a.Alarm_Status=1
+            </if>
+            <if test="alarmType==2">
+                and a.Alarm_Status = 2
+            </if>
+        </if>
+        ) t
+
+        ) l ON m.ID = l.UnitID and l.group_idx = 1
+        <where>
+            <if test="alarmType != null and alarmType != ''">
+                and l.Alarm_Status=#{alarmType}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        <if test="userId == 1">
+            top 1
+        </if>
+        mu.ID unitId,
+        mu.PointX + ',' + mu.PointY unitPoint,
+        '' alarmStatus,
+        '0' unittype,
+        mu.UnitName unitName
+        FROM
+        UT_Maintenance_Unit mu
+        RIGHT JOIN UT_Unit_User b ON mu.ID = b.UnitID
+        <if test="userId != 1">
+            where b.ID=#{userId}
+        </if>
+    </select>-->
+
+    <select id="getUnitMapPointByRTU" resultType="com.gw.front.index.data.FrontUnitPointOutData">
+        SELECT DISTINCT
+        m.ID unitId,
+        m.UnitPoint unitPoint,
+        l.Alarm_Status alarmStatus,
+        '1' unittype,
+        m.UnitName unitName
+        FROM
+        (
+        SELECT
+        a.ID,
+        a.UnitPoint,
+        a.UnitName
+        FROM
+        UT_Unit_BaseInfo a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.ID = b.unit_id
+        </if>
+        <if test="sysType != null and sysType != ''">
+            INNER JOIN (
+            SELECT DISTINCT
+            b.UnitID
+            FROM
+            UT_EQ_Equipment b
+            LEFT JOIN Ut_EQ_address_rel d ON b.ID = d.eqid
+            WHERE
+            (
+            b.isDelete = 0
+            OR b.isDelete IS NULL
+            )
+            AND b.unitId IS NOT NULL
+            and ISNULL(d.EqSystemID, b.EqSystemID) = #{sysType}
+            ) n ON a.ID = n.UnitID
+        </if>
+
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and b.user_id = #{userId}
+        </if>
+        <if test="unitName != null and unitName != ''">
+            a.UnitName like '%${unitName}%'
+        </if>
+
+        ) m
+        LEFT JOIN (
+        SELECT
+        t.UnitID,
+        t.Alarm_Status,
+        row_number () OVER (
+        partition BY t.UnitID
+        ORDER BY
+        t.Alarm_Status
+        ) group_idx
+        FROM
+        (
+        SELECT
+        a.UnitID,
+        '9' Alarm_Status
+        FROM
+        UT_LZ_FireEquipmentAlarm a
+        LEFT JOIN UT_EQ_EquipmentDetialGW b ON a.FireEquipmentDetialID = b.ID
+        LEFT JOIN UT_EQ_Equipment c ON c.ID = b.EQID
+        WHERE
+        DateDiff(hh, a.Lastupdate, getDate()) &lt;= 24
+        AND a.UnitID IS NOT NULL
+        and c.id is not null
+        AND ISNULL(c.isDelete, 0)=0
+        AND ISNULL(a.isDeal, 0)=0) t
+
+        ) l ON m.ID = l.UnitID and l.group_idx = 1
+        <where>
+            <if test="alarmType != null and alarmType != ''">
+                and l.Alarm_Status=#{alarmType}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        <if test="userId == 1">
+            top 1
+        </if>
+        mu.ID unitId,
+        mu.PointX + ',' + mu.PointY unitPoint,
+        '' alarmStatus,
+        '0' unittype,
+        mu.UnitName unitName
+        FROM
+        UT_Maintenance_Unit mu
+        RIGHT JOIN UT_Unit_User b ON mu.ID = b.UnitID
+        <if test="userId != 1">
+            where b.ID=#{userId}
+        </if>
+    </select>
+
+    <select id="getHasUsers" resultType="com.gw.unit.data.GetUnitUsersData">
+  	SELECT
+		a.ID id,
+		a.UserName + ' ' + a.Account userName
+	FROM
+		UT_Unit_User a
+	LEFT JOIN UT_Base_UserReUnit b ON a.ID = b.user_id
+	WHERE
+		b.unit_id = #{unitId}
+	AND a.UserType = '0'
+	ORDER BY a.ID DESC
+  </select>
+
+    <select id="getNoUsers" resultType="com.gw.unit.data.GetUnitUsersData">
+  	SELECT
+		u.ID,
+		u.UserName + ' ' + u.Account userName
+	FROM
+		UT_Unit_User u
+	WHERE
+		u.ID NOT IN (
+			SELECT
+				r.user_id
+			FROM
+				UT_Base_UserReUnit r
+			WHERE
+				r.unit_id = #{unitId}
+	)
+	AND u.UserType = '0'
+	ORDER BY u.ID DESC
+  </select>
+
+    <delete id="deleteByUserId">
+  	DELETE
+	FROM
+		UT_Base_UserReUnit
+	WHERE
+		unit_id = #{unitId}
+  </delete>
+
+    <select id="getDataFlowList" resultType="com.gw.front.history.data.FrontHistoryDataFlowOutData"
+            parameterType="com.gw.front.history.data.FrontHistoryInData">
+        SELECT
+        a.ID id,
+        convert(decimal(18,2),a.rx/1024/(1024+ + 0.0)) rx,
+        convert(decimal(18,2),a.tx/1024/(1024+ + 0.0)) tx,
+        c.UnitName unitName,
+        c.UnitCode unitCode,
+        c.ChildStationNum childstationnum,
+        c.LegalPersonName contact,
+        c.LegalPersonPhone contactPhone
+        FROM
+        ${database}.dbo.sd_dataflow a
+        LEFT OUTER JOIN UT_Unit_NetDevice b ON a.OwnerCode = b.OwnerCode
+        LEFT OUTER JOIN UT_Unit_BaseInfo c ON b.UnitID = c.ID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_Build e ON e.UnitID = c.ID
+        </if>
+        <if test="userId != null and userId != '' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit d ON d.unit_id = c.ID
+        </if>
+        <where>
+            (c.isDelete = 0 OR c.isDelete is NULL)
+            AND (b.isDelete = 0 OR b.isDelete is NULL)
+            <if test="userId != null and userId != '' and userId != 1">
+                AND d.user_id = #{userId}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND c.ID = #{unitId}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and a.lastupdate &gt;= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.lastupdate &lt;= #{endDate}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND c.UnitName LIKE '%${keyword}%' OR c.LegalPersonName LIKE '%${keyword}%'
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND e.ID = #{buildId}
+            </if>
+        </where>
+    </select>
+    <select id="getUnitStatByUnitType" resultType="com.gw.front.index.data.FrontRecordOutData">
+        SELECT
+        b.CodeName recordKey,
+        COUNT (b.CodeID) recordCount
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Base_Code b ON a.UnitType = b.CodeID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit c ON a.ID = c.unit_id
+        </if>
+        WHERE
+        b.CodeName IS NOT NULL
+        <if test="userId != 1">
+            AND c.user_id = #{userId}
+        </if>
+        AND (a.isDelete = 0 OR a.isDelete is NULL)
+        GROUP BY
+        b.CodeName
+    </select>
+    <select id="getUnitStatBySuperviseType" resultType="com.gw.front.index.data.FrontRecordOutData">
+        SELECT
+        b.CodeName recordKey,
+        COUNT (b.CodeID) recordCount
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Base_Code b ON a.SuperviseType = b.CodeID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit c ON a.ID = c.unit_id
+        </if>
+        WHERE
+        b.CodeName IS NOT NULL
+        <if test="userId != 1">
+            AND c.user_id = #{userId}
+        </if>
+        AND (a.isDelete = 0 OR a.isDelete is NULL)
+        GROUP BY
+        b.CodeName
+    </select>
+    <select id="selectAllUnitsFromOthers" resultType="com.gw.unit.data.TemporaryBaseUnitData">
+  	SELECT
+		b.OwnerCode ownercode,
+		b.OwnerName unitname,
+		b.Address unitaddress,
+		b.ProvinceID unitpoint,
+		b.Phone phone,
+		b.orgnization orgcode,
+		b.dutyname saferesponsiblepersonname,
+		b.dutyidcard saferesponsiblepersoncard,
+		b.dutyphone saferesponsiblepersonphone,
+		b.managername safemanagername,
+		b.manageridcard safemanagercard,
+		b.managerphone safemanagerphone,
+		b.legalname legalpersonname,
+		b.legalidcard legalppersoncard,
+		b.legalphone legalpersonphone,
+		b.employees staffcount,
+		b.floorarea buildingarea,
+		b.totalarea area,
+		b.SafeMonitorLevel superviselevel
+	FROM
+		${database}.dbo.sd_owners a
+	LEFT JOIN ${database}.dbo.sd_ownerdetail b ON a.OwnerCode = b.OwnerCode
+	WHERE
+		a.OwnerTypeID = 4
+  </select>
+    <select id="getOnline" resultType="com.gw.front.index.data.FrontOnlineStatisticalOutData">
+        SELECT DISTINCT
+        a.ID unitId,
+        a.UnitName unitName,
+        a.UnitCode unitCode
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Unit_NetDevice b ON b.UnitID = a.ID
+        LEFT JOIN ${database}.dbo.sd_devices c ON c.OwnerCode = b.OwnerCode
+        AND c.DeviceIndex = b.DeviceIndex
+        AND (b.DeviceNo = c.DeviceNo or b.DeviceIndex=2)
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit d ON d.unit_id = a.ID
+        </if>
+        WHERE c.DeviceStatus = 1
+        <if test="userId != 1">
+            AND d.user_id = #{userId}
+        </if>
+        AND (a.isDelete = 0 OR a.isDelete is NULL)
+        AND (b.isDelete = 0 OR b.isDelete is NULL)
+    </select>
+    <select id="getTotal" resultType="com.gw.front.index.data.FrontOnlineStatisticalOutData">
+        SELECT DISTINCT
+        a.ID unitId,
+        a.UnitName unitName,
+        a.UnitCode unitCode
+        FROM
+        UT_Unit_BaseInfo a
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit d ON d.unit_id = a.ID
+        </if>
+        WHERE (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="userId != 1">
+            and d.user_id = #{userId}
+        </if>
+        AND a.UnitName like '%${unitname}%'
+    </select>
+    <select id="getUnitByName" resultType="com.gw.unit.data.UnitBaseInfoOutData">
+        SELECT
+        a.ID id,
+        a.UnitName unitname
+        FROM
+        UT_Unit_BaseInfo a
+        WHERE (a.isDelete = 0 OR a.isDelete is NULL)
+        <if test="unitName != null and unitName != ''">
+            and a.UnitName like '%${unitName}%'
+        </if>
+        <if test="unitId != null and unitId != ''">
+            AND a.ID = #{unitId}
+        </if>
+    </select>
+    <select id="getUnitNameById" resultType="com.gw.front.unit.data.FrontUnitInfoOutData">
+  	SELECT
+		ID id,
+		UnitName unitname
+	FROM
+		UT_Unit_BaseInfo
+	WHERE
+		ID = #{unitId}
+	AND (isDelete = 0 OR isDelete is NULL)
+  </select>
+    <select id="getUnitTransferDevice" resultType="com.gw.front.lookup.data.FrontLookupUnitInfoData">
+  	SELECT 
+			c.ID deviceId,
+			a.UnitCode unitcode,
+			a.UnitName unitname,
+			a.UnitAddress unitaddress,
+			a.Phone phone,
+			a.ChildStationNum childstationnum,
+			c.ownerCode ownerCode,
+			d.DeviceStatus result,
+			c.name
+		FROM
+			UT_Unit_NetDevice c
+		LEFT JOIN UT_Unit_BaseInfo a ON a.ID = c.UnitID
+		LEFT JOIN ${database}.dbo.sd_devices d ON c.OwnerCode = d.OwnerCode
+		AND c.DeviceIndex = d.DeviceIndex
+		WHERE
+			c.DeviceIndex = 2
+			AND a.ID = #{unitId}
+			AND (c.isDelete = 0 OR c.isDelete is NULL)
+			AND (a.isDelete = 0 OR a.isDelete is NULL)
+  </select>
+    <select id="getUnitById" resultType="com.gw.unit.data.UnitBaseInfoOutData"
+            parameterType="com.gw.unit.data.UnitBaseInfoInData">
+        SELECT
+        id,
+        unitcode,
+        unitname,
+        email,
+        unittype,
+        unitaddress,
+        phone,
+        unitsummary,
+        technicalrepresentative,
+        networkstatus,
+        postcode,
+        fireroomphone,
+        saferesponsiblepersonname,
+        saferesponsiblepersoncard,
+        saferesponsiblepersonphone,
+        safemanagername,
+        safemanagercard,
+        safemanagerphone,
+        assistmanagername,
+        assistmanagercard,
+        assistmanagerphone,
+        legalpersonname,
+        legalppersoncard,
+        legalpersonphone,
+        staffcount,
+        superiorunit,
+        administunit,
+        economictype,
+        fixedassets,
+        area,
+        buildingarea,
+        superviselevel,
+        supervisetype,
+        belongcentername,
+        userrepresentative,
+        unitpoint,
+        addressdetial,
+        datafrom,
+        datafromid,
+        important,
+        importantid,
+        socialcreditcode,
+        propertyunitname,
+        lzscore,
+        lzscorelevel,
+        firerating,
+        firecount,
+        watercount,
+        videocount,
+        electriccount,
+        unitdangerlevel,
+        proviceid,
+        cityid,
+        regionid,
+        townid,
+        childstationnum,
+        inductionpointcount,
+        unitproximity,
+        xfzimg,
+        unitbg,
+        svgfile,
+        CONVERT (VARCHAR, EstablishmentTime, 23)establishmenttime,
+        CONVERT (VARCHAR, OnlineDate, 23)onlinedate,
+        XFContractBook,
+        XFContractBookName,
+        monitorunitname,
+        monitorunituser,
+        monitorunitphone,
+        advancereminderday,
+        receivealarmtype,
+        messagephone,
+        messagenumber,
+        OrgCode,
+        isAutoCall,
+        AutoCallDelay,
+        logourl,
+        total_node totalNode,
+        total_nbnode totalNbnode
+        FROM
+        UT_Unit_BaseInfo
+        WHERE
+        (isDelete = 0 OR isDelete is NULL)
+        AND id = #{id}
+        <if test="unitname != null and unitname != ''">
+            AND UnitName like '%${unitname}%'
+        </if>
+        <if test="unitcode != null and unitcode != ''">
+            AND unitcode like '%${unitcode}%'
+        </if>
+        <if test="unittype != null and unittype != ''">
+            AND unittype = ${unittype}
+        </if>
+    </select>
+    <select id="getUploadUnits" resultType="com.gw.unit.data.UnitBaseInfoOutData"
+            parameterType="com.gw.unit.data.UnitBaseInfoInData">
+        SELECT
+        ID,
+        UnitName,
+        isUploadA,
+        isUploadB,
+        UnitCode,
+        UnitAddress,
+        Phone
+        FROM
+        UT_Unit_BaseInfo
+        WHERE
+        (isDelete = 0 OR isDelete is NULL)
+        <if test="unitname != null and unitname != ''">
+            AND UnitName like '%${unitname}%'
+        </if>
+        <if test="isUploadA != null and isUploadA != ''">
+            <if test="isUploadA == 0">
+                AND (isUploadA IS NULL OR isUploadA = 0)
+            </if>
+            <if test="isUploadA == 1">
+                AND isUploadA = 1
+            </if>
+        </if>
+        <if test="isUploadB != null and isUploadB != ''">
+            <if test="isUploadB == 0">
+                AND (isUploadB IS NULL OR isUploadB = 0)
+            </if>
+            <if test="isUploadB == 1">
+                AND isUploadB = 1
+            </if>
+        </if>
+        ORDER BY ID DESC
+    </select>
+
+    <select id="selectSystemNumber" resultType="java.lang.Integer">
+        SELECT
+            count(systemNumber) systemNumber
+        FROM
+            UT_Unit_BaseInfo
+        where (isDelete = 0 OR isDelete is NULL)
+    </select>
+
+    <select id="getUnitBaseList" resultType="com.gw.openApi.common.data.out.UnitBuildingOutData">
+        SELECT
+        a.ID unitId,
+        a.UnitCode unitCode,
+        a.UnitAddress unitAddress,
+        a.Phone phone,
+        a.FireRating fireRating,
+        a.InductionPointCount inductionPoinCount,
+        a.UnitName unitName,
+        a.SuperviseLevel superviseLevel,
+        a.UnitDangerLevel unitDangerLevel,
+        a.UnitType unitType,
+        a.SuperviseType superviseType
+        FROM UT_Unit_BaseInfo a
+        <if test="account!=null and account!=''">
+            LEFT JOIN UT_Base_UserReUnit b ON b.unit_id = a.ID
+            LEFT JOIN UT_Unit_User c ON b.user_id = c.ID
+        </if>
+        WHERE
+        (a.isDelete = 0 OR a.isDelete IS NULL)
+        <if test="unitId!=null and unitId != ''">
+            and a.ID = #{unitId}
+        </if>
+        <if test="unitCode!=null and unitCode != ''">
+            and a.UnitCode = #{unitCode}
+        </if>
+        <if test="unitName!=null and unitName!=''">
+            and a.UnitName like '%${unitName}%'
+        </if>
+        <if test="superviseLevel!=null and superviseLevel != ''">
+            and a.SuperviseLevel = #{superviseLevel}
+        </if>
+        <if test="unitDangerLevel!=null and unitDangerLevel != ''">
+            and a.UnitDangerLevel = #{unitDangerLevel}
+        </if>
+        <if test="unitType!=null and unitType != ''">
+            and a.UnitType = #{unitType}
+        </if>
+        <if test="superviseType!=null and superviseType != ''">
+            and a.SuperviseType = #{superviseType}
+        </if>
+        <if test="account!=null and account!=''">
+            and c.Account = #{account}
+        </if>
+    </select>
+
+    <select id="getByUnitpoint" resultType="com.gw.front.index.data.FrontUnitOutData">
+        SELECT
+       a.ID id,
+       a.unitcode unitCode,
+       a.unitname unitName,
+       a.email email,
+       a.unitaddress address,
+       a.phone phone,
+       a.unitpoint unitPoint,
+       h.Contacts contacts,
+       1 unitType
+        FROM
+        UT_Unit_BaseInfo a
+        LEFT JOIN UT_Maintenance_ReUnit g ON g.UnitID = a.ID
+	  LEFT JOIN UT_Maintenance_Unit h ON h.ID = g.ManageID
+        WHERE
+        (a.isDelete = 0 OR a.isDelete is NULL)
+        AND a.UnitPoint = #{unitPoint}
+    </select>
+
+    <select id="getCountEqSystem" resultType="float">
+        SELECT
+        DISTINCT
+            COUNT(a.EqSystemID)
+        FROM
+            UT_EQ_Equipment a
+        LEFT JOIN UT_Base_EqSystem b on a.EqSystemID = b.ID
+        where
+        <if test="unitId != null and unitId != ''">
+            a.UnitID =#{unitId}
+        </if>
+    </select>
+
+    <select id="getByMaintenanceUnit" resultType="com.gw.front.index.data.FrontUnitOutData">
+        SELECT
+       a.ID id,
+       a.UnitCode unitCode,
+       a.UnitName unitName,
+       a.email email,
+       a.Address address,
+       a.Telephone phone,
+      	a.PointX + ','+ a.PointY unitPoint,
+       a.Contacts contacts,
+       0 unitType
+        FROM
+        UT_Maintenance_Unit a
+        WHERE
+         a.ID = #{id}
+    </select>
+
+    <select id="selectPhone" resultType="java.lang.String">
+        SELECT Phone FROM UT_Unit_BaseInfo WHERE id = #{id}
+    </select>
+</mapper>

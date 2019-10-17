@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>报警处理弹窗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/HistoryNote/History_deal.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+<!-- @using (Html.BeginForm())
+{ -->
+   <!--  <input type="hidden" value="@Model.Issuccess" id="hidissuccess" />
+    @Html.HiddenFor(x => x.ID, new { id = "trID" }) -->
+
+     <!--处理 弹窗-->
+    <div id="deallBox">
+
+        <div class="top_box">
+            <div class="titleBox">
+                <div>
+                    <div>报警单位</div>
+                    <div>苏州思迪</div>                   
+                </div>
+
+                <div>
+                    <div>设备名称</div>
+                    <div>报警主机</div>                     
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>设备型号</div>
+                    <div>1</div>                   
+                </div>
+
+                <div>
+                    <div>子号</div>
+                    <div>287766</div>                     
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>报警时间</div>
+                    <div>2018-07-13 08:32:43</div>                   
+                </div>
+
+                <div>
+                    <div>报警类型</div>
+                    <div>火警</div>                     
+                </div>
+            </div>
+            <div class="titleBox">
+                <div>
+                    <div>报警源</div>
+                    <div>01号主机3号回路5节点</div>                   
+                </div>
+
+                <div>
+                    <div>报警设备</div>
+                    <div>70防火墙</div>                     
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>报警地点</div>
+                    <div>办公楼202室</div>                   
+                </div>
+
+                <div>
+                    <div>处理单号</div>
+                    <div>122333444</div>                   
+                </div>
+            </div>
+             <div class="titleBox">
+                <div>
+                    <div>处理时间</div>
+                    <div>2018-07-13 08:32:43</div>                 
+                </div>
+            </div>
+             
+             <div class="titleBox titleBox2">
+                <div>
+                    <div>处理内容</div>
+                    <div>
+                        <textarea></textarea>
+                    </div>                   
+                </div>
+            </div>
+
+             <div class="titleBox titleBox3">
+                <div>
+                    <div>误报</div>
+                    <div>
+                        <img src="../../../Content/images/NetInfoStatistic/chose.png" class="choseBt chose" onclick="getChose(this);">
+                    </div>                   
+                </div>
+            </div>
+        </div>
+
+        <input class="submitBtn" type="button" value="保存">
+    </div>
+
+<!-- } -->
+
+</body>
+<script type="text/javascript">
+	var _id = $('#trID').val();
+    
+
+    $(function(){
+        //提交
+        // $("form").attr("enctype", "multipart/form-data");
+        // var issuccess = $("#hidissuccess").val();
+        // if (issuccess == 1) {
+        //     layer.msg('保存成功',
+        //         {
+        //             icon: 1,
+        //             area: ['180px', '66px'],
+        //             time: 700
+        //         }
+        //          //function () {
+        //          //    var index = parent.layer.getFrameIndex(window.name);
+        //          //    parent.layer.close(index);
+        //          //}
+        //          );
+        //         //var index = parent.layer.getFrameIndex(window.name);
+        //         //parent.layer.close(index);
+        //         //setTimeout(
+        //         //    function () {
+        //         //        window.parent.getParentFrameCount(); //刷新父页面
+        //         //    }, 500      //父页面对话框刷新
+        //         //)
+        //         setTimeout(
+        //             function () {
+        //                 var index = parent.layer.getFrameIndex(window.name);
+        //                 parent.layer.close(index);
+        //                 window.parent.getParentFrameCount(); //刷新父页面表格
+        //             }, 1000      //父页面对话框刷新
+        //         )
+               
+        // } else if (issuccess == '') {
+        //     layer.msg('保存失败', { icon: 1, area: ['180px', '66px'], });
+        // }
+
+        clickevent();
+    });
+
+    function clickevent(){
+        $('textarea').focus();
+    }
+
+    function getChose(obj){
+        if($(this).hasClass('chose')){
+            $(this).removeClass('chose');
+            $(this).attr('src','../../../Content/images/NetInfoStatistic/nochose.png'); //不选中
+        }else{
+            $(this).addClass('chose');
+            $(this).attr('src','../../../Content/images/NetInfoStatistic/chose.png'); //选中
+        }
+    }
+</script>
+
+</html>

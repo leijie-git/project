@@ -1,0 +1,979 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitNetdeviceMapper" >
+	<resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitNetdevice" >
+		<!--
+          WARNING - @mbg.generated
+        -->
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="OwnerCode" property="ownercode" jdbcType="NVARCHAR" />
+		<result column="DeviceIndex" property="deviceindex" jdbcType="INTEGER" />
+		<result column="DeviceNo" property="deviceno" jdbcType="INTEGER" />
+		<result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+		<result column="UpdateDate" property="updatedate" jdbcType="NVARCHAR" />
+		<result column="CreateUser" property="createuser" jdbcType="BIGINT" />
+		<result column="UpdateUser" property="updateuser" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="calibration_id" jdbcType="NVARCHAR" property="calibrationId" />
+		<result column="UnitID" property="unitid" jdbcType="BIGINT" />
+		<result column="isDelete" jdbcType="INTEGER" property="isdelete" />
+		<result column="EqSystemID" property="eqsystemid" jdbcType="BIGINT" />
+		<result column="EquipmentModel" property="equipmentmodel" jdbcType="BIGINT" />
+		<result column="startDate" property="startdate" jdbcType="TIMESTAMP" />
+		<result column="endDate" property="enddate" jdbcType="TIMESTAMP" />
+		<result column="isIndependent" property="is_independent" jdbcType="VARCHAR" />
+		<result column="isUploadA" jdbcType="INTEGER" property="isuploada" />
+		<result column="isUploadB" jdbcType="INTEGER" property="isuploadb" />
+	</resultMap>
+	<select id="getUnitNetdeviceList" resultType="com.gw.front.index.data.FrontUnitInfoStatOutData">
+		SELECT
+		sum(case when d.DeviceStatus in (1,18,34) then 1 else 0 end) onlineDeviceCount,
+		sum(case when d.DeviceStatus not in (1,18,34) then 1 else 0 end) offlineDeviceCount
+		FROM
+		UT_Unit_NetDevice a
+		<if test="userId != 1">
+			inner JOIN UT_Base_UserReUnit c ON a.UnitID = c.unit_id
+		</if>
+		LEFT JOIN ${database}.dbo.sd_devices d ON a.OwnerCode=d.OwnerCode
+		and a.DeviceIndex=d.DeviceIndex and (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+		WHERE
+		(a.isDelete = 0 OR a.isDelete is NULL)
+		<if test="userId != 1">
+			and c.user_id = #{userId}
+		</if>
+	</select>
+
+	<select id="getUnitNetdeviceStatList" resultType="com.gw.front.index.data.FrontRecordOutData">
+		SELECT
+		substring( convert(varchar,d.StatusTime,24),1,5) recordKey,
+		count(d.id) recordCount
+		FROM
+		UT_Unit_NetDevice a
+		<if test="userId != 1">
+			inner JOIN UT_Base_UserReUnit c ON a.UnitID = c.unit_id
+		</if>
+		LEFT JOIN ${database}.dbo.sd_devices_status d ON a.OwnerCode=d.OwnerCode
+		and a.DeviceIndex=d.DeviceIndex and (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+		WHERE
+		DateDiff(hh,d.StatusTime,getDate()) &lt;= 24
+		<if test="userId != 1">
+			and c.user_id = #{userId}
+		</if>
+		<if test="deviceStatus == 1">
+			and d.DeviceStatus in (1,18,34)
+		</if>
+		<if test="deviceStatus == 0">
+			and d.DeviceStatus not in (1,18,34)
+		</if>
+		AND (a.isDelete = 0 OR a.isDelete is NULL)
+		group by d.StatusTime
+		ORDER BY d.StatusTime
+	</select>
+
+	<select id="list" resultType="com.gw.device.data.NetDeviceOutData" parameterType="com.gw.device.data.NetDeviceInData">
+		SELECT
+		n.DeviceIndex,
+		n.DeviceNo,
+		n.ID,
+		n.OwnerCode,
+		n.UnitID,
+		n.name,
+		n.EqSystemID eqsystemid,
+		b.UnitName,
+		n.EquipmentModel eqmodel,
+		is_independent isIndependent
+		FROM
+		UT_Unit_NetDevice n
+		LEFT OUTER JOIN UT_Unit_BaseInfo b ON n.UnitID = b.ID
+		WHERE
+		1=1
+		<if test="unitid != null and unitid != ''">
+			AND n.UnitID =#{unitid}
+		</if>
+
+		and
+		(n.isDelete = 0 OR n.isDelete is NULL)
+		<!-- 			and (b.isDelete = 0 OR b.isDelete is NULL) -->
+		<if test="ownercode !=null and ownercode != ''">
+			AND n.OwnerCode like '%${ownercode}%'
+		</if>
+		<if test="deviceindex != null and deviceindex != ''">
+			AND n.DeviceIndex = ${deviceindex}
+		</if>
+		<if test="deviceno != null and deviceno != ''">
+			AND n.DeviceNo like '%${deviceno}%'
+		</if>
+		<if test="name != null and name != ''">
+			AND n.name like '%${name}%'
+		</if>
+		<if test="unitname != null and unitname != ''">
+			AND b.UnitName like '%${unitname}%'
+		</if>
+		ORDER BY n.ID DESC
+	</select>
+
+	<select id="getImportDeviceList" resultType="com.gw.device.data.NetDeviceOutData" >
+  	SELECT
+		id,
+		ownercode,
+		deviceindex,
+		deviceno
+	FROM
+		${databaseName}.dbo.sd_devices
+	WHERE
+		ownercode = #{soureaddress}
+  
+  </select>
+
+	<select id="getDeviceListById" resultType="com.gw.device.data.NetDeviceOutData" >
+  	SELECT
+		id,
+		ownercode,
+		deviceindex,
+		deviceno,
+		DeviceName devicename
+	FROM
+		${databaseName}.dbo.sd_devices
+	WHERE
+		id = ${id}
+  
+  </select>
+	<select id="getArrayList" resultType="com.gw.device.data.NetDeviceOutData" parameterType="com.gw.device.data.NetDeviceInData">
+		select
+		id,
+		ownercode,
+		deviceindex,
+		deviceno,
+		unitid,
+		name
+		from
+		UT_Unit_NetDevice
+		<where>
+			(isDelete = 0 OR isDelete is NULL)
+			<if test='deviceindex==4'>
+				AND DeviceIndex in (1,3)
+			</if>
+			<if test="deviceindex!=4">AND DeviceIndex = #{deviceindex}</if>
+			<if test="unitid!=null and unitid!=''">
+				and unitid = #{unitid}
+			</if>
+		</where>
+	</select>
+
+	<select id="getTransferDeviceUnit" resultType="com.gw.front.lookup.data.FrontLookupUnitInfoData" >
+		SELECT
+		*
+		FROM
+		UT_Unit_NetDevice a
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+		</if>
+		LEFT JOIN UT_Unit_BaseInfo unit ON a.UnitID = unit.ID
+		INNER JOIN UV_calf_devices c ON a.OwnerCode = c.OwnerCode
+		AND a.DeviceIndex = c.DeviceIndex
+		AND (a.DeviceNo = c.DeviceNo or a.DeviceIndex=2)
+		WHERE
+		(a.isDelete = 0 OR a.isDelete is NULL)
+		<if test="userId != 1">
+			and b.user_id = #{unitId}
+		</if>
+		AND (unit.isDelete = 0 OR unit.isDelete is NULL)
+		<where>
+			<if test="keyWord != null and keyWord != ''">
+				b.UnitName LIKE '%${keyWord}%' or c.DeviceName LIKE '%${keyWord}%' or a.OwnerCode like '%${keyWord}%' or a.name like '%${keyWord}%'
+			</if>
+		</where>
+	</select>
+
+	<select id="getNetDeviceNameSelect" resultType="com.gw.device.data.NetDeviceOutData">
+  	SELECT
+		n.ID,
+		n.name
+	FROM
+		UT_Unit_NetDevice n
+	WHERE
+		n.UnitID = ${unitid}
+	AND (n.isDelete = 0 OR n.isDelete is NULL)
+  </select>
+	<select id="getNBDevice" resultType="com.gw.front.couplet.data.FrontNBDeviceInfoOutData" parameterType="com.gw.front.couplet.data.FrontNBDeviceInfoInData">
+		SELECT
+		b.ID,
+		a.devicetype deviceType,
+		CASE WHEN a.currentstatus = 1 THEN '在线' ELSE '离线' END currentStatus,
+		a.devicecode deviceCode,
+		c.UnitName unitName,
+		c.UnitCode unitCode,
+		a.notifyphone notifyPhone,
+		a.battery,
+		a.installaddr installAddr,
+		a.manufacturename manufactureName,
+		a.reserve,
+		a.firsttime firstTime,
+		a.lat,
+		a.lon
+		FROM
+		${database}.dbo.hd_siterwell a
+		LEFT JOIN UT_Unit_NetDevice b ON a.ownercode = b.OwnerCode
+		AND a.deviceindex = b.DeviceIndex
+		AND a.deviceno = b.DeviceNo
+		LEFT JOIN UT_Unit_BaseInfo c ON c.ID = b.UnitID
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit d ON c.ID = d.unit_id
+		</if>
+		WHERE (b.isDelete = 0 OR b.isDelete is NULL)
+		AND (c.isDelete = 0 OR c.isDelete is NULL)
+		<if test="userId != 1">
+			and d.user_id=#{userId}
+		</if>
+		<if test="currentStatus != null">
+			<if test="currentStatus == 0">
+				and (a.currentstatus = #{currentStatus} OR a.currentstatus IS NULL)
+			</if>
+			<if test="currentStatus != 0">
+				and a.currentstatus = #{currentStatus}
+			</if>
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (c.UnitName like '%${keyword}%' OR c.UnitCode like '%${keyword}%' OR a.installaddr like '%${keyword}%' OR a.devicecode like '%${keyword}%')
+		</if>
+	</select>
+    <select id="getNBStatusCount" resultType="map">
+        SELECT
+        SUM(CASE WHEN a.currentstatus = 1 THEN 1 ELSE 0 END ) as onlineCount,
+        SUM(CASE WHEN a.currentstatus = 0 OR a.currentstatus IS NULL THEN 1 ELSE 0 END) as offlineCount
+        FROM
+        ${database}.dbo.hd_siterwell a
+        LEFT JOIN UT_Unit_NetDevice b ON a.ownercode = b.OwnerCode
+        AND a.deviceindex = b.DeviceIndex
+        AND a.deviceno = b.DeviceNo
+        LEFT JOIN UT_Unit_BaseInfo c ON c.ID = b.UnitID
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit d ON c.ID = d.unit_id
+        </if>
+        WHERE (b.isDelete = 0 OR b.isDelete is NULL)
+        AND (c.isDelete = 0 OR c.isDelete is NULL)
+        <if test="userId != 1">
+            and d.user_id=#{userId}
+        </if>
+    </select>
+	<select id="getSDDeviceStatusList" resultType="com.gw.front.history.data.FrontHisSDDeviceStatusOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+		SELECT
+		a.id,
+		CASE WHEN a.DeviceIndex=1 THEN '主机' WHEN a.DeviceIndex=2 THEN '用户传输装置' ELSE 'RTU' END deviceType,
+		a.name deviceName,
+		a.deviceNo deviceNo,
+		CONVERT(varchar(100), c.OnlineTime, 120) time,
+		CASE WHEN c.DeviceStatus in (1,18,34) THEN '在线' ELSE '离线' END deviceStatus,
+		c.DeviceStatus originalStatus,
+		0 upCount,
+		b.UnitName unitName,
+		b.UnitCode unitCode,
+		b.childstationnum childstationnum,
+		0 exceptionCount,
+		c.HardVersion version,
+		c.SoftVersion softVersion,
+		c.Reserve ip,
+		code.CodeName deviceModel,
+		a.calibration_id calibrationId,
+		a.start_date startDate,
+		a.end_date endDate,
+		case when c.HardVersion is null and c.SoftVersion is null then '国标' else c.HardVersion+'/'+c.SoftVersion end agreement,
+		CASE WHEN a.start_date is not NULL and DateDiff(dd,a.start_date,getDate()) &gt;= 0 and a.end_date is not NULL AND DateDiff(dd,a.end_date,getDate()) &lt;= 0 and a.calibration_id is not null THEN '1'
+		ELSE CASE WHEN  a.start_date is not NULL and DateDiff(dd,a.start_date,getDate()) &lt;= 0 <!-- and  a.end_date is not NULL and DateDiff(dd,a.end_date,getDate()) &lt;= 0 --> and a.calibration_id is not null THEN '2'
+		ELSE '0' END END calibrationStatus,
+		f.remark remark,
+		sys.EqSystemName eqSystemName,
+		a.OwnerCode ownerCode,
+		a.isUploadA isuploada,
+		a.isUploadB isuploadb,
+		a.UnitID  unitID,
+		a.DeviceIndex deviceIndex
+		FROM
+		UT_Unit_NetDevice a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+		LEFT JOIN ${database}.dbo.sd_devices c ON a.OwnerCode = c.OwnerCode
+		AND a.DeviceIndex = c.DeviceIndex
+		AND (a.DeviceNo = c.DeviceNo or a.DeviceIndex=2)
+		<if test="userId != 1">
+			LEFT JOIN UT_Base_UserReUnit e ON b.ID = e.unit_id
+		</if>
+		LEFT JOIN UT_Base_EqSystem sys ON sys.ID = a.EqSystemID
+		LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+		<!-- 	LEFT JOIN UT_EQ_Equipment f ON f.NetDeviceID = a.ID -->
+		<if test="buildId != null and buildId != ''">
+			LEFT JOIN UT_Unit_Build g ON g.UnitID = b.ID
+		</if>
+		LEFT JOIN UT_Base_Code code on code.CodeID = a.EquipmentModel
+		<where>
+			(a.isDelete = 0 OR a.isDelete is NULL)
+			<if test="userId != 1">
+				and e.user_id=#{userId}
+			</if>
+			AND (b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="startDate != null and startDate != ''">
+				and c.OnlineTime >= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and c.OnlineTime &lt;= #{endDate}
+			</if>
+			<if test="status != null and status != ''">
+				<if test="status==1">
+					and c.DeviceStatus in (1,18,34)
+				</if>
+				<if test="status==2">
+					and c.DeviceStatus  not in (1,18,34)
+				</if>
+			</if>
+			<if test="softVersion != null and softVersion != ''">
+				and c.SoftVersion = #{softVersion}
+			</if>
+			<if test="eqSystem != null and eqSystem != ''">
+				and a.EqSystemID = #{eqSystem}
+			</if>
+			<if test="type != null and type != ''">
+				and a.DeviceIndex = #{type}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND (b.UnitName LIKE '%${keyword}%' or c.DeviceName LIKE '%${keyword}%' or a.OwnerCode like '%${keyword}%' or a.name like '%${keyword}%' )
+			</if>
+			<if test="unitId != null and unitId != ''">
+				AND b.ID = #{unitId}
+			</if>
+			<if test="buildId != null and buildId != ''">
+				AND g.id = #{buildId}
+			</if>
+			<if test="id != null and id != ''">
+				AND a.EqSystemID = #{id}
+			</if>
+			<if test="netDeviceId != null and netDeviceId != ''">
+				AND a.ID = #{netDeviceId}
+			</if>
+			<if test="isNaming != null and isNaming != ''">
+				AND (a.DeviceIndex = 2 or c.IsIndependent = 'true')
+			</if>
+		</where>
+		ORDER BY a.id DESC
+	</select>
+	<select id="getDeviceInfo" parameterType="com.gw.front.history.data.FrontHistoryInData" resultType="com.gw.front.history.data.FrontHisDeviceStatusOutData">
+		SELECT
+		c.UnitName unitName,
+		COUNT(*) total,
+		SUM(CASE WHEN a.DeviceStatus in (1,18,34) THEN 1 ELSE 0 END ) exceptionCount
+		FROM
+		${database}.dbo.sd_devices_status a
+		INNER JOIN (
+		SELECT
+		d.UnitID,
+		d.OwnerCode,
+		d.DeviceIndex,
+		d.DeviceNo
+		FROM
+		UT_Unit_NetDevice d
+		LEFT JOIN UT_Unit_Build i ON i.UnitID = d.UnitID
+		WHERE
+		d.ID = #{id}
+		AND (d.isDelete = 0 OR d.isDelete is NULL)
+		<if test="unitId != null and unitId != ''">
+			AND d.UnitID = #{unitId}
+		</if>
+		<if test="buildId != null and buildId != ''">
+			AND i.ID = #{buildId}
+		</if>
+		) b ON a.OwnerCode = b.OwnerCode
+		AND a.DeviceIndex = b.DeviceIndex
+		AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+		LEFT JOIN UT_Unit_BaseInfo c ON c.ID = b.UnitID
+		WHERE (c.isDelete = 0 OR c.isDelete is NULL)
+		<if test="startDate != null and startDate != ''">
+			and a.StatusTime >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.StatusTime &lt;= #{endDate}
+		</if>
+		GROUP BY c.UnitName
+	</select>
+	<select id="getDeviceStatusList" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+		SELECT
+		CASE WHEN a.DeviceStatus in (1,18,34) THEN 1 ELSE 0 END coupletKey,
+		a.StatusTime coupletValue
+		FROM
+		${database}.dbo.sd_devices_status a
+		INNER JOIN UT_Unit_NetDevice b ON a.OwnerCode = b.OwnerCode
+		AND a.DeviceIndex = b.DeviceIndex
+		AND (a.DeviceNo = b.DeviceNo or a.DeviceIndex=2)
+		<where>
+			b.id=#{id}
+			<if test="startDate != null and startDate != ''">
+				and a.StatusTime >= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and a.StatusTime &lt;= #{endDate}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				and a.Reserve like '%{keyword}%'
+			</if>
+		</where>
+		order by a.StatusTime desc
+	</select>
+	<select id="getDeviceMsg" resultType="com.gw.equipment.data.SdInterfaceOutData">
+    SELECT
+	    OwnerCode,
+	    DeviceNo
+    FROM
+        UT_Unit_NetDevice
+    WHERE
+        id =#{ id }
+    AND (isDelete = 0 OR isDelete is NULL)
+  </select>
+	<select id="getNetDeviceListByUnitId" resultType="com.gw.device.data.NetDeviceOutData">
+		SELECT
+		a.CreateDate,
+		a.DeviceIndex,
+		a.DeviceNo,
+		a.ID,
+		a.name,
+		a.OwnerCode,
+		a.UnitID,
+		a.UpdateDate,
+		a.calibration_id calibrationId,
+		a.isUploadA,
+		a.isUploadB
+		FROM
+		UT_Unit_NetDevice a
+		WHERE
+		a.UnitID = #{unitId}
+		AND (a.isDelete = 0 OR a.isDelete is NULL)
+		<if test="deviceIndex != null and deviceIndex != ''">
+			AND a.DeviceIndex = #{deviceIndex}
+		</if>
+	</select>
+	<select id="getOPDeviceHistory" resultType="com.gw.front.history.data.FrontTransmissionDeviceOutData" parameterType="com.gw.front.history.data.FrontHistoryInData">
+		SELECT DISTINCT
+		unit.UnitName unitName,
+		unit.UnitCode unitCode,
+		unit.ChildStationNum childstationnum,
+		unit.Phone phone,
+		a.OpType type,
+		CONVERT (VARCHAR, a.OpTime, 120) opTime,
+		a.Description description,
+		a.Reserve reserve,
+		CONVERT (VARCHAR, a.Lastupdate, 120) reTime
+		FROM
+		${database}.dbo.sd_opdevice a
+		LEFT JOIN UT_Unit_NetDevice b ON b.OwnerCode = a.OwnerCode
+		AND b.DeviceIndex = a.DeviceIndex
+		LEFT JOIN UT_Unit_BaseInfo unit ON unit.id = b.UnitID
+		<if test="buildId != null and buildId != ''">
+			LEFT JOIN UT_Unit_Build d ON d.UnitID = unit.ID
+		</if>
+		<if test="userId != null and userId != '' and userId != 1">
+			LEFT JOIN UT_Base_UserReUnit c ON unit.ID = c.unit_id
+		</if>
+		<where>
+			(unit.isDelete = 0 OR unit.isDelete is NULL)
+			and (b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="type != null and type != ''">
+				and a.OpType = #{type}
+			</if>
+			<if test="unitId != null and unitId != ''">
+				and unit.id = #{unitId}
+			</if>
+			<if test="userId != null and userId != '' and userId != 1">
+				and c.user_id = #{userId}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				and a.OpTime >= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and a.OpTime &lt;= #{endDate}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				and unit.UnitName like '%${keyword}%'
+			</if>
+			<if test="buildId != null and buildId != ''">
+				AND d.ID = #{buildId}
+			</if>
+		</where>
+		order by a.OpTime desc
+	</select>
+	<select id="getNetDeviceFromOthers" resultType="com.gw.device.data.NetDeviceOutData">
+  	SELECT
+		a.OwnerCode ownercode,
+		a.deviceindex deviceindex,
+		a.deviceno deviceno,
+		a.DeviceName name,
+		a.address address,
+		a.DeviceStatus status,
+		a.ManufacturerCode partcode,
+		a.DeviceCode eqmodel,
+		a.phone phone
+	FROM
+		${database}.dbo.sd_devices a
+  </select>
+	<select id="getRtuDeviceFromOthers" resultType="com.gw.device.data.DeviceRelData">
+  	SELECT
+		a.OwnerCode,
+		a.DeviceNo,
+		a.IOName detialname,
+		a.IOType iotype,
+		a.IOPort ioport,
+		a.AnalogUp analogup,
+	a.AnalogDown analogdown,
+	a.AnalogUnitID analogunit,
+	a.Reserve reserve,
+	a.SysType systype,
+	a.AnalogPara analogpara,
+	a.DigitalNormal digitalnormal,
+	a.GoodName goodname,
+	a.BadName badname
+	FROM
+		${database}.dbo.sd_interfaces a
+  </select>
+	<select id="getDeviceUploadCount" resultType="java.lang.Integer">
+		SELECT
+		count(1)
+		FROM
+		${db}
+		WHERE
+		deviceIndex = #{deviceIndex}
+		<if test="deviceno != null and deviceno != ''">
+			AND deviceno = #{deviceno}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			AND Time &gt; #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND Time &lt; #{endDate}
+		</if>
+	</select>
+
+	<select id="getDeviceStatusByUnit" resultType="com.gw.front.index.data.FrontUnitInfoStatOutData">
+  	SELECT
+  		a.UnitID unitId,
+  		sum(case when d.DeviceStatus in (1,18,34) then 1 else 0 end) onlineDeviceCount,
+  		sum(case when d.DeviceStatus not in (1,18,34) then 1 else 0 end) offlineDeviceCount
+	FROM
+		UT_Unit_NetDevice a
+	LEFT JOIN ${database}.dbo.sd_devices d ON a.OwnerCode=d.OwnerCode
+		and a.DeviceIndex=d.DeviceIndex and (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+	WHERE (a.isDelete = 0 OR a.isDelete is NULL)
+	group by unitId
+  </select>
+	<select id="getNetDevicesByUnitId" parameterType="com.gw.front.history.data.FrontHistoryInData" resultType="com.gw.front.history.data.FrontHisSDDeviceStatusOutData">
+		SELECT
+		a.ID,
+		a.name deviceName,
+		CASE WHEN a.DeviceIndex=1 THEN '主机' WHEN a.DeviceIndex=2 THEN '用户传输装置' ELSE 'RTU' END deviceType,
+		a.deviceNo deviceNo,
+		a.calibration_id calibrationId,
+		a.OwnerCode ownerCode,
+		d.DeviceCode deviceCode,
+		d.ManufacturerCode manufacturerCode,
+		d.DeviceStatus deviceStatus
+		FROM
+		UT_Unit_NetDevice a
+		LEFT JOIN ${database}.dbo.sd_devices d ON a.OwnerCode=d.OwnerCode
+		and a.DeviceIndex=d.DeviceIndex and (a.DeviceNo = d.DeviceNo or a.DeviceIndex=2)
+		WHERE
+		a.UnitID = #{unitId}
+		AND (a.isDelete = 0 OR a.isDelete is NULL)
+		<if test="type != null and type != ''">
+			AND a.DeviceIndex = #{type}
+		</if>
+		<if test="type == null or type == ''">
+			AND a.DeviceIndex != 2
+		</if>
+	</select>
+	<select id="getDeviceCalibration" resultType = "com.gw.front.couplet.data.FrontCoupletCalibrationInData">
+		SELECT
+		a.calibration_id calibrationId,
+		CONVERT(VARCHAR,a.start_date,23) startDate,
+		CONVERT(VARCHAR,a.end_date,23) endDate,
+		a.calibration_remark remark,
+		b.remark calibrationType
+		FROM
+		UT_Unit_NetDevice a
+		LEFT JOIN UT_Unit_calibration b ON a.calibration_id = b.ID
+		<where>
+			<if test="eqId!=null and eqId!=''">
+				a.ID = #{eqId}
+			</if>
+		</where>
+	</select>
+	<select id="getInterfaceOutList" resultType = "com.gw.device.data.InterfaceOutData">
+		SELECT
+		id,
+		OwnerCode ownerCode,
+		DeviceIndex deviceIndex,
+		DeviceNo deviceNo,
+		IOPort ioPort,
+		IOName ioName,
+		DigitalNormal digitalNormal,
+		GoodName goodName,
+		BadName badName,
+		DotActionUnit fotActionUnit,
+		DotActionTime fotActionTime,
+		isLock locks,
+		ShowOrder showOrder,
+		Reserve reserve,
+		OrderType orderType,
+		CONVERT(VARCHAR,lastupdate,120) lastupdate
+		FROM
+		${databaseName}.[dbo].[sd_interfaces_out]
+		WHERE DeviceIndex = 3
+		<if test="ownercode != null and ownercode != ''">
+			and OwnerCode = #{ownercode}
+		</if>
+		<if test="deviceno != null">
+			AND DeviceNo = #{deviceno}
+		</if>
+	</select>
+	<insert id="addInterfaceOut" parameterType="com.gw.device.data.InterfaceOutData">
+  	INSERT INTO ${database}.[dbo].[sd_interfaces_out](
+		OwnerCode,
+		DeviceIndex,
+		DeviceNo,
+		IOPort,
+		IOName,
+		DigitalNormal,
+		GoodName,
+		BadName,
+		DotActionUnit,
+		DotActionTime,
+		isLock,
+		ShowOrder,
+		lastupdate,
+		OrderType,
+		Reserve
+	)
+	VALUES(
+			#{ownerCode},
+			'3',
+			#{deviceNo},
+			#{ioPort},
+			#{ioName},
+			#{digitalNormal},
+			#{goodName},
+			#{badName},
+			#{fotActionUnit},
+			#{fotActionTime},
+			#{locked},
+			#{showOrder},
+			GETDATE(),
+			#{orderType},
+			#{reserve}
+	)
+  </insert>
+	<update id="updateInterfaceOut" parameterType="com.gw.device.data.InterfaceOutData">
+  	update ${database}.[dbo].[sd_interfaces_out] set
+		IOPort=#{ioPort},
+		IOName=#{ioName},
+		DigitalNormal=#{digitalNormal},
+		GoodName=#{goodName},
+		BadName=#{badName},
+		DotActionUnit=#{fotActionUnit},
+		DotActionTime=#{fotActionTime},
+		isLock=#{locked},
+		ShowOrder=#{showOrder},
+		lastupdate=GETDATE(),
+		OrderType=#{orderType},
+		Reserve = #{reserve}
+	where id=#{id}
+  </update>
+	<delete id="deleteInterfaceOut">
+  	delete from ${database}.[dbo].[sd_interfaces_out] where id=#{id}
+  </delete>
+	<select id="getNetworkingUnitTransferDevice" resultType="com.gw.front.lookup.data.FrontLookupUnitInfoData">
+		SELECT
+		c.ID deviceId,
+		a.id unitId,
+		a.UnitCode unitcode,
+		a.UnitName unitname,
+		a.UnitAddress unitaddress,
+		a.Phone phone,
+		a.ChildStationNum childstationnum,
+		c.ownerCode ownerCode,
+		d.DeviceStatus result,
+		c.name,
+		CASE WHEN v.ID is not NULL THEN 1 ELSE 0 END hasVideo
+		FROM
+		UT_Unit_NetDevice c
+		LEFT JOIN UT_Unit_BaseInfo a ON a.ID = c.UnitID
+		LEFT JOIN ${database}.dbo.sd_devices d ON c.OwnerCode = d.OwnerCode
+		AND c.DeviceIndex = d.DeviceIndex
+		LEFT JOIN UT_Unit_Video v ON v.UnitID = a.ID
+		AND v.VideoType = 1
+		WHERE
+		c.DeviceIndex = 2
+		AND a.ID = #{unitId}
+		AND (c.isDelete = 0 OR c.isDelete is NULL)
+		<if test="keyWord != null and keyWord != ''">
+			AND (c.name like '%${keyWord}%' or c.ownerCode like '%${keyWord}%')
+		</if>
+		AND (a.isDelete = 0 OR a.isDelete is NULL)
+	</select>
+	<select id="getNetworkingUnitSDDeviceStatusList" parameterType="com.gw.front.history.data.FrontHistoryInData" resultType="com.gw.front.history.data.FrontHisSDDeviceStatusOutData">
+		SELECT
+		a.id,
+		CASE WHEN a.DeviceIndex=1 THEN '主机' WHEN a.DeviceIndex=2 THEN '用户传输装置' ELSE 'RTU' END deviceType,
+		a.name deviceName,
+		a.deviceNo deviceNo,
+		CONVERT(varchar(100), c.OnlineTime, 120) time,
+		CASE WHEN c.DeviceStatus in (1,18,34) THEN '在线' ELSE '离线' END deviceStatus,
+		0 upCount,
+		b.UnitName unitName,
+		b.UnitCode unitCode,
+		b.childstationnum childstationnum,
+		0 exceptionCount,
+		c.HardVersion version,
+		c.SoftVersion softVersion,
+		c.Reserve ip,
+		code.CodeName deviceModel,
+		a.calibration_id calibrationId,
+		a.start_date startDate,
+		a.end_date endDate,
+		case when c.HardVersion is null and c.SoftVersion is null then '国标' else '思迪'+c.HardVersion+'/'+c.SoftVersion end agreement,
+		CASE WHEN a.start_date is not NULL and DateDiff(dd,a.start_date,getDate()) &gt;= 0 and a.end_date is not NULL AND DateDiff(dd,a.end_date,getDate()) &lt;= 0 and a.calibration_id is not null THEN '1'
+		ELSE CASE WHEN  a.start_date is not NULL and DateDiff(dd,a.start_date,getDate()) &lt;= 0 <!-- and  a.end_date is not NULL and DateDiff(dd,a.end_date,getDate()) &lt;= 0 --> and a.calibration_id is not null THEN '2'
+		ELSE '0' END END calibrationStatus,
+		f.remark remark,
+		sys.EqSystemName eqSystemName,
+		a.OwnerCode ownerCode
+		FROM
+		UT_Unit_NetDevice a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+		LEFT JOIN ${database}.dbo.sd_devices c ON a.OwnerCode = c.OwnerCode
+		AND a.DeviceIndex = c.DeviceIndex
+		AND (a.DeviceNo = c.DeviceNo or a.DeviceIndex=2)
+		LEFT JOIN UT_Base_EqSystem sys ON sys.ID = a.EqSystemID
+		LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+		<!-- 	LEFT JOIN UT_EQ_Equipment f ON f.NetDeviceID = a.ID -->
+		<if test="buildId != null and buildId != ''">
+			LEFT JOIN UT_Unit_Build g ON g.UnitID = b.ID
+		</if>
+		LEFT JOIN UT_Base_Code code on code.CodeID = a.EquipmentModel
+		<where>
+			(a.isDelete = 0 OR a.isDelete is NULL)
+			AND (b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="startDate != null and startDate != ''">
+				and c.OnlineTime >= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and c.OnlineTime &lt;= #{endDate}
+			</if>
+			<if test="status != null and status != ''">
+				<if test="status==1">
+					and c.DeviceStatus in (1,18,34)
+				</if>
+				<if test="status==2">
+					and c.DeviceStatus  not in (1,18,34)
+				</if>
+			</if>
+			<if test="softVersion != null and softVersion != ''">
+				and c.SoftVersion = #{softVersion}
+			</if>
+			<if test="eqSystem != null and eqSystem != ''">
+				and a.EqSystemID = #{eqSystem}
+			</if>
+			<if test="type != null and type != ''">
+				and a.DeviceIndex = #{type}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND (b.UnitName LIKE '%${keyword}%' or c.DeviceName LIKE '%${keyword}%' or a.OwnerCode like '%${keyword}%' or a.name like '%${keyword}%' )
+			</if>
+			<if test="unitId != null and unitId != ''">
+				AND b.ID = #{unitId}
+			</if>
+			<if test="buildId != null and buildId != ''">
+				AND g.id = #{buildId}
+			</if>
+			<if test="id != null and id != ''">
+				AND a.EqSystemID = #{id}
+			</if>
+			<if test="isNaming != null and isNaming != ''">
+				AND (a.DeviceIndex = 2 or c.IsIndependent = 'true')
+			</if>
+		</where>
+		ORDER BY a.id DESC
+	</select>
+	<select id="getCurrentStatus" resultType="com.gw.device.data.InterfaceOutData">
+  	SELECT
+		id,
+		OwnerCode ownerCode,
+		DeviceIndex deviceIndex,
+		DeviceNo deviceNo,
+		IOPort ioPort,
+		IOName ioName,
+		DigitalNormal digitalNormal,
+		GoodName goodName,
+		BadName badName,
+		Reserve reserve
+	FROM
+		${database}.dbo.sd_interfaces_out a
+	where id = #{id}
+  </select>
+
+	<select id="getNetDevice" resultType="com.gw.mapper.entity.UtUnitNetdevice" parameterType="com.gw.equipment.data.WirelessDeviceOutData" >
+    SELECT
+        id
+    FROM
+        UT_Unit_NetDevice
+    WHERE
+        OwnerCode = #{ownercode}
+    AND DeviceIndex = #{deviceindex}
+    AND DeviceNo = #{deviceno}
+  AND (isDelete = 0 OR isDelete is NULL)
+  </select>
+	<select id="getNetDeviceStatus" resultType="com.gw.thirdInterface.data.DeviceStatusOutData">
+		SELECT
+		a.id uuid,
+		CASE WHEN c.DeviceStatus in (1,18,34) THEN 1 ELSE 0 END isonline
+		FROM
+		UT_Unit_NetDevice a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+		LEFT JOIN ${database}.dbo.sd_devices c ON a.OwnerCode = c.OwnerCode
+		AND a.DeviceIndex = c.DeviceIndex
+		AND (a.DeviceNo = c.DeviceNo or a.DeviceIndex=2)
+		<where>
+			(a.isDelete = 0 OR a.isDelete is NULL)
+			AND (b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="unitId != null and unitId != ''">
+				AND b.ID = #{unitId}
+			</if>
+			<if test="netDeviceId != null and netDeviceId != ''">
+				AND a.ID = #{netDeviceId}
+			</if>
+		</where>
+		ORDER BY a.id DESC
+	</select>
+	<select id ="getDeviceByAlarm" resultType="java.lang.String">
+  select
+    ID
+  from
+    UT_Unit_NetDevice
+  where
+    OwnerCode = #{onwercode}
+    AND DeviceIndex = #{deviceindex}
+    AND DeviceNo = #{deviceno}
+    AND ISNULL(isDelete, 0)=0
+  </select>
+
+	<select id="getNetEq" resultType="com.gw.equipment.data.EquipmentNetDeviceOutData">
+		SELECT
+		a.ID eqid,
+		a.EqSystemID,
+		a.EqClassID,
+		a.UnitID,
+		a.BuildID,
+		a.BuildAreaID,
+		a.NetDeviceID,
+		a.ProtocolType,
+		a.EqName,
+		a.EqModel,
+		a.PartCode,
+		a.LoopCode,
+		a.PositionNumber,
+		a.InstallDate,
+		a.InstallPosition,
+		a.PointX,
+		a.PointY,
+		a.Manufacturer,
+		a.ManufacturerPhone,
+		a.Brand,
+		a.ValidityDate,
+		a.ProductDate,
+		a.Supplier,
+		a.PointCode,
+		a.Status,
+		a.StatusTime,
+		a.UseTime,
+		a.PipeDiameter,
+		a.EqCapacity,
+		a.EqFlow,
+		a.EqLift,
+		a.PipeType,
+		a.EqSpace,
+		a.AirVolume,
+		a.EqPower,
+		a.EqChangeDate,
+		a.Lastupdate,
+		b.OwnerCode,
+		a.SystemType,
+		a.SystemAdd,
+		a.DataFrom,
+		a.DataFromID,
+		a.IsNeedInspect,
+		a.QRCode,
+		a.Floors,
+		a.BuildImgbg buildImgbg,
+		c.ClassName,
+		b.name,
+		d.BuildingName,
+		b.DeviceIndex,
+		e.EqSystemCode,
+		c.ClassCode,
+		f.UnitName,
+		g.id detialId,
+		g.detialname,
+		g.iotype,
+		g.ioport,
+		CONVERT (FLOAT, g.AnalogUp) analogup,
+		CONVERT (FLOAT, g.analogdown) analogdown,
+		g.analogunit,
+		CONVERT (FLOAT, g.AnalogK) analogk,
+		CONVERT (FLOAT, g.analogb) analogb,
+		g.digitalnormal,
+		g.goodname,
+		g.badname,
+		g.remark,
+		CONVERT (FLOAT, g.AnalogWarningUp) maxValue,
+		CONVERT (FLOAT, g.AnalogWarningDown) minValue,
+		g.reserve,
+		e.EqSystemName eqSystemName,
+		h.BuildAreaName buildAreaName
+		FROM
+		UT_EQ_Equipment a
+		LEFT JOIN UT_Unit_NetDevice b ON a.NetDeviceID = b.ID
+		LEFT JOIN UT_Base_EqClass c ON a.EqClassID = c.ID
+		LEFT JOIN UT_Unit_Build d ON a.BuildID = d.ID
+		LEFT JOIN UT_Base_EqSystem e ON a.EqSystemID = e.ID
+		LEFT JOIN UT_Unit_BaseInfo f ON a.UnitID = f.ID
+		LEFT JOIN UT_EQ_EquipmentDetialGW g ON a.ID = g.EQID
+		left join UT_Unit_BuildArea h on a.BuildAreaID = h.ID
+		<where>
+			(a.isDelete = 0 OR a.isDelete is NULL)
+			AND (f.isDelete = 0 OR f.isDelete is NULL)
+			AND (b.isDelete = 0 OR b.isDelete is NULL)
+			AND a.NetDeviceID=#{netDeviceId}
+		</where>
+		ORDER BY a.ID DESC
+	</select>
+
+	<select id="getSDDeviceStatusById" resultType="com.gw.front.history.data.FrontHisSDDeviceStatusOutByIdData" >
+		SELECT
+		DISTINCT
+		a.id,
+		b.ID unitID,
+		b.UnitName unitName,
+		a.name deviceName,
+		a.OwnerCode ownerCode,
+		CASE WHEN a.DeviceIndex=1 THEN '主机' WHEN a.DeviceIndex=2 THEN '用户传输装置' ELSE 'RTU' END deviceType,
+		CASE WHEN c.DeviceStatus in (1,18,34) THEN '在线' ELSE '离线' END deviceStatus,
+		a.DeviceStatus netDeviceStatus
+		FROM
+		UT_Unit_NetDevice a
+		LEFT JOIN UT_Unit_BaseInfo b ON a.UnitID = b.ID
+		LEFT JOIN ${database}.dbo.sd_devices c ON a.OwnerCode = c.OwnerCode
+		AND a.DeviceIndex = c.DeviceIndex
+		AND (a.DeviceNo = c.DeviceNo or a.DeviceIndex=2)
+		LEFT JOIN UT_Base_EqSystem sys ON sys.ID = a.EqSystemID
+		LEFT JOIN UT_Unit_calibration f ON a.calibration_id = f.ID
+		LEFT JOIN UT_EQ_Equipment eq ON a.ID = eq.NetDeviceID
+		LEFT JOIN UT_Base_Code code on code.CodeID = a.EquipmentModel
+		<where>
+			(a.isDelete = 0 OR a.isDelete is NULL)
+		</where>
+		ORDER BY a.id DESC
+	</select>
+
+</mapper>

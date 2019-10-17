@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title></title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+
+    <style>
+        .weui-grid__icon {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .img-icon {
+            vertical-align: text-top;
+            float: left;
+            height: 24px;
+        }
+        
+        .weui-media-box__info__meta {
+            line-height: 24px;
+        }
+        
+        .weui-tab {
+            height: calc(100% - 44px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-search-bar " id="searchBarIot">
+        <form class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInputIot" placeholder="请输入关键字查询" required="">
+                <a href="javascript:" class="weui-icon-clear" id="searchClearIot"></a>
+            </div>
+            <label class="weui-search-bar__label" id="searchTextIot">
+                            <i class="weui-icon-search"></i>
+                            <span>请输入关键字查询</span>
+                          </label>
+        </form>
+        <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancelIot">搜索</a>
+    </div>
+    <!-- 容器 -->
+    <div class="weui-tab">
+        <div class="weui-navbar">
+
+            <a class="weui-navbar__item weui-bar__item--on" href="#tab1">
+                <span class="weui-badge" style="position: absolute;top: 0.3em;right: 1em;">0</span> 未处理
+            </a>
+            <a class="weui-navbar__item" href="#tab2">
+            已处理
+          </a>
+            <a class="weui-navbar__item" href="#tab3">
+                全部信息
+              </a>
+        </div>
+        <div class="weui-tab__bd">
+            <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+                <div class="weui-panel weui-panel_access">
+                    <div class="weui-panel__bd">
+
+                        <!-- <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="../../Content/images/WeChat/center/logo_sd_center.png">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <h4 class="weui-media-box__title">标题一</h4>
+                                <p class="weui-media-box__desc">的形状，有自己的运行轨道。</p>
+                                <ul class="weui-media-box__info">
+                                    <li class="weui-media-box__info__meta">文字来源</li>
+                                    <li class="weui-media-box__info__meta">时间</li>
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
+                                </ul>
+                            </div>
+                        </a> -->
+
+                    </div>
+                </div>
+            </div>
+            <div id="tab2" class="weui-tab__bd-item">
+                <div class="weui-panel weui-panel_access">
+                    <div class="weui-panel__bd"></div>
+                </div>
+            </div>
+            <div id="tab3" class="weui-tab__bd-item">
+                <div class="weui-panel weui-panel_access">
+                    <div class="weui-panel__bd"></div>
+                </div>
+            </div>
+        </div>
+        <!--滚动加载-->
+        <div class="weui-loadmore">
+            <i class="weui-loading"></i>
+            <span class="weui-loadmore__tips">正在加载</span>
+        </div>
+        <!--暂无数据-->
+        <div class="weui-loadmore weui-loadmore_line" id="noData">
+            <span class="weui-loadmore__tips">暂无数据</span>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    var loading = false; //状态标记
+    var isDeal = ""; //0处理 1未处理
+    var alarmType = GetQuery('alarmType'); //0火警 1障碍
+    var alarmStatus = GetQuery('alarmStatus'); //状态火警的状态
+    var alarmInfo = ""; //检索的关键字
+    $(function() {
+        //顶部tab选项卡点击事件
+        $('.weui-navbar__item').click(function() {
+            var thisEle = $(this);
+            var thisEles = $('.weui-navbar').find('.weui-navbar__item');
+            var thisIndex = thisEles.indexOf(thisEle[0]);
+            switch (thisIndex) {
+                case 0:
+                    isDeal = 0; //未处理
+                    break;
+                case 1:
+                    isDeal = 1; //已处理
+                    break;
+                case 2:
+                    isDeal = ""; //全部
+                    break;
+            }
+            $(thisEle.attr('href')).append($('.weui-loadmore')); //添加加载的样式
+            $('.weui-loadmore').show();
+            alarmInfo = $.trim($('#searchInputIot').val())
+            getAlarmList(thisEle, alarmType, isDeal, alarmStatus, alarmInfo);
+        });
+
+        $('.weui-bar__item--on').click();
+
+        //滚动加载更多
+        // $('.weui-tab__bd-item').infinite().on("infinite", function() {
+        //     var thisEle = $(this);
+        //     if (loading) return;
+        //     loading = true;
+        //     setTimeout(function() {
+        //         console.log(1);
+        //         thisEle.append("<p> 我是新加载的内容 </p>");
+        //         loading = false;
+        //     }, 500); //模拟延迟
+        // });
+
+        $('#searchInputIot').change(function() {
+            $('.weui-bar__item--on').click();
+        });
+
+    })
+
+    //获取告警列表
+    function getAlarmList(thisEle, alarmType, isDeal, alarmStatus, alarmInfo) {
+        console.log(isDeal);
+        $('#noData').hide();
+        $.ajax({
+            url: hostAdd + '/getAlarmList',
+            type: 'get',
+            data: 'alarmType=' + alarmType + '&isDeal=' + isDeal + '&alarmStatus=' + alarmStatus + '&keyword=' + alarmInfo,
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                // console.log(alarmType, isDeal, alarmStatus, alarmInfo);
+                if (!data.success) {
+                    return false;
+                }
+
+
+                //气泡添加
+                if (isDeal == '0') {
+                    if (data.obj.length == 0) {
+                        $('.weui-badge').text(0).hide();
+                    } else if (data.obj.length > 0) {
+                        $('.weui-badge').text(data.obj.length).show();
+                    }
+                }
+
+
+                $('.weui-loadmore').hide();
+                $('.weui-tab').append($('.weui-loadmore'));
+                $(thisEle.attr('href')).find('.weui-panel__bd').empty();
+                for (var i = 0; i < data.obj.length; i++) {
+                    $(thisEle.attr('href')).find('.weui-panel__bd').append(
+                        '<a href="alarmListdetail.html?id=' + data.obj[i].id + '&alarmtype=' + alarmType + '&isdeal=' + isDeal + '" class="weui-media-box weui-media-box_appmsg">' +
+                        // '<div class="weui-media-box__hd">' +
+                        // '<img class="weui-media-box__thumb" src="../../Content/images/WeChat/' + typeImgBackFn(data.obj[i].alarmStatus) + '">' +
+                        // '</div>' +
+                        '<div class="weui-media-box__bd">' +
+                        '<h4 class="weui-media-box__title">' + data.obj[i].unitName + '</h4>' +
+                        // '<p class="weui-media-box__desc">的形状，有自己的运行轨道。</p>' +
+                        '<ul class="weui-media-box__info">' +
+                        '<li class="weui-media-box__info__meta"><img class="img-icon" src="../../Content/images/WeChat/' + typeImgBackFn(data.obj[i].alarmStatus) + '">' + data.obj[i].alarmStatus + '</li>' +
+                        '<li class="weui-media-box__info__meta">' + data.obj[i].alarmTime.substring(0, 19) + '</li>' +
+                        '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">测试:' + data.obj[i].isTest + '</li>' +
+                        '</ul>' +
+                        ' </div>' +
+                        '</a>'
+                    )
+
+                }
+                if (data.obj.length <= 0) {
+                    $(thisEle.attr('href')).find('.weui-panel__bd').append($('#noData'));
+                    $('#noData').show();
+                }
+
+            },
+            error: function(data) {
+                console.log(data);
+                $.toptip('数据获取失败，请刷新页面。', 'error');
+                $('.weui-loadmore').hide();
+            },
+        });
+    }
+
+    function typeImgBackFn(imgtype) {
+        var imgName;
+
+        switch (imgtype) {
+            case "复位":
+                imgName = 'type_fuwei.png';
+                break;
+            case "反馈":
+                imgName = 'type_fankui.png';
+                break;
+            case "故障":
+                imgName = 'type_guzhang.png';
+                break;
+            case "监管":
+                imgName = 'type_jianguan.png';
+                break;
+            case "火警":
+                imgName = 'type_huojing.png';
+                break;
+            case "屏蔽":
+                imgName = 'type_pingbi.png';
+                break;
+            case "启动":
+                imgName = 'type_start.png';
+                break;
+            case "恢复":
+                imgName = 'type_start.png';
+                break;
+            default:
+                imgName = 'type_fuwei.png';
+        }
+
+        return imgName;
+    };
+</script>

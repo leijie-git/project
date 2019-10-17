@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>各系统监测</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../../Content/css/NetInfoStatistic/system_index.css" rel="stylesheet" type="text/css" />
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <nav>
+        <form class="layui-form" action="" id="sysBoxForm" autocomplete="off">
+            <!--下拉框-->
+            <div class="layui-inline layui-bg-cyan" id="buildList">
+                <div class="layui-input-inline">
+                    <select name="modules" id="areaSelect" lay-verify="required" lay-search="">
+                        <option value="">--区域选择--</option>
+                        <!--<option value="1">layer</option>-->
+                        <!--<option value="2">form</option>-->
+                        <!--<option value="3">layim</option>-->
+                        <!--<option value="4">element</option>-->
+                    </select>
+                </div>
+            </div>
+            <div class="navbt bt1" labiframe="system_detail1" id="1" >水系统</div>
+            <div class="navbt bt2" labiframe="system_detail2" id="2">电气火灾</div>
+            <div class="navbt bt3" labiframe="system_detail3" id="3">报警系统</div>
+            <div class="navbt bt4" labiframe="system_detail4" id="4">防火分隔</div>
+            <div class="navbt bt5" labiframe="system_detail5" id="5">气体系统</div>
+            <div class="navbt bt6" labiframe="system_detail6" id="6">燃气系统</div>
+            <div class="navbt bt7" labiframe="system_detail7" id="7">应急疏散</div>
+            <div class="navbt bt8" labiframe="system_detail8" id="8">无线烟感</div>
+            <div class="navbt btOther" labiframe="system_detailOther" id="9">防排烟系统</div>
+            <div class="navbt bt9" labiframe="system_detail9" id="10">远程控制</div>
+        </form>
+    </nav>
+    <section>
+        <iframe id="frameCont" src="" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>
+    </section>
+</div>
+</body>
+
+<script src="../../../Script/Echarts/echarts.min.js"></script>
+<script src="../../../Script/layui/layui.js"></script>
+<script src="../../../Script/layer/layer.js"></script>
+<script src="../../../Script/public.js"></script>
+<script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript">
+    //加载单位所包含的系统的图标点击图片跳转接收参数
+    function get(name){//通过参数名获取参数值方法
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+    var _unitId = GetQuery('unitId'); //单位id
+    var ico_num = get('ico_num');//传过来的参数
+
+    $(function() {
+        getEqSystemByUnitId(); //获取系统
+        getAreaListData(_unitId, "");
+        clickevent();
+        getInterfaceOutData();
+    });
+
+    function getInterfaceOutData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getInterfaceOutData",
+            data: 'unitId=' + _unitId+"&buildId=",
+            success: function(data) {
+                if (data.success) {
+                    var obj = data.obj;
+                    if(!obj || obj.length<=0){
+                        $(".bt9").css("display","none");
+                    }else{
+                        $(".bt9").css("display","block");
+                    }
+                }
+            },
+            error:function(data){
+                $(".bt9").style("display","none");
+                console.log('getinterfaceOutData失败',data);
+            }
+        });
+    }
+    function getEqSystemByUnitId() {
+        var isAsync = true,
+                lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getEqSystemByUnitId",
+            data: 'unitId=' + GetQuery('unitId'),
+            success: function(data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    var html = '';
+                    for (var i = 0; i < msg.length; i++) {
+                        $('#sysBoxForm>#'+msg[i].id).show().addClass('yesblock');
+                        $('#sysBoxForm>#10').show();
+                        //if(msg[i].eqsystemcode != 1){
+                        // html += '<div labiframe="system_detail'+getPageIndex(msg[i].eqsystemcode).page+'" class="navbt bt' + getPageIndex(msg[i].eqsystemcode).type + ' active orange" id="' + msg[i].id + '">' + msg[i].eqsystemname + '</div>'
+                        // }
+                    }
+                    //$('#sysBoxForm').append(html);
+                    if(msg.length>0  && ico_num == null){//增加判断条件,防止传参过来时 自动点击第一个图标
+                        $('nav form > div.navbt.yesblock').eq(0).click();
+                    }
+                    $('nav form > div.navbt').each(function(){
+                        $(this).attr('title',$(this).text())
+                    })
+                }
+            },
+            complete: function() {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getPageIndex(code){
+
+        var index = "Other";
+        var attr = "Other";
+        if(code == 1){
+            index = 1;
+            attr = 1;
+        }else if(code == 2){
+            index = 2;
+            attr = 2;
+        }else if(code == 3){
+            index = 3;
+            attr = 3;
+        }else if(code == 4){
+            index = 4;
+            attr = 4;
+        }else if(code == 5){
+            index = 5;
+            attr = 5;
+        }else if(code == 6){
+            index = 6;
+            attr = 6;
+        }else if(code == 7){
+            index = 7;
+            attr = 7;
+        }else if(code == 8){
+            index = 8;
+            attr = 8;
+        }
+        else if(code == 9){
+            index = 3;
+        }
+        var data = {
+            "page":attr,
+            "type":index
+        };
+        return data;
+    }
+
+
+    function getAreaListData(unitId, buildId) {
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getBuildAreaList",
+            data: 'unitId=' + unitId + "&buildId=" + buildId,
+            success: function(data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    var option = '<option value="">--区域选择--</option>';
+                    for (var i = 0; i < msg.length; i++) {
+                        option += '<option value="' + msg[i].coupletKey + '">' + msg[i].coupletValue + '</option>'
+                    }
+                    $('#areaSelect').html(option);
+                    loadLayuiForm(); //调用layui form组件，方法写在public
+                }
+            }
+        });
+    }
+
+    function clickevent() {
+
+        //顶部nav系统选择
+        $('nav form').delegate('div.navbt', 'click', function() {
+            var areaid = $('#buildList').find('dd.layui-this').attr('lay-value') || ""; //区域
+            var lab = $(this).attr('labiframe');
+            var systemID = $(this).attr('id');
+            var name = GetQuery('unitname');
+            $(this).addClass('active orange').siblings().removeClass('active orange');
+            $('#frameCont').attr('src', lab + '.html?unitId=' + _unitId + '&systemID=' + systemID + '&areaid=' + areaid+'&unitname='+escape(name));
+        });
+
+        // $('nav div.navbt').eq(0).click();
+        $('#moreBtn').click(function() {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['80%', '80%'],
+                closeBtn: 0,
+                shade: 0.5,
+                shadeClose: true,
+                content: 'system_moreLayer.html'
+            });
+        });
+
+        var areaValId = "";
+        $('#buildList').on('blur',' .layui-input',function(){
+            var areaid = $('#buildList').find('dd.layui-this').attr('lay-value') || ""; //区域
+            if(areaValId != areaid){
+                areaValId = areaid;
+                $('nav form div.navbt.active').click();
+            }
+        })
+        //修改
+        if(ico_num != null){//根据传过来的图标数值, 执行对应图标的点击
+            $('nav form div.navbt:eq('+(ico_num-1)+')').click();
+        }
+    }
+</script>
+</html>

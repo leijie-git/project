@@ -1,0 +1,458 @@
+body {
+    padding: 0 0;
+    margin: 0;
+    background: none;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: none;
+    padding: 0 2%;
+}
+.wrapper_content{
+    width: 100%;
+    height: 100%;
+}
+
+/*头部*/
+
+header {
+    width: 100%;
+    height: 45px;
+    overflow: hidden;
+    -webkit-display: flex;
+    display: flex;
+    justify-content: flex-start;
+}
+
+header>div {
+    background-size: 100% 100%;
+    /*display: inline-block;*/
+    /*margin-right: 15px;*/
+    /*height: 100%;*/
+    /*line-height: 30px;*/
+    /*text-align: center;*/
+    /*cursor: pointer;*/
+    /*padding-left: 20px;*/
+    /*background-size: 100% 100%;*/
+    /*background-repeat: no-repeat;*/
+}
+
+header .h1 {
+    width: 110px;
+    background-image: url(../../images/CheckPost/changeBt-a1.png);
+}
+
+header .h2 {
+    width: 110px;
+    background-image: url(../../images/CheckPost/changeBt_b1.png);
+}
+
+header .h3 {
+    width: 140px;
+    background-image: url(../../images/CheckPost/changeBt_c1.png);
+}
+
+header .h4 {
+    width: 140px;
+    background-image: url(../../images/CheckPost/changeBt_d1.png);
+}
+
+header .h1.active {
+    background-image: url(../../images/CheckPost/changeBt_a2.png);
+    background-size: 100% 100%;
+    height: 100%;
+}
+
+header .h2.active {
+    background-image: url(../../images/CheckPost/changeBt_b2.png);
+}
+
+header .h3.active {
+    background-image: url(../../images/CheckPost/changeBt_c2.png);
+}
+
+header .h4.active {
+    background-image: url(../../images/CheckPost/changeBt_d2.png);
+}
+
+
+/*主体内容框架*/
+
+section {
+    width: 100%;
+    height: calc(100% - 35px);
+    /*padding-top: 10px;*/
+}
+
+@media screen and (max-width: 1366px){
+    .wrap_module>header {
+        /*height: 30px;*/
+    }
+}
+
+.headBox .headA .headbtn>div {
+    display: inline-block;
+    margin-left: 2%;
+    height: 100%;
+    line-height: 26px;
+    text-align: center;
+    font-size: 14px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    color: #fff;
+}
+
+.headBox .headA .headbtn>div:nth-child(1) {
+    color: #E4AB32;
+}
+
+.headBox .headA .headbtn>div:nth-child(1)~div {
+    color: #6AC9EF;
+}
+
+.headBox .headA .headbtn>span {
+    background-image: url(../../images/CheckPost/hr.png);
+    background-size: 100% 130%;
+}
+
+.middleBox {
+    /* padding-right: 10px; */
+    width: 100%;
+    height: calc(100% - 55px);
+    /* margin-top: -1%; */
+}
+
+.searchBt {
+    /*line-height: 30px;*/
+    /*margin: 1% auto;*/
+}
+
+.searchPut {
+    height:25px;
+    width: 200px;
+    border: 1px solid #1080E4;
+    border-radius: 5px;
+    color: #A7AEB5;
+    font-size: 0.75rem;
+    padding-left: 10px;
+    padding-right: 60px;
+    background-size: 100% 100%;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    /*border-right: none;*/
+    /*border-top-right-radius: 0;*/
+    /*border-bottom-right-radius: 0;*/
+}
+
+.searchStart {
+    border: 1px solid #2097F3;
+    font-size: 14px;
+    border-radius: 5px;
+    color: #A7AEB5;
+    padding: 2px 6px;
+    margin-left: 0px;
+}
+
+.searchAll {
+    border: 1px solid #2097F3;
+    font-size: 14px;
+    border-radius: 5px;
+    color: #A7AEB5;
+    padding: 2px 6px;
+}
+
+.searchIn {
+    border: 1px solid #2097F3;
+    font-size: 14px;
+    border-radius: 5px;
+    color: #A7AEB5;
+    padding: 2px 6px;
+}
+
+
+/*table*/
+
+.table_box {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 40px);
+    /*padding-right: 28px;*/
+}
+
+.table_box table thead {
+    background-color: #0E4B81;
+    color: #c9e1f2;
+}
+
+.headBox .headA .triangle-down {
+    margin-left: 4%;
+    margin-top: 0.2%;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid #E2AC30;
+}
+
+.headBox .line {
+    width: 100%;
+    height: 1px;
+    margin: 10px auto;
+    padding: 0px;
+    background-color: #107CDE;
+    overflow: hidden;
+}
+.wrap_search{
+    margin-bottom: 10px;
+    padding-left: 2%;
+}
+
+.btn_search{
+    /*margin-left: -1.2%;*/
+    margin-left: -64px;
+    /*margin-right: 50px;*/
+}
+
+.search-button {
+    height: 26px;
+    /* width: 5%; */
+    line-height: 26px;
+    border: none;
+    font-size: 13px;
+    border-radius: 5px;
+    color: #BEDAFF;
+    padding: 0 15px;
+    /* background-color: #0E4B81; */
+    background: url(../../images/Public/search.png) no-repeat center;
+    background-size: 100% 100%;
+    background-position: 0 1px;
+    margin: 0 5px;
+    opacity: 0.5;
+}
+.btn_inspect{
+    opacity: 1;
+}
+.btn_inspect:hover{
+    background: url(../../images/Home/mapMarkerTypeTab_active.png) no-repeat center;
+    background-size: 100% 100%;
+    color: #DEAA34;
+    cursor: pointer;
+}
+
+
+.list_table {
+    width: 100%;
+    height: calc(100% - 0px);
+}
+
+.table_header {
+    width: 100%;
+    height: 30px;
+    background-color: rgba(16, 71, 110, .8);
+    color: #BEDEFF;
+    font-size: 13px;
+    /*font-weight: 100;*/
+}
+
+.table_header>table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table_header>table>thead tr th {
+    height: 30px;
+    line-height: 30px;
+}
+
+.table_content {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 30px);
+    color: #78A2D4;
+}
+
+.table_content>table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table_content>table tr {
+    cursor: pointer;
+}
+.table_content>table tr.tr_deviceOutline{
+    opacity: 0.7;
+}
+.table_content>table>tbody tr td {
+    height: 30px;
+    line-height: 30px;
+    box-shadow: none;
+    border: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0 2px;
+    text-align: center;
+}
+.table_content>table>tbody tr td.novideo{
+    color: #3F5B80;
+}
+.icon_video{
+    width: 14px;
+}
+.icon_video.hasVideo{
+    cursor: pointer;
+}
+.table_content>table>tbody tr td.success{
+    color: #0BC5C2;
+}
+.table_content>table>tbody tr td.fail{
+    color: #FD5757;
+}
+.table_content>table>tbody tr td.no:not(.identity){
+    color: #415F85;
+}
+.table_content>table>tbody tr td.identity.no{
+
+    color: #FD5757;
+}
+.table_content>table tr:nth-child(2n) {
+    background-color: rgba(16, 71, 110, .3);
+}
+
+.table_content>table tr:hover {
+    background-color: rgba(16, 71, 110, .6);
+}
+
+.tbody tr .video-controll span {
+    margin-left: 18%;
+}
+
+.outPortBox img {
+    margin-left: 91%;
+    position: relative;
+    margin-top: -0.4%;
+}
+
+.bottomBox {
+    position: fixed;
+    width: 95.5%;
+    height: 60px;
+    padding-top: 5px;
+    text-align: center;
+    background: radial-gradient(rgba(16, 71, 110, .5), rgba(16, 71, 110, .8) 33%);
+    margin-left: 2.35%;
+    left: 0;
+    bottom: 15px;
+}
+
+.scroll-bar {
+    background-color: #0e1021;
+}
+
+.bottomBox .pageMessage .message-span {
+    margin-left: -75%;
+}
+
+.bottomBox .pageMessage {
+    padding-left: 2%;
+    margin-top: 15px;
+}
+
+.bottomBox .pageMessage select {
+    background-color: #0D3D61;
+    border: 1px solid #277de2;
+    border-radius: 2px;
+    color: #FFF;
+}
+
+.pageNum {
+    position: absolute;
+    margin-left: 22%;
+}
+
+.pageNum:hover {
+    cursor: pointer;
+}
+
+.pageNum span {
+    margin-left: 15px;
+}
+
+.pageNum span:nth-child(4) {
+    color: #03D1F7;
+    font-size: 15px;
+}
+
+.table_content table tbody .check {
+    margin-left: 7px;
+    text-align: right;
+    font-size: 24px;
+    background: url(../../images/NetInfoStatistic/checkbox.png) left center no-repeat;
+}
+.table_content table tbody tr:hover{
+    cursor: auto;
+}
+.table_content table tbody tr.tr_deviceOutline .checkbox{
+    cursor: no-drop;
+}
+.table_content table tbody tr:not(.tr_deviceOutline) .checkbox{
+    cursor: pointer;
+}
+
+.table_content table tbody .checkbox {
+    vertical-align: middle;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    width: 18px;
+    height: 18px;
+    background: url("../../../Content/images/NetInfoStatistic/checkbox.png") no-repeat center;
+    background-size: 100% 100%;
+    margin: auto;
+}
+.table_content table tbody .checkbox.active{
+    background: url("../../../Content/images/NetInfoStatistic/checkbox_checked.png") no-repeat center;
+    background-size: 100% 100%;
+}
+.success {
+    color: #006400;
+}
+
+.defeated {
+    color: red;
+}
+
+.select1 {
+    border: 1px solid #2097F3;
+    height: 1.5rem;
+    width: 9.5rem;
+    border-radius: 5px;
+    margin-left: 2%;
+}
+
+.select2 {
+    border: 1px solid #2097F3;
+    height: 1.5rem;
+    width: 9.5rem;
+    border-radius: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

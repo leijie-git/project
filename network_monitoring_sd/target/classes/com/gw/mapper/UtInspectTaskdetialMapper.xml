@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtInspectTaskdetialMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtInspectTaskdetial">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="CheckInfo" property="checkinfo" jdbcType="NVARCHAR"/>
+        <result column="IsOK" property="isok" jdbcType="INTEGER"/>
+        <result column="BadDesc" property="baddesc" jdbcType="NVARCHAR"/>
+        <result column="BadLevel" property="badlevel" jdbcType="INTEGER"/>
+        <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP"/>
+        <result column="CreateUser" property="createuser" jdbcType="NVARCHAR"/>
+        <result column="IsNeedRepair" property="isneedrepair" jdbcType="INTEGER"/>
+        <result column="pic_path" property="picPath" jdbcType="VARCHAR"/>
+        <result column="TaskID" property="taskid" jdbcType="BIGINT"/>
+        <result column="ClassDetialID" property="classdetialid" jdbcType="BIGINT"/>
+    </resultMap>
+    <select id="getPatrolAbnormal" resultType="com.gw.front.index.data.FrontPatrolAbnormalOutData"
+            parameterType="java.lang.String">
+        SELECT
+        COUNT (*) patrolCount,
+        SUM (
+        CASE
+        WHEN b.IsInspect IS NOT NULL THEN
+        1
+        ELSE
+        0
+        END
+        ) patrolFinishCount,
+        SUM (
+        CASE
+        WHEN b.IsOK = 1 THEN
+        1
+        ELSE
+        0
+        END
+        ) patrolAbnormalCount
+        FROM
+        UT_Inspect_Task b
+        <if test="userId != 1">
+            LEFT JOIN UT_Base_UserReUnit c ON c.unit_id = b.UnitID
+        </if>
+        LEFT JOIN UT_Unit_BaseInfo unit ON b.UnitID = unit.ID
+        WHERE
+        (
+        unit.isDelete = 0
+        OR unit.isDelete IS NULL
+        )
+        <if test="userId != 1">
+            and c.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="getMaintenanceStatusStat" resultType="com.gw.front.maintenance.data.FrontMaintenanceStatOutData"
+            parameterType="com.gw.front.maintenance.data.FrontMaintenanceInData">
+        SELECT
+        SUM(CASE WHEN a.IsInspect is not null THEN 1 ELSE 0 END) AS xcdealed,
+        COUNT(*) totalCount
+        FROM
+        UT_Inspect_Task a
+        <if test="userId!=null and userId!=''and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        <where>
+            <if test="unitId!=null and unitId!=''">
+                a.UnitID = #{unitId}
+            </if>
+            <if test="userId!=null and userId!='' and userId != 1">
+                and b.user_id = #{userId}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and CONVERT (VARCHAR(100),  a.TaskStart
+                , 23)>=#{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and CONVERT (VARCHAR(100),  a.TaskEnd
+                , 23)&lt;=#{endDate}
+            </if>
+        </where>
+    </select>
+    <select id="getInspectTaskList" resultType="com.gw.front.maintenance.data.FrontMaintenanceTaskOutData"
+            parameterType="com.gw.front.maintenance.data.FrontMaintenanceInData">
+        SELECT
+        b.ID taskID,
+        unit.unitCode,
+        unit.unitName,
+        b.SiteName siteName,
+        b.SiteCode sitecode,
+        b.SiteDesc siteDesc,
+        CONVERT (VARCHAR, b.TaskStart, 23) taskStart,
+        CONVERT (VARCHAR, b.TaskEnd, 23) taskEnd,
+        g.PlanName planName,
+        CASE WHEN b.IsOK IS NULL THEN '是' ELSE '否' END isOK,
+        CASE WHEN b.IsInspect IS NULL THEN '未巡查' ELSE '已巡查' END isInspect,
+        CONVERT (VARCHAR, b.InspectTime, 120) inspectTime,
+        e.UserName inspectUser,
+        CONVERT (VARCHAR, g.PlanStart, 111)+'~'+CONVERT (VARCHAR, g.PlanEnd, 111) planTime,
+        h.InspectCycleType inspectCycleType
+        FROM
+        UT_Inspect_Task b
+        LEFT JOIN UT_Unit_BaseInfo unit ON unit.ID = b.UnitID
+        <if test="buildId != null and buildId != ''">
+            LEFT JOIN UT_Unit_Build d ON d.UnitID = unit.ID
+        </if>
+        LEFT JOIN UT_Unit_User e ON b.InspectUserID = e.ID
+        LEFT JOIN UT_Inspect_PlanDetial f ON b.PlanDetialID = f.ID
+        LEFT JOIN UT_Inspect_Plan g ON f.PlanID = g.ID
+        LEFT JOIN UT_Inspect_Site h ON b.SiteID = h.ID
+        <if test="userId!=null and userId!='' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit m ON m.unit_id = b.UnitID
+        </if>
+        <where>
+            (unit.isDelete = 0 OR unit.isDelete is NULL)
+            <if test="startDate != null and startDate != ''">
+
+                <if test="endDate != null and endDate != ''">
+                    and CONVERT(VARCHAR,b.TaskEnd,23) &gt;= #{startDate}
+                    and CONVERT(VARCHAR,b.TaskStart,23) &lt;= #{endDate}
+                </if>
+                <if test="endDate == null and endDate == ''">
+                    and CONVERT(VARCHAR,b.TaskStart,23) &lt;= #{startDate}
+                    and CONVERT(VARCHAR,b.TaskEnd,23) &gt;= #{startDate}
+                </if>
+            </if>
+            <if test="startDate == null and startDate == ''">
+                <if test="endDate != null and endDate != ''">
+                    and CONVERT(VARCHAR,b.TaskStart,23) &lt;= #{endDate}
+                    and CONVERT(VARCHAR,b.TaskEnd,23) &gt;= #{endDate}
+                </if>
+            </if>
+            <if test="status != null and status != ''">
+                <if test="status == 0">
+                    and b.IsInspect is NULL
+                </if>
+                <if test="status != 0">
+                    and b.IsInspect is not NULL
+                </if>
+            </if>
+            <if test="buildId != null and buildId != ''">
+                AND d.ID = #{buildId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (unit.UnitName LIKE '%${keyword}%' or b.SiteName LIKE '%${keyword}%' or g.PlanName LIKE
+                '%${keyword}%')
+            </if>
+            <if test="unitId!=null and unitId!=''">
+                AND b.UnitID = #{unitId}
+            </if>
+            <if test="userId!=null and userId!='' and userId != 1">
+                AND m.user_id = #{userId}
+            </if>
+        </where>
+        ORDER BY b.ID DESC
+    </select>
+    <select id="getTaskDetailList" parameterType="java.lang.String"
+            resultType="com.gw.wechat.data.PhoneTaskDetailOutData">
+    SELECT
+	    a.ID taskdetailid,
+	    a.TaskID taskid,
+	    d.PlanName,
+	    d.ID planid,
+	    b.SiteCode,
+	    b.SiteName,
+	    e.InspectCycle
+	FROM
+	    UT_Inspect_TaskDetial a
+	LEFT JOIN UT_Inspect_Task b ON a.TaskID = b.ID
+	LEFT JOIN UT_Inspect_PlanDetial c ON b.PlanDetialID = c.ID
+	LEFT JOIN UT_Inspect_Plan d ON c.PlanID = d.ID
+	LEFT JOIN UT_Inspect_Site e ON b.SiteID = e.ID
+	where
+	   b.ID = #{id}
+	   and a.IsOK = null
+  </select>
+
+    <select id="getInspectTaskDetail" resultType="com.gw.front.maintenance.data.FrontMaintenanceTaskOutData">
+        SELECT
+        a.ID taskDetailId,
+        unit.unitCode,
+        unit.unitName,
+        a.BadDesc checkInfo,
+        a.CheckInfo checkName,
+        b.SiteName siteName,
+        CASE WHEN b.IsInspect IS NULL THEN '未巡查' ELSE '已巡查' END isInspect,
+        CASE WHEN b.IsOK=1 THEN '否' ELSE '是' END isOK,
+        CONVERT (VARCHAR, b.InspectTime, 120) inspectTime,
+        e.UserName inspectUser,
+        CONVERT (VARCHAR, g.PlanStart, 111)+'~'+CONVERT (VARCHAR, g.PlanEnd, 111) planTime,
+        CASE WHEN a.IsNeedRepair IS NULL THEN '否' ELSE '是' END isNeedRepair,
+        a.pic_path picPath,
+        h.InspectCycleType inspectCycleType
+        FROM
+        UT_Inspect_TaskDetial a
+        LEFT JOIN UT_Inspect_Task b ON b.ID = a.TaskID
+        LEFT JOIN UT_Unit_BaseInfo unit ON unit.ID = b.UnitID
+        LEFT JOIN UT_Unit_User e ON b.InspectUserID = e.ID
+        LEFT JOIN UT_Inspect_PlanDetial f ON b.PlanDetialID = f.ID
+        LEFT JOIN UT_Inspect_Plan g ON f.PlanID = g.ID
+        LEFT JOIN UT_Inspect_Site h ON b.SiteID = h.ID
+        <where>
+            <if test="taskID!=null and taskID!=''">
+                b.ID = #{taskID}
+            </if>
+        </where>
+    </select>
+
+    <select id="getInspectTaskDetailByNfc" resultType="com.gw.wechat.data.PhoneTaskDetailOutData">
+        SELECT
+        a.ID taskid,
+        a.UnitID unitid,
+        a.PlanDetialID plandetailid,
+        a.SiteID siteid,
+        a.SiteClassID siteclassid,
+        a.SiteCode sitecode,
+        CONVERT (VARCHAR, a.TaskStart, 120) starttime,
+        CONVERT (VARCHAR, a.TaskEnd, 120) endtime,
+        a.SiteName sitename,
+        b.PlanID planid,
+        a.OrderIndex orderindex,
+        a.InspectUserID inspectuserid,
+        d.PlanName planname,
+        c.InspectCycleType inspectcycletype,
+        a.ChangeUserID changeuserid,
+        a.ReceiveUserID receiveuserid,
+        a.IsChange ischange,
+        a.IsReceive isreceive,
+        CONVERT (VARCHAR, a.ChangeTime, 120) changetime,
+        CONVERT (VARCHAR, a.ReceiveTime, 120) receivetime,
+        a.NFCCode nfcCode
+        FROM
+        UT_Inspect_Task a
+        LEFT JOIN UT_Inspect_PlanDetial b ON a.PlanDetialID = b.ID
+        LEFT JOIN UT_Inspect_Site c ON a.SiteID = c.ID
+        LEFT JOIN UT_Inspect_Plan d ON b.PlanID = d.ID
+        <where>
+            <if test="nfcCode!=null and nfcCode!=''">
+                a.NFCCode = #{nfcCode}
+            </if>
+        </where>
+        order by a.ID desc
+    </select>
+    <select id="getInspectEpirationTaskList" resultType="com.gw.front.maintenance.data.FrontMaintenanceTaskOutData"
+            parameterType="com.gw.front.maintenance.data.FrontMaintenanceInData">
+        SELECT
+        b.ID taskID,
+        unit.unitCode,
+        unit.unitName,
+        a.BadDesc checkInfo,
+        b.SiteName siteName,
+        '未巡查' isInspect,
+        e.UserName inspectUser,
+        CONVERT (VARCHAR, b.TaskEnd, 120) taskEnd,
+        CONVERT (VARCHAR, g.PlanStart, 111)+'~'+CONVERT (VARCHAR, g.PlanEnd, 111) planTime,
+        h.InspectCycleType inspectCycleType
+        FROM
+        UT_Inspect_Task b
+        LEFT JOIN UT_Inspect_TaskDetial a ON b.ID = a.TaskID
+        LEFT JOIN UT_Unit_BaseInfo unit ON unit.ID = b.UnitID
+        LEFT JOIN UT_Unit_User e ON b.InspectUserID = e.ID
+        LEFT JOIN UT_Inspect_PlanDetial f ON b.PlanDetialID = f.ID
+        LEFT JOIN UT_Inspect_Plan g ON f.PlanID = g.ID
+        LEFT JOIN UT_Inspect_Site h ON b.SiteID = h.ID
+        <where>
+            (unit.isDelete = 0 OR unit.isDelete is NULL)
+            and b.IsInspect is null
+            and h.InspectCycleType!=0
+            <if test="nowDate!=null and nowDate!=''">
+                and b.ExpirationTime &lt;=#{nowDate}
+                and b.TaskEnd >=#{nowDate}
+            </if>
+            <if test="unitId!=null and unitId!=''">
+                AND b.UnitID = #{unitId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getInspectEpirationTaskCount" resultType="java.lang.Integer">
+        SELECT
+        count(b.ID)
+        FROM
+        UT_Inspect_Task b
+        LEFT JOIN UT_Inspect_TaskDetial a ON b.ID = a.TaskID
+        LEFT JOIN UT_Unit_BaseInfo unit ON unit.ID = b.UnitID
+        LEFT JOIN UT_Inspect_Site h ON b.SiteID = h.ID
+
+        <where>
+            (unit.isDelete = 0 OR unit.isDelete is NULL)
+            and b.IsInspect is null
+            and h.InspectCycleType!=0
+            <if test="nowDate!=null and nowDate!=''">
+                and b.ExpirationTime &lt;=#{nowDate}
+                and b.TaskEnd >=#{nowDate}
+            </if>
+            <if test="unitID!=null and unitID!=''">
+                AND b.UnitID = #{unitID}
+            </if>
+        </where>
+    </select>
+</mapper>

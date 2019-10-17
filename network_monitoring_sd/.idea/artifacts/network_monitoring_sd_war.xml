@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="network_monitoring_sd:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>network_monitoring_sd</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="network_monitoring_sd-1.0.0.war">
+      <element id="artifact" artifact-name="network_monitoring_sd:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,105 @@
+/*去除顶部bar的阴影*/
+
+.navigation {
+  box-shadow: none;
+}
+
+.container {
+  padding: 0.533333rem 0.4rem;
+}
+
+/*消息详情样式*/
+
+/*消息标题*/
+
+.msg_title {
+  text-align: center;
+  margin: 0 auto 0.426667rem;
+  font-size: 0.48rem;
+}
+
+/*消息日期*/
+
+.msg_date {
+  text-align: center;
+  color: #848484;
+  margin-bottom: 0.373333rem;
+  font-size: 0.32rem;
+}
+
+.msg_con {
+  color: #848484;
+  font-size: 0.346667rem;
+}
+
+.share_wrap {
+  display: none;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.2);
+}
+
+.share_con {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3.146667rem;
+  background-color: #fff;
+  text-align: center;
+  -webkit-transform: translateY(100%);
+  -moz-transform: translateY(100%);
+  -ms-transform: translateY(100%);
+  -o-transform: translateY(100%);
+  transform: translateY(100%);
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 2s;
+}
+
+.share_title {
+  color: #848484;
+  margin-top: 0.266667rem;
+  margin-bottom: 0.346667rem;
+}
+
+.share_con .flex_box>div {
+  width: 50%;
+  text-align: center;
+}
+
+.share_con .flex_box>div p {
+  margin-top: 0.173333rem;
+}
+
+.wechat1 {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.wechat2 {
+  width: 1.173333rem;
+  height: 1.173333rem;
+}
+
+.show_share {
+  display: block;
+}
+
+.show_share .share_con {
+  -webkit-transform: translateY(0);
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -o-transform: translateY(0);
+  transform: translateY(0);
+}
+
+.personName{
+	margin-left: 15px;
+	color: inherit;
+}

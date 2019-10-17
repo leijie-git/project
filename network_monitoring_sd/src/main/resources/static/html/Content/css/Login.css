@@ -1,0 +1,280 @@
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+input,button{
+    outline: none;
+}
+::-webkit-input-placeholder {
+    /* Chrome */
+    color: #56C9FA;
+}
+
+:-ms-input-placeholder {
+    /* IE 10+ */
+    color: #56C9FA;
+}
+
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #56C9FA;
+    opacity: 1;
+}
+
+:-moz-placeholder {
+    /* Firefox 4 - 18 */
+    color: #56C9FA;
+    opacity: 1;
+}
+
+.wrap_content {
+    width: 100%;
+    height: 100%;
+    background: url("../images/Login/loginBg.png") no-repeat left top;
+    background-size: 100% 100%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    position: relative;
+}
+.logo {
+    width:19%;
+    position: absolute;
+    top: 6%;
+    left: 5.5%;
+}
+.login {
+    width: 25rem;
+    height: 28rem;
+    position: absolute;
+    right: calc(25% - 14rem);
+    top: calc(50% - 14rem);
+    padding: 0% 3% 0;
+    /* border: 1px #fff solid; */
+    background: url("../images/Login/loginBox.png") no-repeat center / 100% 100%;
+}
+.login form{
+    position: relative;
+    height: 13rem;
+    /* border: 1px #fff solid; */
+    top: calc(42% - 6.5rem);
+}
+.login .username,
+.login .password {
+    width: 100%;
+    margin-bottom: 3%;
+    padding-left: 55px;
+}
+
+.login .username_icon {
+    width: 1.3rem;
+    height: 1.3rem;
+    display: inline-block;
+    background-image: url("../images/Login/username_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    background-size: 100% 100%;
+    top: 3%;
+    left: 3%;
+}
+
+.login .password_icon {
+    width: 1.3rem;
+    height: 1.3rem;
+    display: inline-block;
+    background-image: url("../images/Login/password_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    background-size: 100% 100%;
+    top: calc(2.1rem + 8%);
+    left: 3%;
+}
+
+.login input[type="password"],
+.login input[type="text"] {
+    height: 2.1rem;
+    color: #56C9FA;
+    font-size: 1.2rem;
+    border: 1px solid #0F7BD8;
+    border-radius: 4px;
+    background: #064b8c;
+    /* Old browsers */
+    background: -moz-linear-gradient(top, #064b8c 0%, #063970 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #064b8c 0%, #063970 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #064b8c 0%, #063970 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#064b8c', endColorstr='#063970', GradientType=0);
+    /* IE6-9 */
+}
+
+.code {
+    width: 100%;
+    height: 47px;
+    margin-bottom: 2%;
+}
+
+.code_input {
+    width: 8rem;
+    float: left;
+    padding: 0 15px;
+    margin-right: 15px;
+}
+
+.code_img {
+    width: 8rem;
+    height: 2.3rem;
+    float: left;
+}
+
+.code_icon {
+    width: 1.7rem;
+    height: 2.3rem;
+    float: right;
+    background-image: url("../images/Login/code_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    background-size: 100%;
+    margin-right: 1rem;
+}
+
+.rememb_text {
+    font-size: 16px;
+    color: #56C9FA;
+    padding-left: 30px;
+    cursor: pointer;
+    user-select: none;
+    background-image: url("../images/Login/rememb1.png");
+    background-repeat: no-repeat;
+    background-position: left;
+    float: left;
+}
+
+.forget {
+    font-size: 18px;
+    color: #56C9FA;
+    float: right;
+}
+
+.btn_submit {
+    width: 100%;
+    height: 2rem;
+    margin-top: 5%;
+    color: #56C9FA;
+    font-size: 1.4rem;
+    display: block;
+    border: 1px solid #0F7BD8;
+    border-radius: 4px;
+    background: #064b8c;
+    /* Old browsers */
+    background: -moz-linear-gradient(top, #064b8c 0%, #063970 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #064b8c 0%, #063970 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #064b8c 0%, #063970 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#064b8c', endColorstr='#063970', GradientType=0);
+    /* IE6-9 */
+    cursor: pointer;
+}
+
+#rememb {
+    position: relative;
+    width: 0;
+    height: 0;
+}
+
+#rememb:checked+.rememb_text {
+    background-image: url(../images/Login/rememb2.png);
+}
+
+.foot {
+    width: 100%;
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    color: #BCBFCE;
+    position: fixed;
+    bottom: 0px;
+    left:0;
+}
+
+.foot a {
+    color: #BCBFCE;
+    font-weight: bold;
+}
+
+.box_code{
+    width: 5.4rem;
+    height: 5rem;
+    position: absolute;
+    bottom: 2.5rem;
+    right: calc(50% - 2.8rem);
+    /* border: 1px solid #fff; */
+    -webkit-display:flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.box_code_name{
+    height: 20px;
+    line-height: 20px;
+    width: 100%;
+    text-align: center;
+}
+.box_code_main{
+    width: 75px;
+    height: 68px;
+    /*border: 1px solid #fff;*/
+    /* margin: auto; */
+}
+.box_code>img{
+    width: 100%;
+    height: 100%;
+}
+
+.icon_verify{
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    right: -1.2rem;
+    background: url("../../Content/images/Login/icon_true.png") center / 100% 100%;
+    display: none;
+}
+.icon_name_verify{
+    top: .5rem;
+}
+.icon_name_verify.false{
+    background: url("../../Content/images/Login/icon_false.png") center / 100% 100%;
+}
+.icon_psd_verify{
+    top: 3.3rem;
+}
+.icon_psd_verify.false{
+    background: url("../../Content/images/Login/icon_false.png") center / 100% 100%;
+}
+.icon_code_verify{
+    top: 6.1rem;
+}
+.icon_code_verify.false{
+    background: url("../../Content/images/Login/icon_false.png") center / 100% 100%;
+}
+
+
+
+
+
+
+
+
+

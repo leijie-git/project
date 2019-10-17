@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/swiper/css/swiper.min.css" rel="stylesheet" type="text/css"/>
+
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/Home/Index.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/ModuleTwo/Home/Index.css" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="../../../Script/jquery-1.11.0.js"></script>
+    <script type="text/javascript" src="../../../Script/public.js"  ></script>
+    <script type="text/javascript" src="../../../Script/Index.js" ></script> <!--头部共用操作-->
+    <script type="text/javascript" src="../../../Script/Echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="../../../Script/layui/layui.js"></script>
+    <script type="text/javascript" src="../../../Script/layer/layer.js"></script>
+    <script type="text/javascript" src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script type="text/javascript" src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script type="text/javascript" src="../../../Script/swiper/js/swiper.min.js"></script>
+    <script type="text/javascript" src="../../../Script/scrollAuto/scrollAuto.js"></script>
+    <script type="text/javascript" src="../../../Script/scrollAuto/scrollAutoTable.js"></script>
+
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=uAVQruFnlAevcIBVA89lt02GH5kLkUXd"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+
+</head>
+<body>
+<div class="wrapper">
+    <!-- 左侧列表-->
+    <div class="left_alarm_box_shadow">
+        <div class="box_alarm_block">
+            <div class="box_timelyAlarmList">
+                <div class="box_block_tit"><p class="fontSize16">实时火警信息</p></div>
+                <div class="box_block_legend fontSize16" id="timelyAlarmListCount"></div>
+                <div class="tip_more" ><span class="warning_more">更多<i class="layui-icon">&#xe65b</i></span></div>
+                <div class="box_block_content">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="30%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="40%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>报警时间</th>
+                                <th>类型</th>
+                                <th>测试</th>
+                                <th>警情描述</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_tbody scrollbar-inner">
+                        <div class="slide_alarmList" id="fireAlarmList">
+                            <ul class="ul_fireAlarmContent" id="mainContentTbody">
+
+                            </ul>
+                            <!--<table>-->
+                                <!--<colgroup>-->
+                                    <!--<col width="30%">-->
+                                    <!--<col width="15%">-->
+                                    <!--<col width="15%">-->
+                                    <!--<col width="40%">-->
+                                <!--</colgroup>-->
+                                <!--<tbody id="mainContentTbody">-->
+                                <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td>2018.07.15 08:46:00</td>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td>监管</td>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td>是</td>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td class="alarm_desc">00好主机0015回路0007节点</td>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                                <!--</tbody>-->
+                            <!--</table>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box_unitBaseInfo">
+                <div class="box_block_tit"><p class="fontSize16">单位信息</p></div>
+                <div class="box_block_legend" id="unitBaseInfoTab">
+                    <div labcon="con_video">视频</div>
+                    <div class="active" labcon="con_inspect">查岗</div>
+                    <div labcon="con_baseInfo">基础信息</div>
+                </div>
+                <div class="tip_more" id="moreUnitInfo"><span>更多<i class="layui-icon"></i></span></div>
+                <div class="box_block_content" id="unitBaseInfoContent">
+                    <div class="con_video">
+                        <div class="video_box">
+                            <div class="video1"></div>
+                            <div class="video2"></div>
+                            <div class="video2"></div>
+                        </div>
+                        <div class="input_box">
+                            <!--<span class="code_icon"></span>-->
+                            <!--<span class="site_icon"></span>-->
+                            <input type="text" placeholder="选择区域视频" id="areaSearch" class="videoAreaTxt" value="">
+                            <input class="submitBtn" type="button" id="btnSearchVideo" value="查询">
+                        </div>
+                    </div>
+                    <div class="con_inspect">
+                        <div class="left_chart" id="chkChart"></div>
+                        <div class="right_desc">
+                            <div class="desc_onlineCount">
+                                <div class="tit"><span>应答次数</span><span class="count onlineCount fontSize18">-</span></div>
+                                <div class="pros" id="chkOnlineChart"></div>
+                            </div>
+                            <div class="desc_outlineCount">
+                                <div class="tit"><span>无应答次数</span><span class="count outlineCount fontSize18">-</span></div>
+                                <div class="pros" id="chkOutLineChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="con_baseInfo">
+                        <table class="fontSize14" id="unitBaseInfo" >
+                            <colgroup>
+                                <col width="35%">
+                                <col width="65%">
+                            </colgroup>
+                            <tr>
+                                <td>单位名称</td>
+                                <td class="valueTxt" id="unitname"></td>
+                            </tr>
+                            <tr>
+                                <td>单位地址</td>
+                                <td class="valueTxt valueTxt" id="unitaddress"></td>
+                            </tr>
+                            <tr>
+                                <td>联系电话</td>
+                                <td><span class="valueTxt" id="phone"></span></td>
+                            </tr>
+                            <tr>
+                                <td>联网状态</td>
+                                <td class="green valueTxt" id="networkstatus"></td>
+                            </tr>
+                            <tr>
+                                <td>责任人</td>
+                                <td class="valueTxt" id="saferesponsiblepersonname"></td>
+                            </tr>
+                            <tr>
+                                <td>单位类型</td>
+                                <td class="valueTxt" id="unittype"></td>
+                            </tr>
+                            <tr>
+                                <td>建筑使用性质</td>
+                                <td class="valueTxt"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 中间 -->
+    <div class="center">
+        <div class="header">
+            <form class="layui-form" action="" id="sysBoxForm" autocomplete="off">
+                <!--下拉框-->
+                <div class="layui-inline layui-bg-cyan" id="buildList">
+                    <div class="layui-input-inline">
+                        <select name="modules" id="areaSelect" lay-verify="required" lay-search="">
+                            <option value="">--区域选择--</option>
+                            <!--<option value="1">layer</option>-->
+                            <!--<option value="2">form</option>-->
+                            <!--<option value="3">layim</option>-->
+                            <!--<option value="4">element</option>-->
+                        </select>
+                    </div>
+                </div>
+
+                <!--<div class="navbt bt1 active orange" id="1">灭火系统</div>-->
+                <!--<div class="navbt bt2" id="2">电气火灾</div>-->
+                <!--<div class="navbt bt3" id="3">报警系统</div>-->
+                <!--<div class="navbt bt4" id="4">防火分隔</div>-->
+                <!--<div class="navbt bt5" id="5">气体系统</div>-->
+                <!--<div class="navbt bt6" id="6">燃气系统</div>-->
+                <!--<div class="navbt bt7" id="7">应急疏散</div>-->
+                <!--<div class="navbt bt8" id="8">无线烟感</div>-->
+            </form>
+            <div class="swiper-container system_box" id="systemBox">
+                <div class="swiper-wrapper">
+                    <button labiframe="system_detail1" class="swiper-slide bt1" id="1">灭火系统</button>
+                    <button labiframe="system_detail2" class="swiper-slide bt2" id="2">电气火灾</button>
+                    <button labiframe="system_detail3" class="swiper-slide bt3 swiper-slide-prev" id="3">报警系统</button>
+                    <button labiframe="system_detail4" class="swiper-slide bt4 active" id="4">防火分隔</button>
+                    <button labiframe="system_detail5" class="swiper-slide bt5" id="5">气体系统</button>
+                    <button labiframe="system_detail6" class="swiper-slide bt6 swiper-slide-active" id="6">燃气系统</button>
+                    <button labiframe="system_detail7" class="swiper-slide bt7 swiper-slide-next" id="7">应急疏散</button>
+                    <button labiframe="system_detail8" class="swiper-slide bt8" id="8">无线烟感</button>
+                    <button labiframe="system_detailOther" class="swiper-slide btOther" id="9">防排烟系统</button>
+                    <button labiframe="system_detail9" class="swiper-slide bt9" id="10" style="display: block;">远程控制</button>
+                </div>
+                <div class="swiper-button-prev"><</div>
+                <div class="swiper-button-next">></div>
+            </div>
+            <div class="showOrHiddenListInfo"></div>
+        </div>
+        <div class="content">
+            <iframe id="frameCont" src="" frameborder="0" width="100%" height="100%" scrolling="0" ></iframe>   
+        </div>
+    </div>
+    <!-- 右侧列表-->
+    <div class="right_alarm_box_shadow">
+        <div class="box_alarm_block">
+            <!-- 右1-->
+            <div class="box_inspectAlarm">
+                <div class="box_block_tit"><img src="../../../Content/images/Home/icon_reload.png" class="ico_reload" id="reloadInspectAlarm"><p class="fontSize16">巡查异常告警</p></div>
+                <div class="box_block_legend" id="inspectAlarmTab">
+                    <div class="active" labcon="con_meihuoqi">灭火器到期</div>
+                    <div labcon="con_weibao">维保进度</div>
+                    <div labcon="con_inspect">巡查进度</div>
+                </div>
+                <div class="tip_more" id="btnInspectMore"><span>更多<i class="layui-icon">&#xe65b</i></span></div>
+                <div class="box_block_content" id="inspectAlarmContent">
+                    <div class="con_meihuoqi">
+                        <div class="count_expire">
+                            <p class="fontSize20" id="toDateCount">0</p>
+                            <p class="fontSize14">即将到期</p>
+                        </div>
+                        <div class="count_all">
+                            <p class="fontSize20" id="totalCount">0</p>
+                            <p class="fontSize14">灭火器总数</p>
+                        </div>
+                    </div>
+                    <div class="con_weibao" id="maintenanceProgressChart"></div>
+                    <div class="con_inspect" id="inspectCompleteChart">
+
+                    </div>
+                </div>
+            </div>
+            <!-- 右2-->
+            <div class="box_deviceState">
+                <div class="box_block_tit"><img src="../../../Content/images/Home/icon_reload.png" class="ico_reload" id="reloadDeviceState"><p class="fontSize16">设备在线状态</p></div>
+                <div class="box_block_legend">
+                    <p></p><p></p>
+                    <p class="tip_more" id="btnDeviceMore"> <span>更多<i class="layui-icon">&#xe65b</i></span></p>
+                </div>
+                <div class="box_block_content">
+                    <div class="left_chart" id="deviceStateChart"></div>
+                    <div class="right_desc">
+                        <div class="desc_onlineCount">
+                            <div class="tit"><span>在线数</span><span class="count onlineCount fontSize18">-</span></div>
+                            <div class="pros" id="deviceOnlineChart"></div>
+                        </div>
+                        <div class="desc_outlineCount">
+                            <div class="tit"><span>离线数</span><span class="count outlineCount fontSize18">-</span></div>
+                            <div class="pros" id="deviceOutLineChart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右3-->
+            <div class="box_showUnitOther">
+                <div class="box_block_tab fontSize16" id="unitOtherTab">
+                    <div class="active" labcon="map">地图</div>
+                    <div labcon="crt">CRT</div>
+                </div>
+                <div class="box_block_content">
+                    <div class="box_block_legend">
+                        <div class="p_progress"></div>
+                        <div class="tip_more" id="btnUnitMaore"> <span>更多<i class="layui-icon"></i></span></div>
+                    </div>
+                    <div class="box_block_main" id="unitOtherContent">
+                        <div class="map">
+                            <div id="bmap"></div>
+
+                            <div class="wrap_mapType">
+                                <div map="normal"><img src="../../../Content/images/Home/map_type_normal.png"></div>
+                                <div map="hybrid"><img src="../../../Content/images/Home/map_type_hybrid.png"></div>
+                                <div map="panorama"><img src="../../../Content/images/Home/map_type_panorama.png"></div>
+                            </div>
+                            <div class="map_control">
+                                <img src="../../../Content/images/UnitManage/map1.png" map="full"/>
+                                <img src="../../../Content/images/Home/2D.png" map="normal"/>
+                                <img src="../../../Content/images/Home/dingwei.png" map="position"/>
+                                <img src="../../../Content/images/Home/fangda.png" map="add"/>
+                                <img src="../../../Content/images/Home/suoxiao.png" map="reduce"/>
+                            </div>
+                        </div>
+                        <div class="crt scrollbar-inner">
+                            <div id="wrap_img">
+                                <div id="imgDiv">
+                                    <!--             <img src="../../Content/images/Login/loginBg.png" id="img"> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+    var _unitId = _loginInfo.unitid;
+    var _AlarmCount = $('#timelyAlarmCount', top.document).text();
+    //地图对象
+    var mapData = {
+        map: null,
+        zoom: _loginInfo.mapLevel,
+        j: 120.643098,
+        w: 31.268893,
+    };
+    var _fireAlarmNum = $('#alarmAudioPlayNum', top.document).val();//用来判断报警声音加载的次数
+    var _panorama; //全景
+    var _panoramaService = new BMap.PanoramaService();//全景
+    $(function(){
+        loadLayuiForm();
+        //右下角 - 登陆用户信息弹窗
+        layerAdminInfo();
+        domEvelement();
+        /////////////左1-数据
+        
+        getTimelyAlarmTotal();
+        /////////////左2-单位信息-基础信息
+        getunitBaseInfo();
+        //左2-单位信息-查岗
+        getUplookCoutData();
+        //左2-单位信息-视频
+        getUnitVideoData();
+
+        ///////////中间加载区域
+        getAreaListData();
+        //获取系统
+        getEqSystemByUnitId();
+        /////////////右1-巡查进度chart
+        //getInspectCompleteChart();
+        //右1- 巡查异常告警
+        getStatisticData();
+        ////////////右2-右
+        getDeviceIsOnlineCountData();
+        ///////////右3-初始化地图
+        getUnitBaseInfoData();
+        //initMap();
+        //右3 - crt
+        getUnitAreaData();//获取区域
+        getInterfaceOutData();
+    });
+
+    function getInterfaceOutData(){
+    	 var isAsync = true,lid = 0;
+         if (isAsync)
+             lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    	$.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getInterfaceOutData",
+            data: 'unitId=' + _unitId+"&buildId=",
+            success: function(data) {
+                if (data.success) {
+                   var obj = data.obj;
+                   if(!obj || obj.length<=0){
+                	   $(".bt9").css("display","none");
+                   }else{
+                	   $(".bt9").css("display","block");
+                   }
+                }
+            },
+            complete: function() {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            },
+            error:function(data){
+            	 $(".bt9").style("display","none");
+                console.log('getinterfaceOutData失败',data);
+            }
+        });
+    }
+    
+    //实时
+    setInterval(function(){
+        var timelyAlarmCount = $('#timelyAlarmCount', top.document).text();
+        if(_AlarmCount != timelyAlarmCount){
+            _AlarmCount = timelyAlarmCount;
+//             $('#timelyAlarmListCount').html(getAlarmCount(_AlarmCount)+"条");
+            getTimelyAlarmTotal();
+        }
+    },1000);
+
+    function getAreaListData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getBuildAreaList",
+            data:'unitId='+_loginInfo.unitid+"&buildId=",
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    var option = '<option value="">--区域选择--</option>';
+                    for(var i = 0 ; i < msg.length;i++){
+                        option +='<option value="'+msg[i].coupletKey+'">'+msg[i].coupletValue+'</option>'
+                    }
+                    $('#areaSelect').html(option);
+                    loadLayuiForm();//调用layui form组件，方法写在public
+                }
+            }
+        });
+    }
+    ///////////////获取系统
+    function getEqSystemByUnitId() {
+        var isAsync = true,
+                lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getEqSystemByUnitId",
+            data: 'unitId=' + _unitId,
+            success: function(data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    var html = '';
+                    for (var i = 0; i < msg.length; i++) {
+                        //if(msg[i].eqsystemcode != 1){
+                        //html += '<button labiframe="system_detail'+getPageIndex(msg[i].eqsystemcode).page+'" class="swiper-slide bt' + getPageIndex(msg[i].eqsystemcode).type + '" id="' + msg[i].id + '">' + msg[i].eqsystemname + '</button>'
+                        // }
+                        $('#systemBox>.swiper-wrapper>#'+msg[i].id).addClass('show').show();
+
+                    }
+                    //$('#systemBox>.swiper-wrapper>#'+msg[i].id).show();
+                    //初始化系统按钮
+                    initSwiper();
+
+                    if(msg.length>0){
+                        $('#systemBox button.show').eq(0).click();
+                    }
+//                    $('#sysBoxForm').append(html);
+//                    $('nav form > div.navbt').eq(0).click();
+//                    $('nav form > div.navbt').each(function(){
+//                        $(this).attr('title',$(this).text())
+//                    })
+                }
+            },
+            complete: function() {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getPageIndex(code){
+        var index = "Other";
+        var attr = "Other";
+        if(code == 1){
+            index = 1;
+            attr = 1;
+        }else if(code == 2){
+            index = 2;
+            attr = 2;
+        }else if(code == 3){
+            index = 3;
+            attr = 3;
+        }else if(code == 4){
+            index = 4;
+            attr = 4;
+        }else if(code == 5){
+            index = 5;
+            attr = 5;
+        }else if(code == 6){
+            index = 6;
+            attr = 6;
+        }else if(code == 7){
+            index = 7;
+            attr = 7;
+        }else if(code == 8){
+            index = 8;
+            attr = 8;
+        }
+        else if(code == 11){
+            index = 3;
+        }
+        var data = {
+            "page":attr,
+            "type":index
+        };
+        return data;
+    }
+
+    ///////////////实时火警数据
+    function getTimelyAlarmTotal(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/fireList",
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+	                $('#timelyAlarmListCount').html(getAlarmCount(Number(msg.dealCount||0)+Number(msg.noDealCount||0))+"条");
+                    $('.toggleTask', top.document).addClass((Number(msg.dealCount||0)+Number(msg.noDealCount||0))>0?"unclick":""); //用作交接班，有未处理火警无法交接班
+                    if(msg!=''){
+	                    showListContent(msg.fireInfoList)
+                    }
+                    if(_fireAlarmNum == 0 && (Number(msg.dealCount||0)+Number(msg.noDealCount||0))>0&&parseInt($('#btnAlarmSwitchLog', top.document).attr("status")) == 0){
+                        var audioEle = window.top.document.getElementById("btnAlarmSwitchLog");
+                        audioEle.play();
+                        $('#alarmAudioPlayNum', top.document).val(_fireAlarmNum++)
+                    }
+                }
+            }
+        });
+    }
+    function showListContent(data){
+        $("#fireAlarmList").html(' <ul class="ul_fireAlarmContent" id="mainContentTbody"></ul>');
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            html +='<li class="'+(i == 0?"firstAlarm":"")+'">'+
+                    '<div style="width: 30%">'+data[i].time+'</div>'+
+                    '<div style="width: 15%">火警</div>'+
+                    '<div style="width: 15%">'+data[i].isTest+'</div>'+
+                    '<div style="width: 40%" class=\"'+((data[i].addressID !=""&& data[i].addressID) ?"alarm_desc":"")+'\" addressid="'+data[i].addressID+'" unitid="'+data[i].unitId+'">'+data[i].alarmDevicedesc+'</div>'+
+                    '</li>'
+        }
+        $('#mainContentTbody').html(html||'<li><div style="width:100%">暂无数据...</div></li>');
+        $('#mainContentTbody li>div').each(function(){$(this).attr('title',$(this).text())});
+        jQuery("#fireAlarmList").slide({ mainCell: "ul", autoPlay: true, effect: "topMarquee", vis: parseInt($('#fireAlarmList').height() / 25), interTime: 70, trigger: "click" });
+    }
+
+    /////////////左2-单位信息-视频
+    function getUnitVideoData(){
+        //_unitId = "507569160222408704";
+        //_unitId = "517281509279793152";
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/couplet/getUnitBuildAreas",
+            data:'unitId='+_unitId+'&buildName='+$('#areaSearch').val(),
+            success: function (data) {
+                if (data.success == true) {
+                    var msg = data.obj;
+                    showCameraListContent(msg);
+                }
+            }
+        });
+    }
+    function showCameraListContent(data){
+        var videoCount = 0;
+        var html = "";
+        for(var i = 0 ; i < data.length;i++){
+            if(videoCount <=  2){
+                var videos = data[i].videos;
+                for(var k = 0 ; k < videos.length;k++){
+                    if(videoCount <= 2){
+                        var ip = videos[k].ip,port = videos[k].poscode,userName = videos[k].username,password = videos[k].password,deviceType = videos[k].plugintype,buildarename = data[i].buildAreaName;
+                        var token = data[i].token,appKey = data[i].appKey,serialnumber = videos[k].serialnumber;
+                        var videoIframeSrc="";
+                        if(deviceType == 2){
+                            if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+                                videoIframeSrc = '../../iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+                            }else{
+                                videoIframeSrc = '../../video_a.html?ip='+escape(ip)
+                            }
+                        }else if(deviceType == 0 || deviceType== 1 ){
+                            videoIframeSrc = '../../camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)
+                        }
+
+                        html += '<div class="video'+(++videoCount)+'">' +
+                                '<iframe src="'+videoIframeSrc+'" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>'+
+                                '<div class="btn_cutPic" ip="'+ip+'" port="'+port+'" userName="'+userName+'" password="'+password+'" deviceType="'+deviceType+'"  buildarename="'+buildarename+'" appKey="'+appKey+'" token="'+token+'" serialnumber="'+serialnumber+'"></div>'+
+                                '</div>'
+                    }
+                }
+            }
+        }
+
+        $('.video_box').html(html || "<div class='video0'>暂无视频接入</div>");
+//        console.log(videoCount)
+        if(videoCount == 1){
+            $('.video_box>div').addClass('videoOne');
+        }
+
+    }
+
+
+    // 左2-单位信息-查岗
+    function getUplookCoutData(){
+        var data = {
+            pageSize:20,
+            pageNumber:1,
+            startDate:$('#sData2').val(),
+            endDate:$('#eData2').val(),
+            keyword:$('#keyWords').val()
+        };
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getUplookCout",
+            data:data,
+            success: function (data) {
+                //console.log(data);
+                var msg = data.obj;
+                var coupletKey = msg.coupletKey || 0;
+                var coupletValue = msg.coupletValue ||0;
+
+                chkChart([(coupletValue - coupletKey),coupletValue]); //无应答，总数
+                $('#chkOnlineChart').css('width',($('.box_unitBaseInfo .box_block_content').width() - 20 )*0.58)
+                $('#chkOutLineChart').css('width',($('.box_unitBaseInfo .box_block_content').width() - 20 )*0.58)
+
+                getDeviceIsOnlineCountChart('chkOnlineChart',["#59FFF3","#2ABEE4"],coupletKey,coupletValue);
+                getDeviceIsOnlineCountChart('chkOutLineChart',["#EFE826","#F37022"],coupletValue - coupletKey,coupletValue);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    //左2-单位信息-基础信息
+    function getunitBaseInfo(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitInfoById",
+            data:'unitId='+_loginInfo.unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+                    $('#unitBaseInfo .valueTxt').each(function(){
+                        var key = $(this).attr('id');
+                        if(key == "networkstatus"){
+                            $(this).text((msg[0].networkstatus == "0"?"未联网":(msg[0].networkstatus == "1"?"联网":"")))
+                        }
+                        else if(key == "phone"){
+                            $(this).html('<a href="skype://+86'+msg[0].phone+'" onclick="saveCallRecord(\''+_loginInfo.unitid+'\',\''+msg[key]+'\')"><span class="phone_text" style="color:#6DA0CF;">'+msg[0].phone+'</span></a>');
+                        }
+                        else{
+                            $(this).text(msg[0][key] ||"--");
+                        }
+                    })
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+
+    ///////////////右1-巡查异常告警
+    function getStatisticData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/maintenance/getMaintenanceStat",
+            data:'unitId='+_loginInfo.unitid,
+            success: function (data) {
+                //console.log(data);
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    showMieHuoQiData(msg);//显示灭火器到期数据
+
+                    showWeiBaoProgress(msg);//显示维保进度数据
+
+                    showInspectProgress(msg);//显示巡查进度数据
+                    //showUnitListContent(msg);
+
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //显示灭火器数据
+    function showMieHuoQiData(msg){
+        $('#toDateCount').text(msg.toDateCount||0);
+        $('#totalCount').text(msg.totalCount||0);
+    }
+    //显示维保进度数据
+    function showWeiBaoProgress(msg){
+        //维保进度-图表
+        getInspectCompleteChart({
+            id: 'maintenanceProgressChart',
+            lenged: [ '已处理', '未处理'],
+            color:['#F35D5E', '#875DE3'],
+            value: [{ name: '已处理', value: msg.wbdealed||0 }, { name: '未处理', value: msg.wbNodeal||0 }]
+        });
+    }
+    //显示巡查进度数据
+    function showInspectProgress(msg){
+        //巡查进度-图表
+        getInspectCompleteChart({
+            id: 'inspectCompleteChart',
+            lenged: ['已处理', '未处理'],
+            color:['#38ACFE', '#20E1C2'],
+            value: [{ name: '已处理', value: msg.xcdealed||0 }, { name: '未处理', value: msg.xcNodeal||0 }]
+        });
+    }
+
+    //初始化系统按钮
+    function initSwiper(){
+        new Swiper('#systemBox', {
+            slidesPerView:'auto',
+            //前进后退按钮
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            },
+        });
+    }
+    //右1-巡查进度chart
+    //环形图表
+    function getInspectCompleteChart(data) {
+        $('#'+data.id).css({'width':$('#inspectAlarmContent').width(),'height':$('#inspectAlarmContent').height()});
+        var dom = document.getElementById(data.id);
+        var myChart = echarts.init(dom);
+        var labelFromatter = { //环内样式
+            normal: { //默认样式
+                label: { //标签
+                    formatter: function(a, b, c) { return a },
+                    // labelLine.length：30,  //线长，从外边缘起计算，可为负值
+                    textStyle: { //标签文本样式
+                        color: 'black',
+                        align: 'center',
+                        baseline: 'top' //垂直对其方式
+                    }
+                }
+            },
+        };
+
+        option = {
+            title: {
+                show: false,
+            },
+            color: data.color,
+            legend: {
+                show: false
+            },
+            animation: true,
+            tooltip: { // 提示框. Can be overwrited by series or data
+                trigger: 'item',
+                formatter: "{b}: {c} ({d}%)"
+            },
+            series: [{
+                name: '告警问题类型',
+                type: 'pie',
+                center: ['50%', '50%'], //圆心坐标（div中的%比例）
+                radius: ['40%', '57%'], //半径
+                itemStyle: labelFromatter, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                label: {
+                    normal: {
+                        formatter: '{per|{d}%}\n{hr|}\n{b|{b}}',
+                        rich: {
+                            hr: {
+                                borderColor: '#20A2FB',
+                                width: '100%',
+                                borderWidth: 0.5,
+                                height: 0
+                            },
+                            b: {
+                                fontSize: 12,
+                                lineHeight: 15,
+                                color: '#D4EDFF',
+                                align: 'center',
+                            },
+                            per: {
+                                padding: [2, 0],
+                                fontWeight: 900,
+                                fontSize: 14,
+                                height: 15,
+                                color: '#D4EDFF',
+                                align: 'center',
+                            }
+                        },
+                    },
+                },
+                labelLine: {
+                    normal: {
+                        length: 10,
+                        length2: 8
+                    }
+                },
+
+                data: data.value,
+            },
+                {
+                    name: '',
+                    type: 'pie',
+                    center: ['50%', '50%'], //圆心坐标（div中的%比例）
+                    radius: ['62%', '64%'], //半径
+                    itemStyle: { //环内样式
+                        normal: { //默认样式
+                            label: { //标签
+                                show: false,
+                            },
+                            labelLine: {
+                                show: false,
+                            },
+                        },
+                    }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animation: false,
+                    data: [{
+                        name: '',
+                        value: 100,
+                        itemStyle: {
+                            normal: {
+                                color: '#316DB6'
+                            },
+                            emphasis: {
+                                color: '#316DB6'
+                            }
+                        },
+                        tooltip: {
+                            show: false,
+                        },
+                        cursor: 'default',
+                    }],
+                }
+            ]
+        };
+        myChart.setOption(option, true);
+        $(window).resize(function() {
+            myChart.resize();
+        });
+    }
+
+    function getDeviceIsOnlineCountData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/netUnitAndDeviceStatus",
+            success: function (msg) {
+                //console.log(data);
+                if (msg.success == true) {
+                    var dataobj = msg.obj;
+                    var data = [(dataobj.onlineDeviceCount || 0),(dataobj.offlineDeviceCount || 0)],dataTotal= 0;
+                    for(var i = 0 ; i < data.length;i++){
+                        dataTotal += data[i];
+                    }
+                    getDeviceIsOnlineCountChart('deviceOnlineChart',["#59FFF3","#2ABEE4"],data[0],dataTotal);
+                    getDeviceIsOnlineCountChart('deviceOutLineChart',["#EFE826","#F37022"],data[1],dataTotal);
+                    getDeviceStateChart(data,dataTotal)
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+
+
+    }
+    //右2-设备总数
+    function getDeviceStateChart(data,dataTotal){
+        var myChart = echarts.init(document.getElementById('deviceStateChart'));
+
+        var option = {
+            tooltip : {
+                formatter:"{b}:{c}"
+            },
+            color:["#53EEE6"],
+            series : [
+                {
+                    name: '设备在线状态',
+                    type: 'pie',
+                    radius :['80%','95%'],
+                    center: ['50%', '50%'],
+                    hoverAnimation:false,
+                    hoverOffset:0,
+                    selectedOffset:5,
+                    label:{
+                        normal:{
+                            show:false
+                        }
+                    },
+                    labelLine:{
+                        normal:{
+                            length:5,
+                            length2:5
+                        }
+                    },
+                    data:[{
+                        value:data[0],
+                        name:'设备在线',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'center',
+                                formatter: [
+                                    '{a|'+dataTotal+'}',
+                                    '{x|设备总数}'
+                                ].join('\n'),
+                                rich: {
+                                    a: {
+                                        color: '#C0DAFF',
+                                        fontSize: 18,
+                                        fontWeight:'bold',
+                                        height: 25
+                                    },
+                                    x: {
+                                        color:'#7AA0D1',
+                                        fontSize: 12,
+                                        lineHeight: 16
+                                    },
+                                }
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: false
+                            }
+                        },
+                        itemStyle:{
+                            normal: {
+                                color: {
+                                    type: 'linear',
+                                    x: 0,
+                                    y: 0,
+                                    x2: 0,
+                                    y2: 1,
+                                    colorStops: [{
+                                        offset: 0, color: '#F37022' // 0% 处的颜色
+                                    }, {
+                                        offset: 1, color: '#EFE826' // 100% 处的颜色
+                                    }]
+                                }
+                            }
+                        },
+                        hoverAnimation:false
+                    },
+                        {value:data[1], name:'设备离线'}
+                    ]
+                },
+                {
+                    name: '设备在线状态',
+                    type: 'pie',
+                    radius :['69%','70%'],
+                    center: ['50%', '50%'],
+                    hoverAnimation:false,
+                    hoverOffset:0,
+                    selectedOffset:5,
+                    label:{
+                        normal:{
+                            show:false
+                        }
+                    },
+                    labelLine:{
+                        normal:{
+                            show:false
+                        }
+                    },
+                    data:[
+                        {value:data[1], name:'', tooltip:{show:false }}
+                    ]
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            myChart.resize();
+        });
+    }
+
+    function getDeviceIsOnlineCountChart(id,color,data,dataTotal){
+
+        $('#'+id).prev().find('.count').text(data)
+        var myChart = echarts.init(document.getElementById(id));
+        var option = {
+            grid:{
+                left:'2%',
+//                top:1
+            },
+            tooltip: {
+                show:false
+            },
+            xAxis: {
+                show:false
+            },
+            yAxis: {
+                type: 'category',
+                show:false
+            },
+            series: [
+                {
+                name: '总数',
+                type: 'pictorialBar',
+                stack: 'chart',
+                symbol: 'rect',
+                itemStyle: {
+                    normal: {
+                        color: 'rgba(0,0,0,0)'
+                    }
+                },
+                symbolRepeat: true,
+                symbolSize: ['10%', '10%'],
+                symbolMargin: 2,
+                z: -10,
+                data: [dataTotal]
+            },
+                {
+                    name: '在线数',
+                    type: 'pictorialBar',
+                    stack: 'chart',
+                    symbol: 'rect',
+                    itemStyle: {
+                        normal: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 1,
+                                x2: 1,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: color[1] // 100% 处的颜色
+                                }]
+                            }
+                        }
+                    },
+                    symbolRepeat: true,
+                    symbolSize: ['10%', '15%'],
+                    symbolMargin:2,
+                    z: -10,
+                    data: [data]
+                }]
+        };
+
+        myChart.setOption(option);
+        window.addEventListener('resize', function () { //宽度自适应
+            myChart.resize();
+        });
+    }
+
+    //////////////////右3 - crt
+    //获取区域
+    function getUnitAreaData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitBuildArea",
+            data:"unitID="+_unitId,
+            success: function (data) {
+                var msg = data.obj;
+               if(!msg || msg.length == 0){
+                   $('#imgDiv').html("暂无...")
+                   return;
+               }
+                getUnitOneCrtData(msg[0].buildAreaID);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    //单位crt
+    function getUnitOneCrtData(id){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitOneCRT",
+            data:"buildAreaID="+id,
+            success: function (data) {
+                if(data.success){
+                    getCRTPicContent(data);
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+    function getCRTPicContent(data){
+        var dataList = data.obj;
+        if(dataList.length==0){
+            $('#imgDiv').html("暂无...")
+            return;
+        }
+        var msg = dataList[0];
+        if(!dataList){
+            return;
+        }
+        $('#imgDiv').css({ 'height': msg.bgHeight + 'px', 'width': msg.ggWidth + 'px' });
+        $('#wrap_img').attr({'crtbgheight':msg.bgHeight,'crtbgwidth':msg.ggWidth});
+        _cetwidth = $('#imgDiv').width();
+        _crtheight = $('#imgDiv').height();
+        var left = (msg.xaxis/msg.ggWidth*100).toFixed(2);
+        var top = (msg.yaxis/msg.bgHeight*100).toFixed(2);
+        var html = '<img src="'+msg.buildAreaImg+'" id="img">' +
+                '<div class="dot" style="top: '+top+'%; left: '+left+'%; position: absolute; background-image: url(/image/crt/'+msg.codeValue+'_1.png);">' +
+//                getCRTTips(dataList)+
+                '</div>';
+        $('#imgDiv').html(html);
+    }
+
+
+    function  domEvelement(){
+
+//        $('#buildList').on('click',' layui-form-selected dd',function(){
+//
+//            console.log($(this).attr('class'))
+//        });
+
+        //左2-单位信息 tab切换
+        $('#unitBaseInfoTab>div').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            $('#unitBaseInfoContent>div.'+$(this).attr('labcon')).show().siblings().hide();
+        });
+        $('#unitBaseInfoTab>div:eq(1)').click();
+        //左2-单位信息 视频查询按钮
+        $('#btnSearchVideo').click(function(){
+            getUnitVideoData();
+        });
+        //巡查异常告警 tab切换
+        $('#inspectAlarmTab>div').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            $('#inspectAlarmContent>div.'+$(this).attr('labcon')).show().siblings().hide();
+        });
+        //右3 tab切换
+        $('#unitOtherTab>div').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            $('#unitOtherContent>div.'+$(this).attr('labcon')).show().siblings().hide();
+        });
+        //右1 - 刷新
+        $('#reloadInspectAlarm').click(function(){
+            getStatisticData();
+        });
+        //右2 - 设备在线状态 - 刷新
+        $('#reloadDeviceState').click(function(){
+            getDeviceIsOnlineCountData();
+        });
+        //更多 - 巡查异常告警
+        $('#btnInspectMore').click(function(){
+            window.top.getModulePage("inspect");
+        });
+        //更多 - 单位
+        $('#moreUnitInfo').click(function(){
+            var lab = $('#unitBaseInfoTab>div.active').attr('labcon');
+            if(lab == "con_baseInfo"){ //基础信息
+                window.top.getModulePage("unit");
+            }
+            if(lab == "con_inspect"){ //查岗
+                window.top.getModulePage("analyse,h1,check");
+            }
+//$('#frameCont').attr('src','video-iframe/video_index.html?type='+type+'&videoNumber=' + videoNumber+'&unitId='+unitId); //跳转到视频页重新加载视频及数量
+
+            if(lab == "con_video"){ //视频
+                top.layer.open({
+                    type: 2,
+                    title: '视频',
+                    closeBtn: 1,
+                    area:['65%','80%'],
+                    shade: 0.1,
+                    skin: 'layui-layer-loginRecord',
+                    //content: videoIframeSrc
+                    content: '../NetInfoStatistic/video.html?showtype='+escape(_loginInfo.unitName)
+                });
+            }
+        });
+        //更多 - 右3单位
+        $('#btnUnitMaore').click(function(){
+            if($('#unitOtherTab>div[labcon=map]').hasClass('active')){
+                window.top.getModulePage("unit,unitMapPoint,map");
+            }
+            if($('#unitOtherTab>div[labcon=crt]').hasClass('active')){
+                window.top.getModulePage("unit,unitMapPoint,crt");
+            }
+        });
+        //更多 - 实时报警信息
+        $('.warning_more').unbind('click').click(function(){
+            top.layer.open({
+                type: 2,
+                title: "实时告警列表",
+                area: ['80%', '80%'],
+                closeBtn: 1,
+                shade: 0.5,
+                shadeClose: true,
+                skin: 'layui-layer-loginRecord',
+                content: '../Home/warningMoreLayer2.html?status=1',
+                end:function(){
+
+                }
+            });
+        });
+        //更多 - 右2设备在线状态
+        $('#btnDeviceMore').unbind('click').click(function(){
+            top.layer.open({
+                type: 2,
+                title: "设备",
+                area:['90%','90%'],
+                closeBtn: 1,
+                shade: 0.5,
+                shadeClose: true,
+                skin: 'layui-layer-loginRecord',
+                content: 'Home/equipment.html'
+            });
+        });
+        //CRT - 火警
+        $('#fireAlarmList').delegate('#mainContentTbody .alarm_desc','click',function(){
+            var addressID = $(this).attr('addressid');
+            var unitid = $(this).attr('unitid')
+            top.layer.open({
+                type: 2,
+                title: 'CRT图层浏览',
+                closeBtn: 1,
+                area:['60%','65%'],
+                shade: 0.1,
+                skin: 'layui-layer-loginRecord',
+                content: (_loginInfo.usertype == 1?"../":"")+'Home/Middle_GetCrt_Window.html?addressID='+addressID+'&unitid='+unitid
+            });
+        });
+        //系统按钮
+        $('#systemBox').on('click', 'button', function() {
+            var areaid =  $('#buildList').find('dd.layui-this').attr('lay-value')||"";  //选中的区域
+            var lab = $(this).attr('labiframe');
+            var systemID = $(this).attr('id');
+            var name = _loginInfo.unitName;
+            $(this).addClass('active').siblings().removeClass('active');
+            $('#frameCont').attr('src', '../../NetInfoStatistic/system-iframe/'+lab + '.html?unitId=' + _unitId + '&systemID=' + systemID + '&areaid=' + areaid+'&unitname='+escape(name));
+        });
+        //地图按钮
+        $('.wrap_mapType>div,.map_control>img').click(function(){
+            var btnType = $(this).attr('map');
+            $('.BMap_noprint[title=进入全景]').hide();
+
+            switch(btnType){
+                case 'normal': //2d
+                   // panorama.hide();
+                    mapData.map.setMapType(BMAP_NORMAL_MAP);
+                    break;
+                case 'hybrid': //卫星
+                    mapData.map.setMapType(BMAP_HYBRID_MAP);
+                    break;
+                case 'panorama': //全景
+                    _panoramaService.getPanoramaByLocation(new BMap.Point(mapData.j, mapData.w), function(data) {
+                        if (data != null) {
+                            var swf = navigator.plugins["Shockwave Flash"];
+                            if (!swf) {
+                                top.layer.confirm(
+                                        '您未安装Flash Player播放器或者版本过低<br/>按“确定”键进行安装或更新！',
+                                        {btn: ['确定', '取消'],skin: 'layui-layer-confirm',area:['350px','200px'],title: '<img src="../../Content/images/Home/logout_tip.png" class="icon_signOut">提示' },
+                                        function (index) {
+                                            window.open('http://www.macromedia.com/go/getflashplayer');
+                                        }
+                                );
+                                return;
+                            }
+                            _panorama = new BMap.Panorama('bmap');
+                            _panorama.setPosition(new BMap.Point(mapData.j, mapData.w));
+                        }
+                        else {
+                            layer.msg('该单位暂无全景！',{ offset: ['83%','calc(88% - 85px)']})
+                        }
+                    });
+                    break;
+                case 'full': //全屏
+                    $('.map').addClass('full');
+                    $(this).attr('map','win');
+                    break;
+                case 'win'://窗口
+                    $('.map').removeClass('full');
+                    $(this).attr('map','full');
+                    break;
+                case 'position': //位置
+                    mapData.map.panTo(new BMap.Point(mapData.j, mapData.w));
+                    break;
+                case 'add': //放大
+                    mapData.map.setZoom(++mapData.zoom);
+                    break;
+                case 'reduce': //缩小
+                    mapData.map.setZoom(--mapData.zoom);
+                    break;
+            }
+        });
+
+        $('.video_box').delegate(' .btn_cutPic','click',function(e){
+            e.stopPropagation();
+
+            var ip = $(this).attr('ip');
+            var port = $(this).attr('port');
+            var userName = $(this).attr('userName');
+            var password = $(this).attr('password');
+            var deviceType = $(this).attr('deviceType');
+            var buildarename = $(this).attr('buildarename');
+            var token = $(this).attr('token'),appKey = $(this).attr('appKey'),serialnumber = $(this).attr('serialnumber');
+            top.layer.open({
+                type: 2,
+                title: false,
+                closeBtn: 1,
+                area:['100%','100%'],
+                shade: 0.1,
+                shadeClose:true,
+                content: '../NetInfoStatistic/biggerVideo.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&unitId="+ _unitId +"&buildarename="+escape(buildarename)+'&token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+            });
+        });
+		
+        //RTU缩放按钮
+        $(".showOrHiddenListInfo").unbind('click').click(function(){
+            $(this).toggleClass('bigMap');
+            $('.left_alarm_box_shadow').toggleClass('bigMap');
+            $('.right_alarm_box_shadow').toggleClass('bigMap');
+            $('.center').toggleClass('bigMap');
+//            $('.wrap_mapType').toggle(500);//地图右下方的控件
+//            $('.map_control').toggle(500);//地图右下方的控件
+        });
+
+        var areaValId = "";
+        $('#buildList').on('blur',' .layui-input',function(){
+            var areaid = $('#buildList').find('dd.layui-this').attr('lay-value') || ""; //区域
+            if(areaValId != areaid){
+                areaValId = areaid;
+                $('#systemBox button.active').click();
+            }
+        })
+    }
+
+    //右下角 - 登陆用户信息弹窗
+    function layerAdminInfo(){
+        if(_loginInfo.AdminInfoLyerTime == 1){
+            return;
+        }
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: 0,
+            area:['230px','120px'],
+            offset: 'rb',
+            shade: 0,
+            skin: 'layui-layer-admin',
+            content: '../../Home/AdminInfo.html'
+        });
+    }
+
+function getUnitBaseInfoData(){
+    var isAsync = true,lid = 0;
+    if (isAsync)
+        lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    $.ajax({
+        type: "get",
+        url: _serverIp + "/front/unit/getUnitInfoById",
+        data:'unitId='+_unitId,
+        success: function (data) {
+            //console.log(data);
+            if (data.success == true) {
+                var msg = data.obj;
+                //位置地图
+                if(msg!=undefined && msg!=""){
+                    mapData.j=(msg[0].unitpoint).split(',')[0];mapData.w=(msg[0].unitpoint).split(',')[1];
+                    initMap();
+                }
+            }
+        },
+        complete: function () {
+            if (isAsync){
+                layer.close(lid);
+            }
+        }
+    });
+}
+
+//初始化地图
+function initMap() {
+    mapData.map = new BMap.Map('bmap');
+    mapData.map.setMapStyle({
+        styleJson:[
+            {
+                "featureType": "green",
+                "elementType": "geometry.fill",
+                "stylers": {
+                    "color": "#04326dff"
+                }
+            },
+            {
+                "featureType": "background",
+                "elementType": "geometry.fill",
+                "stylers": {
+                    "color": "#052757"
+                }
+            },
+            {
+                "featureType": "highway",
+                "elementType": "geometry.fill",
+                "stylers": {
+                    "color": "#031b3dff"
+                }
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry.stroke",
+                "stylers": {
+                    "color": "#195e97ff"
+                }
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry.fill",
+                "stylers": {
+                    "color": "#031c3bff"
+                }
+            },
+            {
+                "featureType": "all",
+                "elementType": "labels.text.fill",
+                "stylers": {
+                    "color": "#2d7ebdff"
+                }
+            },
+            {
+                "featureType": "all",
+                "elementType": "labels.text.stroke",
+                "stylers": {
+                    "color": "#011f53ff"
+                }
+            },
+            {
+                "featureType": "land",
+                "elementType": "geometry.fill",
+                "stylers": {
+                    "color": "#04316cff"
+                }
+            }
+        ]
+    });
+    var point = new BMap.Point(mapData.j, mapData.w);
+    mapData.map.centerAndZoom(point, 15);
+    mapData.map.setCurrentCity(_loginInfo.mapCenter);
+    mapData.map.enableScrollWheelZoom(true); //开启鼠标滚轮事件
+    var centerIcon = new BMap.Icon("../../../Content/images/mapMarker/unitPoint.png", new BMap.Size(32,32));
+    var marker = new BMap.Marker(new BMap.Point(mapData.j, mapData.w),{icon:centerIcon}); //创建点
+    mapData.map.addOverlay(marker); //添加点
+
+    //初始化全景
+    _panoramaService.getPanoramaByLocation(new BMap.Point(mapData.j, mapData.w), function(data) {
+        if (data != null) {
+//                            mapData.map.addTileLayer(new BMap.PanoramaCoverageLayer());
+//                            panorama.setPov({heading: -40, pitch: 6});
+            _panorama = new BMap.Panorama('map');
+            _panorama.hide();
+            _panorama.setPosition(new BMap.Point(mapData.j, mapData.w));
+
+//                            mapData.map.removeTileLayer();
+        }
+    });
+}
+
+//左2-查岗
+    function chkChart(data){
+        var _width = $('.box_unitBaseInfo .box_block_content').width()*0.39;
+        var _height = $('.box_unitBaseInfo .box_block_content').height()*0.8;
+        $('#chkChart').css({ 'width': _width, 'height': _height });
+        var myChart = echarts.init(document.getElementById('chkChart'));
+        var option = {
+            tooltip : {
+                confine:true,
+                formatter:"{b}:{c}"
+            },
+            color:["#53EEE6"],
+            series : [
+                {
+                    name: '查岗',
+                    type: 'pie',
+                    radius :['80%','95%'],
+                    center: ['50%', '50%'],
+                    hoverAnimation:false,
+                    hoverOffset:0,
+                    selectedOffset:5,
+                    label:{
+                        normal:{
+                            show:false
+                        }
+                    },
+                    labelLine:{
+                        normal:{
+                            length:5,
+                            length2:5
+                        }
+                    },
+                    data:[{
+                        value:data[0],
+                        name:'无应答次数',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'center',
+                                formatter: [
+                                    '{a|'+(data[1])+'}',
+                                    '{x|查岗次数}'
+                                ].join('\n'),
+                                rich: {
+                                    a: {
+                                        color: '#C0DAFF',
+                                        fontSize: 18,
+                                        fontWeight:'bold',
+                                        height: 25
+                                    },
+                                    x: {
+                                        color:'#7AA0D1',
+                                        fontSize: 12,
+                                        lineHeight: 16
+                                    },
+                                }
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: false
+                            }
+                        },
+                        itemStyle:{
+                            normal: {
+                                color: {
+                                    type: 'linear',
+                                    x: 0,
+                                    y: 0,
+                                    x2: 0,
+                                    y2: 1,
+                                    colorStops: [{
+                                        offset: 0, color: '#F37022' // 0% 处的颜色
+                                    }, {
+                                        offset: 1, color: '#EFE826' // 100% 处的颜色
+                                    }]
+                                }
+                            }
+                        },
+                        hoverAnimation:false
+                    },
+                        {value:(data[1] - data[0]), name:'应答次数'}
+                    ]
+                },
+                {
+                    name: '查岗',
+                    type: 'pie',
+                    radius :['69%','70%'],
+                    center: ['50%', '50%'],
+                    hoverAnimation:false,
+                    hoverOffset:0,
+                    selectedOffset:5,
+                    label:{
+                        normal:{
+                            show:false
+                        }
+                    },
+                    labelLine:{
+                        normal:{
+                            show:false
+                        }
+                    },
+                    data:[
+                        {value:data[1], name:'', tooltip:{show:false }}
+                    ]
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            myChart.resize();
+        });
+    }
+    
+    //新增通话记录
+	function saveCallRecord(unitid,phone){
+    	$.ajax({
+            url: _serverIp + "/front/homeIndex/addPhoneLog",
+            type: "get",
+            data:{
+				unitId:unitid,
+				phone:phone
+            },
+            success: function (data) {
+                if (data.success) {
+                	layer.msg('操作成功', { shade: [0.1, '#fff'], time: 800 });
+                }
+            }
+        });
+    }
+
+</script>
+</html>

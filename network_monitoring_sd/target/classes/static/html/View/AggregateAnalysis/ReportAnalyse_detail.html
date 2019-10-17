@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位报表-详情</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/UnitManage/index.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/unitAnalyse.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/ReportAnalyse_detail.css" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body>
+<div class="wrap_module screen_div">
+    <div class="top-search">
+        <form class="layui-form" action="" autocomplete="off">
+            <input class="selectTime timeStart" id="sData2"
+                   onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen',dateFmt:'yyyy-MM-dd HH:mm:ss', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+            -
+            <input class="selectTime timeEnd" id="eData2"
+                   onfocus="WdatePicker({ skin: 'whyGreen', dateFmt:'yyyy-MM-dd HH:mm:ss',minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+            <input class="submitBtn" type="button" value="查询">
+        </form>
+
+        <!-- 打印 -->
+        <div class="printBt no-print">打印</div>
+
+        <div class="timeBTChose">
+            <span>月</span>
+            <span>季</span>
+            <span>年</span>
+        </div>
+    </div>
+
+    <!--startprint-->
+    <!--main start-->
+    <div id="printcontent" class="table_box detailcont scrollbar-inner">
+        <div id="unitData" class="title fontSize18">
+            (项目名称)
+        </div>
+        <!-- 第一部分 start -->
+        <div class="titleDes fontSize16">联网单位信息</div>
+        <table class="fontSize14 table1" id="unitBaseInfo">
+            <tr>
+                <td>单位名称</td>
+                <td title="" id="unitName" class="valueTxt">-</td>
+                <td>单位地址</td>
+                <td title="" id="unitAddress" class="valueTxt">-</td>
+            </tr>
+            <tr>
+                <td>责任人</td>
+                <td title="" id="saferesponsiblepersonname" class="valueTxt">-</td>
+                <td>联系电话</td>
+                <td title="" id="saferesponsiblepersonphone" class="valueTxt">-</td>
+            </tr>
+        </table>
+        <!-- 第一部分 end -->
+
+        <!-- 第二部分 start -->
+        <div class="titleDes fontSize16">报警数据统计(单位：次) 注：不重复节点的统计</div>
+        <table class="fontSize14 table2" id="alarmInfo">
+            <tr>
+                <td>统计时间</td>
+                <td class="aligncenter statisticalTime" colspan="7">全部</td>
+            </tr>
+            <tr>
+                <td class="coupletKey">火警/火警测试</td>
+                <td>
+                    <span class="coupletValue">0</span>
+                    <span class="coupletValueTest">0</span>
+                </td>
+                <td class="coupletKey">启动/启动测试</td>
+                <td>
+                    <span class="coupletValue">0</span>
+                    <span class="coupletValueTest">0</span>
+                </td>
+                <td class="coupletKey">监管/监管测试</td>
+                <td>
+                    <span class="coupletValue">0</span>
+                    <span class="coupletValueTest">0</span>
+                </td>
+                <td class="coupletKey">复位/复位测试</td>
+                <td>
+                    <span class="coupletValue">0</span>
+                    <span class="coupletValueTest">0</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="coupletKey">故障/故障测试</td>
+                <td>
+                    <span class="coupletValue">0</span>
+                    <span class="coupletValueTest">0</span>
+                </td>
+                <td class="coupletKey">反馈/反馈测试</td>
+                <td>
+                    <span class="coupletValue">0</span>
+                    <span class="coupletValueTest">0</span>
+                </td>
+                <td class="coupletKey">屏蔽/屏蔽测试</td>
+                <td>
+                    <span class="coupletValue">0</span>
+                    <span class="coupletValueTest">0</span>
+                </td>
+                <td>手动火警</td>
+                <td class="aligncenter">
+                    0
+                </td>
+            </tr>
+            <tr>
+                <td>真火警</td>
+                <td class="aligncenter">
+                    0
+                </td>
+                <td>误报率</td>
+                <td class="aligncenter">
+                    0
+                </td>
+                <td>测试</td>
+                <td class="aligncenter" id="realAlarmInfo">
+                    0
+                </td>
+                <td>抽检率</td>
+                <td class="aligncenter">
+                    0%
+                </td>
+            </tr>
+            <tr>
+                <td>查岗次数</td>
+                <td class="aligncenter" id="lookUpCount">
+                    0
+                </td>
+                <td>在岗次数</td>
+                <td class="aligncenter" id="answerCount">
+                    0
+                </td>
+                <td>漏岗次数</td>
+                <td class="aligncenter" id="unansweredCount">
+                    0
+                </td>
+                <td>在岗率</td>
+                <td class="aligncenter" id="answerProbability">
+                    0
+                </td>
+            </tr>
+            <tr>
+                <td colspan="8" class="aligncenter fontSize16" style="color: #a3d8fa">分类</td>
+            </tr>
+        </table>
+        <div class="chartDiv">
+            <div class="chartbox_l" id="chart1"></div>
+            <div class="chartbox_r" id="Chkchart"></div>
+            <!-- <div class="circleBox">
+                <div id="ChkTotalData" class="fontSize18">0</div>
+                <div class="fontSize12">查岗总次数</div>
+            </div>   -->
+        </div>
+        <!-- 第二部分 end -->
+
+        <!-- 第三部分 start -->
+        <div class="titleDes fontSize16 printNone" style="position: relative">火灾报警系统 报警信息详情统计</div>
+        <div class="wrap_fireBox printNone" style="width:100%;height: auto; overflow: hidden">
+            <table class="fontSize14 table2" id="fireTable">
+                <colgroup>
+                    <col width="5%">
+                    <col width="15%">
+                    <col width="10%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="20%">
+                    <col width="15%">
+                    <col width="5%">
+                </colgroup>
+                <thead class="fontSize16">
+                <tr>
+                    <th>序号</th>
+                    <th>报警设备</th>
+                    <th>报警类型</th>
+                    <th>首次报警时间</th>
+                    <th>报警地点</th>
+                    <th>节点</th>
+                    <th>描述</th>
+                    <th>次数</th>
+                </tr>
+                </thead>
+            </table>
+            <div class="wrap_fireTbodyContent">
+                <table class="table2">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="15%">
+                        <col width="10%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="20%">
+                        <col width="15%">
+                        <col width="5%">
+                    </colgroup>
+                    <tbody class="fontSize14" id="fireTbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer printNone" style="height: 40px">
+            <div id="demo1" style="position: absolute;bottom: 5px;left: 10px;width: calc(100% - 70px)"></div>
+            <img class="exportBtnAnalyse printNone" id="exportBtn1" src="../../Content/images/Public/exportBT.png">
+        </div>
+        <!-- 第三部分 end -->
+
+        <!-- 第四部分 start -->
+        <div class="titleDes fontSize16" style="position: relative">水系统报警信息统计 (单位：次) 注：不重复端口号的统计</div>
+        <table class="fontSize14 table2" id="waterInfo">
+            <tr>
+                <td class="coupletKeyAll">压力端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">压力端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+                <td class="coupletKeyAll">液位端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">液位端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+            </tr>
+            <tr>
+                <td class="coupletKeyAll">手自动端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">手自动端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+                <td class="coupletKeyAll">启停端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">启停端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+            </tr>
+            <tr>
+                <td class="coupletKeyAll">电源端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">电源端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+                <td class="coupletKeyAll">故障监测端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">故障监测端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+            </tr>
+        </table>
+        <div class="chartDiv3" id="chart2"></div>
+        <div class="wrap_fireBox wrap_fireBox2 printNone" style="width:100%;height: auto; overflow: hidden">
+            <table class="fontSize14 table2" id="fireAlarmTable">
+                <colgroup>
+                    <col width="10%">
+                    <col width="25%">
+                    <col width="25%">
+                    <col width="30%">
+                    <col width="10%">
+                </colgroup>
+                <thead class="fontSize16">
+                <tr>
+                    <th>序号</th>
+                    <th>报警设备</th>
+                    <th>首次报警时间</th>
+                    <th>描述</th>
+                    <th>次数</th>
+                </tr>
+                </thead>
+            </table>
+            <div class="wrap_fireTbodyContent">
+                <table class="table2">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="25%">
+                        <col width="25%">
+                        <col width="30%">
+                        <col width="10%">
+                    </colgroup>
+                    <tbody class="fontSize14" id="fireAlarmTbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer printNone" style="height: 40px">
+            <div id="demo2" style="position: absolute;bottom: 5px;left: 10px;width: calc(100% - 70px)"></div>
+            <img class="exportBtnAnalyse printNone" id="exportBtn2" src="../../Content/images/Public/exportBT.png">
+        </div>
+        <!-- 第四部分 end -->
+
+        <!-- 第五部分 start -->
+        <div class="titleDes fontSize16">电气火灾报警信息统计 (单位：次) 注：不重复端口号的统计</div>
+        <table class="fontSize14 table2" id="elecInfo">
+            <tr>
+                <td class="coupletKeyAll">电压监测端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">电压监测端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+                <td class="coupletKeyAll">电流监测端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">电流监测端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+            </tr>
+            <tr>
+                <td class="coupletKeyAll">漏电电流监测端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">漏电电流监测端口异常总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+                <td class="coupletKeyAll">温度监测端口总数</td>
+                <td class="aligncenterAll">
+                    0
+                </td>
+                <td class="coupletKey">温度监测异常端口总数</td>
+                <td class="aligncenter">
+                    0
+                </td>
+            </tr>
+        </table>
+        <div class="chartDiv3" id="chart3"></div>
+        <!-- 第五部分 end -->
+
+    </div>
+    <!--main end-->
+    <!--endprint-->
+</div>
+</body>
+
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/Echarts/echarts.min.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+<script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+<script>
+    var _unitid = GetQuery('unitid');
+    var _startDate = $('#sData2').val();
+    var _endDate = $('#eData2').val();
+    var _ifAlarmUsed1 = 0;//表分页1
+    var _ifAlarmUsed2 = 0;//表分页2
+    var chartchange = 0;//此处用来控制打印echart表格时只加载一次图片
+    var printchange = 0;//此处用来控制打印是否已经加载好样式，当前单位只执行一次
+    var _data1 = {
+        pageSize: 20,
+        pageNumber: 1,
+        startDate: _startDate,
+        endDate: _endDate,
+        unitId: _unitid
+    };
+    var _data2 = {
+        pageSize: 20,
+        pageNumber: 1,
+        startDate: _startDate,
+        endDate: _endDate,
+        unitId: _unitid,
+        type: 1
+    };
+
+    var _chartData;
+
+    $(function () {
+        $('#sData2').val(getNowFormatDateStart() + " " + "00:00:00");
+        $('#eData2').val(getNowFormatDate() + " " + getNowMinute());
+        $("#alarmInfo").find(".statisticalTime").html($('#sData2').val() + " -- " + $('#eData2').val());
+        loadData();
+        bindEvent();
+    });
+
+    function loadData() {
+        getUnitBaseInfoData();//得到联网单位信息
+        getAlarm1ListData();//表1
+        getAlarm2ListData();//表2
+        // loadChartData1();//火，水，电图表
+        loadChartData2();//查岗分析图表
+        getAlarmTestData();//火警测试的总数
+        getWaterData();//获取水系统的异常数和电气火灾的异常数
+        getWaterDataAll();//获取水系统的总端口数
+        getelectricDataAll();//获取电气火灾的总端口值
+    }
+
+    //联网单位信息
+    function getUnitBaseInfoData() {
+        var isAsync = true, lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitInfoById",
+            data: 'unitId=' + _unitid,
+            success: function (data) {
+                var msg = data.obj;
+                // $('#unitBaseInfo .valueTxt').each(function(){
+                //     var key = $(this).attr('id');
+                //
+                //     $(this).text(msg[key] ||"--");
+                // });
+                msg[0].unitname ? $("#unitName").text(msg[0].unitname) : $("#unitName").text("-");
+                msg[0].unitname ? $("#unitData").text(msg[0].unitname) : $("#unitData").text("-");
+                msg[0].unitaddress ? $("#unitAddress").text(msg[0].unitaddress) : $("#unitAddress").text("-");
+                msg[0].saferesponsiblepersonname ? $("#saferesponsiblepersonname").text(msg[0].saferesponsiblepersonname) : $("#saferesponsiblepersonname").text("-");
+                msg[0].saferesponsiblepersonphone ? $("#saferesponsiblepersonphone").text(msg[0].saferesponsiblepersonphone) : $("#saferesponsiblepersonphone").text("-");
+            }
+        });
+    }
+
+
+    //报警信息列表1
+    function getAlarm1ListData() {
+        _data1 = {
+            pageSize: 20,
+            pageNumber: 1,
+            startDate: _startDate,
+            endDate: _endDate,
+            unitId: _unitid
+        };
+        var isAsync = true, lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getUnitFireList",
+            data: _data1,
+            success: function (data) {
+                //console.log(data);
+                if (_ifAlarmUsed1 == 0) {
+                    layerPage(data.total, 'demo1');
+                    _ifAlarmUsed1 = 1;
+                }
+                showFiretContent1(data);
+            },
+            complete: function () {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showFiretContent1(msg) {
+        // $('.wrap_fireBox').css('max-height',$('.content').height() - 50+'px');
+
+        $("#fireTbody").html();
+
+        var data = msg.list;
+        var html = "";
+        for (var i = 0; i < data.length; i++) {
+            html += '<tr id="' + data[i].id + '">' +
+                '<td>' + (msg.startRow++) + '</td>' +
+                '<td>' + data[i].eqName + '</td>' +
+                '<td>' + data[i].alarmStatus + '</td>' +
+                '<td>' + data[i].time + '</td>' +
+                '<td>' + data[i].alarmWheredesc + '</td>' +
+                '<td>' + data[i].alarmSourcedesc + '</td>' +
+                '<td>' + data[i].alarmCat + '</td>' +
+                '<td>' + data[i].count + '</td>' +
+                '</tr>'
+        }
+
+        $('#fireTbody').html(html || "<tr><td colspan='6'>暂无数据...</td></tr>");
+        $('#fireTbody tr>td').each(function () {
+            $(this).attr('title', $(this).text())
+        });
+        $('.wrap_fireBox > .wrap_fireTbodyContent').addClass('scrollbar-inner');
+        jQuery('.scrollbar-inner').scrollbar({});
+        $('.wrap_fireBox > .wrap_fireTbodyContent').css('height', $('.wrap_fireBox').height() - 37 + 'px');
+    }
+
+    //报警信息列表2
+    function getAlarm2ListData() {
+        _data2 = {
+            pageSize: 20,
+            pageNumber: 1,
+            startDate: _startDate,
+            endDate: _endDate,
+            unitId: _unitid,
+            type: 1
+        };
+        var isAsync = true, lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getInterfaceAlarmList",
+            data: _data2,
+            success: function (data) {
+                //console.log(data);
+                if (_ifAlarmUsed2 == 0) {
+                    layerPage(data.total, 'demo2');
+                    _ifAlarmUsed2 = 1;
+                }
+                showFiretContent2(data);
+            },
+            complete: function () {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showFiretContent2(msg) {
+        // $('.wrap_fireBox').css('max-height',$('.content').height() - 50+'px');
+
+        $("#fireAlarmTbody").html();
+
+        var data = msg.list;
+        var html = "";
+        for (var i = 0; i < data.length; i++) {
+            html += '<tr id="' + data[i].id + '">' +
+                '<td>' + (msg.startRow++) + '</td>' +
+                '<td>' + data[i].eqName + '</td>' +
+                '<td>' + data[i].alarmTime + '</td>' +
+                '<td>' + data[i].eqName + ' ' + data[i].normalValue + ' ' + data[i].alarmValue + '</td>' +
+                '<td>--</td>' +
+                '</tr>'
+        }
+
+        $('#fireAlarmTbody').html(html || "<tr><td colspan='6'>暂无数据...</td></tr>");
+        $('#fireAlarmTbody tr>td').each(function () {
+            $(this).attr('title', $(this).text())
+        });
+        $('.wrap_fireBox2 > .wrap_fireTbodyContent').addClass('scrollbar-inner');
+        jQuery('.scrollbar-inner').scrollbar({});
+        $('.wrap_fireBox2 > .wrap_fireTbodyContent').css('height', $('.wrap_fireBox2').height() - 37 + 'px');
+    }
+
+    //水火电图表
+    // function loadChartData1(){
+    //     _chartData = {
+    //         startDate: $('#sData2').val(),
+    //         endDate: $('#eData2').val(),
+    //         keyword: '',
+    //         unitId: _unitid,
+    //         isTest: 0
+    //     };
+    //     var isAsync = true,lid = 0;
+    //     if (isAsync)
+    //         lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+    //     $.ajax({
+    //         type: "get",
+    //         url: _serverIp + "/front/analysis/getAlarmStatBySystem",
+    //         data: _chartData,
+    //         ceche: false,
+    //         async: false,
+    //         success: function (data) {
+    //             if(data.success == true){
+    //                 var msg = data.obj;
+    //
+    //
+    //             }
+    //         },
+    //         complete: function () {
+    //             if (isAsync){
+    //                 layer.close(lid);
+    //             }
+    //         }
+    //     });
+    // }
+
+    //获取火警系统测试值
+    function getAlarmTestData() {
+        _chartData = {
+            startDate: $('#sData2').val(),
+            endDate: $('#eData2').val(),
+            keyword: '',
+            unitId: _unitid,
+            isTest: 1
+        };
+        var isAsync = true, lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getAlarmStatBySystem",
+            data: _chartData,
+            ceche: false,
+            async: false,
+            success: function (data) {
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    if(msg.fireCount == ""){
+                        $('#alarmInfo .coupletValueTest').html("0");
+                    }
+                    //火灾自动报警系统(测试数据)
+                    var fireCount = getKeyData(msg.fireCount);
+                    var fireMessage = fireCount[0];
+                    var fireValue = fireCount[1];
+                    var realAlarmInfo = 0;
+                    for (var i = 0; i < fireMessage.length; i++) {
+                        $('#alarmInfo .coupletKey').each(function () {
+                            var that = $(this);
+                            if (that.html().substring(0, 2) == fireMessage[i]) {
+                                if (fireMessage[i] == "" || fireMessage[i] == null) {
+                                    fireValue[i] = "0";
+                                }
+                                that.next("td").find(".coupletValueTest").html(fireValue[i]);
+                            }
+                        });
+                        realAlarmInfo = realAlarmInfo + parseInt(fireValue[i]);
+                    }
+                    $("#realAlarmInfo").html(parseInt(realAlarmInfo));
+                }
+            },
+            complete: function () {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    // 获取水,电系统的异常值
+    function getWaterData() {
+        _chartData = {
+            startDate: $('#sData2').val(),
+            endDate: $('#eData2').val(),
+            keyword: '',
+            unitId: _unitid
+        };
+        var isAsync = true, lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/analysis/getAlarmStatBySystem",
+            data: _chartData,
+            ceche: false,
+            async: false,
+            success: function (data) {
+                if (data.success == true) {
+                    var msg = data.obj;
+
+                    //火灾自动报警系统
+                    if(msg.fireCount == ""){
+                        $('#alarmInfo .coupletValue').html("0");
+                    }
+                    var fireCount = getKeyData(msg.fireCount);
+                    var fireMessage = fireCount[0];
+                    var fireValue = fireCount[1];
+                    var emergencyCount = getKeyData(msg.emergencyCount);
+                    var emergencyMessage = emergencyCount[0];
+                    var emergencyValue = emergencyCount[1];
+                    $('#alarmInfo .coupletKey').each(function () {
+                        var that = $(this);
+                        for (var i = 0; i < fireMessage.length; i++) {
+                            if (that.html().substring(0, 2) == fireMessage[i]) {
+                                if (fireValue[i] == "" || fireValue[i] == null) {
+                                    fireValue[i] = "0";
+                                }
+                                that.next("td").find(".coupletValue").html(fireValue[i]);
+                            }
+                        }
+                        for (var i = 0; i < emergencyMessage.length; i++) {
+                            if (that.html().substring(0, 2) == emergencyMessage[i]) {
+                                if (emergencyValue[i] == "" || emergencyValue[i] == null) {
+                                    emergencyValue[i] = "0";
+                                }
+                                that.next("td").find(".coupletValue").html(parseInt(emergencyValue[i]) + parseInt(that.next("td").find(".coupletValue").text()));
+                            }
+                        }
+                    });
+                    showChart1('chart1', fireCount[0], fireCount[1]);
+
+                    // 水系统的异常数
+                    if(msg.waterCount == ""){
+                        $('#waterInfo .aligncenter').html("0");
+                    }
+                    var water = getKeyData(msg.waterCount);
+                    var waterMessage = water[0];
+                    var waterValue = water[1];
+                    $('#waterInfo .coupletKey').each(function () {
+                        var that = $(this);
+                        for (var i = 0; i < waterMessage.length; i++) {
+                            if (that.html().substring(0, 2) == waterMessage[i].substring(0, 2)) {
+                                if (waterMessage[i] == "" || waterMessage[i] == null) {
+                                    waterValue[i] = "0";
+                                }
+                                that.next("td").html(waterValue[i]);
+                            }
+                        }
+                    });
+                    showChart1('chart2', water[0], water[1]);
+
+                    //  电气火灾设备异常率
+                    if(msg.eleCount == ""){
+                        $("#elecInfo .aligncenter").html("0");
+                    }
+                    var elect = getKeyData(msg.eleCount);
+                    var electMessage = elect[0]
+                    var electValue = elect[1];
+                    var IValue = 0;
+                    var UValue = 0;
+                    var WValue = 0;
+                    var LValue = 0;
+                    $("#elecInfo .coupletKey").each(function () {
+                        for (var i = 0; i < electMessage.length; i++) {
+                            if (electMessage[i] == "IA") {
+                                IValue = IValue + electValue[i];
+                            }
+                            if (electMessage[i] == "IB") {
+                                IValue = IValue + electValue[i];
+                            }
+                            if (electMessage[i] == "IC") {
+                                IValue = IValue + electValue[i];
+                            }
+                            if (electMessage[i] == "UA") {
+                                UValue = UValue + electValue[i];
+                            }
+                            if (electMessage[i] == "UB") {
+                                UValue = UValue + electValue[i];
+                            }
+                            if (electMessage[i] == "UC") {
+                                UValue = UValue + electValue[i];
+                            }
+                            if (electMessage[i] == "WA") {
+                                WValue = WValue + electValue[i];
+                            }
+                            if (electMessage[i] == "WB") {
+                                WValue = WValue + electValue[i];
+                            }
+                            if (electMessage[i] == "WC") {
+                                WValue = WValue + electValue[i];
+                            }
+                            if (electMessage[i] == "WD") {
+                                WValue = WValue + electValue[i];
+                            }
+                            if (electMessage[i] == "漏电流") {
+                                LValue = LValue + electValue[i];
+                            }
+                        }
+                        if ($(this).html().substring(0, 2) == "电压") {
+                            $(this).next("td").html(UValue);
+                        } else if ($(this).html().substring(0, 2) == "电流") {
+                            $(this).next("td").html(IValue);
+                        } else if ($(this).html().substring(0, 2) == "漏电") {
+                            $(this).next("td").html(LValue);
+                        } else if ($(this).html().substring(0, 2) == "温度") {
+                            $(this).next("td").html(WValue);
+                        }
+                    });
+                    showChart1('chart3', elect[0], elect[1]);
+                }
+            },
+            complete: function () {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    // 获取水系统的总端口值
+    function getWaterDataAll() {
+        _chartData = {
+            startDate: $('#sData2').val(),
+            endDate: $('#eData2').val(),
+            keyword: '',
+            unitId: _unitid,
+            type: 1
+        };
+        var isAsync = true, lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/couplet/getAlarmCount",
+            data: _chartData,
+            ceche: false,
+            async: false,
+            success: function (data) {
+                if (data.success == true) {
+                    var msg = data.obj;
+                    // var waterMessage = [];   总数的可能，后续可能用拿到
+                    // var waterValue = [];
+                    $("#waterInfo .coupletKeyAll").each(function () {
+                        var that = $(this);
+                        for (var prop in msg) {
+                            if (msg.hasOwnProperty(prop)) {
+                                // waterMessage.push(prop);
+                                // waterValue.push(msg[prop]);
+                                if (prop.substring(0, 2) == that.html().substring(0, 2)) {
+                                    that.next("td").html(msg[prop]);
+                                }
+                            }
+                        }
+                    });
+                }
+            },
+            complete: function () {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    // 获取电气火灾的总端口值
+    function getelectricDataAll() {
+        _chartData = {
+            startDate: $('#sData2').val(),
+            endDate: $('#eData2').val(),
+            keyword: '',
+            unitId: _unitid,
+            type: 2
+        };
+        var isAsync = true, lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/couplet/getAlarmCount",
+            data: _chartData,
+            ceche: false,
+            async: false,
+            success: function (data) {
+                if (data.success == true) {
+                    var msg = data.obj;
+                    var IValue = 0;
+                    var UValue = 0;
+                    var WValue = 0;
+                    var LValue = 0;
+                    for (var prop in msg) {
+                        if (prop.substring(0, 2) == "IA") {
+                            IValue = IValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "IB") {
+                            IValue = IValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "IC") {
+                            IValue = IValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "UA") {
+                            UValue = UValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "UB") {
+                            UValue = UValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "UC") {
+                            UValue = UValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "A") {
+                            WValue = WValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "B") {
+                            WValue = WValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "C") {
+                            WValue = WValue + msg[prop];
+                        }
+                        if (prop.substring(0, 2) == "D") {
+                            WValue = WValue + msg[prop];
+                        }
+                        if (prop == "漏电流") {
+                            LValue = LValue + msg[prop];
+                        }
+                        $("#elecInfo .coupletKeyAll").each(function () {
+                            var that = $(this);
+                            if (that.html().substring(0, 2) == "电压") {
+                                that.next("td").html(UValue);
+                            } else if (that.html().substring(0, 2) == "电流") {
+                                that.next("td").html(IValue);
+                            } else if (that.html().substring(0, 2) == "漏电") {
+                                that.next("td").html(LValue);
+                            } else if (that.html().substring(0, 2) == "温度") {
+                                that.next("td").html(WValue);
+                            }
+                        });
+                    }
+                }
+            },
+            complete: function () {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function getKeyData(key) {
+        var name = [], value = [];
+        for (var i = 0; i < key.length; i++) {
+            name.push(key[i].coupletKey);
+            value.push(key[i].coupletValue);
+        }
+        return [name, value]
+    }
+
+    function showChart1(id, xData, chart1Data) {
+        var _color = [], realData = [];
+
+        for (var i = 0; i < chart1Data.length; i++) {
+            realData.push({value: chart1Data[i], name: xData[i]});
+        }
+
+        if (id == 'chart1') { //火
+            _color = ['#f54f4d', '#ff9a0c', '#cbc9c8', '#16b7c9', '#f16ed8', '#4376c5', '#0657f1', '#885ee4'];
+        } else if (id == 'chart2') { //水
+            _color = ['#2b81da', '#4376c5', '#16b7c9', '#0657f1', '#ff9a0c', '#23dfc1', '#4376c5', '#885ee4', '#f54f4d'];
+        } else if (id == 'chart3') { //电
+            _color = ['#ff9a0c', '#885ee4', '#16b7c9', '#23dfc1', '#f54f4d'];
+        }
+
+        if (realData.length == 0) {
+            // $('#'+id).parent('.chartdiv').hide();
+            $('#' + id).html('暂无数值...');
+            return
+        }
+
+        //图表加载
+        var chart1 = echarts.init(document.getElementById(id));
+        chart1.clear();
+        chart1.title = 'chart';
+
+        var option = {
+            title: {},
+            backgroundColor: '',
+            tooltip: { // 提示框. Can be overwrited by series or data
+                trigger: 'item',
+                formatter: "{b}: {c}",
+                confine: true
+            },
+            legend: {
+                //orient: 'vertical',
+                x: 'center',
+                //y: 'bottom',
+                data: xData,
+                type: 'scroll',
+                //orient:'vertical',
+                inactiveColor: '#777',
+                //right: '2%',
+                bottom: '1%',
+                itemWidth: 8,
+                itemHeight: 8,
+                pageIconSize: 12,
+                pageIconColor: '#21AFF7',
+                pageIconInactiveColor: '#2073BF',
+                pageTextStyle: {
+                    color: '#418ACE'
+                },
+                textStyle: {
+                    color: '#BDC6E3',
+                    fontSize: 12
+                }
+            },
+            color: _color,
+            series: [
+                {
+                    name: '异常率',
+                    type: 'pie',
+                    selectedMode: 'single',
+                    center: ['50%', '45%'],
+                    radius: ['38%', '50%'],
+                    hoverAnimation: false,
+                    selectedOffset: 0,
+                    label: {
+                        normal: {
+                            position: 'outside'
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                formatter: '{d}%',
+                                textStyle: {
+                                    color: '#68a6de',
+                                    fontSize: 12,
+                                }
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 5,
+                            length2: 5
+                        }
+                    },
+                    data: realData
+                },
+                {
+                    name: '',
+                    type: 'pie',
+                    center: ['50%', '45%'],
+                    radius: ['34%', '35%'],
+                    itemStyle: { //环内样式
+                        normal: { //默认样式
+                            label: { //标签
+                                show: false,
+                            },
+                            labelLine: {
+                                show: false,
+                            },
+                        },
+                    }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animation: false,
+                    data: [{
+                        name: '',
+                        value: 100,
+                        itemStyle: {
+                            normal: {
+                                color: '#316DB6'
+                            },
+                            emphasis: {
+                                color: '#316DB6'
+                            }
+                        },
+                        tooltip: {
+                            show: false,
+                        },
+                        cursor: 'default',
+                    }],
+                }
+
+            ]
+        };
+
+        chart1.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            chart1.resize();
+        });
+
+    }
+
+    //查岗分析图表
+    function loadChartData2() {
+        _chartData = { //图表
+            startDate: $('#sData2').val(),
+            endDate: $('#eData2').val(),
+            keyword: '',
+            unitId: _unitid
+        };
+        var isAsync = true, lid = 0;
+        var Probability = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', {icon: 16, shade: [0.1, '#fff'], time: 90000});
+        $.ajax({
+            type: "post",
+            url: _serverIp + "/front/analysis/getUplookCout",
+            data: _chartData,
+            success: function (data) {
+                var msg = data.obj;
+                var coupletKey = msg.coupletKey || 0;
+                var coupletValue = msg.coupletValue || 0;
+                if (coupletKey == "") {
+                    coupletKey = 0;
+                }
+                showChart2([coupletKey, coupletValue - coupletKey], coupletValue);
+                $("#lookUpCount").text(coupletValue);
+                $("#answerCount").text(coupletKey);
+                $("#unansweredCount").text(coupletValue - coupletKey);
+                Probability = Math.round(coupletKey / coupletValue * 10000) / 100.00;
+                if (isNaN(Probability)) {
+                    Probability = 0;
+                    $("#answerProbability").text(Probability + "%");
+                } else {
+                    $("#answerProbability").text(Probability + "%");
+                }
+            },
+            complete: function () {
+                if (isAsync) {
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showChart2(chart1Data, coupletValue) {
+        var chart1 = echarts.init(document.getElementById('Chkchart'));
+        chart1.title = '查岗次数';
+
+        var option = {
+            title: {
+                text: coupletValue, //获取的data
+                subtext: '查岗总次数',
+                textStyle: {
+                    color: '#a3d8fa',
+                    fontSize: 16,
+                    // align: 'center'
+                },
+                subtextStyle: {
+                    fontSize: 14,
+                    color: ['#a3d8fa']
+                },
+                x: 'center',
+                y: '40%',
+            },
+            // backgroundColor: '',
+            legend: {
+                show: false
+            },
+            tooltip: { // 提示框. Can be overwrited by series or data
+                trigger: 'item',
+                formatter: "{b}: {c} ({d}%)"
+            },
+            color: ['#00dfc3', '#f56c20'],
+            series: [
+                {
+                    name: '查岗',
+                    type: 'pie',
+                    center: ['50%', '50%'],
+                    radius: ['38%', '50%'],
+                    hoverAnimation: false,
+                    selectedMode: false,
+                    label: {
+                        normal: {
+                            position: 'outside',
+                            formatter: '{d}%\n{b}'
+                        },
+                    },
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                formatter: '{c}%',
+                                textStyle: {
+//                                    color: '#68a6de',
+                                    fontSize: 12,
+                                }
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 15,
+                            length2: 10
+                            //show: false
+                        }
+                    },
+                    data: [
+                        {value: chart1Data[0], name: '应答'},
+                        {value: chart1Data[1], name: '无应答'}
+                    ],
+                },
+                {
+                    name: '',
+                    type: 'pie',
+                    center: ['50%', '50%'],
+                    radius: ['34%', '35%'],
+                    itemStyle: { //环内样式
+                        normal: { //默认样式
+                            label: { //标签
+                                show: false,
+                            },
+                            labelLine: {
+                                show: false,
+                            },
+                        },
+                    }, //graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animation: false,
+                    data: [{
+                        name: '',
+                        value: 100,
+                        itemStyle: {
+                            normal: {
+                                color: '#316DB6'
+                            },
+                            emphasis: {
+                                color: '#316DB6'
+                            }
+                        },
+                        tooltip: {
+                            show: false,
+                        },
+                        cursor: 'default',
+                    }],
+                }
+
+            ]
+        };
+
+        chart1.setOption(option);
+
+        window.addEventListener('resize', function () { //宽度自适应
+            chart1.resize();
+        });
+    }
+
+    //分页
+    function layerPage(count, demoNumber) {
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage, layer = layui.layer;
+            laypage.render({
+                elem: demoNumber
+                , count: count
+                , limit: 20
+                , prev: '<em>&lt;</em>'
+                , next: '<em>&gt;</em>'
+                , layout: ['count', 'prev', 'page', 'next', 'refresh']
+                , jump: function (obj, isNew) {
+                    //console.log(obj);
+                    if (!isNew) {
+                        if (demoNumber == "demo1") {
+                            _data1.pageNumber = obj.curr;
+                            _data1.pageSize = obj.limit;
+                            getAlarm1ListData();
+                        } else {
+                            _data2.pageNumber = obj.curr;
+                            _data2.pageSize = obj.limit;
+                            getAlarm2ListData();
+                        }
+                    }
+
+                }
+            });
+        })
+        //完整功能
+    }
+
+    // echart转化成图片
+    function convertCanvasToImage(canvas) {
+
+        //新Image对象，可以理解为DOM
+        var image = new Image();
+
+        // canvas.toDataURL 返回的是一串Base64编码的URL
+        // 指定格式 PNG
+        image.src = canvas.toDataURL("image/png");
+        return image;
+    }
+
+    // 某个id下的echart表格
+    function getIdechart(id) {
+        if ($("#" + id + "").find("canvas").length > 0) {
+            var mycans = document.getElementById(id).children[0].children[0];
+
+            //调用convertCanvasToImage函数将canvas转化为img形式
+            var img = convertCanvasToImage(mycans);
+
+            //将img插入容器
+            document.getElementById(id).children[0].appendChild(img);
+        }
+    }
+
+
+    //点击事件
+    function bindEvent() {
+        $('.timeBTChose > span').unbind('click').click(function () { //月季年
+            $(this).addClass('actTime').siblings().removeClass('actTime');
+            var text = $(this).text();
+            if (text == '月') {
+                $('#sData2').val(getNowFormatDateStart() + " " + "00:00:00");
+                $('#eData2').val(getNowFormatDate() + " " + getNowMinute());
+                $("#alarmInfo").find(".statisticalTime").html($('#sData2').val() + " -- " + $('#eData2').val());
+            } else if (text == '季') {
+                $('#sData2').val(getQuarterStartDate() + " " + "00:00:00");
+                $('#eData2').val(getNowFormatDate() + " " + getNowMinute());
+                $("#alarmInfo").find(".statisticalTime").html($('#sData2').val() + " -- " + $('#eData2').val());
+            } else if (text == "年") {
+                $('#sData2').val(getNowYeartDateStart() + " " + "00:00:00");
+                $('#eData2').val(getNowFormatDate() + " " + getNowMinute());
+                $("#alarmInfo").find(".statisticalTime").html($('#sData2').val() + " -- " + $('#eData2').val());
+            }
+            loadData();
+        });
+
+        //右侧搜索按钮
+        $('.submitBtn').unbind('click').click(function () {
+            _startDate = $('#sData2').val();
+            _endDate = $('#eData2').val();
+            $("#alarmInfo").find(".statisticalTime").html(_startDate + " -- " + _endDate);
+            loadData();
+        });
+
+        //导出火灾报警系统表格
+        $('#exportBtn1').unbind('click').click(function () {
+            if ($('#fireTbody tr:first-child>td').length == 1) {
+                return;
+            }
+            var _dealResult = $('#result').find('dd.layui-this').attr('lay-value') || "";
+            var _status = $('#alarmType').find('dd.layui-this').attr('lay-value') || "";
+            var url = _serverIp + "/front/history/exportUnitFireList?" + "startDate=" + $('#sData2').val() + "&endDate=" + $('#eData2').val() + "&unitId=" + _unitid;
+            postExport(url)
+        });
+
+        //导出水系统表格
+        $('#exportBtn2').unbind('click').click(function () {
+            if ($('#fireAlarmTbody tr:first-child>td').length == 1) {
+                return;
+            }
+            var _dealResult = $('#result').find('dd.layui-this').attr('lay-value') || "";
+            var _status = $('#alarmType').find('dd.layui-this').attr('lay-value') || "";
+            var url = _serverIp + "/front/history/exportUnitInterfaceAlarmList?" + "startDate=" + $('#sData2').val() + "&endDate=" + $('#eData2').val() + "&unitId=" + _unitid + "&type=1";
+            postExport(url)
+        });
+
+        // 打印时的绑定
+        $(".printBt").unbind("click").click(function () {
+            if (chartchange == 0) {
+                getIdechart("chart1");
+                getIdechart("chart2");
+                getIdechart("chart3");
+                getIdechart("Chkchart");
+                chartchange = 1;
+            }
+
+            // 判断iframe是否存在，不存在则创建iframe
+            var iframe = document.getElementById("print-iframe");
+            if (!iframe) {
+                var el = document.getElementById("printcontent");
+                iframe = document.createElement('IFRAME');
+                var doc = null;
+                iframe.setAttribute("id", "print-iframe");
+                iframe.setAttribute('style', 'position:absolute;width:0px;height:0px;left:-500px;top:-500px;');
+                document.body.appendChild(iframe);
+                doc = iframe.contentWindow.document;
+                //这里可以自定义样式
+                doc.write('<link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css" >');
+                doc.write('<link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css">');
+                doc.write('<link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" />');
+                doc.write('<link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />');
+                // doc.write('<link href="../../Content/css/AggregateAnalysis/AggregateAnalysis_iprintBt ndex.css" rel="stylesheet" type="text/css">');
+                doc.write('<link href="../../Content/css/UnitManage/index.css" rel="stylesheet" type="text/css" />');
+                doc.write('<link href="../../Content/css/AggregateAnalysis/unitAnalyse.css" rel="stylesheet" type="text/css" />');
+                doc.write('<link href="../../Content/css/AggregateAnalysis/ReportAnalyse_detail.css" rel="stylesheet" type="text/css" />');
+                // doc.write('<link id="layuicss-skinlayercss" rel="stylesheet" href="undefinedcss/modules/layer/default/layer.css?v=3.0.3303" media="all">');
+                doc.write('<link href="../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css">');
+                // doc.write('<link id="layuicss-layer" rel="stylesheet" href="http://192.168.0.198:8085/html/Script/layui/css/modules/layer/default/layer.css?v=3.1.0" media="all">');
+                doc.write('<link href="../../Content/css/AggregateAnalysis/print.css" rel="stylesheet" type="text/css" >');
+                doc.write('<div>' + el.innerHTML + '</div>');
+                doc.close();
+                iframe.contentWindow.focus();
+            }
+
+            // 判断iframe是否加载完成
+            if (printchange == 0) {
+                if (iframe.attachEvent) {
+                    iframe.attachEvent("onload", function () {
+                        iframe.contentWindow.print();
+                    });
+                } else {
+                    iframe.onload = function () {
+                        iframe.contentWindow.print();
+                    };
+                }
+                printchange = 1;
+            } else {
+                iframe.contentWindow.print();
+            }
+
+            if (navigator.userAgent.indexOf("MSIE") > 0) {
+                document.body.removeChild(iframe);
+            }
+        });
+    }
+
+</script>
+</html>

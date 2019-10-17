@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtUnitLookupLogMapper" >
+  <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtUnitLookupLog" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="unit_id" property="unitId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="send_date" property="sendDate" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="look_status" property="lookStatus" jdbcType="VARCHAR" />
+    <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
+    <result column="recerve_user" property="recerveUser" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getLookupLogs" resultType="com.gw.front.lookup.data.FrontLookupLogOutData" parameterType="com.gw.front.lookup.data.FrontLookupInData">
+  	SELECT
+  		a.id,
+		b.UnitCode unitcode,
+		b.UnitName unitname,
+		b.UnitAddress unitaddress,
+		b.ChildStationNum childstationnum,
+		d.UserName userName,
+		CONVERT (VARCHAR, a.Requestdate, 120) sendDate,
+		CASE WHEN a.Status is null THEN '失败' ELSE '成功' END status,
+		CASE WHEN a.Status=1 THEN '值班在岗' ELSE '值班脱岗' END lookStatus,
+		CONVERT (VARCHAR, a.Answerdate, 120) receiveDate,
+		a.AnswerUser recerveUser,
+		a.CardID cardID,
+		g.id isValidate,
+	    f.Name cardName
+	FROM
+		${database}.dbo.sd_inspect a
+	LEFT JOIN UT_Unit_NetDevice net ON net.OwnerCode=a.OwnerCode
+	LEFT JOIN UT_Unit_BaseInfo b ON net.UnitID = b.ID
+	LEFT JOIN UT_Unit_User d ON CONVERT(VARCHAR,d.ID) = a.baseuserid
+	<if test="userId != null and userId != '' and userId != 1">
+		LEFT JOIN UT_Base_UserReUnit e ON net.UnitID = e.unit_id
+	</if>
+	LEFT JOIN ${database}.dbo.sd_idcard f ON a.CardID = f.ID
+	LEFT JOIN UT_user_information g ON f.CardNo = g.id_card
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			and (net.isDelete = 0 OR net.isDelete is NULL)
+			and b.id is not null
+			AND net.DeviceIndex=2
+		<if test="userId != null and userId != '' and userId != 1">
+			and e.user_id = #{userId}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			and b.UnitName like '%${keyword}%'
+		</if>
+		<if test='result == "1"'>
+			and a.Status = 1
+		</if>
+		<if test='result == "0"'>
+			and a.Status != 1
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.Requestdate >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.Requestdate  &lt;= #{endDate}
+		</if>
+		<if test="unitId != null and unitId != ''">
+			and b.ID = #{unitId}
+		</if>
+	</where>
+	order by sendDate desc
+  </select>
+  <select id="getUplookCout" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData" parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+  	SELECT
+		SUM (CASE WHEN a.Status=1 THEN 1 ELSE 0 END) coupletKey,
+		COUNT (a.id) coupletValue
+	FROM
+		${database}.dbo.sd_inspect a
+	LEFT JOIN UT_Unit_NetDevice c ON a.OwnerCode = c.OwnerCode
+	<if test="userId != 1">
+		LEFT JOIN UT_Base_UserReUnit b ON c.UnitID = b.unit_id
+	</if>
+		<where>
+			(c.isDelete = 0 OR c.isDelete is NULL)
+			<if test="userId != 1">
+				and b.user_id = #{userId}
+			</if>
+			and c.DeviceIndex=2
+			<if test="startDate != null and startDate != ''">
+				and CONVERT (VARCHAR(100),  Requestdate
+				, 20)>=#{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and CONVERT (VARCHAR(100),  Requestdate
+				, 20)>=#{endDate}
+			</if>
+			<if test="unitId != null and unitId != ''">
+				and c.UnitID = #{unitId}
+			</if>
+		</where>
+  </select>
+  <select id="getLookupStatList" resultType="com.gw.front.analysis.data.FrontAnaLysisLookupOutData" parameterType="com.gw.front.analysis.data.FrontAnalysisInData">
+  	SELECT
+	  b.ID unitId,
+		b.UnitCode,
+		b.UnitName,
+		b.ChildStationNum,
+		COUNT (*) lookupCount,
+		SUM (CASE WHEN a.Status=1 THEN 1 ELSE 0 END) answerCount
+	FROM
+		${database}.dbo.sd_inspect a
+	LEFT JOIN UT_Unit_NetDevice d ON d.OwnerCode = a.OwnerCode
+	LEFT JOIN UT_Unit_BaseInfo b ON d.UnitID = b.ID
+	<if test="userId != 1">
+		LEFT JOIN UT_Base_UserReUnit c ON c.unit_id=b.ID
+	</if>
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			<if test="userId != 1">
+				and c.user_id = #{userId}
+			</if>
+			and d.DeviceIndex=2
+			and (d.isDelete = 0 OR d.isDelete is NULL)
+		<if test="startDate != null and startDate != ''">
+			and a.Requestdate >= #{startDate}
+		</if>
+			and b.ID >= #{unitId}
+		<if test="endDate != null and endDate != ''">
+			and a.Requestdate &lt;= #{endDate}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (b.UnitName LIKE '%${keyword}%' or b.UnitCode LIKE '%${keyword}%')
+		</if>
+	</where>
+	GROUP BY
+		b.UnitCode,
+		b.UnitName,
+		b.ChildStationNum,
+	  b.ID
+  </select>
+  <select id="getLookupUserInfo" resultType="com.gw.front.couplet.data.FrontLookupUserInfoOutData">
+  	SELECT
+  		b.PhotoPath lookupInfoPath,
+		a.Photo cardInfoPath,
+		a.name userName,
+		g.card_type cardType,
+		a.CardNo cardNo,
+		g.card_number cardNumber,
+		g.phone phone,
+		a.Address address,
+		a.Birth birth,
+		CONVERT (VARCHAR, a.StartDate, 23) startDate,
+		CONVERT (VARCHAR, a.EndDate, 23) endDate,
+		CONVERT (VARCHAR, g.start_time, 23) cardDate,
+		a.Sex sex,
+		a.Native nation,
+		g.certificate certificate,
+		g.id infoId
+	FROM
+		${database}.dbo.sd_inspect b
+		LEFT JOIN ${database}.dbo.sd_idcard a ON a.id = b.cardId
+		LEFT JOIN UT_user_information g ON a.CardNo = g.id_card
+	where b.id = #{id}
+  </select>
+  
+   <select id="getNamingLogs" resultType="com.gw.front.lookup.data.FrontLookupLogOutData" parameterType="com.gw.front.lookup.data.FrontLookupInData">
+  	SELECT
+		b.UnitCode unitcode,
+		b.UnitName unitname,
+		b.UnitAddress unitaddress,
+		b.ChildStationNum childstationnum,
+		c.UserName userName,
+		CONVERT (VARCHAR, a.Requestdate, 120) sendDate,
+		CASE WHEN a.IsAnswer = 1 THEN '成功' ELSE '失败' END status,
+	 	CONVERT (VARCHAR, a.Answerdate, 120) receiveDate
+	FROM
+		${database}.dbo.sd_enroll a
+	LEFT JOIN ${database}.dbo.sd_devices dev ON a.DeviceID = dev.id
+	LEFT JOIN UT_Unit_NetDevice net ON net.OwnerCode = dev.OwnerCode
+	AND net.DeviceIndex = dev.DeviceIndex
+	AND (net.DeviceNo = dev.DeviceNo or net.DeviceIndex=2)
+	LEFT JOIN UT_Unit_BaseInfo b ON net.UnitID = b.ID
+	LEFT JOIN UT_Unit_User c ON a.reserve = c.id
+	<if test="userId != null and userId != '' and userId != 1">
+		LEFT JOIN UT_Base_UserReUnit d ON b.ID = d.unit_id
+	</if>
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			and (net.isDelete = 0 OR net.isDelete is NULL)
+		<if test="userId != null and userId != '' and userId != 1">
+			and d.user_id = #{userId}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			and b.UnitName like '%${keyword}%'
+		</if>
+		<if test="result != null and result != ''">
+			and a.IsAnswer = #{result}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.Requestdate >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.Requestdate &lt;= #{endDate}
+		</if>
+		<if test="unitId != null and unitId != ''">
+			and b.ID = #{unitId}
+		</if>
+	</where>
+	order by a.Requestdate desc
+  </select>
+  <select id="getLookupCurrentstatus" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData">
+  	SELECT
+		coupletKey,
+		coupletValue
+	FROM
+		(
+			SELECT
+				a.ID coupletKey,
+				b.status coupletValue,
+				row_number () OVER (
+					partition BY a.ID
+					ORDER BY
+						b.Requestdate DESC
+				) group_idx
+			FROM
+				UT_Unit_NetDevice a
+			LEFT JOIN ${database}.dbo.sd_inspect b ON a.OwnerCode = b.OwnerCode
+			WHERE a.ID IN 
+			<foreach collection="deviceIds" item="deviceId" open="(" close=")" separator="," >
+				#{deviceId}
+			</foreach>
+		) m
+	WHERE
+		m.group_idx = 1
+  </select>
+  <select id="getNamingCurrentstatus" resultType="com.gw.front.couplet.data.FrontCoupletCommonOutData">
+  	SELECT
+		coupletKey,
+		coupletValue
+	FROM
+		(
+			SELECT
+				a.ID coupletKey,
+				b.IsAnswer coupletValue,
+				row_number () OVER (
+					partition BY a.ID
+					ORDER BY
+						b.Requestdate DESC
+				) group_idx
+			FROM
+				UT_Unit_NetDevice a
+			LEFT JOIN ${database}.dbo.sd_enroll b ON a.OwnerCode = b.OwnerCode
+			WHERE a.ID IN 
+			<foreach collection="deviceIds" item="deviceId" open="(" close=")" separator="," >
+				#{deviceId}
+			</foreach>
+		) m
+	WHERE
+		m.group_idx = 1                                                                                            
+  </select>
+  <select id="getNetworkingUnitLookupLogs" resultType="com.gw.front.lookup.data.FrontLookupLogOutData" parameterType="com.gw.front.lookup.data.FrontLookupInData">
+  	SELECT
+  		a.id,
+		b.UnitCode unitcode,
+		b.UnitName unitname,
+		b.UnitAddress unitaddress,
+		b.ChildStationNum childstationnum,
+		CONVERT (VARCHAR, a.Requestdate, 120) sendDate,
+		CASE WHEN a.Status is null THEN '失败' ELSE '成功' END status,
+		CASE WHEN a.Status=1 THEN '值班在岗' ELSE '值班脱岗' END lookStatus,
+		CONVERT (VARCHAR, a.Answerdate, 120) receiveDate,
+		a.AnswerUser recerveUser,
+		a.CardID cardID,
+		g.id isValidate
+	FROM
+		${database}.dbo.sd_inspect a
+	LEFT JOIN UT_Unit_NetDevice net ON net.OwnerCode=a.OwnerCode
+	LEFT JOIN UT_Unit_BaseInfo b ON net.UnitID = b.ID
+	LEFT JOIN ${database}.dbo.sd_idcard f ON a.CardID = f.ID
+	LEFT JOIN UT_user_information g ON f.CardNo = g.id_card
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			and (net.isDelete = 0 OR net.isDelete is NULL)
+			and b.id is not null
+			AND net.DeviceIndex=2
+		<if test="keyword != null and keyword != ''">
+			and b.UnitName like '%${keyword}%'
+		</if>
+		<if test="result != null and result != ''">
+			and a.Status = #{result}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.Requestdate >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.Requestdate &lt;= #{endDate}
+		</if>
+		<if test="unitId != null and unitId != ''">
+			and b.ID = #{unitId}
+		</if>
+	</where>
+	order by sendDate desc
+  </select>
+  <select id="getNetworkingUnitNamingLogs" parameterType="com.gw.front.lookup.data.FrontLookupInData" resultType="com.gw.front.lookup.data.FrontLookupLogOutData">
+  	SELECT
+		b.UnitCode unitcode,
+		b.UnitName unitname,
+		b.UnitAddress unitaddress,
+		b.ChildStationNum childstationnum,
+		c.UserName userName,
+		CONVERT (VARCHAR, a.Requestdate, 120) sendDate,
+		CASE WHEN a.IsAnswer = 1 THEN '成功' ELSE '失败' END status,
+	 	CONVERT (VARCHAR, a.Answerdate, 120) receiveDate
+	FROM
+		${database}.dbo.sd_enroll a
+	LEFT JOIN ${database}.dbo.sd_devices dev ON a.DeviceID = dev.id
+	LEFT JOIN UT_Unit_NetDevice net ON net.OwnerCode = dev.OwnerCode
+	AND net.DeviceIndex = dev.DeviceIndex
+	AND (net.DeviceNo = dev.DeviceNo or net.DeviceIndex=2)
+	LEFT JOIN UT_Unit_BaseInfo b ON net.UnitID = b.ID
+	LEFT JOIN UT_Unit_User c ON a.RequestUserID = c.id
+	<where>
+			(b.isDelete = 0 OR b.isDelete is NULL)
+			and (net.isDelete = 0 OR net.isDelete is NULL)
+		<if test="keyword != null and keyword != ''">
+			and b.UnitName like '%${keyword}%'
+		</if>
+		<if test="result != null and result != ''">
+			and a.IsAnswer = #{result}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			and a.Requestdate >= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and a.Requestdate &lt;= #{endDate}
+		</if>
+		<if test="unitId != null and unitId != ''">
+			and b.ID = #{unitId}
+		</if>
+	</where>
+	order by a.Requestdate desc
+  </select>
+</mapper>

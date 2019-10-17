@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title></title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+    <style>
+        .img-icon {
+            vertical-align: text-top;
+            float: left;
+            height: 24px;
+        }
+        
+        .weui-media-box__info__meta {
+            line-height: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>信号名称</p>
+            </div>
+            <div class="weui-cell__ft">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>信号类型</p>
+            </div>
+            <div class="weui-cell__ft">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>端口</p>
+            </div>
+            <div class="weui-cell__ft">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>当前值</p>
+            </div>
+            <div class="weui-cell__ft">说明文字</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>参考范围</p>
+            </div>
+            <div class="weui-cell__ft">说明文字</div>
+        </div>
+    </div> -->
+
+    <!-- <div class="weui-media-box weui-media-box_appmsg">
+        <div class="weui-media-box__hd">
+            <img class="weui-media-box__thumb" src="../../Content/images/WeChat/center/logo_sd_center.png">
+        </div>
+        <div class="weui-media-box__bd">
+            <h4 class="weui-media-box__title">标题一</h4>
+            <p class="weui-media-box__desc">的形状，有自己的运行轨道。</p>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">文字来源</li>
+                <li class="weui-media-box__info__meta">时间</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
+            </ul>
+        </div>
+    </div> -->
+
+</body>
+
+</html>
+
+<script>
+    $(function() {
+        var deviceType = GetQuery('devicetype');
+        var id = GetQuery('id');
+        if (deviceType == '0') {
+            getWaterMoreList(id);
+        } else {
+            $('body').css('background', '#fff');
+            getFireAlarmList(id);
+        }
+    })
+
+    //RTU设备的详细列表
+    function getWaterMoreList(id) {
+        $.ajax({
+            type: 'post',
+            url: hostAdd + "/getWaterMoreList ",
+            data: 'netDeviceId=' + id,
+            dataType: 'json',
+            success: function(data) {
+                console.log('设备详情', data);
+                if (data.success) {
+                    for (var i = 0; i < data.obj.length; i++) {
+                        $('body').append(
+                            '<div class="weui-cells">' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>信号名称</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">' + data.obj[i].reserve + '</div>' +
+                            '</div>' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>信号类型</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">' + data.obj[i].ioType + '</div>' +
+                            '</div>' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>端口</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">' + data.obj[i].ioPort + '</div>' +
+                            '</div>' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>当前值</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">' + data.obj[i].currentValue + '</div>' +
+                            '</div>' +
+                            '<div class="weui-cell">' +
+                            '<div class="weui-cell__bd">' +
+                            '<p>参考范围</p>' +
+                            '</div>' +
+                            '<div class="weui-cell__ft">' + data.obj[i].scope+"("+data.obj[i].analogUnit + ')</div>' +
+                            '</div>' +
+                            '</div>'
+                        )
+                    }
+                }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    };
+
+    //报警主机以及用户传输装置对应的详细列表
+    function getFireAlarmList(id) {
+        $.ajax({
+            type: 'post',
+            url: hostAdd + "/getFireAlarmList",
+            data: 'netDeviceId=' + id,
+            dataType: 'json',
+            success: function(data) {
+                console.log('设备详情,非RTU', data);
+                if (data.success) {
+                    for (var i = 0; i < data.obj.length; i++) {
+                        $('body').append(
+                            '<div class="weui-media-box weui-media-box_appmsg">' +
+                            // '<div class="weui-media-box__hd">' +
+                            // '<img class="weui-media-box__thumb" src="../../Content/images/WeChat/center/logo_sd_center.png">' +
+                            // '</div>' +
+                            '<div class="weui-media-box__bd">' +
+                            '<h4 class="weui-media-box__title">' + data.obj[i].unitName + '</h4>' +
+                            // '<p class="weui-media-box__desc">的形状，有自己的运行轨道。</p>' +
+                            '<ul class="weui-media-box__info">' +
+                            '<li class="weui-media-box__info__meta"><img class="img-icon" src="../../Content/images/WeChat/' + typeImgBackFn(data.obj[i].alarmStatus) + '">' + data.obj[i].alarmStatus + '</li>' +
+                            '<li class="weui-media-box__info__meta">' + data.obj[i].time.substring(0, 19) + '</li>' +
+                            '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">测试:' + data.obj[i].isTest + '</li>' +
+                            '</ul>' +
+                            '</div>' +
+                            '</div>'
+                        )
+                    }
+                }
+            },
+            error: function(data) {
+                console.log('设备详情,非RTU', data);
+            }
+        });
+    };
+
+    function typeImgBackFn(imgtype) {
+        var imgName;
+
+        switch (imgtype) {
+            case "复位":
+                imgName = 'type_fuwei.png';
+                break;
+            case "反馈":
+                imgName = 'type_fankui.png';
+                break;
+            case "故障":
+                imgName = 'type_guzhang.png';
+                break;
+            case "监管":
+                imgName = 'type_jianguan.png';
+                break;
+            case "火警":
+                imgName = 'type_huojing.png';
+                break;
+            case "屏蔽":
+                imgName = 'type_pingbi.png';
+                break;
+            case "启动":
+                imgName = 'type_start.png';
+                break;
+            case "恢复":
+                imgName = 'type_start.png';
+                break;
+            default:
+                imgName = '';
+        }
+
+        return imgName;
+    };
+</script>

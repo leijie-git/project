@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>报警处理弹窗</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/crtpage.css" rel="stylesheet" type="text/css"/>
+    <style>
+        .scroll-wrapper > .scroll-content{
+            /*min-height: calc(100% + 20px);*/
+        }
+    </style>
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/public.js"></script>
+</head>
+<body>
+<div class="div-name fontSize16"></div>
+<div class="wrap_crt scrollbar-inner">
+    <div id="wrap_img1" style="position: absolute;top: 20px;left: 0;width: auto;height: auto;">
+        <div id="imgDiv" onmousewheel="return bbimg(this)" style="position: relative;">
+            <!--             <img src="../../Content/images/Login/loginBg.png" id="img"> -->
+        </div>
+    </div>
+</div>
+<script src="../../Script/udraggable/jquery.udraggable.js"></script>
+<script src="../../Script/udraggable/jquery.event.ue.js"></script>
+<script>
+    var id = GetQuery('id');
+    // var _imgrtstr = "";
+    // var _pointPercentY = 0, _pointPercentX = 0;
+    var _w = 0; _h = 0; //图片的宽高
+    $(function(){
+
+        getImgData();
+
+        // _imgrtstr = $("#imgts").attr("src");
+
+        // domEvelement();
+        var imgSrc = $("#imgDiv img").eq(0).attr("src");
+        getImageWidth(imgSrc,function(w,h){
+            $('#imgDiv').css({ 'width': w + 'px', 'height': h + 'px'});
+            _w = w;
+            _h = h;
+            console.log(_w)
+            console.log(_h)
+        });
+    });
+
+    function getImageWidth(url,callback){
+        var img = new Image();
+        img.src = url;
+
+        // 如果图片被缓存，则直接返回缓存数据
+        if(img.complete){
+            callback(img.width, img.height);
+        }else{
+            // 完全加载完毕的事件
+            img.onload = function(){
+                callback(img.width, img.height);
+            }
+        }
+
+    }
+
+    function getImgData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/equipmentFac/getBuildImgbg",
+            data:"id=" + id,
+            async: false,
+            success: function (data) {
+                //console.log(data);
+                if (data.success) {
+                    var msg = data.obj;
+
+                    $("#imgDiv").html('<img src="'+ msg.buildImgbg +'">');
+                    // var Imgbg = $("#imgDiv img")[0];
+                    if(msg.pointx && msg.pointy){
+                        $("#imgDiv").append('<div id="imgSmall" style="background: url(../../../image/dingwei.png);background-size: cover;width: 24px;height: 32px;cursor: pointer;position: absolute;top: '+ msg.pointy +';left: '+ msg.pointx +';"></div>');
+                    }
+                    // _w = $("#imgDiv").width();
+                    // _h = $("#imgDiv").height();
+                }
+            }
+        });
+    }
+
+
+    //图片缩放
+    function bbimg(o) {
+
+        var zoom=parseInt(o.style.zoom, 10)||100;
+        zoom+=event.wheelDelta/12;
+        if (zoom>0) o.style.zoom=zoom+'%';
+
+        $('#imgDiv').css({ 'height': zoom / 100 * $('#imgDiv').attr('height') + 'px', 'width': zoom / 100 * $('#imgDiv').attr('width') + 'px' });
+
+        // var crtbgheight = $('#wrap_img').attr('crtbgheight')
+        // var crtbgwidth = $('#wrap_img').attr('crtbgwidth')
+
+        // $('#imgDiv').css({ 'height':  crtbgheight*zoom/100 + 'px', 'width': crtbgwidth*zoom/100 + 'px' });
+        _w = $('#imgDiv').width();
+        _h = $('#imgDiv').height();
+    }
+
+    // 图片拖拽
+    $('#wrap_img1').udraggable({
+        drag: function (e, ui) {
+            $('#imgDiv').css({ 'width': _w, 'height': _h })
+        }
+    });
+
+
+    // function domEvelement(){
+    //     //////设备
+    //     $('.rank_list>div').click(function () {
+    //         $(this).addClass('active').siblings().removeClass('active')
+    //     });
+    //
+    //     /////点位选中
+    //     $('#imgDiv').delegate('.dot', 'click', function () {
+    //
+    //     });
+    //
+    //     $('.btn_video').click(function(){
+    //         if(!$(this).hasClass('has_video')){
+    //             return;
+    //         }
+    //         var id = $(this).attr('labid');
+    //
+    //         getVideoInfoData(id);
+    //
+    //     })
+    //
+    // }
+</script>
+</body>
+</html>

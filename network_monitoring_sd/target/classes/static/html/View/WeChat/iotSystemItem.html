@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title></title>
+
+    <link href="../../Content/css/WeChat/reset.css" rel="stylesheet" type="text/css" />
+    <!--weui.css-->
+    <link href="../../Script/WeChat/jqueryWeChatUI/lib/weui.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../Script/WeChat/jqueryWeChatUI/css/jquery-weui.min.css" rel="stylesheet" type="text/css" />
+    <!--self css-->
+    <!-- <link href="../../Content/css/WeChat/login.css" rel="stylesheet" type="text/css" /> -->
+
+    <!--weui.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/zepto.js"></script>
+    <script src="../../Script/WeChat/jqueryWeChatUI/js/jquery-weui.min.js"></script>
+    <!--remove300ms.js-->
+    <script src="../../Script/WeChat/jqueryWeChatUI/lib/fastclick.js"></script>
+    <!--selfsite public-->
+    <script src="../../Script/WeChat/public.js"></script>
+
+    <style>
+        .weui-cells {
+            margin-top: 0;
+        }
+        
+        .weui_input {
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        button {
+            width: 50px;
+        }
+        
+        .weui_input,
+        button {
+            margin: 0 5px;
+        }
+        
+        #searchDate:active {
+            opacity: .5;
+        }
+        
+        .weui-loadmore_line .weui-loadmore__tips {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <input id="sDate" class="weui_input" type="date" value="" placeholder="开始时间"> -
+            <input id="eDate" class="weui_input" type="date" value="" placeholder="结束时间">
+            <button id="searchDate">查询</button>
+        </div>
+    </div>
+    <div id="listBox">
+        <!-- <div class="weui-form-preview" onclick="openDetail();">
+            <div class="weui-form-preview__bd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">类型:</label>
+                    <span class="weui-form-preview__value">电动打蛋机</span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">报警描述:</label>
+                    <span class="weui-form-preview__value">名字名字名字</span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">报警分类:</label>
+                    <span class="weui-form-preview__value">xxxx位置</span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">报警时间:</label>
+                    <span class="weui-form-preview__value">2018-10-10 10:13:12</span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">报警地点:</label>
+                    <span class="weui-form-preview__value">xxxx位置</span>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <!--滚动加载-->
+    <div class="weui-loadmore" id="onLoad" hidden>
+        <i class="weui-loading"></i>
+        <span class="weui-loadmore__tips">正在加载</span>
+    </div>
+    <!--暂无数据-->
+    <div class="weui-loadmore weui-loadmore_line" id="noData" hidden>
+        <span class="weui-loadmore__tips">暂无数据</span>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    var unitId = GetQuery('unitid');
+    var system = GetQuery('system');
+    var eqsystemcode = GetQuery('eqsystemcode');
+    var unitid = GetQuery('unitid');
+    $('title').text(system);
+    document.getElementById('sDate').valueAsDate = new Date((new Date()).setDate((new Date()).getDate() - 1));
+    document.getElementById('eDate').valueAsDate = new Date();
+    var sDate, eDate;
+
+    $(function() {
+        selectListShow(($('#sDate').val()), ($('#eDate').val())); //加载判断
+
+        //查询
+        $('#searchDate').click(function() {
+            sDate = $('#sDate').val();
+            eDate = $('#eDate').val();
+            $('#onLoad').show();
+            selectListShow(sDate, eDate);
+        });
+    });
+
+
+    //不同系统 请求的接口不同
+    function selectListShow(sDate, eDate) {
+        $('#listBox').empty();
+        if (eqsystemcode == 1 || eqsystemcode == 2 || eqsystemcode == 4 || eqsystemcode == 9) {
+            getOtherList(sDate, eDate);
+        } else if (eqsystemcode == 5) {
+            getOtherList(sDate, eDate);
+            getFireList(sDate, eDate);
+        } else {
+            getFireList(sDate, eDate);
+        }
+    }
+
+    function getFireList(sDate, eDate) {
+        $.ajax({
+            url: hostAdd + '/getFireHistoryList',
+            type: 'get',
+            data: 'unitId=' + unitId + '&type=' + eqsystemcode + '&startDate=' + sDate + '&endDate=' + eDate,
+            dataType: 'json',
+            success: function(data) {
+                $('.weui-loadmore').hide();
+                console.log(data);
+                if (data.success) {
+
+                    // ---- 有数据 s -----
+                    var _div = $('#listBox').text();
+                    for (var i = 0; i < data.obj.length; i++) {
+                        _div +=
+                            '<div class="weui-form-preview" onclick="openDetail(' + '\'' + data.obj[i].id + '\',\'' + data.obj[i].isdeal + '\',\'0\'' + ');" >' +
+                            '<div class="weui-form-preview__bd">' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">类型:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].alarmStatus + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警描述:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].alarmDeviceDesc + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警设备:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].eqName + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警时间:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].time + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警地点:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].alarmWheredesc + '</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                    }
+                    $('#listBox').html(_div);
+                    // ---- 有数据 e -----
+
+                    if (data.obj.length <= 0) {
+                        $('#noData').show();
+                    }
+                }
+
+            },
+            error: function(data) {
+                console.log(data);
+                $('.weui-loadmore').hide();
+            },
+        });
+    }
+
+
+    function getOtherList(sDate, eDate) {
+        $.ajax({
+            url: hostAdd + '/getInterfaceAlarmList',
+            type: 'get',
+            data: 'unitId=' + unitId + '&type=' + eqsystemcode + '&startDate=' + sDate + '&endDate=' + eDate,
+            dataType: 'json',
+            success: function(data) {
+                $('.weui-loadmore').hide();
+                console.log(data);
+                if (data.success) {
+
+                    // ---- 有数据 s -----
+                    var _div = $('#listBox').text();
+                    for (var i = 0; i < data.obj.length; i++) {
+                        _div +=
+                            '<div class="weui-form-preview" onclick="openDetail(' + '\'' + data.obj[i].id + '\',\'' + data.obj[i].isdeal + '\',\'1\'' + ');" >' +
+                            '<div class="weui-form-preview__bd">' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">类型:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].alarmStatus + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警描述:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].alarmDeviceDesc + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警设备:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].eqName + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警时间:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].time + '</span>' +
+                            '</div>' +
+                            '<div class="weui-form-preview__item">' +
+                            '<label class="weui-form-preview__label">报警地点:</label>' +
+                            '<span class="weui-form-preview__value">' + data.obj[i].alarmWheredesc + '</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                    }
+                    $('#listBox').html(_div);
+                    // ---- 有数据 e -----
+
+                    if (data.obj.length <= 0) {
+                        $('#noData').show();
+                    }
+                }
+
+            },
+            error: function(data) {
+                console.log(data);
+                $('.weui-loadmore').hide();
+            },
+        });
+    }
+
+    function openDetail(alarmId, isdeal, funtype) {
+        //故障id：alarmId, 是否处理：isdeal, 用哪个接口：funtype 火灾是0，故障是1？
+        var isDeal;
+        if (isdeal == "是") {
+            isDeal = 1;
+        } else {
+            isDeal = 0;
+        }
+        self.location.href = "alarmListdetail.html?id=" + alarmId + "&alarmtype=" + funtype + "&isdeal=" + isDeal;
+    };
+</script>

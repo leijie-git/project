@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>历史记录-流量统计</title>
+    <link href="../../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../Content/css/NetInfoStatistic/system_detail.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../../Script/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../../../Script/My97DatePicker/WdatePicker.js"></script>
+    <script src="../../../Script/jquery-1.11.0.js"></script>
+    <script src="../../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../../Script/layui/layui.js"></script>
+    <script src="../../../Script/layer/layer.js"></script>
+    <script src="../../../Script/public.js"></script>
+    <script src="../../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <div class="top-search">
+            <form class="layui-form" action="" autocomplete="off">      
+                <input class="selectTime timeStart" id="sData2" onfocus="var d5222 = $dp.$('eData2'); WdatePicker({ skin: 'whyGreen', onpicked: function () { d5222.focus(); }, maxDate: '#F{$dp.$D(\'eData2\')||\'%y-%M-%d\'}' })">
+                -
+                <input class="selectTime timeEnd" id="eData2" onfocus="WdatePicker({ skin: 'whyGreen', minDate: '#F{$dp.$D(\'sData2\')}', maxDate: '%y-%M-%d' })">
+                <input class="selectB" id="keyWords" type="search" placeholder="请输入关键字搜索">
+                <input class="submitBtn" type="button" value="查询">
+            </form>
+        </div>
+        
+        <!--table start-->
+            <div class="table_box table_box2">
+                <div class="list_table">
+                    <div class="table_header">
+                        <table>
+                            <colgroup>
+                                <col width="5%">
+                                <col width="20%">
+                                <col width="10%">
+                                <col width="20%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="15%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>单位名称</th>
+                                <th>联系人</th>
+                                <th>联系电话</th>
+                                <th>总流量(兆)</th>
+                                <th>发出流量(兆)</th>
+                                <th>接收流量(兆)</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table_content scrollbar-inner">
+                        <table cellpadding="0" cellspacing="0" class="tbody">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="20%">
+                                <col width="10%">
+                                <col width="20%">
+                                <col width="15%">
+                                <col width="15%">
+                                <col width="15%">
+                            </colgroup>
+                            <tbody id="mainContentTbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div id="demo7"></div>
+                    <img class="exportBtn" id="exportBtn" src="../../../Content/images/Public/exportBT.png">
+                </div>
+
+            </div>
+            <!--table end-->
+    </div>
+</body>
+
+<script type="text/javascript">
+    var incoid = GetQuery('incoid');
+    var _ifUsed = 0; //调用page方法的判断
+    var _unitid = GetQuery('unitid');
+    var _buildid = GetQuery('buildid');
+    var _systemid = GetQuery('sysid');
+    var _data={
+        pageSize:20,
+        pageNumber:1,
+        startDate:$('#sData2').find('dd.layui-this').attr('lay-value')||"",
+        endDate:$('#eData2').find('dd.layui-this').attr('lay-value')||"",
+        keyword:$('#keyWords').val(),
+        buildId:_buildid,
+        unitId:_unitid
+    };
+    
+
+    $(function(){
+        loadLayuiForm();//调用layui form组件，方法写在public
+        clickevent();
+        getAlarmSysListData();
+    });
+    function getAlarmSysListData(){
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/history/getDataFlow",
+            data:_data,
+            success: function (data) {
+                //console.log(data);
+                if (_ifUsed == 0) {
+                    layerPage(data.total);
+                    _ifUsed = 1;
+                }
+                showAlarmListContent(data);
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+
+    function showAlarmListContent(msg){
+        var data = msg.list;
+        var html="";
+        for(var i = 0 ; i < data.length;i++){
+            html += '<tr>'+
+                    '<td>'+(msg.startRow++)+'</td>'+
+                    '<td>'+data[i].unitName+'</td>'+
+                    '<td>'+data[i].contact+'</td>'+
+                    '<td>'+data[i].contactPhone+'</td>'+
+                    '<td>'+(Number(data[i].rx||0,3) + Number(data[i].tx||0,3)).toFixed(2)+'</td>'+
+                    '<td>'+data[i].rx+'</td>'+
+                    '<td>'+data[i].tx+'</td>'+
+                    '</tr>'
+        }
+
+        $('#mainContentTbody').html(html||"<tr><td colspan='7'>暂无数据...</td></tr>");
+        $('#mainContentTbody tr>td').each(function(){$(this).attr('title',$(this).text())})
+    }
+
+    function clickevent(){
+        //搜索
+        $('.submitBtn').click(function() {
+            _ifUsed = 0;
+            _data={
+                pageSize:20,
+                pageNumber:1,
+                startDate:$('#sData2').val(),
+                endDate:$('#eData2').val(),
+                keyword:$('#keyWords').val(),
+                buildId:_buildid,
+                unitId:_unitid
+            };
+            getAlarmSysListData();
+        });
+
+        //导出
+        $('#exportBtn').click(function(){
+            if( $('#mainContentTbody tr:first-child>td').length == 1){
+                return;
+            }
+            var _year = $('#sData2').val();
+            var _month = $('#eData2').val();
+            var url = _serverIp + "/front/history/exportDataFlow?"
+                    + "keyword=" + $('#keyWords').val()
+                    + "&year=" + _year
+                    + "&month=" + _month
+                    +"&unitId="+_unitid
+                    +"&buildId="+_buildid;
+            postExport(url)
+        });
+
+    }
+
+    //表格数据加载
+    function getTableData(_index){
+        // if (ifUsed == 0) {
+        //   getPageData();
+        //   ifUsed = 1;
+        // }
+    }
+
+    function layerPage(count){
+        layui.use(['laypage', 'layer'], function() {
+            var laypage = layui.laypage
+                    , layer = layui.layer;
+            laypage.render({
+                elem: 'demo7'
+                ,count: count
+                ,limit:20
+                ,prev: '<em>&lt;</em>'
+                ,next: '<em>&gt;</em>'
+                ,layout: ['count','limit', 'prev', 'page', 'next',  'refresh']
+                ,jump: function(obj,isNew){
+//                    console.log(obj);
+                    if (!isNew) {
+                       _data.pageNumber = obj.curr;
+                        _data.pageSize = obj.limit;
+                        //console.log(_curr)
+                        getAlarmSysListData(); //调用接口获取数据
+                    }
+                }
+            });
+        })
+        //完整功能
+
+    }
+
+</script>
+</html>

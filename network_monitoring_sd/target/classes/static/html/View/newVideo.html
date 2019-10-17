@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>视频</title>
+    <link href="../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../Content/css/NetInfoStatistic/video_index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../Script/jquery-1.11.0.js"></script>
+    <script src="../Script/public.js"></script>
+    <script src="../Script/Echarts/echarts.min.js"></script>
+    <script src="../Script/layui/layui.js"></script>
+    <script src="../Script/layer/layer.js"></script>
+    <script src="../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <style>
+        .scrollbar-inner{
+            height: 100%;
+        }
+        .dianwei{
+            width: 140px;
+            display: inline-block;
+            margin-left: 15px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            background-size: 100% 100%;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .danwei{
+            width: 140px;
+            display: inline-block;
+            margin-left: 15px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .xuanzhong{
+            background: #533c1a;
+            color: #ffa500;
+            border-radius: 6px;
+        }
+        /*.wrap_video2{*/
+            /*width: 100%;*/
+            /*!*border: 1px red solid;*!*/
+            /*display: -webkit-flex;*/
+            /*display: flex;*/
+            /*-webkit-flex-wrap: wrap;*/
+            /*flex-wrap: wrap;*/
+            /*-webkit-align-content: flex-start;*/
+            /*align-content: flex-start;*/
+        /*}*/
+        .videoDiv{
+            margin: 5px;
+            padding: 10px;
+            background: rgba(13, 74, 128, .5);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .videoDiv:not(.area1){
+            cursor: pointer;
+        }
+        .videoDiv>iframe{
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: rgba(13, 74, 128, .6);
+            border-radius: 10px;
+        }
+        .area1{
+            width: calc(100% - 10px);
+            height:  calc(100% - 10px);
+        }
+        .area4{
+            float: left;
+            width: calc(50% - 10px);
+            height: calc(50% - 10px);
+        }
+        .area9{
+            float: left;
+            width: calc(33.3% - 10px);
+            height: calc(33.3% - 10px);
+        }
+        .bottomBox .numBT,
+        .bottomBox .hisBT
+        {
+            width: 140px;
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            position: absolute;
+            bottom: 6px;
+            left: 15px;
+        }
+        .bottomBox .numBT{
+            background-image: url(../Content/images/NetInfoStatistic/btNum.png);
+        }
+
+        .bottomBox .hisBT{
+            background-image: url(../Content/images/NetInfoStatistic/btHis.png);
+        }
+
+        .bottomBox .numBT.active {
+            background-image: url(../Content/images/NetInfoStatistic/btNum_click.png);
+        }
+
+        .bottomBox .hisBT.active {
+            background-image: url(../Content/images/NetInfoStatistic/btHis_click.png);
+        }
+
+        /*数量选择框*/
+        .choseNumBox{
+            position: absolute;
+            bottom: 36px;
+            height: 90px;
+            left: 15px;
+            width: 140px;
+            -webkit-z-index: 9;
+            -moz-z-index: 9;
+            z-index: 9;
+            border: 1px solid rgb(16, 71, 110);
+        }
+        .choseNumBox ul{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .choseNumBox li{
+            text-align: center;
+            height: 30px;
+            line-height: 30px;
+            cursor: pointer;
+            background-color: rgb(4,31,60);
+            border-bottom: 1px solid rgb(16, 71, 110);
+        }
+        .choseNumBox li:hover,.choseNumBox li.active{
+            background-color: rgb(16, 71, 110);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="fenlei" style="padding: 0 2%;">
+    <div class="dianwei xuanzhong">点位视频</div>
+    <div class="danwei">单位视频</div>
+</div>
+
+<div class="frameDiv biggerbyOneUnit" style="height: 90%;">
+    <!--<iframe id="frameCont" class="video" src="video-iframe/video_index.html?videoNumber=1" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>-->
+
+    <div class="wrapper">
+        <!--视频区域 start-->
+        <div class="wrap_video1" style="width: 100%;">
+            <!--暂无视频-->
+            <!--<div class="videoDiv area1">-->
+            <!--<iframe src="" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>-->
+            <!--</div>-->
+        </div>
+
+        <div class="wrap_video2" style="width:96%;position:relative;display: none">
+            <div class="scrollbar-inner">
+                <div class="video222" style="width: 100%;height: 100%;display: flex;flex-wrap: wrap;"></div>
+            </div>
+
+            <div class="tongji" style="display: none;"></div>
+
+            <!--<div class="frameDiv biggerbyOneUnit">-->
+                <!--<iframe id="frameCont" class="video" src="video-iframe/video_index.html?videoNumber=1" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>-->
+            <!--</div>-->
+
+            <div class="bottomBox biggerbyOneUnit">
+                <div class="bottombt numBT active orange">选择视频数量</div>
+                <!--<div class="bottombt hisBT hideElembyOneUnit">查看历史截图</div>-->
+                <div class="choseNumBox" style="display: none;">
+                    <ul class="">
+                        <li>1</li>
+                        <li>4</li>
+                        <li>9</li>
+                        </ul>
+                    </div>
+                </div>
+
+        </div>
+
+        <!--视频区域 end-->
+    </div>
+</div>
+
+<!--底部 start-->
+
+<!--底部 start-->
+
+</body>
+
+
+<script type="text/javascript">
+    var _videoNumber= "";
+    var _type=GetQuery('type');
+
+    var token = GetQuery('token');
+    var appKey = GetQuery('appKey');
+    var serialnumber = GetQuery('serialnumber');
+    var deviceType = GetQuery('deviceType');
+    var _unitId = GetQuery('unitId');
+
+    var ip = GetQuery('ip');
+    var port = GetQuery('port');
+    var userName = GetQuery('userName');
+    var password = GetQuery('password');
+
+    var videoIframeSrc="";
+    // if(deviceType == 2){
+    //     if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+    //         videoIframeSrc = '/html/View/iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+    //     }else{
+    //         videoIframeSrc = '/html/View/video_a.html?ip='+ip
+    //     }
+    // }else if(deviceType == 0 || deviceType== 1 ){
+    //     videoIframeSrc = '/html/View/camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)
+    // }
+
+    if(deviceType == 2){
+        if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+            videoIframeSrc = '/html/View/iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+        }else{
+            videoIframeSrc = '/html/View/video_a.html?ip='+escape(ip)
+        }
+    }else if(deviceType == 0 || deviceType== 1 || deviceType== 9 ){
+        videoIframeSrc = '/html/View/camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)
+    }
+
+
+
+    //alert(videoNumber);
+    //alert(type);
+
+    $(function(){
+
+        $(".wrap_video1").html('<iframe src="'+videoIframeSrc+'" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>')
+
+        clickevent();
+
+    });
+
+    function getUnitCameraListData(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/unit/getUnitVideoInfo",
+            data:'unitId='+_unitId,
+            success: function (data) {
+                if (data.success == true) {
+                    var msg = data.obj;
+                    showCameraListContent(msg);
+                }
+            }
+        });
+    }
+
+    function showCameraListContent(data){
+        var html = "";
+        var num = "";
+        var tongji = "";
+        _videoNumber = data.length;
+        // var tongji = "";
+        // var datalength = data.length;
+        // var datavideoslength = data.videos.length;
+        // _videoNumber = datalength * datavideoslength;
+        // token = data.length * data.videos.length;
+        // appKey = data.length * data.videos.length;
+        if(_videoNumber>=0 && _videoNumber<2){
+            num = 1;
+        }else if(_videoNumber>=2 && _videoNumber<5){
+            num = 4;
+        }else if(_videoNumber>=5){
+            num = 9;
+        }
+
+        console.log(num);
+        for(var i = 0 ; i < data.length;i++){
+            // var appKey = data[i].appKey;
+            // var ip = data[i].ip;
+            // var tongji = "";
+            // var buildAreaName = data[i].buildAreaName;
+            // var token = data[i].token;
+            // var port = data[i].port,userName = data[i].userName,password = data[i].password,deviceType = data[i].plugintype;
+            //
+            // var serialnumber = data[i].serialnumber;
+            //
+            // var videoIframeSrc="";
+            // if(deviceType == 2){
+            //     if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+            //         videoIframeSrc = 'iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+            //     }else{
+            //         videoIframeSrc = 'UnitManage/video_a.html?ip='+escape(ip)
+            //     }
+            // }else if(deviceType == 0 || deviceType== 1 ){
+            //     videoIframeSrc = 'camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)
+            //     // &channel='+escape(channel)
+            // }
+
+            var ip = data[i].ip,port = data[i].port,userName = data[i].userName,password = data[i].password,deviceType = data[i].plugInType,buildareaname = data[i].buildAreaName;
+            var videoIframeSrc="";
+            var token = data[i].token,appKey = data[i].appKey,serialnumber = data[i].serialnumber;
+            if(deviceType == 2){
+                if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+                    videoIframeSrc = '/html/View/iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+                }else{
+                    videoIframeSrc = '/html/View/video_a.html?ip='+escape(ip)+"&buildareaname="+buildareaname
+                }
+            }else if(deviceType == 0 || deviceType== 1 || deviceType== 9 ){
+                videoIframeSrc = '/html/View/camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&buildareaname="+escape(buildareaname)
+            }
+
+            html +='<div class="videoDiv area'+num+'">'+
+                '<div class="div_checkbox"></div>'+
+                '<iframe src="'+videoIframeSrc+'" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>'+
+                '<div class="btn_cutPic" ip="'+ip+'" port="'+port+'" userName="'+userName+'" password="'+password+'" deviceType="'+deviceType+'"></div>'+
+                // channel="'+channel+'"
+                '</div>'
+            tongji += '<div ip="'+ip+'" port="'+port+'" userName="'+userName+'" password="'+password+'" deviceType="'+deviceType+'" serialnumber="'+serialnumber+'"></div>'
+            // channel="'+channel+'"
+            // }
+        }
+        $('.video222').html(html);
+        $('.tongji').html(tongji);
+
+        // layui.use('element', function(){
+        //     var  element = layui.element;
+        //     element.init();
+        // });
+        // $('#boxVideoList .videoLi').eq(0).click();
+    }
+
+
+    function clickevent(){
+
+        // 顶部按钮及其对应内容切换
+        $(".fenlei").delegate("div","click",function(){
+            $(this).addClass("xuanzhong").siblings("div").removeClass("xuanzhong");
+            var index = $(this).index();
+            $(".wrapper div").eq(index).show().siblings("div").hide();
+            if(index == 1){
+                getUnitCameraListData();
+            }
+        });
+
+        //底部两个按钮
+        $('.bottombt').unbind('click').click(function(){
+            var _index = $(this).index();
+            if(_index == 0){
+                event.stopPropagation();
+                if($('.choseNumBox').hasClass('actNum')){
+                    $('.choseNumBox').fadeOut('fast').removeClass('actNum');
+                }else{
+                    $('.choseNumBox').slideDown('fast').addClass('actNum');
+                }
+                //
+            }
+            // else{
+            //     $('.choseNumBox li').removeClass('active');
+            //     $(this).addClass('active orange').siblings().removeClass('active orange');
+            //     $('#frameCont').removeClass('video').addClass('photo');
+            //     var unitId = $('.menuBox').find('li.clickli').attr('unitid');
+            //     $('#frameCont').attr('src','video-iframe/historyPics.html?unitId='+unitId); //跳进查看历史截图页
+            //
+            // }
+        });
+
+        //点击选择视频数量
+        $('.choseNumBox li').unbind('click').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            var videoNumber = $(this).text();
+            var unitId = $('.menuBox').find('li.clickli').attr('unitid');
+            var unitname = $('.menuBox').find('li.clickli').text();
+            var type = $('.menuBox').find('li.clickli').attr('data-type');
+            // if(!$('#frameCont').hasClass('video')){ //首次加载视频判断-之后不重复刷新模块
+            //     $('#frameCont').attr('src','video-iframe/video_index.html?type='+type+'&videoNumber=' + videoNumber+'&unitId='+unitId)+'&unitname='+escape(unitname); //跳转到视频页重新加载视频及数量
+            //     $('.numBT').addClass('active orange').siblings().removeClass('active orange');
+            //     $('#frameCont').addClass('video').removeClass('photo');
+            // }
+            // else{
+                showVideoNum(videoNumber);
+            // }
+            if($('.choseNumBox').hasClass('actNum')){
+                $('.choseNumBox').fadeOut('fast').removeClass('actNum');
+            }else{
+                $('.choseNumBox').slideDown('fast').addClass('actNum');
+            }
+            //
+            //$('#frameCont').attr('src','video-iframe/video_index.html');
+        });
+
+        //视频选中
+        $('.wrap_video').delegate(' .div_checkbox','click',function(){
+            $(this).parent('.videoDiv').toggleClass('active');
+            $(this).parent('.videoDiv').siblings().removeClass('active');
+        });
+
+        $('.wrap_video').delegate(' .btn_cutPic','click',function(e){
+            e.stopPropagation();
+
+            var ip = $(this).attr('ip');
+            var port = $(this).attr('port');
+            var userName = $(this).attr('userName');
+            var password = $(this).attr('password');
+            var deviceType = $(this).attr('deviceType');
+            var buildarename = $(this).attr('buildarename');
+            var channel = $(this).attr('poscode');
+            var token = $(this).attr('token'),appKey = $(this).attr('appKey'),serialnumber = $(this).attr('serialnumber');
+            top.layer.open({
+                type: 2,
+                title: false,
+                closeBtn: 1,
+                area:['100%','100%'],
+                shade: 0.1,
+                shadeClose:true,
+                content: (_loginInfo.usertype == 0?"":"../")+'NetInfoStatistic/biggerVideo.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&unitId="+ _unitId +"&buildarename="+escape(buildarename)+'&channel='+escape(channel)+'&token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+            });
+        })
+    }
+
+    function showVideoNum(num){
+        // var num = "";
+//         var length = num;
+//         if(num > $(".tongji div").length){
+//             length = $(".tongji div").length;
+//         }
+//         if(videoNumber.length>=0 && videoNumber.length<2){
+//             num = "";
+//         }else if(videoNumber.length>=2 && videoNumber.length<5){
+//             num = 4;
+//         }else if(videoNumber.length>=5){
+//             num = 9;
+//         }
+
+        var html = "";
+        for(var i = 0 ; i < _videoNumber;i++){
+            // var dom = $('.tongji div').eq(i);
+            // var ip=dom.attr('ip'),port = dom.attr('port'),channel = dom.attr('poscode'),userName = dom.attr('username'),password = dom.attr('password'),deviceType = dom.attr('devicetype');
+            //     var serialnumber = dom.attr("serialnumber");
+            //
+            //     var videoIframeSrc="";
+            //     if(deviceType == 2){
+            //         if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+            //             videoIframeSrc = 'iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+            //         }else{
+            //             videoIframeSrc = 'UnitManage/video_a.html?ip='+escape(ip)
+            //         }
+            //     }else if(deviceType == 0 || deviceType== 1 ){
+            //         videoIframeSrc = 'camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+'&channel='+escape(channel)
+            //     }
+
+
+            var dom = $('.tongji div').eq(i);
+            var ip = dom.attr("ip"),port = dom.attr("port"),userName = dom.attr("userName"),password = dom.attr("password"),deviceType = dom.attr("deviceType"),buildareaname = dom.attr("buildarename");
+            var videoIframeSrc="";
+            var token = dom.attr("token"),appKey = dom.attr("appKey"),serialnumber = dom.attr("serialnumber");
+            if(deviceType == 2){
+                if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+                    videoIframeSrc = '/html/View/iframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+                }else{
+                    videoIframeSrc = '/html/View/video_a.html?ip='+escape(ip)+"&buildareaname="+buildareaname
+                }
+            }else if(deviceType == 0 || deviceType== 1 || deviceType== 9 ){
+                videoIframeSrc = '/html/View/camera.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&buildareaname="+escape(buildareaname)
+            }
+
+            html +='<div class="videoDiv area'+num+'">'+
+                '<div class="div_checkbox"></div>'+
+                '<iframe src="'+videoIframeSrc+'" frameborder="0" width="100%" height="100%" scrolling="0"></iframe>'+
+                '<div class="btn_cutPic" ip="'+ip+'" port="'+port+'" userName="'+userName+'" password="'+password+'" deviceType="'+deviceType+'"></div>'+
+                // channel="'+channel+'"
+                '</div>'
+        }
+        $('.video222').html(html||"暂无视频");
+        $('.scrollbar-inner').scrollbar();
+    }
+
+</script>
+</html>

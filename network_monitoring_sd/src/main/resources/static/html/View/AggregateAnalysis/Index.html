@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>综合分析</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/AggregateAnalysis/AggregateAnalysis_index.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+    <style>
+    header .h3{
+        background-image: url(../../Content/images/CheckPost/changeBt_c1.png);
+    }
+    header .h3.active {
+        background-image: url(../../Content/images/CheckPost/changeBt_c2.png);
+    }
+    </style>
+</head>
+<body>
+    <div class="wrap_module" >
+        <header class="lightblue fontSize16">
+            <div class="h1 active orange" labiframe="SystemIndex.html">系统分析</div>
+            <div class="h2" labiframe="unitAnalyse.html">单位分析</div>
+            <div class="h3" labiframe="ReportAnalyse.html">单位报表</div>
+        </header>
+
+        <section>
+            <iframe id="frameCont" src="SystemIndex.html" frameborder="0" width="100%" height="100%" scrolling="0" ></iframe>
+        </section>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+
+
+    $(function(){
+        if(_loginInfo.usertype == 1){
+            $('header').hide();
+            $('section').css('width','100%')
+        }
+        clickevent();
+
+        var box = GetQuery('box');
+        var module = GetQuery('module');
+        if(box == "h1"){
+            $('.h1').attr('labiframe',$('.h1').attr('labiframe')+"?module="+module)
+        }
+        $('.h1').click();
+    });
+
+    function clickevent(){
+        //顶部三个nav
+        $('header > div').click(function(){
+            var _index = $(this).index();
+            $(this).addClass('active orange').siblings().removeClass('active orange');
+            var labiframe = $(this).attr('labiframe');
+            $('#frameCont').attr('src',labiframe);
+        });
+
+
+
+    }
+
+</script>
+</html>

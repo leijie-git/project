@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <style>
+        .video{
+            width: 100%;
+            height: 100%;
+            float: left;
+            background-color: #011120;
+            background-image: url(../../Content/images/UnitManage/video1.png);
+            background-repeat: no-repeat;
+            background-position: center 40%;
+            position: relative;
+        }
+        .video>div{
+            color: #57687D;
+            font-size: 18px;
+            margin:auto;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            bottom: 10px;
+        }
+        .btn_cutPic {
+            width: 26px;
+            height: 26px;
+            background: url(../../Content/images/Home/btn_showBig.png) no-repeat center / 100% 100%;
+            /* background-size: 30px; */
+            position: absolute;
+            right: 3%;
+            top: 4%;
+            transition: right .5s;
+            -webkit-transition: right .5s;
+            cursor: pointer;
+            z-index: 999;
+            min-width: 15px;
+            min-height: 15px;
+        }
+        .top-search{
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap_content" style="height:calc(100% - 15px);width: calc(100% - 15px);position: absolute;top: 0;">
+    <iframe id="cameraIframe" frameborder="0" width="100%" height="100%" scrolling="0" style="width: 100%;height: 100%"></iframe>
+    <div class="btn_cutPic"></div>
+</div>
+
+
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/layui/layui.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<script src="../../Script/public.js"></script>
+<script>
+    var _unitid=GetQuery('unitid')
+    $(function(){
+        getVideoInfoData();
+        bindEvent();
+    });
+    function getVideoInfoData(id){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/getVideoDetail",
+            data:"videoID="+GetQuery('video'),
+            success: function (data) {
+                //console.log(data);
+                if (data.success) {
+                    var msg = data.obj;
+                    var token = msg.token,appKey = msg.appKey,serialnumber = msg.serialnumber;
+                    var deviceType = msg.plugInType;
+                    var videoIframeSrc="";
+                    if(deviceType == 2){
+                    	if (!!window.ActiveXObject || "ActiveXObject" in window||window.navigator.userAgent.indexOf("MSIE 9.0")>=0){//如果浏览器为IE9
+                            videoIframeSrc = '/html/ViewiframeUnitVideo_ie.html?token='+escape(token)+'&appKey='+escape(appKey)+'&serialnumber='+escape(serialnumber)
+                        }else{
+                        	videoIframeSrc = '/html/View/video_a.html?ip='+msg.ip+"&buildareaname="+msg.buildAreaName
+                        }		
+                    }else if(deviceType == 0 || deviceType== 1|| deviceType== 9 ){
+                        videoIframeSrc = '/html/View/camera.html?ip='+escape(msg.ip)+'&port='+escape(msg.port)+'&userName='+escape(msg.userName)+'&password='+escape(msg.password)+'&deviceType='+escape(msg.plugInType) +"&buildareaname="+escape(msg.buildAreaName)
+                    }
+
+                    $('#cameraIframe').attr('src',videoIframeSrc)
+                    $('.btn_cutPic').attr({'ip':escape(msg.ip),'port':escape(msg.port),'username':escape(msg.userName),'password':escape(msg.password),'devicetype':escape(msg.plugInType),'buildarename':msg.buildAreaName})
+                }
+            }
+        });
+    }
+
+    function bindEvent(){
+
+        $('.wrap_content').delegate(' .btn_cutPic','click',function(e){
+            e.stopPropagation();
+
+            var ip = $(this).attr('ip');
+            var port = $(this).attr('port');
+            var userName = $(this).attr('userName');
+            var password = $(this).attr('password');
+            var deviceType = $(this).attr('deviceType');
+            var buildarename = $(this).attr('buildarename');
+            top.layer.open({
+                type: 2,
+                title: false,
+                closeBtn: 1,
+                area:['100%','100%'],
+                shade: 0.1,
+                shadeClose:true,
+                content: '/html/View/NetInfoStatistic/biggerVideo.html?ip='+escape(ip)+'&port='+escape(port)+'&userName='+escape(userName)+'&password='+escape(password)+'&deviceType='+escape(deviceType)+"&unitId="+ _unitid +"&buildarename="+escape(buildarename)
+            });
+        })
+    }
+
+</script>
+</body>
+</html>

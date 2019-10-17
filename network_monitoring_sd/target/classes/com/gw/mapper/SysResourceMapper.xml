@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.SysResourceMapper">
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.SysResource">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="NAME" property="name" jdbcType="NVARCHAR"/>
+        <result column="URL" property="url" jdbcType="NVARCHAR"/>
+        <result column="SEQ" property="seq" jdbcType="INTEGER"/>
+        <result column="RESOURCE_TYPE" property="resourceType" jdbcType="NVARCHAR"/>
+        <result column="PID" property="pid" jdbcType="BIGINT"/>
+        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="CREATE_USER" property="createUser" jdbcType="NVARCHAR"/>
+        <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_USER" property="updateUser" jdbcType="NVARCHAR"/>
+        <result column="TYPE" property="type" jdbcType="NVARCHAR"/>
+    </resultMap>
+
+    <select id="listResourcesByUserId" resultType="com.gw.systemManager.data.SysResourceOutData">
+        SELECT distinct
+        a.ID id,
+        a.NAME name,
+        a.URL url,
+        a.SEQ seq,
+        a.PID pid
+        FROM
+        SYS_RESOURCE a
+        <if test="account =='admin'">
+            WHERE
+            a.TYPE=0
+        </if>
+        <if test="account!='admin'">
+            LEFT JOIN SYS_RESOURCE_ROLE b ON a.ID = b.RESOURCE_ID
+            LEFT JOIN SYS_ROLE c ON c.ID = b.ROLE_ID
+            LEFT JOIN SYS_USER_ROLE d ON c.ID = d.RoleID
+            WHERE
+            d.UserID = ${userId}
+            AND a.TYPE=#{type}
+        </if>
+        order by a.SEQ
+    </select>
+
+    <select id="listStageResourcesByUserId" resultType="com.gw.systemManager.data.SysResourceOutData">
+        SELECT distinct
+        a.ID id,
+        a.NAME name,
+        a.URL url,
+        a.SEQ seq,
+        a.PID pid
+        FROM
+        SYS_RESOURCE a
+        <if test="account =='admin'">
+            WHERE
+            a.TYPE=1
+        </if>
+        <if test="account!='admin'">
+            LEFT JOIN SYS_RESOURCE_ROLE b ON a.ID = b.RESOURCE_ID
+            LEFT JOIN SYS_ROLE c ON c.ID = b.ROLE_ID
+            LEFT JOIN SYS_USER_ROLE d ON c.ID = d.RoleID
+            WHERE
+            1=1
+            <if test="userId != null">
+                and d.UserID = ${userId}
+            </if>
+            AND a.TYPE=#{type}
+        </if>
+        order by a.SEQ
+    </select>
+
+
+    <select id="getAllResource" resultType="com.gw.systemManager.data.SysResourceOutData">
+        select
+        ID id,
+        NAME name,
+        URL url,
+        SEQ seq,
+        RESOURCE_TYPE resourceType,
+        PID pid,
+        TYPE type
+        from sys_resource
+        <where>
+            <if test="name != null and name!=''">
+                NAME like concat(concat('%',#{name,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="type != null and type!=''">
+                AND TYPE=#{type}
+            </if>
+        </where>
+        ORDER BY SEQ
+    </select>
+
+    <select id="selectNameByPidExcludeSelf" resultType="java.lang.String">
+        SELECT
+        NAME
+        FROM sys_resource
+        <where>
+            <if test="pid !=null and pid != 0 ">
+                PID = #{pid}
+            </if>
+            <if test="pid==null or pid==0">
+                (PID is null or pid=0)
+            </if>
+            <if test="id !=null ">
+                AND ID != #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="editResource" resultType="com.gw.systemManager.data.SysResourceOutData">
+    SELECT
+        a.ID id,
+        a.NAME name,
+        a.URL url,
+        a.SEQ  seq,
+        a.RESOURCE_TYPE resourceType,
+        a.PID pid,
+        b.NAME pidName
+    FROM sys_resource a left join sys_resource b on a.PID=b.id
+    WHERE a.ID = #{id} 
+  </select>
+    <select id="selectResourceName" resultType="java.lang.String">
+  select NAME
+  from SYS_RESOURCE
+  WHERE ID = #{id}
+  </select>
+    <update id="updateResource" parameterType="com.gw.mapper.entity.SysResource">
+	UPDATE
+	   SYS_RESOURCE
+	   SET 
+	       NAME = #{name},
+	       URL=#{url},
+	       SEQ=#{seq},
+	       PID=#{pid},
+	       RESOURCE_TYPE= #{resourceType},
+	       UPDATE_DATE=#{updateDate},
+	       UPDATE_USER=#{updateUser}
+	WHERE
+	   ID = #{id}
+  </update>
+
+    <delete id="deleteResource" parameterType="java.lang.Long">
+    DELETE FROM SYS_RESOURCE
+    WHERE ID = #{id,jdbcType=BIGINT} or PID=#{id,jdbcType=BIGINT}
+  </delete>
+    <select id="getResourceList" resultType="com.gw.systemManager.data.SysResourceOutData"
+            parameterType="com.gw.systemManager.data.SysResourceIndata">
+        SELECT
+        id,
+        NAME,
+        URL,
+        seq,
+        RESOURCE_TYPE resourceType,
+        PID pid,
+        CREATE_DATE createDate
+        FROM
+        SYS_RESOURCE
+        <where>
+
+            <if test="name !=null and name != ''">
+                NAME LIKE '%${name}%'
+            </if>
+        </where>
+    </select>
+    <select id="selectResourceNameByPidExcludeSelf" resultType="java.lang.String">
+        SELECT
+        NAME
+        FROM sys_resource
+        <where>
+            <if test="pid !=null and pid != 0 ">
+                PID = #{pid}
+            </if>
+            <if test="pid==null or pid==0">
+                (PID is null or pid=0)
+            </if>
+            <if test="id !=null ">
+                AND ID != #{id}
+            </if>
+            <if test="type !=null ">
+                AND TYPE = #{type}
+            </if>
+        </where>
+    </select>
+</mapper>

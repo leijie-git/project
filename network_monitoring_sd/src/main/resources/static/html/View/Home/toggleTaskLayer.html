@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>交换班</title>
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css" />
+    <link href="../../Content/css/Home/toggleTaskLayer.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="wrapped">
+        <span class="close" id="close">X</span>
+        <div class="header">用户交接班</div>
+        <table>
+            <tr>
+                <td>当班用户</td>
+                <td>
+                    <input type="text" disabled value="" id="shiftUserAccount">
+                </td>
+            </tr>
+            <tr>
+                <td>当班用户密码</td>
+                <td>
+                    <input type="password" id="shiftUserPassword" autocomplete="off">
+                </td>
+            </tr>
+            <tr>
+                <td>接班用户</td>
+                <td>
+                    <input type="text" id="dutyUserAccount" autocomplete="off">
+                </td>
+            </tr>
+            <tr>
+                <td>接班用户密码</td>
+                <td>
+                    <input type="password" id="dutyUserPassword" autocomplete="off">
+                </td>
+            </tr>
+<!--             <tr> -->
+<!--                 <td colspan="2"><font color=red size=2px><strong>请确保视频截图已经全部上传</strong></font></td> -->
+<!--             </tr> -->
+        </table>
+        <!--<p>注意：交接班后清除上一个班的所有报警记录</p>-->
+        <button type="button" id="saveBtn" class="save_btn" >确定</button>
+    </div>
+</body>
+<script src="../../Script/jquery-1.11.0.js"></script>
+<script src="../../Script/public.js"></script>
+<script src="../../Script/layer/layer.js"></script>
+<script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script>
+var _noDealAlarmCount;
+$(function() {
+    $('#shiftUserAccount').val(_loginInfo.account)
+    //绑定事件
+    bindEvent();
+
+});
+//绑定事件
+function getNoDealAlarmCount(){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/fireList",
+            async:isAsync,
+            success: function (data) {
+            	_noDealAlarmCount = data.noDealCount;
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    }
+function bindEvent() {
+    //关闭弹窗
+    $('#close').click(function() {
+        var index=parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    });
+    
+    //提交
+    $('#saveBtn').click(function(){
+        var data = {
+            shiftUserAccount:$('#shiftUserAccount').val(),
+            shiftUserPassword:$('#shiftUserPassword').val(),
+            dutyUserAccount:$('#dutyUserAccount').val(),
+            dutyUserPassword:$('#dutyUserPassword').val(),
+            buildArea:""
+        }
+        if($('#shiftUserAccount').val()==""||$('#shiftUserPassword').val()==""||$('#dutyUserAccount').val()==""||$('#dutyUserPassword').val()==""){
+        	layer.msg("请将交接班信息填写完整！");
+        	return;
+        }
+        if(_noDealAlarmCount>0){
+        	layer.msg("存在未处理的火警不能交接班！");
+            return;
+        }
+        var isAsync = true,lid = 0;
+        if (isAsync)
+            lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/addUserDutyLog",
+            data:data,
+            async:isAsync,
+            success: function (data) {
+                if(data.success){
+                    layer.msg('交接班成功！');
+                    var loginInfo = data.obj;
+                    loginInfo.password = $('#dutyUserPassword').val();
+                    loginInfo.isRemember = JSON.parse(localStorage.getItem("LoginInfo")).isRemember;
+                    localStorage.setItem("LoginInfo", JSON.stringify(loginInfo));
+                    setTimeout(function(){
+//                        var index = parent.layer.getFrameIndex(window.name);
+//                        parent.layer.close(index);
+//                        window.top.document.location.reload(true);
+                        if (data.obj.usertype == 0) {
+                            window.top.document.location.href = _serverIp+"/html/View/Index.html"
+                        } else if (data.obj.usertype == 1) {
+                            window.top.document.location.href = _serverIp+"/html/View/ModuleTwo/Index.html"
+                        }
+                    },500)
+                }else{
+                    layer.msg(data.msg);
+                }
+            },
+            complete: function () {
+                if (isAsync){
+                    layer.close(lid);
+                }
+            }
+        });
+    })
+}
+</script>
+
+</html>

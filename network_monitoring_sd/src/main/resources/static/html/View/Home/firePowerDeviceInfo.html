@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>消防力量详情</title>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/firePowerDeviceInfo.css" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="../../Script/jquery-1.11.0.js"></script>
+    <script type="text/javascript" src="../../Script/public.js"   charset="utf-8"></script>
+    <script type="text/javascript" src="../../Script/layer/layer.js"></script>
+    <script type="text/javascript" src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script type="text/javascript" src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+<body>
+<div class="wrap_content scrollbar-inner">
+    <div class="div_device"><div class="dh" id="waterGun">水枪</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="waterBelt">水带</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="safetyRope">安全绳</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="hydrantWrench">消火栓扳手</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="fireExtinguisher">灭火器</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="brightLight">强光照明灯</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="fireAxe">消防斧</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="fireHelmet">消防头盔</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="clothing">消防员灭火防护服</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="boots">消防员灭火防护靴</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="safetyBelt">消防安全腰带</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="fireGloves">消防手套</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="integratedRespirator">消防过滤式综合防毒面具</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="loudspeaker">扩音器</div><div class="dd"></div></div>
+    <div class="div_device"><div class="dh" id="patrolCar">消防巡逻车</div><div class="dd"></div></div>
+    <!--<div class="div_device"><div class="dh" id="remark">备注</div><div class="dd"></div></div>-->
+</div>
+<script>
+    $(function(){
+        firePowerDetailData(GetQuery('powerID'))
+    });
+    function firePowerDetailData(powerID){
+        $.ajax({
+            type: "get",
+            url: _serverIp + "/front/homeIndex/firePowerDetail",
+            data:'powerID='+powerID,
+            success: function (data) {
+                if (data.success == true) {
+                    $('.dh').each(function(){
+                        var key = $(this).attr('id');
+                        $(this).next('.dd').text( (data.obj[key] || 0) +'个')
+                    })
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

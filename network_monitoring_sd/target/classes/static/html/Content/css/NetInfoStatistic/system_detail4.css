@@ -1,0 +1,155 @@
+.t_Div{
+    height: 100%;
+}
+
+.t_Div:last-child{
+    justify-content: flex-start;
+}
+
+.t_Div:last-child .t_boxb{
+    margin: 0 2%;
+}
+
+.t_boxb{
+    width: 16%;
+    height: 100%;
+
+}
+.t_boxb .title {
+    width: 100%;
+    height: 22px;
+    /* line-height: 25px; */
+    text-align: center;
+    color: #fff;
+}
+
+.boxcontent {
+    width: 100%;
+    height: calc(100% - 25px);
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    background-color: rgba(13, 74, 128, .9);
+    cursor: pointer;
+}
+
+.kongzhigui {
+    width: 100%;
+    height: 50%;
+    text-align: center;
+}
+
+.kongzhigui > img {
+    width: 30%;
+    margin-top: 3%;
+}
+
+.kongzhigui_cont {
+    width: 100%;
+    height: 50%;
+    text-align: center;
+}
+
+.kongzhigui_box {
+    width: 100%;
+    height: 33%;
+    overflow: hidden;
+}
+
+.kongzhigui_box .kzword {
+    float: left;
+    display: inline-block;
+    width: 50%;
+    height: 100%;
+    text-align: right;
+    padding-right: 5%;
+    color: #ccc;
+}
+
+.kongzhigui_box .status {
+    float: left;
+    display: inline-block;
+    /*width: 50%;*/
+    height: 100%;
+    text-align: left;
+    padding-left: 5%;
+}
+
+.kongzhigui_box .status>img{
+    width: 60%;
+}
+
+
+.t_cont{
+    padding: 5px 0 0;
+}
+
+
+
+
+
+
+
+.wrap_logo_door{
+    width: 80%;
+    height: calc(70% - 20px);
+    margin: 5px auto 0;
+    background: #073C70;
+    border-radius: 10px;
+    padding: 5px 0;
+    text-align: center;
+}
+.wrap_logo_door>img{
+    height: 100%;
+}
+.box_legend_door{
+    height: 30%;
+}
+
+.wrap_logo_shutter{
+    width: 80%;
+    height: calc(100% - 92px);
+    margin: 5px auto;
+    background: #073C70;
+    border-radius: 10px;
+    text-align: center;
+}
+.wrap_logo_shutter>img{
+    height: 100%;
+}
+.box_legend_shutter{
+    height: 60px;
+
+}
+
+
+.box_legend{
+    width: 100%;
+    padding: 5px 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+.div_legend{
+    width: 100%;
+    height: 16px;
+    text-align: center;
+    padding-right:10%;
+}
+.div_legend>img{
+    height: 16px;
+    vertical-align: top;
+}
+.detailname{
+    display: inline-block;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 80px;
+}

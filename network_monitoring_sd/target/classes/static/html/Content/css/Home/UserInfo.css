@@ -1,0 +1,121 @@
+.layer_headerTit{
+    height: 10%;
+}
+
+.list_tab{
+    width: 98%;
+    margin:1% auto 0;
+    height: 12%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.list_tab>div{
+    background-image: url(../../images/Home/tab_1.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    color: #5EBAE1;
+    padding: 3px 10px;
+    margin: 0 5px;
+    line-height: 18px;
+}
+.list_tab>div.active{
+    background-image: url("../../images/Home/tab_2.png");
+    color: #D8A730;
+}
+.list_tab>div:before{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    content: "";
+    margin-right: 5px;
+    float: left;
+}
+.list_tab>div.userInfo:before{
+      background: url(../../images/Home/icon_userInfo_1.png) no-repeat center;
+      background-size: 100% 100%;
+}
+.list_tab>div.userInfo.active:before{
+    background: url(../../images/Home/icon_userInfo_2.png) no-repeat center;
+    background-size: 100% 100%;
+}
+.list_tab>div.buyServer:before{
+    background: url(../../images/Home/icon_buyServer_1.png) no-repeat center;
+    background-size: 100% 100%;
+}
+.list_tab>div.buyServer.active:before{
+    background: url(../../images/Home/icon_buyServer_2.png) no-repeat center;
+    background-size: 100% 100%;
+}
+
+.layer_mainContent{
+    height: 75%;
+    width: 93%;
+    margin: 14px auto;
+
+}
+.user_content,.server_content{
+    width: 100%;
+    height: 100%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-content: flex-start;
+    align-content: flex-start;
+    overflow: hidden;
+}
+.server_content{
+    display: none;
+}
+.layer_mainContent .div_list{
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    display: -webkit-flex;
+    display: flex;
+    margin: 1px 0;
+}
+.list_name{
+    width: 15%;
+    background: #0E4B81;
+    color: #78A4D3;
+    text-align: center;
+}
+.list_con{
+    width: 35%;
+    background: #0B2E56;
+    color: #C2DCFD;
+    padding: 0 2%;
+}
+.icon_checkbox{
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    background: url("../../../Content/images/Public/checkbox.png") no-repeat center;
+    background-size: 100% 100%;
+    margin: 0 10% 0 5px;
+    vertical-align: middle;
+}
+.icon_checkbox.checked{
+    background: url("../../../Content/images/Public/checkbox_checked.png") no-repeat center;
+    background-size: 100% 100%;
+}
+
+.icon_certi{
+    width: 22px;
+    cursor: pointer;
+    margin: 0 3px;
+}
+.lookBuyRecord{
+    color: #3FF5FF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+
+
+

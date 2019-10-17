@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtLzRepairMapper" >
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtLzRepair" >
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <result column="RepairCode" property="repaircode" jdbcType="NVARCHAR" />
+        <result column="RepairSite" property="repairsite" jdbcType="NVARCHAR" />
+        <result column="BadDesc" property="baddesc" jdbcType="NVARCHAR" />
+        <result column="DealUnitType" property="dealunittype" jdbcType="INTEGER" />
+        <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+        <result column="DealStatus" property="dealstatus" jdbcType="INTEGER" />
+        <result column="CurrentDealUser" property="currentdealuser" jdbcType="NVARCHAR" />
+        <result column="DealDate" property="dealdate" jdbcType="TIMESTAMP" />
+        <result column="DealInfo" property="dealinfo" jdbcType="NVARCHAR" />
+        <result column="LastUpdateTime" property="lastupdatetime" jdbcType="TIMESTAMP" />
+        <result column="LastUpdateUser" property="lastupdateuser" jdbcType="NVARCHAR" />
+        <result column="LiableUser" property="liableuser" jdbcType="NVARCHAR" />
+        <result column="RequirementDate" property="requirementdate" jdbcType="TIMESTAMP" />
+        <result column="DelayDay" property="delayday" jdbcType="INTEGER" />
+        <result column="IsTwoRemind" property="istworemind" jdbcType="INTEGER" />
+        <result column="TwoRemindDesc" property="tworeminddesc" jdbcType="NVARCHAR" />
+        <result column="TwoRemindUser" property="tworeminduser" jdbcType="NVARCHAR" />
+        <result column="TwoRemindTime" property="tworemindtime" jdbcType="TIMESTAMP" />
+        <result column="IsThreeRemind" property="isthreeremind" jdbcType="INTEGER" />
+        <result column="ThreeRemindDesc" property="threereminddesc" jdbcType="NVARCHAR" />
+        <result column="ThreeRemindUser" property="threereminduser" jdbcType="NVARCHAR" />
+        <result column="ThreeRemindTime" property="threeremindtime" jdbcType="TIMESTAMP" />
+        <result column="IsFourRemind" property="isfourremind" jdbcType="INTEGER" />
+        <result column="FourRemindDesc" property="fourreminddesc" jdbcType="NVARCHAR" />
+        <result column="FourRemindUser" property="fourreminduser" jdbcType="NVARCHAR" />
+        <result column="FourRemindTime" property="fourremindtime" jdbcType="TIMESTAMP" />
+        <result column="IsWBFK" property="iswbfk" jdbcType="INTEGER" />
+        <result column="FKTime" property="fktime" jdbcType="TIMESTAMP" />
+        <result column="WBFKInfo" property="wbfkinfo" jdbcType="NVARCHAR" />
+        <result column="WBCLR" property="wbclr" jdbcType="NVARCHAR" />
+        <result column="WBCLSJ" property="wbclsj" jdbcType="TIMESTAMP" />
+        <result column="ZWUser" property="zwuser" jdbcType="NVARCHAR" />
+        <result column="ZWDate" property="zwdate" jdbcType="TIMESTAMP" />
+        <result column="ZWDesc" property="zwdesc" jdbcType="NVARCHAR" />
+        <result column="DataFrom" property="datafrom" jdbcType="INTEGER" />
+        <result column="DataFromID" property="datafromid" jdbcType="NVARCHAR" />
+        <result column="UnitID" property="unitid" jdbcType="BIGINT" />
+        <result column="RepairType" property="repairtype" jdbcType="INTEGER" />
+        <result column="BaseID" property="baseid" jdbcType="BIGINT" />
+        <result column="DealUnitID" property="dealunitid" jdbcType="BIGINT" />
+        <result column="picUrl" property="picurl" jdbcType="NVARCHAR" />
+        <result column="executorID" property="executorID" jdbcType="BIGINT" />
+        <result column="taskStartTime" property="taskStartTime" jdbcType="TIMESTAMP" />
+        <result column="taskEndTime" property="taskEndTime" jdbcType="TIMESTAMP" />
+        <result column="eqid" property="eqid" jdbcType="BIGINT" />
+        <result column="eqname" property="eqname" jdbcType="VARCHAR" />
+
+
+    </resultMap>
+    <!--   SUM(CASE WHEN a.DealStatus=0 THEN 1 ELSE 0 END) wbNodeal,
+        SUM(CASE WHEN a.DealStatus=3 THEN 1 ELSE 0 END) wbdealed-->
+    <select id="getMaintenanceStatusStat" resultType="com.gw.front.maintenance.data.FrontMaintenanceStatOutData">
+        SELECT
+        SUM(CASE WHEN a.DealStatus=0 THEN 1 ELSE 0 END)+SUM(CASE WHEN a.DealStatus=1 THEN 1 ELSE 0 END)  wbNodeal,
+        SUM(CASE WHEN a.DealStatus=3 THEN 1 ELSE 0 END) wbdealed
+        FROM
+        UT_LZ_Repair a
+        <if test="userId!=null and userId!='' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit b ON a.UnitID = b.unit_id
+        </if>
+        <where>
+            <if test="unitId!=null and unitId!=''">
+                a.UnitID = #{unitId}
+            </if>
+            <if test="userId!=null and userId!='' and userId != 1">
+                and b.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="getRepairList" resultType="com.gw.front.maintenance.data.FrontMaintenanceOutData" parameterType="com.gw.front.maintenance.data.FrontMaintenanceInData">
+        SELECT
+        a.ID id,
+        a.executorID executorID,
+        us.UserName executorName,
+        CONVERT (VARCHAR, a.taskStartTime,120) taskStartTime,
+        CONVERT (VARCHAR, a.taskEndTime,120) taskEndTime,
+        CONVERT (VARCHAR, a.CreateTime,120) createtime,
+        a.WBCLR wBCLR,
+        a.RepairSite repairSite,
+        a.UnitID UnitID,
+        CASE WHEN a.dealStatus=0 THEN '待分配'
+        WHEN  a.dealStatus=1 THEN '已分配'
+        WHEN  a.dealStatus=3 THEN '已处理'
+        ELSE '未处理' END dealStatus,
+        CASE WHEN b.ID!=NULL THEN b.Alarm_Status END alarmstatus,
+        CONVERT (VARCHAR, a.dealDate,120) dealDate,
+        a.wBCLSJ wBCLSJ,
+        a.picUrl repairPic,
+        a.BadDesc badDesc,
+        a.DataFrom dateFrom,
+        ISNULL(ISNULL(b.Alarm_DeviceDesc,g.EquipmentName+'-'+g.EquipmentDetialName),a.BadDesc) checkInfo,
+        unit.unitCode unitCode,
+        unit.unitName unitName,
+        e.DealInfo dealInfo,
+        e.OperateUserName dealName,
+        e.picPath repairDetailPic,
+        c.ExpirationTime expirationTime,
+        ISNUll(b.Alarm_SourceDesc,n.InstallPosition) alarmWhere
+        FROM
+        UT_LZ_Repair a
+        LEFT JOIN UT_LZ_BJZJAlarm b ON a.BaseID = b.ID
+        LEFT JOIN UT_Inspect_Task c ON a.BaseID = c.ID
+        LEFT JOIN UT_Unit_BaseInfo unit ON a.UnitID = unit.ID
+        LEFT JOIN UT_LZ_RepairDetial e ON a.ID = e.RepairID
+        LEFT JOIN UT_LZ_FireEquipmentAlarm g ON a.BaseID = g.ID
+        LEFT JOIN UT_EQ_EquipmentDetialGW m ON g.FireEquipmentDetialID = m.ID
+        LEFT JOIN UT_EQ_Equipment n ON m.EQID = n.ID
+        LEFT JOIN UT_Unit_User us on us.id=a.executorID
+        <if test="userId!=null and userId!='' and userId != 1">
+            LEFT JOIN UT_Base_UserReUnit f ON unit.ID = f.unit_id
+        </if>
+        <where>
+            (unit.isDelete = 0 OR unit.isDelete is NULL)
+            <if test="startDate != null and startDate != ''">
+                and a.CreateTime >= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.CreateTime &lt;= #{endDate}
+            </if>
+            <if test="status != null and status != ''">
+                and a.dealStatus = #{status}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                and a.UnitID = #{unitId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (unit.UnitName LIKE '%${keyword}%' or a.RepairSite LIKE '%${keyword}%')
+            </if>
+            <if test="userId!=null and userId!='' and userId != 1">
+                AND f.user_id = #{userId}
+            </if>
+        </where>
+
+        ORDER BY  a.dealStatus,a.executorID ,createtime DESC
+    </select>
+
+    <select id="selectNowMouthList" resultType="com.gw.mapper.entity.UtLzRepair">
+        SELECT
+        *
+        FROM
+        UT_LZ_Repair
+        where
+        CreateTime &gt;=#{fristTime}
+        and CreateTime &lt;=#{lastTime}
+        <if test="unitID!=null and unitID!=''">
+            and UnitID = #{unitID}
+        </if>
+    </select>
+    <select id="getBJZJRepairList" resultType="com.gw.generatereport.RepairSiteOutData">
+    SELECT
+	    a.RepairSite siteName,
+	    SUM(CASE WHEN a.DealStatus=3 THEN 1 ELSE 0 END) count,
+	    f.ID siteID,
+	    a.UnitID
+	FROM
+	    UT_LZ_Repair a
+	LEFT JOIN UT_LZ_BJZJAlarm b ON a.BaseID = b.ID AND a.DataFrom = 0
+	LEFT JOIN UT_Unit_NetDevice c ON b.OnwerCode = c.OwnerCode
+		AND b.DeviceIndex = c.DeviceIndex
+		AND (
+		    b.DeviceNo = c.DeviceNo
+		    OR b.DeviceIndex = 2
+		)
+	LEFT JOIN UT_EQ_Equipment e ON c.ID = e.NetDeviceID
+	LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+	           AND f.partcode = b.Alarm_Reserve
+	WHERE
+	    f.ID IS NOT NULL
+	    and CreateTime &gt;=#{fristTime}
+        and CreateTime &lt;=#{lastTime}
+	GROUP BY
+	    a.RepairSite,
+	    f.ID,
+	    a.UnitID
+  </select>
+    <select id="getBJZJSiteUserList" resultType="java.lang.String">
+	SELECT
+	    CASE WHEN a.DealStatus=3 THEN a.WBCLR ELSE '' END userName
+	FROM
+	    UT_LZ_Repair a
+	LEFT JOIN UT_LZ_BJZJAlarm b ON a.BaseID = b.ID
+	AND a.DataFrom = 0
+	LEFT JOIN UT_Unit_NetDevice c ON b.OnwerCode = c.OwnerCode
+	AND b.DeviceIndex = c.DeviceIndex
+	AND (
+	    b.DeviceNo = c.DeviceNo
+	    OR b.DeviceIndex = 2
+	)
+	LEFT JOIN UT_EQ_Equipment e ON c.ID = e.NetDeviceID
+	LEFT JOIN Ut_EQ_address_rel f ON e.ID = f.eqid
+	AND f.partcode = b.Alarm_Reserve
+	WHERE
+	    f.ID = #{siteID}
+  </select>
+    <select id="getRTURepairList" resultType="com.gw.generatereport.RepairSiteOutData">
+	SELECT
+	    c.DetialName siteName,
+	    SUM(CASE WHEN a.DealStatus=3 THEN 1 ELSE 0 END) count,
+	    c.ID siteID,
+        a.UnitID
+	FROM
+	    UT_LZ_Repair a
+	LEFT JOIN UT_LZ_FireEquipmentAlarm b ON a.BaseID = b.ID
+	LEFT JOIN UT_EQ_EquipmentDetialGW c ON b.FireEquipmentDetialID = c.ID
+	WHERE
+	    c.ID IS NOT NULL
+	    and CreateTime &gt;=#{fristTime}
+        and CreateTime &lt;=#{lastTime}
+	GROUP BY
+	    c.DetialName,
+	    c.ID,
+        a.UnitID
+  </select>
+    <select id="getRTUSiteUserList" resultType="java.lang.String">
+	SELECT
+	    CASE WHEN a.DealStatus=3 THEN a.WBCLR ELSE '' END userName
+	FROM
+	    UT_LZ_Repair a
+	LEFT JOIN UT_LZ_FireEquipmentAlarm b ON a.BaseID = b.ID
+	LEFT JOIN UT_EQ_EquipmentDetialGW c ON b.FireEquipmentDetialID = c.ID
+	WHERE
+	    c.ID = #{siteID}
+  </select>
+    <select id="getInspectRepairList" resultType="com.gw.generatereport.RepairSiteOutData">
+	SELECT
+	    c.SiteName siteName,
+	    SUM(CASE WHEN a.DealStatus=3 THEN 1 ELSE 0 END) count,
+	    c.ID siteID,
+        a.UnitID
+	FROM
+	    UT_LZ_Repair a
+	LEFT JOIN UT_Inspect_Task b ON a.BaseID = b.ID
+	LEFT JOIN UT_Inspect_Site c ON b.SiteID = c.ID
+	WHERE
+	    c.ID IS NOT NULL
+	    and CreateTime &gt;=#{fristTime}
+        and CreateTime &lt;=#{lastTime}
+	GROUP BY
+	    c.SiteName,
+	    c.ID,
+        a.UnitID
+  </select>
+    <select id="getInspectSiteUserList" resultType="java.lang.String">
+	SELECT
+	     CASE WHEN a.DealStatus=3 THEN a.WBCLR ELSE '' END userName
+	FROM
+	    UT_LZ_Repair a
+	LEFT JOIN UT_Inspect_Task b ON a.BaseID = b.ID
+	LEFT JOIN UT_Inspect_Site c ON b.SiteID = c.ID
+	WHERE
+	    c.ID = #{siteID}
+  </select>
+
+    <!--通过联网单位Id查出维保人员-->
+    <select id="getMaintenanceUserBynetworkingID" parameterType="com.gw.generatereport.GenerateMaintenanceUserData" resultType="com.gw.generatereport.GenerateMaintenanceUserData" >
+        SELECT
+        a.UnitID UnitID,
+        a.ManageID ManageID,
+        b.id userID,
+        b.UserName UserName
+
+        from UT_Maintenance_ReUnit a
+        LEFT JOIN UT_Unit_User b on a.ManageID=b.UnitID
+
+        where
+        1=1
+        <if test="UnitID!=null and UnitID!=''">
+            and	a.UnitID= #{UnitID}
+        </if>
+    </select>
+
+    <!--获取维保任务的时间 以及提醒执行人以及责任人-->
+<select id="remindExecutorIDAndLiableUser" resultType="com.gw.generatereport.RemindExecutorIDAndLiableUserData">
+   SELECT
+	 CONVERT (VARCHAR, a.taskEndTime,23)  EndAsNow,
+CONVERT (VARCHAR, GETDATE(),23)  nowTime,
+CONVERT (VARCHAR, a.taskStartTime,23)  StartAsNow,
+
+	a.taskStartTime taskStartTime,
+	a.taskEndTime taskEndTime,
+	a.id id,
+	a.executorID executorID,
+    b.id RepairDetialID,
+	b.RepairID RepairID,
+c.Account Account,
+c.UnitID UnitID,
+c.UserName UserName,
+c.phone_name phoneName,
+c.channelId channelId,
+	CASE
+WHEN b.id IS NULL THEN
+	0
+ELSE
+	1
+END isExecute,
+ CASE
+WHEN a.taskStartTime IS NULL THEN
+	0
+ELSE
+	1
+END IsDistribution
+FROM
+	UT_LZ_Repair a
+LEFT JOIN UT_LZ_RepairDetial b ON a.id = b.RepairID LEFT JOIN  UT_Unit_User c on c.id=a.executorID
+where a.taskStartTime is not null and 	a.taskEndTime is not null
+
+</select>
+<select id="getList" resultType="com.gw.repairr.data.MaintenanceTaskData" parameterType="com.gw.repairr.data.MaintenanceTaskData">
+    SELECT
+    a.ID,
+    a.RepairSite,
+    a.eqname,
+    a.eqid,
+    a.executorID,
+    a.UnitID,
+    CONVERT(varchar(100), a.taskStartTime, 23) taskStartTime,
+    CONVERT(varchar(100), a.taskEndTime, 23) taskEndTime,
+    b1.UnitName,
+    b2.UserName,
+    b3.planName planName,
+    b3.ID planID,
+    b4.BuildingName,
+    b5.BuildAreaName
+    FROM
+    UT_LZ_Repair a
+    left join UT_Unit_BaseInfo b1 on a.UnitID = b1.ID
+    left join UT_Unit_User b2 on a.executorID=b2.ID
+    left join UT_LZ_RepairPlan b3 on a.BaseID=b3.ID
+
+    LEFT JOIN UT_Unit_Build b4 ON b3.buildID = b4.ID
+    LEFT JOIN UT_Unit_BuildArea b5 ON b3.buildAreaID = b5.ID
+    where b3.planName is not null
+    <if test="UnitID!=null and UnitID!=''">
+        and charindex(rtrim(a.UnitID), #{UnitID})>0
+    </if>
+    <if test="planID!=null and planID!=''">
+        and b3.ID = #{planID}
+    </if>
+    <if test="executorID!=null and executorID!=''">
+        and	a.executorID= #{executorID}
+    </if>
+    <if test="RepairSite!=null and RepairSite!=''">
+        and	a.RepairSite like '%${RepairSite}%'
+    </if>
+    <if test="eqName!=null and eqName!=''">
+        and	a.eqname like '%${eqName}%'
+    </if>
+    <if test="taskStartTime!=null and taskStartTime!=''">
+        and taskStartTime &gt;=#{taskStartTime}
+    </if>
+    <if test="taskEndTime!=null and taskEndTime!=''">
+        and taskEndTime &lt;=#{taskEndTime}
+    </if>
+    ORDER BY a.CreateTime ASC
+</select>
+    <select id="getMaintenancePlanList" resultType="com.gw.repairr.data.UserListData" parameterType="com.gw.repairr.data.MaintenanceTaskData">
+    SELECT DISTINCT
+        a.BaseID planID,
+        b.planName
+    FROM
+        UT_LZ_Repair a
+    LEFT JOIN UT_LZ_RepairPlan b ON a.BaseID = b.ID
+    WHERE
+        b.planName IS NOT NULL
+        <if test="UnitID!=null and UnitID!=''">
+            and	a.UnitID= #{UnitID}
+        </if>
+    </select>
+    <select id="getMaintenanceUserList" resultType="com.gw.repairr.data.UserListData" parameterType="com.gw.repairr.data.MaintenanceTaskData">
+    SELECT DISTINCT
+        a.executorID,
+        b.UserName userName
+    FROM
+        UT_LZ_Repair a
+    LEFT JOIN UT_Unit_User b ON a.executorID = b.ID
+    WHERE
+        b.UserName IS NOT NULL
+        <if test="UnitID!=null and UnitID!=''">
+            and	a.UnitID= #{UnitID}
+        </if>
+    </select>
+</mapper>

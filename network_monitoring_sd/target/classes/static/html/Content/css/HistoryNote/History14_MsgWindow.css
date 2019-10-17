@@ -1,0 +1,153 @@
+
+
+/*短信弹窗*/
+.top_box{
+	width: 100%;
+	height: 64px;
+	margin-bottom: 2%;
+}
+.titleBox {
+    overflow: hidden;
+    -webkit-display: flex;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 30px;
+    margin-bottom: 4px;
+}
+.titleBox>div {
+    -webkit-display: flex;
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+    height: 30px;
+    line-height: 30px;
+}
+.titleBox>div>div {
+    height: 100%;
+    text-align: center;
+}
+.titleBox>div>div:first-child {
+    background: rgba(163, 216, 250,.2);
+    width: 30%;
+}
+.titleBox>div>div:last-child {
+    background: rgba(16, 71, 110,.6);
+    width: 70%;
+}
+
+
+
+.table_box2{
+	height: calc(98% - 64px);
+}
+
+.lightgreen{
+	color: #04dbdb;
+}
+
+.red{
+	color: #db4e56;
+}
+
+.trcont{
+	text-overflow: inherit!important;
+	overflow: inherit!important;
+	white-space: inherit!important;
+	text-align: left!important;
+}
+
+.timeStart,{
+    margin-left: 0;
+}
+.top-search{
+    padding: 0;
+}
+/*设备离在线情况 弹窗*/
+#IsOnlineBox{
+    width: 100%;
+    padding: 2%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.online_topDiv{
+    width: 100%;
+    height: auto;
+}
+
+.inline_fir{
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    margin-bottom: 5px;
+} 
+
+.inline_fir .name{
+    float: left;
+    display: inline-block;
+    width: 20%;
+    height: 30px;
+    text-align: center;
+    background-color: #0e4881;
+}
+
+.inline_fir .cont,#exceptionRate{
+    float: left;
+    display: inline-block;
+    width: 80%;
+    height: 30px;
+    text-align: left;
+    padding: 0 10%;
+    background-color: rgba(16, 71, 110, 0.3);
+}
+
+.online_sec{   
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.online_sec .name{
+    float: left;
+    display: inline-block;
+    height: 30px;
+    width: 20%;
+    background-color: #0e4881;
+    text-align: center;
+}
+
+.online_sec .cont{
+    float: left;
+    display: inline-block;
+    height: 30px;
+    width: 30%;
+    text-align: left;
+    padding: 0 10%;
+    background-color: rgba(16, 71, 110, 0.3);
+
+}
+
+.online_ContDiv{
+    width: 100%;
+    height: calc(100% - 150px);
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.online_ContDiv .title{
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #0e457e;
+    /*border-top: 1px solid #6ED1FA;*/
+    /*border-bottom: 1px solid #6ED1FA;*/
+}
+
+.online_ContDiv .table_box{
+    height: calc(100% - 30px)!important;
+}

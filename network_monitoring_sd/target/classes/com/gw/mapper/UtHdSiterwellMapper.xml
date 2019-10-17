@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gw.mapper.UtHdSiterwellMapper" >
+    <resultMap id="BaseResultMap" type="com.gw.mapper.entity.UtHdSiterwell" >
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <result column="isrelation" property="isrelation" jdbcType="INTEGER" />
+        <result column="ownercode" property="ownercode" jdbcType="NVARCHAR" />
+        <result column="deviceindex" property="deviceindex" jdbcType="INTEGER" />
+        <result column="deviceno" property="deviceno" jdbcType="INTEGER" />
+        <result column="usingtype" property="usingtype" jdbcType="INTEGER" />
+        <result column="gatewayid" property="gatewayid" jdbcType="INTEGER" />
+        <result column="gatewaycode" property="gatewaycode" jdbcType="NVARCHAR" />
+        <result column="reserve" property="reserve" jdbcType="NVARCHAR" />
+        <result column="lastupate" property="lastupate" jdbcType="TIMESTAMP" />
+        <result column="devicecode" property="devicecode" jdbcType="NVARCHAR" />
+        <result column="installaddr" property="installaddr" jdbcType="NVARCHAR" />
+        <result column="notifyphone" property="notifyphone" jdbcType="NVARCHAR" />
+        <result column="currentstatus" property="currentstatus" jdbcType="INTEGER" />
+        <result column="devicetype" property="devicetype" jdbcType="NVARCHAR" />
+        <result column="protocoltype" property="protocoltype" jdbcType="NVARCHAR" />
+        <result column="model" property="model" jdbcType="NVARCHAR" />
+        <result column="manufacturename" property="manufacturename" jdbcType="NVARCHAR" />
+        <result column="imsi" property="imsi" jdbcType="NVARCHAR" />
+        <result column="lon" property="lon" jdbcType="DOUBLE" />
+        <result column="lat" property="lat" jdbcType="DOUBLE" />
+        <result column="battery" property="battery" jdbcType="INTEGER" />
+        <result column="signal" property="signal" jdbcType="INTEGER" />
+        <result column="isphone" property="isphone" jdbcType="INTEGER" />
+        <result column="firsttime" property="firsttime" jdbcType="TIMESTAMP" />
+        <result column="heartbeat" property="heartbeat" jdbcType="BIGINT" />
+        <result column="netdeviceid" property="netdeviceid" jdbcType="NVARCHAR" />
+    </resultMap>
+
+    <select id="getAllWirelessDevice" resultType="com.gw.equipment.data.WirelessDeviceOutData" parameterType="com.gw.equipment.data.WirelessDeviceInData">
+        SELECT
+        a.ID id,
+        a.usingtype,
+        a.gatewayid,
+        a.isrelation,
+        a.gatewaycode,
+        a.reserve,
+        a.lastupate,
+        a.devicecode,
+        a.deviceindex,
+        a.deviceno,
+        a.ownercode,
+        a.installaddr,
+        a.notifyphone,
+        a.currentstatus,
+        a.devicetype,
+        a.protocoltype,
+        a.model,
+        a.manufacturename,
+        a.imsi,
+        a.lon,
+        a.lat,
+        a.battery,
+        a.signal,
+        a.isphone,
+        a.firsttime
+        FROM
+        ${database}.dbo.hd_siterwell a
+        <where>
+            <if test="partcode!=null and partcode!=''">
+                a.gatewayid like '%${partcode}%' or
+                a.gatewaycode like '%${partcode}%'
+                <if test="keyword!=null and keyword!=''">
+                  or  a.devicecode like '%${partcode}%' or
+                    a.installaddr like '%${partcode}%' or
+                    a.notifyphone like '%${partcode}%'
+                </if>
+            </if>
+            <if test="keyword!=null and keyword!='' and partcode==null and partcode==''">
+                a.devicecode like '%${partcode}%' or
+                a.installaddr like '%${partcode}%' or
+                a.notifyphone like '%${partcode}%'
+            </if>
+        </where>
+        order by a.ID desc
+    </select>
+
+    <select id="getAssociatedList" resultType="com.gw.equipment.data.WirelessDeviceOutData" parameterType="com.gw.equipment.data.WirelessDeviceInData">
+        SELECT
+        ID id,
+        usingtype,
+        gatewayid,
+        gatewaycode,
+        reserve,
+        lastupate,
+        devicecode,
+        installaddr,
+        notifyphone,
+        currentstatus,
+        devicetype,
+        protocoltype,
+        model,
+        manufacturename,
+        imsi,
+        lon,
+        lat,
+        battery,
+        signal,
+        isphone,
+        firsttime
+        FROM
+        ${database}.dbo.hd_siterwell
+        <where>
+            <if test="ownercode!=null and ownercode!=''">
+                ownercode = #{ownercode}
+            </if>
+            <if test="deviceindex!=null and deviceindex!=''">
+                and deviceindex = #{deviceindex}
+            </if>
+            <if test="deviceno!=null and deviceno!=''">
+                and deviceno = #{deviceno}
+            </if>
+            <if test="devicecode!=null and devicecode!=''">
+                and devicecode = #{devicecode}
+            </if>
+            <if test="partcode!=null and partcode!=''">
+                and gatewayid like '%${partcode}%' or
+                gatewaycode like '%${partcode}%'
+            </if>
+        </where>
+        order by ID desc
+    </select>
+
+    <select id="getUnrelatedList" resultType="com.gw.equipment.data.WirelessDeviceOutData" parameterType="com.gw.equipment.data.WirelessDeviceInData">
+        SELECT
+        ID id,
+        usingtype,
+        gatewayid,
+        gatewaycode,
+        reserve,
+        lastupate,
+        devicecode,
+        installaddr,
+        notifyphone,
+        currentstatus,
+        devicetype,
+        protocoltype,
+        model,
+        manufacturename,
+        imsi,
+        lon,
+        lat,
+        battery,
+        signal,
+        isphone,
+        firsttime
+        FROM
+        ${database}.dbo.hd_siterwell
+        <where>
+            isrelation = 0
+            <if test="partcode!=null and partcode!=''">
+                and gatewayid like '%${partcode}%' or
+                gatewaycode like '%${partcode}%'
+            </if>
+        </where>
+        order by ID desc
+    </select>
+
+    <select id="getSiteWellRelInfo" resultType="Integer">
+  	SELECT
+		COUNT (1)
+	FROM
+		${tableName} a
+	WHERE
+		a.DeviceIndex = #{deviceIndex}
+	AND a.DeviceNo = #{deviceNo}
+	AND a.Alarm_Reserve = #{alarmReserve}
+	AND datediff(MINUTE,a.Lastupdate,GETDATE()) &lt; #{doubleHeartBeat}
+  </select>
+    <update id="updateHdSiterwellStatus" >
+        UPDATE
+        ${database}.dbo.hd_siterwell
+        SET currentstatus = 1,lastupate = GETDATE()
+        WHERE
+        ownercode = #{ownerCode}
+        AND deviceindex = #{deviceIndex}
+        AND deviceno = #{deviceNo}
+        <if test="usingtype == 1">
+            AND a.gatewaycode = #{gateWayCode}
+        </if>
+        <if test="usingtype == 0">
+            AND a.gatewayid = #{gateWayCode}
+        </if>
+    </update>
+
+    <update id="updateSiteWell" parameterType="com.gw.equipment.data.WirelessDeviceOutData">
+        UPDATE
+        ${database}.dbo.hd_siterwell
+        <set>
+            <if test="usingtype!=null">
+                usingtype = #{usingtype},
+            </if>
+            <if test="isrelation!=null">
+                isrelation = #{isrelation},
+            </if>
+            <if test="gatewayid!=null">
+                gatewayid = #{gatewayid},
+            </if>
+            <if test="gatewaycode!=null">
+                gatewaycode = #{gatewaycode},
+            </if>
+            <if test="reserve!=null">
+                reserve = #{reserve},
+            </if>
+            <if test="deviceindex!=null">
+                deviceindex = #{deviceindex},
+            </if>
+            <if test="deviceno!=null">
+                deviceno = #{deviceno},
+            </if>
+            <if test="ownercode!=null">
+                ownercode = #{ownercode},
+            </if>
+            <if test="lastupate!=null">
+                lastupate = #{lastupate},
+            </if>
+            <if test="devicecode!=null">
+                devicecode = #{devicecode},
+            </if>
+            <if test="installaddr!=null">
+                installaddr = #{installaddr},
+            </if>
+            <if test="notifyphone!=null">
+                notifyphone = #{notifyphone},
+            </if>
+            <if test="currentstatus!=null">
+                currentstatus = #{currentstatus},
+            </if>
+            <if test="devicetype!=null">
+                devicetype = #{devicetype},
+            </if>
+            <if test="protocoltype!=null">
+                protocoltype = #{protocoltype},
+            </if>
+            <if test="model!=null">
+                model = #{model},
+            </if>
+            <if test="manufacturename!=null">
+                manufacturename = #{manufacturename},
+            </if>
+            <if test="imsi!=null">
+                imsi = #{imsi},
+            </if>
+            <if test="lon!=null">
+                lon = #{lon},
+            </if>
+            <if test="lat!=null">
+                lat = #{lat},
+            </if>
+            <if test="battery!=null">
+                battery = #{battery},
+            </if>
+            <if test="signal!=null">
+                signal = #{signal},
+            </if>
+            <if test="isphone!=null">
+                isphone = #{isphone},
+            </if>
+        </set>
+        where
+        ID = #{id}
+    </update>
+    <insert id="insertSiteWell" parameterType="com.gw.mapper.entity.UtHdSiterwell">
+  INSERT INTO ${netdeviceid}.dbo.hd_siterwell
+    (usingtype,gatewayid,
+     isrelation,ownercode,
+     gatewaycode,reserve,
+     lastupate,devicecode,
+     installaddr,notifyphone,
+     currentstatus,devicetype,
+     protocoltype,model,
+     manufacturename,imsi,
+     lon,lat,battery,
+     signal,isphone,firsttime)
+    VALUES
+    (#{usingtype},#{gatewayid},
+    #{isrelation},#{ownercode},
+    #{gatewaycode},#{reserve},
+    #{lastupate},#{devicecode},
+    #{installaddr},#{notifyphone},
+    #{currentstatus},#{devicetype},
+    #{protocoltype},#{model},
+    #{manufacturename},#{imsi},
+    #{lon},#{lat},#{battery},
+    #{signal},#{isphone},#{firsttime})
+  </insert>
+    <delete id="deleteSiteWell" parameterType="com.gw.mapper.entity.UtHdSiterwell">
+        DELETE FROM
+        ${database}.dbo.hd_siterwell
+        <where>
+            <if test="nsId != null and nsId!=''">
+                ID = #{nsId}
+            </if>
+        </where>
+    </delete>
+
+    <select id="getWirelessDevice" resultType="com.gw.equipment.data.WirelessDeviceOutData">
+        SELECT
+        a.ID id,
+        a.usingtype,
+        a.isrelation,
+        a.ownercode,
+        a.gatewayid,
+        a.gatewaycode,
+        a.reserve,
+        a.lastupate,
+        a.devicecode,
+        a.installaddr,
+        a.notifyphone,
+        a.currentstatus,
+        a.devicetype,
+        a.protocoltype,
+        a.model,
+        a.manufacturename,
+        a.imsi,
+        a.lon,
+        a.lat,
+        a.battery,
+        a.signal,
+        a.isphone,
+        a.firsttime
+        FROM
+        ${database}.dbo.hd_siterwell a
+        <where>
+            <if test="id != null and id!=''">
+                a.id = #{id}
+            </if>
+        </where>
+        order by a.ID desc
+    </select>
+    <select id="getOneWireless" resultType="com.gw.equipment.data.WirelessDeviceOutData" parameterType="com.gw.mapper.entity.UtHdSiterwell">
+        SELECT
+        a.ID id,
+        a.usingtype,
+        a.isrelation,
+        a.ownercode,
+        a.gatewayid,
+        a.gatewaycode,
+        a.reserve,
+        a.lastupate,
+        a.devicecode,
+        a.installaddr,
+        a.notifyphone,
+        a.currentstatus,
+        a.devicetype,
+        a.protocoltype,
+        a.model,
+        a.manufacturename,
+        a.imsi,
+        a.lon,
+        a.lat,
+        a.battery,
+        a.signal,
+        a.isphone,
+        a.firsttime
+        FROM
+        ${netdeviceid}.dbo.hd_siterwell a
+        <where>
+            <if test="usingtype != null and usingtype!=''">
+                and a.usingtype = #{usingtype}
+            </if>
+            <if test="gatewayid != null and gatewayid!=''">
+                and a.gatewayid = #{gatewayid}
+            </if>
+            <if test="usingtype != null and usingtype!=''">
+                and a.gatewaycode = #{gatewaycode}
+            </if>
+        </where>
+    </select>
+</mapper>

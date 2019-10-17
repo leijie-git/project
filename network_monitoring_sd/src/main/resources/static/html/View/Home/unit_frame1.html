@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单位详细资料 - 单位信息</title>
+    <link href="../../Script/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/layer/skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Script/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"/>
+
+    <link href="../../Content/css/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../../Content/css/Home/UnitDetail.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Script/jquery-1.11.0.js"></script>
+    <script src="../../Script/public.js"></script>
+    <script src="../../Script/Echarts/echarts.min.js"></script>
+    <script src="../../Script/layui/layui.js"></script>
+    <script src="../../Script/layer/layer.js"></script>
+    <script src="../../Script/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../Script/SuperSlide/jquery.SuperSlide.2.1.1.js"></script>
+    <script src="../../Script/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+
+	<div class="wrapper">
+		<div class="secbox scrollbar-inner" id="unitBaseInfo">
+	        <div>
+	            <div class="nth1">单位编号</div>
+	            <div class="nth2 valueTxt" id="unitcode"></div>
+	            <div class="nth1">单位名称</div>
+	            <div class="nth2 valueTxt" id="unitname"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">所在地址</div>
+	            <div class="nth2 valueTxt" id="unitAddress"></div>
+	            <div class="nth1">联系电话</div>
+	            <div class="nth2 txtTell" phoneLab="phone"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">子站号</div>
+	            <div class="nth2 valueTxt" id="childstationnum"></div>
+	            <div class="nth1">行政区划</div>
+	            <div class="nth2 valueTxt" id="administrativedivision"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">联网状态</div>
+	            <div class="nth2 valueTxt red" id="networkstatus"></div>
+	            <div class="nth1" >入网时间</div>
+	            <div class="nth2 valueTxt" id="onlinedate"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">单位危险等级</div>
+	            <div class="nth2 valueTxt" id="unitdangerlevel"></div>
+	            <div class="nth1">安全监管级别</div>
+	            <div class="nth2 valueTxt" id="superviselevel"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">技术代表</div>
+	            <div class="nth2 valueTxt" id="technicalrepresentative"></div>
+	            <div class="nth1">用户代表</div>
+	            <div class="nth2 valueTxt" id="userrepresentative"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">感应点数</div>
+	            <div class="nth2 valueTxt"></div>
+	            <div class="nth1">企业成立时间</div>
+	            <div class="nth2 valueTxt" id="establishmenttime"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">单位类别</div>
+	            <div class="nth2 valueTxt" id="unittype"  ></div>
+	            <div class="nth1">建筑使用性质</div>
+	            <div class="nth2 valueTxt"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">组织机构</div>
+	            <div class="nth2 valueTxt" id="orgCode" phoneLab="valueTxt"></div>
+	            <div class="nth1">企业类型</div>
+	            <div class="nth2 valueTxt" id="supervisetype"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">责任人</div>
+	            <div class="nth2 valueTxt" id="saferesponsiblepersonname"></div>
+	            <div class="nth1">电话</div>
+	            <div class="nth2 txtTell" phoneLab="saferesponsiblepersoncard"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">管理人</div>
+	            <div class="nth2 valueTxt" id="safemanagername"></div>
+	            <div class="nth1">电话</div>
+	            <div class="nth2 txtTell" phoneLab="safemanagerphone"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">法人</div>
+	            <div class="nth2 valueTxt" id="legalpersonname"></div>
+	            <div class="nth1">电话</div>
+	            <div class="nth2 txtTell" phoneLab="legalpersonphone"></div>
+	        </div>
+	        <div>
+	            <div class="nth1">职工数</div>
+	            <div class="nth2 valueTxt" id="staffcount"></div>
+	            <div class="nth1">总资产(万)</div>
+	            <div class="nth2"><span id="fixedassets" class="valueTxt">0</span></div>
+	        </div>
+	        <div>
+	            <div class="nth1">占地面积(平方)</div>
+	            <div class="nth2 valueTxt"></div>
+	            <div class="nth1">总面积(平方)</div>
+	            <div class="nth2 valueTxt"></div>
+	        </div>
+	        <div>
+	            <div class="nth3">短信接收</div>
+	            <div class="nth4 valueTxt" id="messagePhone"></div>
+	        </div>
+	    </div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	//单位资料
+		getUnitBaseInfoData();
+	});
+
+	//////////////单位资料
+	function getUnitBaseInfoData(){
+		var isAsync = true,lid = 0;
+		if (isAsync)
+			lid = layer.msg('正在加载...', { icon: 16, shade: [0.1, '#fff'], time: 90000 });
+		$.ajax({
+			type: "get",
+			url: _serverIp + "/front/unit/getUnitInfoById",
+			data:'unitId='+GetQuery('unitid'),
+			success: function (data) {
+				//console.log(data);
+				if (data.success == true) {
+					var msg = data.obj;
+					$('#unitBaseInfo .valueTxt').each(function(){
+						var key = $(this).attr('id');
+
+						$(this).text(msg[key] ||"--");
+						if(key == "networkstatus"){
+							$(this).text(msg[key]==1?"在线":"离线").addClass(msg[key]==1?"green":"red");
+						}
+					});
+
+					//地址
+					$('#unitAddress').html(msg.unitaddress)
+
+					//电话
+					$('#unitBaseInfo .txtTell ').each(function(){
+						var key = $(this).attr('phoneLab');
+						if(msg[key]){
+							$(this).html('<a href="skype://+86'+msg[key]+'" onclick=\"saveCallRecord("'+GetQuery("unitid")+'","'+msg[key]+'");\"><span class="phone_text">'+msg[key]+'</span></a>');
+						}
+					});
+					//消防合同文书
+					if(msg.xfcontractbookname && msg.xfcontractbook){
+						$('#xfcontractbook').html(
+								'<a href="'+msg.xfcontractbook+'" target="_blank">'+msg.xfcontractbookname+'</a>'
+						)
+					};
+					//单位比邻情况
+					if(msg.unitproximity){
+						$('#unitproximity').html('<a href="'+msg.unitproximity+'" target="_blank" class="photo_text">查看图片</a>')
+					}
+				}
+			},
+			complete: function () {
+				if (isAsync){
+					layer.close(lid);
+				}
+			}
+		});
+	}
+	
+	//新增通话记录
+	function saveCallRecord(unitid,phone){
+    	$.ajax({
+            url: _serverIp + "/front/homeIndex/addPhoneLog",
+            type: "get",
+            data:{
+				unitId:unitid,
+				phone:phone
+            },
+            success: function (data) {
+                if (data.success) {
+                	layer.msg('操作成功', { shade: [0.1, '#fff'], time: 800 });
+                }
+            }
+        });
+    }
+</script>
+</html>

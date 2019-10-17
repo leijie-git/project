@@ -1,0 +1,272 @@
+/*历史记录Index*/
+body{
+	margin: 0;
+	padding: 0;
+}
+.wrapper{
+	width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: none;
+}
+
+/*头部*/
+header{
+	width: 100%;
+	height: 35px;
+}
+
+.submitBtn{
+	margin-left: 10px;
+}
+
+/*主体内容框架*/
+section{
+	position: relative;
+	width: 100%;
+	height: calc(100% - 35px);
+}
+
+.layui-input,.layui-form-select dl dd{
+	width: 234px!important;
+}
+
+
+/*HistoryIndex*/
+
+section{
+	position: relative;
+	width: 100%;
+	height: calc(100% - 25px);
+}
+
+
+/*左侧菜单列表*/
+.menuBox{
+	position: absolute;
+	overflow: hidden;
+	width: 240px;
+	height: 100%;
+	left: 0;
+	font-size: 14px;
+	background-color: rgba(4,31,60,.4);
+	-webkit-box-shadow: 10px 0 27px -3px inset rgb(16, 71, 110);
+	-moz-box-shadow: 10px 0 27px -3px inset rgb(16, 71, 110);
+	box-shadow: 10px 0 27px -3px inset rgb(16, 71, 110);
+}
+
+.menuBox > ul{
+	width: 100%;
+	height: auto;
+	padding: 10px 0;
+}
+
+
+.menuBox ul li{
+	height: 30px;
+	line-height: 30px;
+	cursor: pointer;
+	margin: 10px auto;
+	width: 80%;
+	text-align: center;
+	padding: 0 25px;
+}
+.menuBox ul li{
+	background: url(../../images/HistoryNote/menuIcon/box.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.menuBox ul li.active{
+	background: url(../../images/HistoryNote/menuIcon/box_active.png)no-repeat center;
+	background-size: 100% 100%;
+}
+.menuBox ul li:before{
+	content: "";
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	vertical-align: sub;
+	background-size: 100% 100%;
+	/* margin-right: 20px; */
+	float: left;
+	margin-top: 5px;
+}
+.click1:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_1_alarmSys.png);
+}
+.click1.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_1_alarmSys_active.png);
+}
+
+.click2:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_2_elect.png);
+}
+.click2.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_2_elect_active.png);
+}
+
+.click3:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_3_ext.png);
+}
+.click3.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_3_ext_active.png);
+}
+
+.click9:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_4_video.png);
+}
+.click9.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_4_video_active.png);
+}
+
+.click4:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_5_split.png);
+}
+.click4.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_5_split_active.png);
+}
+
+.click5:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_6_gas.png);
+}
+.click5.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_6_gas_active.png);
+}
+
+.click6:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_7_fireGas.png);
+}
+.click6.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_7_fireGas_active.png);
+}
+
+.click7:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_8_channel.png);
+}
+.click7.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_8_channel_active.png);
+}
+
+.click8:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_9_somkeSen.png);
+}
+.click8.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_9_somkeSen_active.png);
+}
+
+.click10:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_10_mainten.png);
+}
+.click10.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_10_mainten_active.png);
+}
+
+.click19:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_11_inspect.png);
+}
+.click19.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_11_inspect_active.png);
+}
+
+.click11:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_12_duty.png);
+}
+.click11.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_12_duty_active.png);
+}
+
+.click12:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_13_device.png);
+}
+.click12.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_13_device_active.png);
+}
+
+.click13:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_14_opt.png);
+}
+.click13.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_14_opt_active.png);
+}
+
+.click14:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_15_msg.png);
+}
+.click14.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_15_msg_active.png);
+}
+
+.click15:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_16_tell.png);
+}
+.click15.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_16_tell_active.png);
+}
+
+.click16:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_17_flow.png);
+}
+.click16.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_17_flow_active.png);
+}
+
+.click17:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_18_trans.png);
+}
+.click17.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_18_trans_active.png);
+}
+.click18:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_19_deal.png);
+}
+.click18.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_19_deal_active.png);
+}
+.click20:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_20_deal.png);
+}
+.click20.active:before{
+	background-image: url(../../images/HistoryNote/menuIcon/icon_20_deal_active.png);
+}
+
+/*.click1,.click2,.click3,.click4,.click5,.click6,.click7,.click8,.click20{*/
+	/*display: none;*/
+/*}*/
+
+
+section .frameDiv{
+	position: absolute;
+	left: 240px;
+	top: 0;
+	width: calc(100% - 240px);
+	height: calc(100% - 60px);
+}
+
+
+.arrow_btn {
+    width: 15px;
+    height: 219px;
+    background: url(../../images/WeibaoInspect/arrow_icon.png);
+    position: absolute;
+    top: 30%;
+    left: 239px;
+    cursor: pointer;
+    z-index: 99;
+}
+
+
+.no_list .list{
+    display: none;
+}
+.no_list .frameDiv{
+    width: 100%;
+    left: 0;
+}
+.no_list .content{
+    width: 100%;
+}
+.no_list .arrow_btn{
+    left: 0;
+}
+.no_list .menuBox{
+	display: none;
+}
